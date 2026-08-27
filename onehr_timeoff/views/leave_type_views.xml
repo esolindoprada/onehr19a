@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_leave_type_list" model="ir.ui.view">
+        <field name="name">onehr.leave.type.list.enterprise</field>
+        <field name="model">onehr.leave.type</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'" decoration-muted="state == 'retired'">
+                <field name="sequence" widget="handle" groups="onehr_timeoff.group_onehr_timeoff_hr"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="category" widget="badge"/>
+                <field name="paid_leave" optional="show"/>
+                <field name="allocation_required" optional="show"/>
+                <field name="accrual_enabled" optional="show"/>
+                <field name="base_accrual_days" optional="show"/>
+                <field name="carryover_enabled" optional="hide"/>
+                <field name="current_year_allocated_days" sum="Allocated" optional="show"/>
+                <field name="current_year_used_days" sum="Used" optional="show"/>
+                <field name="current_year_balance_days" sum="Balance" optional="show"/>
+                <field name="utilization_rate" optional="show" widget="percentage"/>
+                <field name="state" widget="badge"/>
+                <field name="valid_from" optional="hide"/>
+                <field name="valid_to" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <button name="action_open_requests" type="object" string="Requests" icon="fa-calendar-check-o"/>
+                <button name="action_open_employees_without_balance" type="object" string="No Balance" icon="fa-user-times"
+                        groups="onehr_timeoff.group_onehr_timeoff_hr" invisible="state != 'active'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_leave_type_form" model="ir.ui.view">
+        <field name="name">onehr.leave.type.form.enterprise</field>
+        <field name="model">onehr.leave.type</field>
+        <field name="arch" type="xml">
+            <form string="Leave Type">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            groups="onehr_timeoff.group_onehr_timeoff_hr" invisible="state != 'draft'"/>
+                    <button name="action_retire" type="object" string="Retire" class="btn-secondary"
+                            groups="onehr_timeoff.group_onehr_timeoff_hr" invisible="state != 'active'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,retired"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Retired" bg_color="text-bg-secondary" invisible="state != 'retired'"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_requests" type="object" class="oe_stat_button" icon="fa-calendar-check-o">
+                            <field name="request_count" widget="statinfo" string="Requests"/>
+                        </button>
+                        <button name="action_open_allocations" type="object" class="oe_stat_button" icon="fa-balance-scale">
+                            <field name="allocation_count" widget="statinfo" string="Allocations"/>
+                        </button>
+                        <button name="action_open_employees_without_balance" type="object" class="oe_stat_button" icon="fa-user-times"
+                                groups="onehr_timeoff.group_onehr_timeoff_hr" invisible="state != 'active'">
+                            <div class="o_stat_info"><span class="o_stat_text">Employees</span><span class="o_stat_text">Without Balance</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Annual Leave" readonly="state != 'draft'"/></h1>
+                        <div class="d-flex gap-2 align-items-center">
+                            <field name="code" placeholder="ANNUAL" readonly="state != 'draft'"/>
+                            <field name="category" widget="badge" readonly="state != 'draft'"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Policy Identity">
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                            <field name="valid_from" readonly="state != 'draft'"/>
+                            <field name="valid_to" readonly="state != 'draft'"/>
+                            <field name="active" invisible="1"/>
+                            <field name="sequence" groups="onehr_timeoff.group_onehr_timeoff_hr"/>
+                        </group>
+                        <group string="Operational Rules">
+                            <field name="paid_leave" readonly="state != 'draft'"/>
+                            <field name="allocation_required" readonly="state != 'draft'"/>
+                            <field name="approval_required" readonly="state != 'draft'"/>
+                            <field name="allow_half_day" readonly="state != 'draft'"/>
+                            <field name="requires_attachment" readonly="state != 'draft'"/>
+                            <field name="minimum_notice_days" readonly="state != 'draft'"/>
+                            <field name="max_consecutive_days" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3" groups="onehr_timeoff.group_onehr_timeoff_hr">
+                        <button name="action_run_accrual_now" type="object" string="Run Accrual Now" class="btn-secondary"
+                                icon="fa-refresh" invisible="state != 'active' or not accrual_enabled"/>
+                        <button name="action_open_employees_without_balance" type="object" string="Review Employees Without Balance"
+                                class="btn-secondary" icon="fa-user-times" invisible="state != 'active'"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Eligibility" name="eligibility">
+                            <group>
+                                <field name="eligible_grade_ids" widget="many2many_tags" readonly="state != 'draft'"
+                                       groups="onehr_timeoff.group_onehr_timeoff_hr"/>
+                                <field name="minimum_service_months" readonly="state != 'draft'"
+                                       groups="onehr_timeoff.group_onehr_timeoff_hr"/>
+                            </group>
+                            <p class="text-muted">When no grade is selected, grade eligibility is unrestricted; service tenure still applies.</p>
+                        </page>
+                        <page string="Accrual &amp; Carry-over" name="accrual" groups="onehr_timeoff.group_onehr_timeoff_hr">
+                            <group>
+                                <group string="Accrual">
+                                    <field name="accrual_enabled" readonly="state != 'draft'"/>
+                                    <field name="accrual_frequency" readonly="state != 'draft'" invisible="not accrual_enabled"/>
+                                    <field name="base_accrual_days" readonly="state != 'draft'" invisible="not accrual_enabled"/>
+                                    <field name="prorate_first_year" readonly="state != 'draft'" invisible="not accrual_enabled"/>
+                                    <field name="accrual_cap" readonly="state != 'draft'" invisible="not accrual_enabled"/>
+                                </group>
+                                <group string="Seniority Band">
+                                    <field name="seniority_step_years" readonly="state != 'draft'" invisible="not accrual_enabled"/>
+                                    <field name="seniority_bonus_days" readonly="state != 'draft'" invisible="not accrual_enabled"/>
+                                    <field name="seniority_max_bonus_days" readonly="state != 'draft'" invisible="not accrual_enabled"/>
+                                </group>
+                            </group>
+                            <group string="Carry-over">
+                                <field name="carryover_enabled" readonly="state != 'draft'"/>
+                                <field name="carryover_cap" readonly="state != 'draft'" invisible="not carryover_enabled"/>
+                                <field name="carryover_expiry_months" readonly="state != 'draft'" invisible="not carryover_enabled"/>
+                            </group>
+                        </page>
+                        <page string="Team Governance" name="team_governance">
+                            <group>
+                                <field name="team_conflict_mode" readonly="state != 'draft'"/>
+                                <field name="max_team_absent" readonly="state != 'draft'"/>
+                                <field name="allow_negative_balance" readonly="state != 'draft'"/>
+                                <field name="negative_balance_limit" readonly="state != 'draft'" invisible="not allow_negative_balance"/>
+                            </group>
+                        </page>
+                        <page string="KPI Snapshot" name="kpi">
+                            <group>
+                                <field name="current_year_allocated_days" readonly="1"/>
+                                <field name="current_year_used_days" readonly="1"/>
+                                <field name="current_year_balance_days" readonly="1"/>
+                                <field name="utilization_rate" readonly="1" widget="percentage"/>
+                            </group>
+                        </page>
+                        <page string="Description" name="description"><field name="description" readonly="state != 'draft'"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_leave_type_search" model="ir.ui.view">
+        <field name="name">onehr.leave.type.search.enterprise</field>
+        <field name="model">onehr.leave.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="category"/>
+                <field name="state"/>
+                <field name="company_id"/>
+                <filter name="active_policy" string="Active Policies" domain="[('state','=','active')]"/>
+                <filter name="accrual" string="Automatic Accrual" domain="[('accrual_enabled','=',True)]"/>
+                <filter name="carryover" string="Carry-over" domain="[('carryover_enabled','=',True)]"/>
+                <filter name="paid" string="Paid Leave" domain="[('paid_leave','=',True)]"/>
+                <filter name="unpaid" string="Unpaid Leave" domain="[('paid_leave','=',False)]"/>
+                <separator/>
+                <group>
+                    <filter name="group_category" string="Category" context="{'group_by':'category'}"/>
+                    <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_leave_type" model="ir.actions.act_window">
+        <field name="name">Leave Types</field>
+        <field name="res_model">onehr.leave.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_leave_type_search"/>
+        <field name="context">{'search_default_active_policy': 1}</field>
+    </record>
+</odoo>

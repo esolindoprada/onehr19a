@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================ -->
+    <!-- Employment Contract — Enterprise List                           -->
+    <!-- ================================================================ -->
+    <record id="view_onehr_contract_list" model="ir.ui.view">
+        <field name="name">onehr.contract.list.enterprise</field>
+        <field name="model">onehr.contract</field>
+        <field name="arch" type="xml">
+            <list
+                decoration-info="state == 'in_review'"
+                decoration-success="state == 'active'"
+                decoration-warning="state == 'approved'"
+                decoration-danger="state == 'terminated'"
+                decoration-muted="state in ('expired', 'rejected')"
+            >
+                <field name="name"/>
+                <field
+                    name="employee_name"
+                    groups="onehr_employment_contract.group_onehr_contract_line_manager"
+                />
+                <field
+                    name="employee_id"
+                    groups="onehr_employment_contract.group_onehr_contract_officer"
+                />
+                <field name="contract_kind" widget="badge"/>
+                <field
+                    name="template_name"
+                    groups="onehr_employment_contract.group_onehr_contract_line_manager"
+                />
+                <field
+                    name="template_id"
+                    groups="onehr_employment_contract.group_onehr_contract_officer"
+                />
+                <field name="native_job_id"/>
+                <field
+                    name="native_position_name"
+                    groups="onehr_employment_contract.group_onehr_contract_line_manager"
+                    optional="show"
+                />
+                <field
+                    name="native_position_id"
+                    groups="onehr_employment_contract.group_onehr_contract_officer"
+                    optional="show"
+                />
+                <field name="native_contract_start"/>
+                <field name="native_contract_end"/>
+                <field name="days_to_expiry" optional="show"/>
+                <field name="responsible_user_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="termination_review_state" widget="badge" optional="show"/>
+                <field name="state" widget="badge"/>
+                <button
+                    name="action_open_employee"
+                    type="object"
+                    string="Employee"
+                    icon="fa-user"
+                />
+                <button
+                    name="action_open_hr_version"
+                    type="object"
+                    string="HR Version"
+                    icon="fa-history"
+                    groups="onehr_employment_contract.group_onehr_contract_officer"
+                />
+            </list>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Employment Contract — Enterprise Form                           -->
+    <!-- ================================================================ -->
+    <record id="view_onehr_contract_form" model="ir.ui.view">
+        <field name="name">onehr.contract.form.enterprise</field>
+        <field name="model">onehr.contract</field>
+        <field name="arch" type="xml">
+            <form string="Employment Contract">
+                <header>
+                    <button
+                        name="action_submit_for_review"
+                        type="object"
+                        string="Submit for Review"
+                        class="btn-primary"
+                        groups="onehr_employment_contract.group_onehr_contract_officer"
+                        invisible="state != 'draft'"
+                    />
+                    <button
+                        name="action_reset_to_draft"
+                        type="object"
+                        string="Reset to Draft"
+                        groups="onehr_employment_contract.group_onehr_contract_officer"
+                        invisible="state != 'rejected'"
+                    />
+                    <button
+                        name="action_activate"
+                        type="object"
+                        string="Activate"
+                        class="btn-primary"
+                        groups="onehr_employment_contract.group_onehr_contract_manager"
+                        invisible="state != 'approved'"
+                    />
+                    <button
+                        name="action_create_renewal"
+                        type="object"
+                        string="Create Renewal"
+                        groups="onehr_employment_contract.group_onehr_contract_manager"
+                        invisible="state not in ('active', 'expired')"
+                    />
+                    <button
+                        name="action_request_termination_review"
+                        type="object"
+                        string="Request Termination Approval"
+                        groups="onehr_employment_contract.group_onehr_contract_manager"
+                        invisible="state != 'active' or termination_review_state == 'pending'"
+                    />
+                    <button
+                        name="action_execute_termination"
+                        type="object"
+                        string="Execute Termination"
+                        class="btn-danger"
+                        groups="onehr_employment_contract.group_onehr_contract_manager"
+                        invisible="state != 'active' or termination_review_state != 'approved'"
+                    />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,in_review,approved,active,expired,terminated,rejected"
+                    />
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            class="oe_stat_button"
+                            name="action_open_employee"
+                            type="object"
+                            icon="fa-user"
+                        >
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Employee</span>
+                            </div>
+                        </button>
+                        <button
+                            class="oe_stat_button"
+                            name="action_open_hr_version"
+                            type="object"
+                            icon="fa-history"
+                            groups="onehr_employment_contract.group_onehr_contract_officer"
+                        >
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Native HR Version</span>
+                            </div>
+                        </button>
+                        <button
+                            class="oe_stat_button"
+                            name="action_open_approval_requests"
+                            type="object"
+                            icon="fa-check-square-o"
+                            groups="onehr_employment_contract.group_onehr_contract_officer"
+                        >
+                            <field
+                                name="onehr_approval_request_count"
+                                widget="statinfo"
+                                string="Approvals"
+                            />
+                        </button>
+                        <button
+                            class="oe_stat_button"
+                            name="action_open_successors"
+                            type="object"
+                            icon="fa-code-fork"
+                        >
+                            <field name="successor_count" widget="statinfo" string="Successors"/>
+                        </button>
+                        <button
+                            class="oe_stat_button"
+                            name="action_open_documents"
+                            type="object"
+                            icon="fa-files-o"
+                            groups="onehr_employment_contract.group_onehr_contract_officer"
+                        >
+                            <field name="document_count" widget="statinfo" string="Documents"/>
+                        </button>
+                        <button
+                            class="oe_stat_button"
+                            name="action_open_clearance_checklist"
+                            type="object"
+                            icon="fa-tasks"
+                            groups="onehr_employment_contract.group_onehr_contract_officer"
+                            invisible="not clearance_checklist_id"
+                        >
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Clearance</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget
+                        name="web_ribbon"
+                        title="Terminated"
+                        bg_color="text-bg-danger"
+                        invisible="state != 'terminated'"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        title="Expired"
+                        bg_color="text-bg-secondary"
+                        invisible="state != 'expired'"
+                    />
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Governance">
+                            <field
+                                name="employee_name"
+                                groups="onehr_employment_contract.group_onehr_contract_line_manager"
+                            />
+                            <field
+                                name="employee_id"
+                                groups="onehr_employment_contract.group_onehr_contract_officer"
+                                readonly="state != 'draft'"
+                            />
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                                readonly="state != 'draft'"
+                            />
+                            <field
+                                name="template_name"
+                                groups="onehr_employment_contract.group_onehr_contract_line_manager"
+                            />
+                            <field
+                                name="template_id"
+                                groups="onehr_employment_contract.group_onehr_contract_officer"
+                                readonly="state != 'draft'"
+                            />
+                            <field name="contract_kind" readonly="state != 'draft'"/>
+                            <field name="responsible_user_id"/>
+                            <field
+                                name="predecessor_contract_id"
+                                readonly="state != 'draft'"
+                            />
+                        </group>
+                        <group string="Canonical Odoo Contract">
+                            <field
+                                name="hr_version_id"
+                                groups="onehr_employment_contract.group_onehr_contract_officer"
+                                readonly="state != 'draft'"
+                            />
+                            <field name="native_contract_start"/>
+                            <field name="native_contract_end"/>
+                            <field name="native_trial_end"/>
+                            <field
+                                name="native_contract_wage"
+                                groups="onehr_employment_contract.group_onehr_contract_officer"
+                            />
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Body actions improve workflow speed; server methods remain authoritative. -->
+                    <div
+                        class="d-flex gap-2 my-3"
+                        groups="onehr_employment_contract.group_onehr_contract_officer"
+                    >
+                        <button
+                            name="action_generate_contract_document"
+                            type="object"
+                            string="Generate Contract Document"
+                            class="btn-secondary"
+                            icon="fa-file-pdf-o"
+                            invisible="state not in ('approved', 'active', 'expired', 'terminated')"
+                        />
+                        <button
+                            name="action_request_contract_signature"
+                            type="object"
+                            string="Request E-Signature"
+                            class="btn-secondary"
+                            icon="fa-pencil-square-o"
+                            invisible="state not in ('approved', 'active')"
+                        />
+                        <button
+                            name="action_schedule_expiry_reminder"
+                            type="object"
+                            string="Schedule Expiry Reminder"
+                            class="btn-secondary"
+                            icon="fa-clock-o"
+                            invisible="state not in ('approved', 'active') or not native_contract_end or expiry_reminder_sent_at"
+                        />
+                        <button
+                            name="action_schedule_clearance_activities"
+                            type="object"
+                            string="Schedule Clearance Activities"
+                            class="btn-secondary"
+                            icon="fa-tasks"
+                            invisible="not clearance_checklist_id"
+                        />
+                    </div>
+
+                    <notebook>
+                        <page string="Position &amp; Employment">
+                            <group>
+                                <group>
+                                    <field name="native_job_id"/>
+                                    <field name="native_department_id"/>
+                                    <field name="native_work_location_id"/>
+                                </group>
+                                <group>
+                                    <field
+                                        name="native_position_name"
+                                        groups="onehr_employment_contract.group_onehr_contract_line_manager"
+                                    />
+                                    <field
+                                        name="native_position_id"
+                                        groups="onehr_employment_contract.group_onehr_contract_officer"
+                                    />
+                                    <field
+                                        name="native_grade_name"
+                                        groups="onehr_employment_contract.group_onehr_contract_line_manager"
+                                    />
+                                    <field
+                                        name="native_grade_id"
+                                        groups="onehr_employment_contract.group_onehr_contract_officer"
+                                    />
+                                    <field
+                                        name="native_engagement_type_name"
+                                        groups="onehr_employment_contract.group_onehr_contract_line_manager"
+                                    />
+                                    <field
+                                        name="native_engagement_type_id"
+                                        groups="onehr_employment_contract.group_onehr_contract_officer"
+                                    />
+                                    <field name="native_date_version"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page
+                            string="Approved Legal Snapshot"
+                            groups="onehr_employment_contract.group_onehr_contract_officer"
+                        >
+                            <group>
+                                <group>
+                                    <field name="snapshot_contract_start"/>
+                                    <field name="snapshot_contract_end"/>
+                                    <field name="snapshot_trial_end"/>
+                                    <field name="snapshot_contract_wage"/>
+                                    <field name="snapshot_currency_id" invisible="1"/>
+                                </group>
+                                <group>
+                                    <field name="snapshot_template_code"/>
+                                    <field name="snapshot_template_version"/>
+                                    <field name="snapshot_job_name"/>
+                                    <field name="snapshot_department_name"/>
+                                    <field name="snapshot_position_name"/>
+                                    <field name="snapshot_grade_name"/>
+                                    <field name="snapshot_engagement_type_name"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Approval &amp; Expiry">
+                            <group>
+                                <group>
+                                    <field name="onehr_latest_approval_state"/>
+                                    <field name="pending_approval_kind"/>
+                                    <field name="approved_at"/>
+                                    <field name="activated_at"/>
+                                    <field name="activated_by_id"/>
+                                </group>
+                                <group>
+                                    <field name="expiry_reminder_lead_days"/>
+                                    <field name="days_to_expiry"/>
+                                    <field name="expiry_reminder_sent_at"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Termination">
+                            <group>
+                                <group>
+                                    <field
+                                        name="termination_type"
+                                        readonly="state != 'active' or termination_review_state == 'pending'"
+                                    />
+                                    <field
+                                        name="termination_effective_date"
+                                        readonly="state != 'active' or termination_review_state == 'pending'"
+                                    />
+                                    <field name="termination_review_state"/>
+                                    <field name="termination_reviewed_at"/>
+                                </group>
+                                <group
+                                    groups="onehr_employment_contract.group_onehr_contract_officer"
+                                >
+                                    <field name="terminated_at"/>
+                                    <field name="terminated_by_id"/>
+                                    <field name="clearance_checklist_id"/>
+                                </group>
+                            </group>
+                            <field
+                                name="termination_reason"
+                                readonly="state != 'active' or termination_review_state == 'pending'"
+                            />
+                            <field
+                                name="clearance_task_ids"
+                                groups="onehr_employment_contract.group_onehr_contract_officer"
+                                invisible="not clearance_checklist_id"
+                            >
+                                <list
+                                    decoration-success="state == 'done'"
+                                    decoration-warning="state == 'pending'"
+                                    decoration-muted="state == 'cancelled'"
+                                >
+                                    <field name="sequence"/>
+                                    <field name="name"/>
+                                    <field name="assigned_user_id"/>
+                                    <field name="due_date"/>
+                                    <field name="state" widget="badge"/>
+                                    <button
+                                        name="action_done"
+                                        type="object"
+                                        string="Done"
+                                        icon="fa-check"
+                                        invisible="state != 'pending'"
+                                    />
+                                    <button
+                                        name="action_schedule_activity"
+                                        type="object"
+                                        string="Schedule"
+                                        icon="fa-clock-o"
+                                        invisible="state != 'pending' or not assigned_user_id or activity_id"
+                                    />
+                                    <button
+                                        name="action_open_instance"
+                                        type="object"
+                                        string="Checklist"
+                                        icon="fa-external-link"
+                                    />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Employment Contract — Search                                    -->
+    <!-- ================================================================ -->
+    <record id="view_onehr_contract_search" model="ir.ui.view">
+        <field name="name">onehr.contract.search.enterprise</field>
+        <field name="model">onehr.contract</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field
+                    name="employee_name"
+                    groups="onehr_employment_contract.group_onehr_contract_line_manager"
+                />
+                <field
+                    name="employee_id"
+                    groups="onehr_employment_contract.group_onehr_contract_officer"
+                />
+                <field
+                    name="template_id"
+                    groups="onehr_employment_contract.group_onehr_contract_officer"
+                />
+                <field name="native_job_id"/>
+                <field
+                    name="native_position_id"
+                    groups="onehr_employment_contract.group_onehr_contract_officer"
+                />
+                <field name="responsible_user_id"/>
+                <field name="company_id"/>
+                <field name="state"/>
+
+                <filter
+                    name="my_contracts"
+                    string="My Responsibility"
+                    domain="[('responsible_user_id', '=', uid)]"
+                />
+                <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="approved" string="Approved" domain="[('state', '=', 'approved')]"/>
+                <filter name="review" string="In Review" domain="[('state', '=', 'in_review')]"/>
+                <filter name="expired" string="Expired" domain="[('state', '=', 'expired')]"/>
+                <filter name="terminated" string="Terminated" domain="[('state', '=', 'terminated')]"/>
+                <filter
+                    name="termination_pending"
+                    string="Termination Pending"
+                    domain="[('termination_review_state', '=', 'pending')]"
+                />
+
+                <group>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter
+                        name="group_employee"
+                        string="Employee"
+                        context="{'group_by': 'employee_id'}"
+                        groups="onehr_employment_contract.group_onehr_contract_officer"
+                    />
+                    <filter
+                        name="group_template"
+                        string="Template"
+                        context="{'group_by': 'template_id'}"
+                        groups="onehr_employment_contract.group_onehr_contract_officer"
+                    />
+                    <filter
+                        name="group_responsible"
+                        string="Responsible"
+                        context="{'group_by': 'responsible_user_id'}"
+                    />
+                    <filter
+                        name="group_company"
+                        string="Company"
+                        context="{'group_by': 'company_id'}"
+                        groups="base.group_multi_company"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_contract" model="ir.actions.act_window">
+        <field name="name">Employment Contracts</field>
+        <field name="res_model">onehr.contract</field>
+        <field name="view_mode">list,form,calendar,pivot,graph</field>
+        <field name="search_view_id" ref="view_onehr_contract_search"/>
+    </record>
+</odoo>

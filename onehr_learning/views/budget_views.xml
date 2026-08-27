@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_learning_budget_list" model="ir.ui.view">
+        <field name="name">onehr.learning.budget.list.enterprise</field>
+        <field name="model">onehr.learning.budget</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'active'"
+                  decoration-success="state == 'closed'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="allocated_amount"/>
+                <field name="committed_amount"/>
+                <field name="actual_amount"/>
+                <field name="remaining_amount"/>
+                <field name="budget_burn_percent"/>
+                <field name="session_count" optional="show"/>
+                <field name="learner_count" optional="show"/>
+                <field name="actual_cost_per_learner" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <button name="action_activate" type="object" string="Activate"
+                        icon="fa-check" invisible="state != 'draft'"
+                        groups="onehr_learning.group_onehr_learning_manager_approver"/>
+                <button name="action_close" type="object" string="Close"
+                        icon="fa-lock" invisible="state != 'active'"
+                        groups="onehr_learning.group_onehr_learning_manager_approver"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_budget_form" model="ir.ui.view">
+        <field name="name">onehr.learning.budget.form.enterprise</field>
+        <field name="model">onehr.learning.budget</field>
+        <field name="arch" type="xml">
+            <form string="Learning Budget">
+                <header>
+                    <button name="action_activate" type="object" string="Activate Budget"
+                            class="oe_highlight" invisible="state != 'draft'"
+                            groups="onehr_learning.group_onehr_learning_manager_approver"/>
+                    <button name="action_close" type="object" string="Close Budget"
+                            class="oe_highlight" invisible="state != 'active'"
+                            groups="onehr_learning.group_onehr_learning_manager_approver"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state != 'draft'"
+                            groups="onehr_learning.group_onehr_learning_manager_approver"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,active,closed,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_sessions" type="object" class="oe_stat_button"
+                                icon="fa-calendar"
+                                groups="onehr_learning.group_onehr_learning_manager_approver">
+                            <field name="session_count" widget="statinfo" string="Sessions"/>
+                        </button>
+                        <button name="action_open_cost_lines" type="object" class="oe_stat_button"
+                                icon="fa-money"
+                                groups="onehr_learning.group_onehr_learning_manager_approver">
+                            <field name="actual_amount" widget="statinfo" string="Actual Cost"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div class="text-muted"><field name="code"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Budget Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                            <field name="allocated_amount"/>
+                            <field name="overrun_policy"/>
+                            <field name="allowed_overrun_percent"/>
+                        </group>
+                        <group string="Budget Burn">
+                            <field name="planned_amount" readonly="1"/>
+                            <field name="committed_amount" readonly="1"/>
+                            <field name="actual_amount" readonly="1"/>
+                            <field name="remaining_amount" readonly="1"/>
+                            <field name="budget_burn_percent" readonly="1"/>
+                            <field name="actual_cost_per_learner" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Budget Actions"
+                           groups="onehr_learning.group_onehr_learning_manager_approver">
+                        <button name="action_export_payroll_cost_json" type="object"
+                                string="Export Reimbursable Payroll Costs" icon="fa-download"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Cost Lines">
+                            <field name="cost_line_ids">
+                                <list create="0" delete="0">
+                                    <field name="cost_date"/>
+                                    <field name="description"/>
+                                    <field name="session_id"/>
+                                    <field name="employee_name" optional="show"/>
+                                    <field name="cost_type"/>
+                                    <field name="amount"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="reimbursable"/>
+                                    <field name="payroll_bridge_eligible"/>
+                                    <button name="action_commit" type="object" string="Commit"
+                                            icon="fa-lock" invisible="state != 'planned'"/>
+                                    <button name="action_mark_actual" type="object" string="Actual"
+                                            icon="fa-check" invisible="state != 'committed'"/>
+                                    <button name="action_cancel" type="object" string="Cancel"
+                                            icon="fa-times" invisible="state not in ['planned','committed']"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Sessions">
+                            <field name="session_ids" readonly="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="name"/>
+                                    <field name="title"/>
+                                    <field name="course_id"/>
+                                    <field name="start_datetime"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="estimated_cost"/>
+                                    <field name="actual_cost"/>
+                                    <button name="action_open_costs" type="object"
+                                            string="Costs" icon="fa-money"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Policy / Payroll Hand-off">
+                            <field name="policy_notes"/>
+                            <group>
+                                <field name="payroll_download_filename" readonly="1"/>
+                                <field name="payroll_download_file"
+                                       filename="payroll_download_filename" readonly="1"/>
+                            </group>
+                            <div class="alert alert-info" role="alert">
+                                This is an outbound hand-off payload only. Payroll Bridge remains the
+                                downstream owner of payroll interchange and payment processing.
+                            </div>
+                        </page>
+                    </notebook>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_budget_search" model="ir.ui.view">
+        <field name="name">onehr.learning.budget.search.enterprise</field>
+        <field name="model">onehr.learning.budget</field>
+        <field name="arch" type="xml">
+            <search string="Learning Budgets">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="closed" string="Closed" domain="[('state', '=', 'closed')]"/>
+                <filter name="period_start_date" string="Period Start" date="period_start"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_start" string="Start Year" context="{'group_by': 'period_start:year'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_budget_pivot" model="ir.ui.view">
+        <field name="name">onehr.learning.budget.pivot.enterprise</field>
+        <field name="model">onehr.learning.budget</field>
+        <field name="arch" type="xml">
+            <pivot string="Learning Budget Analysis">
+                <field name="company_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="allocated_amount" type="measure"/>
+                <field name="actual_amount" type="measure"/>
+                <field name="remaining_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_budget_graph" model="ir.ui.view">
+        <field name="name">onehr.learning.budget.graph.enterprise</field>
+        <field name="model">onehr.learning.budget</field>
+        <field name="arch" type="xml">
+            <graph string="Learning Budget Burn">
+                <field name="code"/>
+                <field name="allocated_amount" type="measure"/>
+                <field name="actual_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_learning_budgets" model="ir.actions.act_window">
+        <field name="name">Budgets</field>
+        <field name="res_model">onehr.learning.budget</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_learning_budget_search"/>
+    </record>
+</odoo>

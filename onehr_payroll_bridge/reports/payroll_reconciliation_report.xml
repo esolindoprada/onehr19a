@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_onehr_payroll_reconciliation" model="ir.actions.report">
+        <field name="name">Payroll Reconciliation Record</field>
+        <field name="model">onehr.payroll.export</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_payroll_bridge.report_payroll_reconciliation_document</field>
+        <field name="report_file">onehr_payroll_bridge.report_payroll_reconciliation_document</field>
+        <field name="binding_model_id" ref="model_onehr_payroll_export"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_payroll_bridge.group_onehr_payroll_officer')),
+            Command.link(ref('onehr_payroll_bridge.group_onehr_payroll_manager'))
+        ]"/>
+        <field name="print_report_name">'Payroll Reconciliation - %s' % object.name</field>
+    </record>
+
+    <template id="report_payroll_reconciliation_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>OneHR Payroll Reconciliation Record</h2>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Export</th><td><span t-field="o.name"/></td>
+                                    <th>Status</th><td><span t-field="o.state"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Company</th><td><span t-field="o.company_id"/></td>
+                                    <th>Configuration</th><td><span t-field="o.config_id"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Period</th>
+                                    <td><span t-field="o.period_start"/> → <span t-field="o.period_end"/></td>
+                                    <th>External Batch</th><td><span t-field="o.external_batch_reference"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Employees Exported</th><td><span t-field="o.employee_count"/></td>
+                                    <th>Matched Employees</th><td><span t-field="o.matched_employee_count"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Source SHA-256</th><td colspan="3"><span t-field="o.export_sha256"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Vendor File SHA-256</th><td colspan="3"><span t-field="o.vendor_import_sha256"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Time &amp; Variable Summary</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Work Entry Hours</th>
+                                    <th>Worked Hours</th>
+                                    <th>Rounded Hours</th>
+                                    <th>Overtime</th>
+                                    <th>Paid Leave</th>
+                                    <th>Unpaid Leave</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span t-field="o.work_entry_hours"/></td>
+                                    <td><span t-field="o.worked_hours"/></td>
+                                    <td><span t-field="o.rounded_worked_hours"/></td>
+                                    <td><span t-field="o.overtime_hours"/></td>
+                                    <td><span t-field="o.paid_leave_days"/></td>
+                                    <td><span t-field="o.unpaid_leave_days"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Current Vendor Payroll Results</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Employee No.</th>
+                                    <th>Employee</th>
+                                    <th>Department</th>
+                                    <th>External Ref.</th>
+                                    <th class="text-end">Gross</th>
+                                    <th class="text-end">Deductions</th>
+                                    <th class="text-end">Net</th>
+                                    <th class="text-end">Employer Cost</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.import_ids.filtered('is_current_revision')" t-as="line">
+                                    <td><span t-field="line.employee_number_snapshot"/></td>
+                                    <td><span t-field="line.employee_name_snapshot"/></td>
+                                    <td><span t-field="line.department_snapshot"/></td>
+                                    <td><span t-field="line.external_reference"/></td>
+                                    <td class="text-end"><span t-field="line.gross_amount"/></td>
+                                    <td class="text-end"><span t-field="line.deduction_amount"/></td>
+                                    <td class="text-end"><span t-field="line.net_amount"/></td>
+                                    <td class="text-end"><span t-field="line.employer_cost"/></td>
+                                    <td><span t-field="line.state"/></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4">Current Validated/Reconciled Totals</th>
+                                    <th class="text-end"><span t-field="o.imported_gross_total"/></th>
+                                    <th class="text-end"><span t-field="o.imported_deduction_total"/></th>
+                                    <th class="text-end"><span t-field="o.imported_net_total"/></th>
+                                    <th class="text-end"><span t-field="o.imported_employer_cost_total"/></th>
+                                    <th/>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <p class="text-muted">
+                            This report is reconciliation evidence for the payroll interchange boundary.
+                            Payroll calculation, tax localization, payment execution and accounting posting remain owned by their respective engines/adapters.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

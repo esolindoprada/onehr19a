@@ -1,0 +1,42 @@
+<odoo>
+    <menuitem id="menu_onehr_talent_root"
+              name="Talent"
+              parent="onehr_base.menu_onehr_root"
+              sequence="60"
+              groups="onehr_career_succession.group_onehr_career_hrbp"/>
+
+    <menuitem id="menu_onehr_talent_operations"
+              name="Talent &amp; Succession"
+              parent="menu_onehr_talent_root"
+              sequence="10"/>
+
+    <menuitem id="menu_onehr_talent_pool"
+              name="Talent Pool"
+              parent="menu_onehr_talent_operations"
+              action="action_onehr_talent_pool"
+              sequence="10"/>
+
+    <menuitem id="menu_onehr_succession_plans"
+              name="Succession Plans"
+              parent="menu_onehr_talent_operations"
+              action="action_onehr_succession_plan"
+              sequence="20"/>
+
+    <menuitem id="menu_onehr_talent_configuration"
+              name="Configuration"
+              parent="menu_onehr_talent_root"
+              sequence="90"
+              groups="onehr_career_succession.group_onehr_talent_manager"/>
+
+    <menuitem id="menu_onehr_competencies"
+              name="Competencies"
+              parent="menu_onehr_talent_configuration"
+              action="action_onehr_competency"
+              sequence="10"/>
+
+    <menuitem id="menu_onehr_position_competencies"
+              name="Position Competencies"
+              parent="menu_onehr_talent_configuration"
+              action="action_onehr_position_competency"
+              sequence="20"/>
+</odoo>

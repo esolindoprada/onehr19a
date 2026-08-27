@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_onehr_learning" model="ir.module.category">
+        <field name="name">OneHR Learning</field>
+        <field name="description">Learning catalog, training delivery, enrollment, certification and L&amp;D budget authority.</field>
+        <field name="sequence">44</field>
+    </record>
+
+    <record id="privilege_onehr_learning" model="res.groups.privilege">
+        <field name="name">OneHR Learning</field>
+        <field name="description">Operational learning, trainer and approval authority.</field>
+        <field name="category_id" ref="module_category_onehr_learning"/>
+        <field name="sequence">44</field>
+    </record>
+
+    <record id="group_onehr_learning_officer" model="res.groups">
+        <field name="name">L&amp;D Officer</field>
+        <field name="privilege_id" ref="privilege_onehr_learning"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_security.group_onehr_security_user')),
+            Command.link(ref('onehr_workflow_approval.group_onehr_approval_user')),
+            Command.link(ref('hr.group_hr_user'))
+        ]"/>
+        <field name="comment">Operates learning catalog, sessions, enrollment, attendance, certification and training costs inside allowed companies.</field>
+    </record>
+
+    <record id="group_onehr_learning_trainer" model="res.groups">
+        <field name="name">Learning Trainer</field>
+        <field name="privilege_id" ref="privilege_onehr_learning"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_security.group_onehr_security_user'))
+        ]"/>
+        <field name="comment">Assigned-trainer operational role. May record attendance and assessment for assigned sessions but cannot administer budgets or catalog governance.</field>
+    </record>
+
+    <record id="group_onehr_learning_manager_approver" model="res.groups">
+        <field name="name">Learning Manager Approver</field>
+        <field name="privilege_id" ref="privilege_onehr_learning"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_learning.group_onehr_learning_officer')),
+            Command.link(ref('onehr_workflow_approval.group_onehr_approver'))
+        ]"/>
+        <field name="comment">Approves governed learning requests and owns catalog publication, budget activation/closure and exception corrections.</field>
+    </record>
+</odoo>

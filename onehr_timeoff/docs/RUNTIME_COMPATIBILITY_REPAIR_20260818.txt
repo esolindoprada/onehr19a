@@ -1,0 +1,24 @@
+OneHR Time Off — Odoo 19 Runtime Compatibility Repair
+Date: 2026-08-18
+Target runtime: Odoo 19.0.20251217
+Target addon: onehr_timeoff
+
+ROOT_CAUSE_CLASSIFICATION: ODOO_VERSION_COMPATIBILITY_FAILURE
+PROVEN_FAILURE:
+ValueError: Invalid field 'groups_id' in 'ir.actions.report'
+File: reports/leave_request_report.xml
+
+CORRECTION:
+- Changed ir.actions.report field `groups_id` to Odoo 19 field `group_ids`.
+- Preserved the existing Time Off User report-security restriction.
+- Added a source-acceptance check that rejects `groups_id` on this report action.
+- No architecture, dependency, model, field, method, workflow, ACL, record rule,
+  UI surface, report template, or enterprise feature was removed or simplified.
+
+BOUNDED_REPAIR_ATTEMPT: 1
+CODEX_ROLE: NOT_USED_AS_ARCHITECT
+SIBLING_ADDONS_MODIFIED: NONE
+
+SOURCE_ACCEPTANCE: PASS
+WINDOWS_RUNTIME_RETRY: PENDING
+ONEHR_TIMEOFF_MOVE_FORWARD_READY: NO

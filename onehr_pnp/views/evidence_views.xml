@@ -1,0 +1,285 @@
+<odoo>
+    <record id="view_onehr_policy_evidence_list" model="ir.ui.view">
+        <field name="name">onehr.policy.evidence.list.enterprise</field>
+        <field name="model">onehr.policy.evidence</field>
+        <field name="arch" type="xml">
+            <list string="Policy Compliance Evidence"
+                  decoration-success="state == 'verified'"
+                  decoration-info="state == 'submitted'"
+                  decoration-danger="state == 'rejected' or overdue"
+                  decoration-muted="state == 'draft'">
+                <field name="overdue" column_invisible="True"/>
+                <field name="ack_id" column_invisible="True"/>
+                <field name="policy_code"/>
+                <field name="policy_title"/>
+                <field name="employee_number"
+                       groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                <field name="employee_name"/>
+                <field name="department_name"/>
+                <field name="job_name"/>
+                <field name="evidence_scope" widget="badge"/>
+                <field name="title"/>
+                <field name="evidence_type" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="due_date"/>
+                <field name="submitted_at"/>
+                <field name="verified_at"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_policy" type="object"
+                        string="Policy" icon="fa-book"/>
+                <button name="action_open_acknowledgement" type="object"
+                        string="Assignment" icon="fa-check-square-o"
+                        invisible="not ack_id"/>
+                <button name="action_submit" type="object"
+                        string="Submit" icon="fa-paper-plane"
+                        invisible="state not in ('draft', 'rejected')"/>
+                <button name="action_verify" type="object"
+                        string="Verify" icon="fa-check"
+                        invisible="state != 'submitted'"
+                        groups="onehr_pnp.group_onehr_pnp_compliance"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_policy_evidence_form" model="ir.ui.view">
+        <field name="name">onehr.policy.evidence.form.enterprise</field>
+        <field name="model">onehr.policy.evidence</field>
+        <field name="arch" type="xml">
+            <form string="Policy Compliance Evidence">
+                <header>
+                    <button name="action_submit" type="object"
+                            string="Submit Evidence"
+                            class="btn-primary"
+                            invisible="state not in ('draft', 'rejected')"/>
+                    <button name="action_verify" type="object"
+                            string="Verify"
+                            class="btn-primary"
+                            invisible="state != 'submitted'"
+                            groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                    <button name="action_reject" type="object"
+                            string="Reject for Correction"
+                            invisible="state != 'submitted'"
+                            groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,verified,rejected"/>
+                </header>
+
+                <sheet>
+                    <field name="overdue" invisible="1"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_policy" type="object"
+                                class="oe_stat_button" icon="fa-book">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Policy</span>
+                            </div>
+                        </button>
+                        <button name="action_open_acknowledgement" type="object"
+                                class="oe_stat_button" icon="fa-check-square-o"
+                                invisible="not ack_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Assignment</span>
+                            </div>
+                        </button>
+                        <button name="action_open_document" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not document_version_id"
+                                groups="onehr_pnp.group_onehr_pnp_compliance">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Controlled Document</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="VERIFIED"
+                            bg_color="text-bg-success"
+                            invisible="state != 'verified'"/>
+                    <widget name="web_ribbon" title="OVERDUE"
+                            bg_color="text-bg-warning"
+                            invisible="not overdue or state == 'verified'"/>
+                    <widget name="web_ribbon" title="REJECTED"
+                            bg_color="text-bg-danger"
+                            invisible="state != 'rejected'"/>
+
+                    <div class="oe_title">
+                        <label for="title"/>
+                        <h1>
+                            <field name="title"
+                                   placeholder="Completed mandatory training evidence"
+                                   readonly="state not in ('draft', 'rejected')"/>
+                        </h1>
+                        <div class="text-muted">
+                            <field name="policy_code" readonly="1"/> —
+                            <field name="policy_title" readonly="1"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Evidence Subject">
+                            <field name="policy_id" readonly="1"/>
+                            <field name="evidence_scope"
+                                   readonly="state != 'draft'"/>
+                            <field name="ack_id"
+                                   readonly="state != 'draft'"
+                                   invisible="evidence_scope != 'employee'"/>
+                            <field name="unit_department_id"
+                                   readonly="state != 'draft'"
+                                   invisible="evidence_scope != 'unit'"
+                                   groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                            <field name="employee_number" readonly="1"
+                                   invisible="evidence_scope != 'employee'"
+                                   groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                            <field name="employee_name" readonly="1"
+                                   invisible="evidence_scope != 'employee'"/>
+                            <field name="department_name" readonly="1"/>
+                            <field name="job_name" readonly="1"
+                                   invisible="evidence_scope != 'employee'"/>
+                        </group>
+                        <group string="Evidence Timeline">
+                            <field name="due_date" readonly="1"/>
+                            <field name="submitted_at" readonly="1"/>
+                            <field name="submitted_by_id" readonly="1"/>
+                            <field name="verified_at" readonly="1"/>
+                            <field name="verified_by_id" readonly="1"
+                                   groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 flex-wrap mb-3">
+                        <button name="action_open_policy" type="object"
+                                string="Read Policy"
+                                class="btn-secondary"/>
+                        <button name="action_open_acknowledgement" type="object"
+                                string="Open Assignment"
+                                class="btn-secondary"
+                                invisible="not ack_id"/>
+                        <button name="action_submit" type="object"
+                                string="Submit Evidence"
+                                class="btn-primary"
+                                invisible="state not in ('draft', 'rejected')"/>
+                        <button name="action_open_document" type="object"
+                                string="Open Controlled Document"
+                                class="btn-secondary"
+                                invisible="not document_version_id"
+                                groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Evidence Payload">
+                            <group>
+                                <field name="evidence_type"
+                                       readonly="state not in ('draft', 'rejected')"/>
+                                <field name="reference_url"
+                                       readonly="state not in ('draft', 'rejected')"
+                                       invisible="evidence_type != 'url'"/>
+                                <field name="document_version_id"
+                                       readonly="state not in ('draft', 'rejected')"
+                                       invisible="evidence_type != 'controlled_document'"
+                                       groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                            </group>
+                            <field name="evidence_note"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   placeholder="Explain what this evidence demonstrates..."/>
+                            <field name="attachment_ids"
+                                   widget="many2many_binary"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   invisible="evidence_type != 'attachment'"/>
+                        </page>
+
+                        <page string="Compliance Review"
+                              groups="onehr_pnp.group_onehr_pnp_compliance">
+                            <field name="verification_comment"
+                                   readonly="state == 'verified'"/>
+                            <field name="rejection_reason"
+                                   readonly="state not in ('submitted', 'rejected')"
+                                   placeholder="Required before Reject for Correction..."/>
+                        </page>
+                    </notebook>
+
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_policy_evidence_search" model="ir.ui.view">
+        <field name="name">onehr.policy.evidence.search.enterprise</field>
+        <field name="model">onehr.policy.evidence</field>
+        <field name="arch" type="xml">
+            <search string="Search Policy Evidence">
+                <field name="policy_code"/>
+                <field name="policy_title"/>
+                <field name="employee_number"
+                       groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                <field name="employee_name"/>
+                <field name="department_name"/>
+                <field name="title"/>
+                <filter name="draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="submitted" string="Submitted"
+                        domain="[('state', '=', 'submitted')]"/>
+                <filter name="verified" string="Verified"
+                        domain="[('state', '=', 'verified')]"/>
+                <filter name="rejected" string="Rejected"
+                        domain="[('state', '=', 'rejected')]"/>
+                <filter name="overdue" string="Overdue"
+                        domain="[('state', '!=', 'verified'), ('due_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <group>
+                    <filter name="group_policy" string="Policy"
+                            context="{'group_by': 'policy_id'}"/>
+                    <filter name="group_scope" string="Evidence Scope"
+                            context="{'group_by': 'evidence_scope'}"/>
+                    <filter name="group_type" string="Evidence Type"
+                            context="{'group_by': 'evidence_type'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_department" string="Department"
+                            context="{'group_by': 'department_id'}"/>
+                    <filter name="group_due" string="Due Date"
+                            context="{'group_by': 'due_date'}"/>
+                    <filter name="group_company" string="Company"
+                            context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_policy_evidence_pivot" model="ir.ui.view">
+        <field name="name">onehr.policy.evidence.pivot.enterprise</field>
+        <field name="model">onehr.policy.evidence</field>
+        <field name="arch" type="xml">
+            <pivot string="Evidence Coverage Analysis">
+                <field name="evidence_scope" type="row"/>
+                <field name="department_id" type="row"/>
+                <field name="policy_id" type="row"/>
+                <field name="state" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_policy_evidence_graph" model="ir.ui.view">
+        <field name="name">onehr.policy.evidence.graph.enterprise</field>
+        <field name="model">onehr.policy.evidence</field>
+        <field name="arch" type="xml">
+            <graph string="Evidence Status by Department" type="bar">
+                <field name="department_id"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_policy_evidence_my" model="ir.actions.act_window">
+        <field name="name">My Compliance Evidence</field>
+        <field name="res_model">onehr.policy.evidence</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_policy_evidence_search"/>
+        <field name="domain">[('employee_user_id', '=', uid)]</field>
+    </record>
+
+    <record id="action_onehr_policy_evidence_register" model="ir.actions.act_window">
+        <field name="name">Evidence Register</field>
+        <field name="res_model">onehr.policy.evidence</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_policy_evidence_search"/>
+    </record>
+</odoo>

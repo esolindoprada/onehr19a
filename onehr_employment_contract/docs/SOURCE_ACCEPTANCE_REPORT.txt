@@ -1,0 +1,31 @@
+PASS: PROJECT/ADDON identity
+PASS: manifest Odoo 19 version
+PASS: hard dependencies exactly ['onehr_corehr', 'onehr_security', 'onehr_workflow_approval']
+PASS: all Python sources compile
+PASS: all XML files parse
+PASS: generic scaffold model removed
+PASS: no business sudo() authorization bypass
+PASS: no executable rule/template evaluation
+PASS: uninstall-safe business deletion protections
+PASS: no uninstall-blocking unlink override
+ACL_ROW_COUNT: 5
+PASS: no broad base.group_user custom-model ACL
+PASS: no ACL grants governed-model unlink
+PASS: enterprise list coverage
+PASS: professional form coverage
+PASS: mandatory search coverage
+PASS: statusbar
+PASS: smart buttons
+PASS: body-form action
+PASS: One2many row action
+PASS: chatter
+PASS: calendar/timeline
+PASS: pivot reporting
+PASS: graph reporting
+TEST_METHOD_COUNT: 20
+PASS: exactly 20 runtime test methods
+PASS: governance/completeness documents present
+SOURCE_ACCEPTANCE_FAIL_COUNT: 0
+ONEHR_EMPLOYMENT_CONTRACT_DIRECT_FULL_SOURCE_ACCEPTANCE: PASS
+WINDOWS_RUNTIME_ACCEPTANCE: PENDING
+ONEHR_EMPLOYMENT_CONTRACT_MOVE_FORWARD_READY: NO

@@ -1,0 +1,66 @@
+<odoo>
+    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[Command.link(ref('onehr_appraisal.group_onehr_appraisal_participant'))]"/>
+    </record>
+
+    <menuitem id="menu_onehr_performance"
+              name="Performance"
+              parent="onehr_base.menu_onehr_root"
+              sequence="70"
+              groups="onehr_appraisal.group_onehr_appraisal_participant"/>
+
+    <menuitem id="menu_onehr_appraisal_my"
+              name="My Appraisals"
+              parent="menu_onehr_performance"
+              action="action_onehr_appraisal_my_forms"
+              sequence="10"
+              groups="onehr_appraisal.group_onehr_appraisal_participant"/>
+
+    <menuitem id="menu_onehr_appraisal_peer"
+              name="My Peer Reviews"
+              parent="menu_onehr_performance"
+              action="action_onehr_appraisal_my_peer_reviews"
+              sequence="15"
+              groups="onehr_appraisal.group_onehr_appraisal_participant"/>
+
+    <menuitem id="menu_onehr_appraisal_team"
+              name="Team Appraisals"
+              parent="menu_onehr_performance"
+              action="action_onehr_appraisal_team_forms"
+              sequence="20"
+              groups="onehr_appraisal.group_onehr_appraisal_manager"/>
+
+    <menuitem id="menu_onehr_appraisal_all"
+              name="Appraisals"
+              parent="menu_onehr_performance"
+              action="action_onehr_appraisal_forms"
+              sequence="30"
+              groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+
+    <menuitem id="menu_onehr_appraisal_cycles"
+              name="Appraisal Cycles"
+              parent="menu_onehr_performance"
+              action="action_onehr_appraisal_cycles"
+              sequence="40"
+              groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+
+    <menuitem id="menu_onehr_appraisal_analysis"
+              name="Score &amp; Rating Analysis"
+              parent="menu_onehr_performance"
+              action="action_onehr_appraisal_scores"
+              sequence="50"
+              groups="onehr_appraisal.group_onehr_appraisal_manager"/>
+
+    <menuitem id="menu_onehr_appraisal_configuration"
+              name="Configuration"
+              parent="menu_onehr_performance"
+              sequence="90"
+              groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+
+    <menuitem id="menu_onehr_appraisal_templates"
+              name="Objective / KPI Templates"
+              parent="menu_onehr_appraisal_configuration"
+              action="action_onehr_appraisal_templates"
+              sequence="10"
+              groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+</odoo>

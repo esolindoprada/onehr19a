@@ -1,0 +1,55 @@
+<odoo>
+    <record id="module_category_onehr_corehr" model="ir.module.category">
+        <field name="name">OneHR Core HR</field>
+        <field name="description">Core employee profile, sensitive identity and occupational-health governance.</field>
+        <field name="sequence">36</field>
+    </record>
+
+    <record id="privilege_onehr_corehr" model="res.groups.privilege">
+        <field name="name">OneHR Core HR</field>
+        <field name="description">Operational Core HR and restricted specialist access.</field>
+        <field name="category_id" ref="module_category_onehr_corehr"/>
+        <field name="sequence">36</field>
+    </record>
+
+    <record id="group_onehr_corehr_officer" model="res.groups">
+        <field name="name">Core HR Officer</field>
+        <field name="privilege_id" ref="privilege_onehr_corehr"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('hr.group_hr_user')),
+            Command.link(ref('onehr_security.group_onehr_sensitive_data_reader'))
+        ]"/>
+        <field name="comment">Operational employee-profile history. Does not grant occupational-health access.</field>
+    </record>
+
+    <record id="group_onehr_corehr_manager" model="res.groups">
+        <field name="name">Core HR Manager</field>
+        <field name="privilege_id" ref="privilege_onehr_corehr"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_corehr.group_onehr_corehr_officer')),
+            Command.link(ref('hr.group_hr_manager'))
+        ]"/>
+        <field name="comment">Core HR policy/master administration. Does not imply occupational-health access.</field>
+    </record>
+
+    <record id="group_onehr_identifier_steward" model="res.groups">
+        <field name="name">Employee Identifier Steward</field>
+        <field name="privilege_id" ref="privilege_onehr_corehr"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[Command.link(ref('onehr_corehr.group_onehr_corehr_officer'))]"/>
+        <field name="comment">Explicit authority to access and maintain restricted raw employee identifiers.</field>
+    </record>
+
+    <record id="group_onehr_occupational_health_officer" model="res.groups">
+        <field name="name">Occupational Health Officer</field>
+        <field name="privilege_id" ref="privilege_onehr_corehr"/>
+        <field name="sequence">40</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('hr.group_hr_user')),
+            Command.link(ref('onehr_security.group_onehr_restricted_data_reader'))
+        ]"/>
+        <field name="comment">Explicit isolated access to work incident, medical assessment and accommodation evidence.</field>
+    </record>
+</odoo>

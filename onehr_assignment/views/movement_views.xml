@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_assignment_change_request_list" model="ir.ui.view">
+        <field name="name">onehr.assignment.change.request.list.enterprise</field>
+        <field name="model">onehr.assignment.change.request</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'proposed'" decoration-warning="state == 'approved'"
+                  decoration-success="state == 'executed'" decoration-danger="state == 'rejected'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/><field name="movement_type" widget="badge"/>
+                <field name="effective_date"/><field name="requested_by_id"/>
+                <field name="line_count"/><field name="generated_assignment_count" optional="show"/>
+                <field name="state" widget="badge"/><field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_generated_assignments" type="object" string="Assignments" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_assignment_change_request_form" model="ir.ui.view">
+        <field name="name">onehr.assignment.change.request.form.enterprise</field>
+        <field name="model">onehr.assignment.change.request</field>
+        <field name="arch" type="xml">
+            <form string="Assignment Movement Request">
+                <header>
+                    <button name="action_submit_for_approval" type="object" string="Submit for Approval"
+                            class="oe_highlight" invisible="state not in ['draft','rejected']"/>
+                    <button name="action_execute" type="object" string="Execute Movement"
+                            class="oe_highlight" invisible="state != 'approved'"
+                            groups="onehr_assignment.group_onehr_assignment_manager"
+                            confirm="Execute all approved movement lines and create effective-dated successor assignments?"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" invisible="state != 'rejected'"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state not in ['draft','rejected']"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,proposed,approved,executed,rejected,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_approval_requests" type="object" class="oe_stat_button" icon="fa-check-circle">
+                            <field name="onehr_approval_request_count" widget="statinfo" string="Approvals"/>
+                        </button>
+                        <button name="action_open_generated_assignments" type="object" class="oe_stat_button" icon="fa-exchange">
+                            <field name="generated_assignment_count" widget="statinfo" string="Assignments"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Executed" bg_color="text-bg-success" invisible="state != 'executed'"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                    <div class="oe_title"><label for="name"/><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Movement"><field name="company_id" groups="base.group_multi_company" readonly="state not in ['draft','rejected']"/><field name="movement_type" readonly="state not in ['draft','rejected']"/><field name="effective_date" readonly="state not in ['draft','rejected']"/></group>
+                        <group string="Governance"><field name="requested_by_id" readonly="1"/><field name="submitted_at" readonly="1"/><field name="approved_at" readonly="1"/><field name="executed_at" readonly="1"/><field name="executed_by_id" readonly="1"/></group>
+                    </group>
+                    <group string="Business Reason"><field name="reason" nolabel="1" readonly="state not in ['draft','rejected']"/></group>
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_schedule_line_reviews" type="object" string="Schedule Line Reviews" class="btn-secondary" icon="fa-calendar-check-o"/>
+                        <button name="action_open_generated_assignments" type="object" string="Open Generated Assignments" class="btn-secondary" icon="fa-exchange" invisible="generated_assignment_count == 0"/>
+                    </div>
+                    <notebook>
+                        <page string="Movement Lines" name="movement_lines">
+                            <field name="line_ids" readonly="state not in ['draft','rejected']">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="source_assignment_id"/>
+                                    <field name="employee_name" readonly="1"/>
+                                    <field name="source_position_id" readonly="1" optional="show"/>
+                                    <field name="target_position_id"/>
+                                    <field name="target_assignment_type" optional="show"/>
+                                    <field name="target_fte" optional="show"/>
+                                    <field name="target_effective_to" optional="hide"/>
+                                    <field name="copy_cost_allocations" optional="show"/>
+                                    <field name="generated_assignment_id" readonly="1" optional="show"/>
+                                    <button name="action_open_source_assignment" type="object" string="Source" icon="fa-external-link"/>
+                                    <button name="action_open_generated_assignment" type="object" string="Generated" icon="fa-forward" invisible="not generated_assignment_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Approval"><field name="onehr_latest_approval_state" widget="badge" readonly="1"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_assignment_change_request_search" model="ir.ui.view">
+        <field name="name">onehr.assignment.change.request.search.enterprise</field>
+        <field name="model">onehr.assignment.change.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/><field name="movement_type"/><field name="effective_date"/><field name="requested_by_id"/><field name="state"/><field name="company_id"/>
+                <filter name="proposed" string="Awaiting Approval" domain="[('state','=','proposed')]"/>
+                <filter name="approved" string="Ready to Execute" domain="[('state','=','approved')]"/>
+                <filter name="executed" string="Executed" domain="[('state','=','executed')]"/>
+                <group><filter name="group_state" string="State" context="{'group_by':'state'}"/><filter name="group_movement" string="Movement Type" context="{'group_by':'movement_type'}"/><filter name="group_requester" string="Requested By" context="{'group_by':'requested_by_id'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/></group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_assignment_change_request" model="ir.actions.act_window">
+        <field name="name">Movement Requests</field><field name="res_model">onehr.assignment.change.request</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_onehr_assignment_change_request_search"/>
+    </record>
+
+    <record id="view_onehr_assignment_change_line_list" model="ir.ui.view">
+        <field name="name">onehr.assignment.change.line.list.enterprise</field><field name="model">onehr.assignment.change.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="request_id"/><field name="employee_name"/><field name="source_position_id"/><field name="target_position_id"/>
+                <field name="target_assignment_type" optional="show"/><field name="target_fte" optional="show"/><field name="target_effective_to" optional="hide"/><field name="generated_assignment_id" optional="show"/><field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_source_assignment" type="object" string="Source" icon="fa-external-link"/>
+                <button name="action_open_generated_assignment" type="object" string="Generated" icon="fa-forward" invisible="not generated_assignment_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_assignment_change_line_form" model="ir.ui.view">
+        <field name="name">onehr.assignment.change.line.form.enterprise</field><field name="model">onehr.assignment.change.line</field>
+        <field name="arch" type="xml">
+            <form string="Movement Line"><sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_open_source_assignment" type="object" class="oe_stat_button" icon="fa-backward"><div class="o_stat_info"><span class="o_stat_text">Source</span></div></button>
+                    <button name="action_open_generated_assignment" type="object" class="oe_stat_button" icon="fa-forward" invisible="not generated_assignment_id"><div class="o_stat_info"><span class="o_stat_text">Generated</span></div></button>
+                </div>
+                <div class="oe_title"><h1><field name="employee_name" readonly="1"/></h1></div>
+                <group><group string="Source"><field name="request_id"/><field name="source_assignment_id"/><field name="source_position_id" readonly="1"/><field name="source_manager_name" readonly="1"/></group><group string="Target"><field name="target_position_id"/><field name="target_manager_id" groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/><field name="target_assignment_type"/><field name="target_fte"/><field name="target_effective_to"/></group></group>
+                <group string="Execution"><field name="copy_cost_allocations"/><field name="generated_assignment_id" readonly="1"/><field name="note"/></group>
+            </sheet><chatter/></form>
+        </field>
+    </record>
+
+    <record id="view_onehr_assignment_change_line_search" model="ir.ui.view">
+        <field name="name">onehr.assignment.change.line.search.enterprise</field><field name="model">onehr.assignment.change.line</field>
+        <field name="arch" type="xml"><search><field name="request_id"/><field name="employee_name"/><field name="source_assignment_id"/><field name="source_position_id"/><field name="target_position_id"/><field name="company_id"/><filter name="generated" string="Generated" domain="[('generated_assignment_id','!=',False)]"/><filter name="pending" string="Not Generated" domain="[('generated_assignment_id','=',False)]"/><group><filter name="group_request" string="Request" context="{'group_by':'request_id'}"/><filter name="group_source_position" string="Source Position" context="{'group_by':'source_position_id'}"/><filter name="group_target_position" string="Target Position" context="{'group_by':'target_position_id'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/></group></search></field>
+    </record>
+
+    <record id="action_onehr_assignment_change_line" model="ir.actions.act_window"><field name="name">Movement Lines</field><field name="res_model">onehr.assignment.change.line</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_onehr_assignment_change_line_search"/></record>
+</odoo>

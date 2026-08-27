@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Logs
+*.log
+
+# Temporary
+*.tmp
+*.bak
+*.swp
+
+# Microsoft Office temporary
+~$*
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.*
+
+# Patch files
+*.patch
+
+# OS
+.DS_Store
+Thumbs.db

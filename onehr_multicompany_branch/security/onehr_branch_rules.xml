@@ -1,0 +1,52 @@
+<odoo>
+    <!-- Legal company is always the outer partition for branch masters. -->
+    <record id="rule_onehr_branch_company_global" model="ir.rule">
+        <field name="name">OneHR Branch — allowed legal companies</field>
+        <field name="model_id" ref="model_onehr_branch"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Normal branch users/managers/central users see only explicit branch scope. -->
+    <record id="rule_onehr_branch_explicit_scope" model="ir.rule">
+        <field name="name">OneHR Branch — explicit allowed branches</field>
+        <field name="model_id" ref="model_onehr_branch"/>
+        <field name="groups" eval="[
+            Command.link(ref('onehr_multicompany_branch.group_onehr_branch_user')),
+            Command.link(ref('onehr_multicompany_branch.group_onehr_branch_manager')),
+            Command.link(ref('onehr_multicompany_branch.group_onehr_central_office'))
+        ]"/>
+        <field name="domain_force">[('id', 'in', user.onehr_allowed_branch_ids.ids)]</field>
+    </record>
+
+    <!-- Structural branch admins may create/manage all branches in their legal companies. -->
+    <record id="rule_onehr_branch_admin_company" model="ir.rule">
+        <field name="name">OneHR Branch — Branch Admin company administration</field>
+        <field name="model_id" ref="model_onehr_branch"/>
+        <field name="groups" eval="[Command.link(ref('onehr_multicompany_branch.group_onehr_branch_admin'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Branch Admin may change only branch fields on users; Python write guard is authoritative. -->
+    <record id="rule_res_users_onehr_branch_admin_company" model="ir.rule">
+        <field name="name">Users — Branch Admin legal-company scope</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="groups" eval="[Command.link(ref('onehr_multicompany_branch.group_onehr_branch_admin'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!--
+      Global narrowing for security-owned role assignments. Existing Security User
+      self-history remains visible; every other branch-specific row must be inside
+      the caller's explicit branch scope. Company-wide rows remain visible because
+      branch_id=False represents company scope, not a bypass of company security.
+    -->
+    <record id="rule_onehr_user_role_branch_global" model="ir.rule">
+        <field name="name">OneHR User Role — company plus branch scope</field>
+        <field name="model_id" ref="onehr_security.model_onehr_user_role"/>
+        <field name="domain_force">[
+            ('company_id', 'in', company_ids),
+            '|', ('user_id', '=', user.id),
+            '|', ('branch_id', '=', False), ('branch_id', 'in', user.onehr_allowed_branch_ids.ids)
+        ]</field>
+    </record>
+</odoo>

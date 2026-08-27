@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_onehr_payroll_l10n_param_company" model="ir.rule">
+        <field name="name">Indonesia Payroll Parameters — allowed companies</field>
+        <field name="model_id" ref="model_onehr_payroll_l10n_param"/>
+        <field name="groups" eval="[
+            Command.link(ref('onehr_payroll_bridge.group_onehr_payroll_officer')),
+            Command.link(ref('onehr_payroll_bridge.group_onehr_payroll_manager'))
+        ]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

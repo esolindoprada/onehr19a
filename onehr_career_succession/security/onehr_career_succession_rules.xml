@@ -1,0 +1,30 @@
+<odoo>
+    <!-- Global company boundaries remain authoritative for every role. -->
+    <record id="rule_competency_company" model="ir.rule">
+        <field name="name">Competency — company boundary</field>
+        <field name="model_id" ref="model_onehr_competency"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_position_competency_company" model="ir.rule">
+        <field name="name">Position Competency — company boundary</field>
+        <field name="model_id" ref="model_onehr_position_competency"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_talent_pool_company" model="ir.rule">
+        <field name="name">Talent Pool — company boundary</field>
+        <field name="model_id" ref="model_onehr_talent_pool"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_succession_plan_company" model="ir.rule">
+        <field name="name">Succession Plan — company boundary</field>
+        <field name="model_id" ref="model_onehr_succession_plan"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

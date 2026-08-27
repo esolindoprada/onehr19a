@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_learning_attendance_list" model="ir.ui.view">
+        <field name="name">onehr.learning.attendance.list.enterprise</field>
+        <field name="model">onehr.learning.attendance</field>
+        <field name="arch" type="xml">
+            <list decoration-success="attendance_status == 'present'"
+                  decoration-warning="attendance_status in ['late','partial']"
+                  decoration-danger="attendance_status == 'absent'"
+                  decoration-muted="attendance_status in ['excused','not_recorded']">
+                <field name="employee_name"/>
+                <field name="session_id"/>
+                <field name="course_id"/>
+                <field name="attendance_status" widget="badge"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="attended_hours"/>
+                <field name="attendance_percent"/>
+                <field name="source" widget="badge" optional="show"/>
+                <field name="work_attendance_label" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <button name="action_mark_present" type="object" string="Present"
+                        icon="fa-check" invisible="attendance_status == 'present'"
+                        groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_trainer"/>
+                <button name="action_open_enrollment" type="object" string="Enrollment"
+                        icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_attendance_form" model="ir.ui.view">
+        <field name="name">onehr.learning.attendance.form.enterprise</field>
+        <field name="model">onehr.learning.attendance</field>
+        <field name="arch" type="xml">
+            <form string="Training Attendance">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_enrollment" type="object"
+                                class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Enrollment</span></div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Training Context">
+                            <field name="employee_id" readonly="1"
+                                   groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_manager_approver"/>
+                            <field name="employee_name" readonly="1"/>
+                            <field name="enrollment_id" readonly="1"/>
+                            <field name="session_id" readonly="1"/>
+                            <field name="course_id" readonly="1"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Attendance Evidence">
+                            <field name="attendance_status"/>
+                            <field name="check_in"/>
+                            <field name="check_out"/>
+                            <field name="attended_hours"/>
+                            <field name="attendance_percent" readonly="1"/>
+                            <field name="source"/>
+                        </group>
+                    </group>
+
+                    <group string="Attendance Actions">
+                        <button name="action_mark_present" type="object" string="Present"
+                                class="oe_highlight" icon="fa-check"/>
+                        <button name="action_mark_late" type="object" string="Late" icon="fa-clock-o"/>
+                        <button name="action_mark_partial" type="object" string="Partial" icon="fa-adjust"/>
+                        <button name="action_mark_absent" type="object" string="Absent" icon="fa-times"/>
+                        <button name="action_mark_excused" type="object" string="Excused" icon="fa-info-circle"/>
+                        <button name="action_sync_work_attendance" type="object"
+                                string="Sync to Work Attendance" icon="fa-exchange"
+                                invisible="attendance_status not in ['present','late','partial'] or work_attendance_res_id != 0"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Notes / Correction">
+                            <field name="note"/>
+                            <field name="correction_reason"/>
+                        </page>
+                        <page string="Work Attendance Sync">
+                            <group>
+                                <field name="work_attendance_model" readonly="1"/>
+                                <field name="work_attendance_res_id" readonly="1"/>
+                                <field name="work_attendance_label" readonly="1"/>
+                                <field name="work_attendance_synced_at" readonly="1"/>
+                                <field name="work_attendance_synced_by_id" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_attendance_search" model="ir.ui.view">
+        <field name="name">onehr.learning.attendance.search.enterprise</field>
+        <field name="model">onehr.learning.attendance</field>
+        <field name="arch" type="xml">
+            <search string="Training Attendance">
+                <field name="employee_name"/>
+                <field name="session_id"/>
+                <field name="course_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter name="present" string="Present" domain="[('attendance_status', '=', 'present')]"/>
+                <filter name="exceptions" string="Exceptions"
+                        domain="[('attendance_status', 'in', ['late','partial','absent','excused'])]"/>
+                <filter name="not_recorded" string="Not Recorded"
+                        domain="[('attendance_status', '=', 'not_recorded')]"/>
+                <filter name="session_date" string="Session Date" date="session_start"/>
+                <group>
+                    <filter name="group_status" string="Attendance Status" context="{'group_by': 'attendance_status'}"/>
+                    <filter name="group_course" string="Course" context="{'group_by': 'course_id'}"/>
+                    <filter name="group_session" string="Session" context="{'group_by': 'session_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_attendance_pivot" model="ir.ui.view">
+        <field name="name">onehr.learning.attendance.pivot.enterprise</field>
+        <field name="model">onehr.learning.attendance</field>
+        <field name="arch" type="xml">
+            <pivot string="Training Attendance Analysis">
+                <field name="course_id" type="row"/>
+                <field name="attendance_status" type="col"/>
+                <field name="attended_hours" type="measure"/>
+                <field name="attendance_percent" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_attendance_graph" model="ir.ui.view">
+        <field name="name">onehr.learning.attendance.graph.enterprise</field>
+        <field name="model">onehr.learning.attendance</field>
+        <field name="arch" type="xml">
+            <graph string="Training Attendance">
+                <field name="course_id"/>
+                <field name="attended_hours" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_learning_attendance" model="ir.actions.act_window">
+        <field name="name">Training Attendance</field>
+        <field name="res_model">onehr.learning.attendance</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_learning_attendance_search"/>
+    </record>
+</odoo>

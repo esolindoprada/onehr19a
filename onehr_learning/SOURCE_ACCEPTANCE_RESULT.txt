@@ -1,0 +1,48 @@
+PASS: HARD GATE 4 exact eight Learning persistent model names
+PASS: Hard dependencies exactly match approved Learning topology
+PASS: All manifest data files exist
+PASS: XML syntax (14 files)
+PASS: No legacy _sql_constraints
+PASS: No business sudo() bypass
+PASS: No public unauthenticated Learning controller
+PASS: Tutorial scaffold removed
+PASS: No broad base.group_user ACL on Learning business models
+PASS: List/Form/Search views: onehr.learning.attendance
+PASS: List/Form/Search views: onehr.learning.budget
+PASS: List/Form/Search views: onehr.learning.certificate
+PASS: List/Form/Search views: onehr.learning.cost.line
+PASS: List/Form/Search views: onehr.learning.course
+PASS: List/Form/Search views: onehr.learning.enrollment
+PASS: List/Form/Search views: onehr.learning.session
+PASS: List/Form/Search views: onehr.learning.vendor
+PASS: Statusbar widgets
+PASS: Smart buttons
+PASS: Chatter
+PASS: One2many/list row action buttons
+PASS: Kanban
+PASS: Calendar
+PASS: Pivot
+PASS: Graph
+PASS: Odoo 19 list syntax uses <list>
+PASS: Odoo 19 direct view modifiers
+PASS: Odoo 19 models.Constraint used
+PASS: Generic workflow approval integration
+PASS: Enrollment approval action
+PASS: Capacity/waitlist processing
+PASS: Mass participant CSV import
+PASS: Learning result CSV export
+PASS: Session reminder cron service
+PASS: Certificate expiry/renewal service
+PASS: Accepted Attendance soft integration boundary
+PASS: Portal downstream payload contract
+PASS: Analytics KPI payload contract
+PASS: External enrollment service contract
+PASS: Payroll/reimbursement hand-off contract
+WARN: Native Gantt intentionally not fabricated on Odoo 19 CE; see UI_UX_MATRIX.md
+
+SOURCE_ACCEPTANCE_PASS=40
+SOURCE_ACCEPTANCE_WARN=1
+SOURCE_ACCEPTANCE_FAIL=0
+SOURCE_ENTERPRISE_COMPLETENESS=PASS_FOR_RUNTIME
+WINDOWS_RUNTIME_ACCEPTANCE=PENDING
+ONEHR_LEARNING_MOVE_FORWARD_READY=NO

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_preboarding_list" model="ir.ui.view">
+        <field name="name">onehr.preboarding.list</field>
+        <field name="model">onehr.preboarding</field>
+        <field name="arch" type="xml">
+            <list string="Preboarding" decoration-success="state == 'completed'" decoration-danger="state == 'cancelled'" decoration-warning="state == 'ready'">
+                <field name="name"/>
+                <field name="applicant_id"/>
+                <field name="requisition_id" optional="show"/>
+                <field name="offer_id" optional="show" groups="onehr_recruitment.group_onehr_recruiter"/>
+                <field name="employee_id" optional="show"/>
+                <field name="planned_start_date"/>
+                <field name="checklist_task_count" optional="show"/>
+                <field name="checklist_pending_task_count" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <button name="action_open_applicant" type="object" icon="fa-user" title="Applicant"/>
+                <button name="action_open_checklist" type="object" icon="fa-tasks" title="Checklist" invisible="not checklist_instance_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_preboarding_form" model="ir.ui.view">
+        <field name="name">onehr.preboarding.form</field>
+        <field name="model">onehr.preboarding</field>
+        <field name="arch" type="xml">
+            <form string="Preboarding">
+                <header>
+                    <button name="action_ready" type="object" string="Mark Ready" class="btn-primary" groups="onehr_recruitment.group_onehr_recruiter" invisible="state != 'draft'"/>
+                    <button name="action_prepare" type="object" string="Prepare Hire &amp; Checklist" class="btn-primary" groups="onehr_recruitment.group_onehr_recruiter" invisible="state not in ('ready','in_progress')"/>
+                    <button name="action_complete" type="object" string="Complete Preboarding" class="btn-primary" groups="onehr_recruitment.group_onehr_recruiter" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" type="object" string="Cancel" groups="onehr_recruitment.group_onehr_recruitment_manager" invisible="state in ('completed','cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,ready,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_applicant" type="object" class="oe_stat_button" icon="fa-user"><span class="o_stat_text">Applicant</span></button>
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-id-card-o" invisible="not employee_id"><span class="o_stat_text">Employee</span></button>
+                        <button name="action_open_checklist" type="object" class="oe_stat_button" icon="fa-tasks" invisible="not checklist_instance_id">
+                            <field name="checklist_task_count" widget="statinfo" string="Checklist Tasks"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Completed" bg_color="text-bg-success" invisible="state != 'completed'"/>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-secondary" invisible="state != 'cancelled'"/>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Candidate &amp; Hiring Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="applicant_id"/>
+                            <field name="requisition_id"/>
+                            <field name="offer_id" groups="onehr_recruitment.group_onehr_recruiter"/>
+                            <field name="planned_start_date"/>
+                        </group>
+                        <group string="Orchestration Evidence">
+                            <field name="employee_id" readonly="1"/>
+                            <field name="checklist_instance_id" readonly="1"/>
+                            <field name="prepared_at" readonly="1"/>
+                            <field name="completed_at" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Checklist Progress" invisible="not checklist_instance_id">
+                        <field name="checklist_task_count" readonly="1"/>
+                        <field name="checklist_pending_task_count" readonly="1"/>
+                        <field name="checklist_completed_task_count" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Cancellation / Notes" name="notes">
+                            <field name="cancellation_reason" placeholder="Required before cancellation"/>
+                        </page>
+                    </notebook>
+                    <div class="d-flex gap-2 mt16" groups="onehr_recruitment.group_onehr_recruiter">
+                        <button name="action_prepare" type="object" string="Ensure Employee &amp; Allocate Onboarding Checklist" class="btn-primary" invisible="state not in ('ready','in_progress')"/>
+                        <button name="action_schedule_outstanding_activities" type="object" string="Schedule Outstanding Checklist Activities" invisible="not checklist_instance_id or state != 'in_progress'"/>
+                        <button name="action_open_checklist" type="object" string="Open Onboarding Checklist" invisible="not checklist_instance_id"/>
+                    </div>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_preboarding_search" model="ir.ui.view">
+        <field name="name">onehr.preboarding.search</field>
+        <field name="model">onehr.preboarding</field>
+        <field name="arch" type="xml">
+            <search string="Search Preboarding">
+                <field name="name"/>
+                <field name="applicant_id"/>
+                <field name="employee_id"/>
+                <field name="requisition_id"/>
+                <filter name="ready" string="Ready" domain="[('state', '=', 'ready')]"/>
+                <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="pending_tasks" string="Pending Checklist Tasks" domain="[('checklist_pending_task_count', '&gt;', 0)]"/>
+                <filter name="start_date" string="Start Date" date="planned_start_date"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_start" string="Start Month" context="{'group_by': 'planned_start_date:month'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_preboarding" model="ir.actions.act_window">
+        <field name="name">Preboarding</field>
+        <field name="res_model">onehr.preboarding</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_preboarding_search"/>
+    </record>
+</odoo>

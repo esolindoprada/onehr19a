@@ -1,0 +1,128 @@
+PASS: HARD GATE 0 manifest parse
+PASS: HARD GATE 0 project/addon identity
+PASS: Manifest version 19.0.1.0.0
+PASS: Hard dependencies exactly OneHR Base + OneHR Security
+PASS: Soft integrations are not promoted to hard dependencies
+PASS: All manifest data files exist
+PASS: Python syntax (13 files)
+PASS: HARD GATE 4 exact two persistent JD model names
+PASS: Persistent model implemented: onehr.jd
+PASS: Persistent model implemented: onehr.jd.version
+PASS: Both JD business models use OneHR audit mixin
+PASS: No duplicate direct chatter/audit ownership
+PASS: Odoo 19 @api.depends contains no explicit id/.id dependency
+PASS: Generic tutorial scaffold removed completely
+PASS: No tutorial model/controller residue
+PASS: No legacy _sql_constraints
+PASS: No business sudo() bypass
+PASS: No public unauthenticated JD controller
+PASS: Odoo 19 models.Constraint used for JD uniqueness
+PASS: HARD GATE 11 valid ORM model name: onehr.jd
+PASS: HARD GATE 11 safe table identifier: onehr_jd
+PASS: HARD GATE 11 valid ORM model name: onehr.jd.version
+PASS: HARD GATE 11 safe table identifier: onehr_jd_version
+PASS: HARD GATE 11 safe ORM field/index identifiers (82 fields)
+PASS: HARD GATE 11 explicit unique Many2many relation identifiers (3 relations)
+PASS: HARD GATE 11 no static ORM relation to soft-module models
+PASS: HARD GATE 11 safe deterministic constraint identifiers (3 constraints)
+PASS: XML syntax (8 files)
+PASS: Odoo 19 operational lists use <list>
+PASS: Odoo 19 direct view modifiers
+PASS: Odoo 19 search <group> elements have no attributes
+PASS: HARD GATE 7/8/9 List/Form/Search: onehr.jd
+PASS: HARD GATE 7/8/9 List/Form/Search: onehr.jd.version
+PASS: HARD GATE 6 enterprise UI — Statusbar
+PASS: HARD GATE 6 enterprise UI — Smart Button
+PASS: HARD GATE 6 enterprise UI — Body Button
+PASS: HARD GATE 6 enterprise UI — One2many Row Button
+PASS: HARD GATE 6 enterprise UI — Kanban
+PASS: HARD GATE 6 enterprise UI — Calendar
+PASS: HARD GATE 6 enterprise UI — Pivot
+PASS: HARD GATE 6 enterprise UI — Graph
+PASS: HARD GATE 6 enterprise UI — Badges
+PASS: HARD GATE 6 enterprise UI — Ribbons
+PASS: HARD GATE 6 enterprise UI — Chatter
+PASS: Object button → Python method cross-reference
+PASS: HARD GATE 11 unique local XML external IDs (44 IDs)
+PASS: ACL CSV parse (8 rows)
+PASS: HARD GATE 10 no broad base.group_user JD CRUD
+PASS: Security role present: group_onehr_jd_reader
+PASS: Security role present: group_onehr_jd_editor
+PASS: Security role present: group_onehr_jd_approver
+PASS: Security role present: group_onehr_jd_admin
+PASS: Odoo 19 res.groups.privilege pattern used
+PASS: Global company isolation rules on both JD models
+PASS: Reader rule limits version visibility to current published evidence
+PASS: Action-controlled lifecycle/governance write guards present
+PASS: Historical evidence deletion guards on both business models
+PASS: HARD GATE 3/15 functional contract — job-family JD templates
+PASS: HARD GATE 3/15 functional contract — canonical position mapping
+PASS: HARD GATE 3/15 functional contract — version/history
+PASS: HARD GATE 3/15 functional contract — position purpose
+PASS: HARD GATE 3/15 functional contract — responsibilities
+PASS: HARD GATE 3/15 functional contract — KPI expectations
+PASS: HARD GATE 3/15 functional contract — competency requirements
+PASS: HARD GATE 3/15 functional contract — HSE/K3 risk
+PASS: HARD GATE 3/15 functional contract — HSE/K3 controls
+PASS: HARD GATE 3/15 functional contract — Draft → Review
+PASS: HARD GATE 3/15 functional contract — Review → Approved
+PASS: HARD GATE 3/15 functional contract — Approved → Published
+PASS: HARD GATE 3/15 functional contract — template → position generation
+PASS: HARD GATE 3/15 functional contract — template synchronization
+PASS: HARD GATE 3/15 functional contract — external JD source import
+PASS: HARD GATE 3/15 functional contract — Career soft competency refresh
+PASS: HARD GATE 3/15 functional contract — approval/publication SHA-256 evidence
+PASS: HARD GATE 3/15 functional contract — JD position coverage
+PASS: HARD GATE 3/15 functional contract — average version age source metric
+PASS: HARD GATE 3/15 functional contract — review governance
+PASS: HARD GATE 3/15 functional contract — review reminder scheduler
+PASS: HARD GATE 3/15 functional contract — Recruitment service
+PASS: HARD GATE 3/15 functional contract — Appraisal service
+PASS: HARD GATE 3/15 functional contract — Portal-safe service
+PASS: HARD GATE 3/15 functional contract — Integrations API service
+PASS: HARD GATE 3/15 functional contract — Analytics KPI snapshot
+PASS: Job Description QWeb PDF
+PASS: Version comparison QWeb PDF
+PASS: JD register QWeb PDF
+PASS: Integrated OneHR Governance navigation without sibling source edit
+PASS: Runtime test inventory exactly 30 methods
+PASS: Runtime test suites are post-install tagged
+PASS: Mandatory Enterprise documentation set
+PASS: Guardrail contains HARD GATE 0
+PASS: Guardrail contains HARD GATE 1
+PASS: Guardrail contains HARD GATE 2
+PASS: Guardrail contains HARD GATE 3
+PASS: Guardrail contains HARD GATE 4
+PASS: Guardrail contains HARD GATE 5
+PASS: Guardrail contains HARD GATE 6
+PASS: Guardrail contains HARD GATE 7
+PASS: Guardrail contains HARD GATE 8
+PASS: Guardrail contains HARD GATE 9
+PASS: Guardrail contains HARD GATE 10
+PASS: Guardrail contains HARD GATE 11
+PASS: Guardrail contains HARD GATE 12
+PASS: Guardrail contains HARD GATE 13
+PASS: Guardrail contains HARD GATE 14
+PASS: Guardrail contains HARD GATE 15
+PASS: Codex role locked to bounded implementation worker
+PASS: Codex retry limit = 2
+PASS: HARD GATE 11 dedicated identifier-safety evidence document
+WARN: Exact Master Model Registry ED rows remain pending; ED classifications were not invented
+WARN: Native Gantt intentionally not fabricated on Odoo 19 CE
+
+SOURCE_FILES_PYTHON=13
+SOURCE_FILES_XML=8
+CUSTOM_PERSISTENT_MODELS=2
+ORM_FIELD_COUNT=82
+M2M_RELATION_COUNT=3
+LOCAL_XML_ID_COUNT=44
+ACL_ROWS=8
+RUNTIME_TEST_METHODS=30
+SOURCE_ACCEPTANCE_PASS_COUNT=109
+SOURCE_ACCEPTANCE_WARN_COUNT=2
+SOURCE_ACCEPTANCE_FAIL_COUNT=0
+ONEHR_JOB_DESCRIPTION_DIRECT_FULL_SOURCE_ACCEPTANCE=PASS
+SOURCE_ENTERPRISE_COMPLETENESS=PASS_FOR_RUNTIME
+REGISTRY_ED_CLASSIFICATION=PENDING_EXACT_REGISTRY_ROW_VERIFICATION
+WINDOWS_RUNTIME_ACCEPTANCE=PENDING
+ONEHR_JOB_DESCRIPTION_MOVE_FORWARD_READY=NO

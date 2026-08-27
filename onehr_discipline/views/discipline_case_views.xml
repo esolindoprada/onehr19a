@@ -1,0 +1,653 @@
+<odoo>
+    <record id="view_onehr_discipline_case_list" model="ir.ui.view">
+        <field name="name">onehr.discipline.case.list.enterprise</field>
+        <field name="model">onehr.discipline.case</field>
+        <field name="arch" type="xml">
+            <list string="Discipline Cases"
+                  decoration-info="state == 'investigation'"
+                  decoration-warning="state == 'hearing' or sla_overdue"
+                  decoration-danger="severity == 'critical' and state not in ('closed', 'cancelled')"
+                  decoration-success="state == 'closed'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="sla_overdue" column_invisible="True"/>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="employee_number"
+                       groups="onehr_discipline.group_onehr_discipline_hrbp,onehr_discipline.group_onehr_discipline_manager,onehr_discipline.group_onehr_discipline_legal"/>
+                <field name="employee_name"/>
+                <field name="department_name"/>
+                <field name="violation_category" widget="badge"/>
+                <field name="severity" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="investigator_user_id"/>
+                <field name="stage_due_date"/>
+                <field name="days_overdue" optional="hide"/>
+                <field name="appeal_state" widget="badge" optional="hide"/>
+                <field name="sanction_count"/>
+                <field name="resolution_days" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_print_case_outcome" type="object"
+                        string="Outcome" icon="fa-file-pdf-o"
+                        invisible="state not in ('decision', 'closed')"/>
+                <button name="action_open_sanctions" type="object"
+                        string="Sanctions" icon="fa-gavel"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_discipline_case_kanban" model="ir.ui.view">
+        <field name="name">onehr.discipline.case.kanban.enterprise</field>
+        <field name="model">onehr.discipline.case</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="department_name"/>
+                <field name="severity"/>
+                <field name="state"/>
+                <field name="stage_due_date"/>
+                <field name="sla_overdue"/>
+                <field name="days_overdue"/>
+                <field name="appeal_state"/>
+                <field name="sanction_count"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong><field name="name"/></strong>
+                            <field name="severity" widget="badge"/>
+                        </div>
+                        <div class="text-muted">
+                            <field name="reference"/>
+                        </div>
+                        <div class="mt-2">
+                            <strong>Employee:</strong>
+                            <field name="employee_name"/>
+                        </div>
+                        <div>
+                            <strong>Unit:</strong>
+                            <field name="department_name"/>
+                        </div>
+                        <div class="mt-2">
+                            <field name="state" widget="badge"/>
+                            <span t-if="record.appeal_state.raw_value != 'none'"
+                                  class="ms-1 badge text-bg-info">
+                                APPEAL
+                            </span>
+                        </div>
+                        <div t-if="record.stage_due_date.raw_value" class="mt-2">
+                            <strong>Stage Due:</strong>
+                            <field name="stage_due_date"/>
+                        </div>
+                        <div t-if="record.sla_overdue.raw_value" class="mt-1">
+                            <span class="badge text-bg-warning">
+                                SLA OVERDUE · <field name="days_overdue"/> day(s)
+                            </span>
+                        </div>
+                        <div class="mt-2 text-muted">
+                            <span>Sanctions: </span><field name="sanction_count"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_onehr_discipline_case_form" model="ir.ui.view">
+        <field name="name">onehr.discipline.case.form.enterprise</field>
+        <field name="model">onehr.discipline.case</field>
+        <field name="arch" type="xml">
+            <form string="Discipline Case">
+                <header>
+                    <button name="action_start_investigation" type="object"
+                            string="Start Investigation"
+                            class="btn-primary"
+                            invisible="state != 'reported'"/>
+                    <button name="action_move_to_hearing" type="object"
+                            string="Move to Hearing"
+                            class="btn-primary"
+                            invisible="state != 'investigation'"/>
+                    <button name="action_move_to_decision" type="object"
+                            string="Move to Decision"
+                            class="btn-primary"
+                            invisible="state != 'hearing'"
+                            groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                    <button name="action_close_case" type="object"
+                            string="Close Case"
+                            class="btn-primary"
+                            invisible="state != 'decision'"
+                            groups="onehr_discipline.group_onehr_discipline_manager"/>
+                    <button name="action_cancel_case" type="object"
+                            string="Cancel Case"
+                            invisible="state in ('closed', 'cancelled')"
+                            groups="onehr_discipline.group_onehr_discipline_legal"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="reported,investigation,hearing,decision,closed,cancelled"/>
+                </header>
+
+                <sheet>
+                    <field name="sla_overdue" invisible="1"/>
+                    <field name="appeal_state" invisible="1"/>
+                    <field name="sanction_count" invisible="1"/>
+                    <field name="executed_sanction_count" invisible="1"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_sanctions" type="object"
+                                class="oe_stat_button" icon="fa-gavel">
+                            <field name="sanction_count"
+                                   widget="statinfo" string="Sanctions"/>
+                        </button>
+                        <button name="action_print_case_outcome" type="object"
+                                class="oe_stat_button" icon="fa-file-pdf-o"
+                                invisible="state not in ('decision', 'closed')">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Case Outcome</span>
+                            </div>
+                        </button>
+                        <button name="action_print_hearing_summons" type="object"
+                                class="oe_stat_button" icon="fa-calendar"
+                                invisible="not hearing_scheduled_at">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Hearing Summons</span>
+                            </div>
+                        </button>
+                        <button name="action_print_hearing_minutes" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not hearing_minutes">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Hearing Minutes</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="SLA OVERDUE"
+                            bg_color="text-bg-warning"
+                            invisible="not sla_overdue"/>
+                    <widget name="web_ribbon" title="CRITICAL"
+                            bg_color="text-bg-danger"
+                            invisible="severity != 'critical' or state in ('closed', 'cancelled')"/>
+                    <widget name="web_ribbon" title="CLOSED"
+                            bg_color="text-bg-success"
+                            invisible="state != 'closed'"/>
+                    <widget name="web_ribbon" title="CANCELLED"
+                            bg_color="text-bg-secondary"
+                            invisible="state != 'cancelled'"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"
+                                   placeholder="Employee conduct case — concise neutral title"
+                                   readonly="state in ('closed', 'cancelled')"/>
+                        </h1>
+                        <div class="text-muted">
+                            <field name="reference" readonly="1"/>
+                            <span> · </span>
+                            <field name="state" widget="badge"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Employee &amp; Case Identity">
+                            <field name="employee_id"
+                                   readonly="1"
+                                   groups="onehr_discipline.group_onehr_discipline_hrbp,onehr_discipline.group_onehr_discipline_manager,onehr_discipline.group_onehr_discipline_legal"/>
+                            <field name="employee_number" readonly="1"
+                                   groups="onehr_discipline.group_onehr_discipline_hrbp,onehr_discipline.group_onehr_discipline_manager,onehr_discipline.group_onehr_discipline_legal"/>
+                            <field name="employee_name" readonly="1"/>
+                            <field name="department_name" readonly="1"/>
+                            <field name="job_name" readonly="1"/>
+                            <field name="manager_name" readonly="1"/>
+                            <field name="company_id" readonly="1"
+                                   groups="base.group_multi_company"/>
+                            <field name="branch_scope_key"
+                                   readonly="state in ('closed', 'cancelled')"
+                                   groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                        </group>
+                        <group string="Case Responsibility">
+                            <field name="case_owner_user_id"
+                                   readonly="state in ('closed', 'cancelled')"
+                                   groups="onehr_discipline.group_onehr_discipline_manager"/>
+                            <field name="investigator_user_id"
+                                   readonly="state in ('closed', 'cancelled')"
+                                   groups="onehr_discipline.group_onehr_discipline_manager"/>
+                            <field name="hrbp_user_id"
+                                   readonly="state in ('closed', 'cancelled')"
+                                   groups="onehr_discipline.group_onehr_discipline_manager"/>
+                            <field name="legal_user_id"
+                                   readonly="state in ('closed', 'cancelled')"
+                                   groups="onehr_discipline.group_onehr_discipline_manager"/>
+                            <field name="reported_at" readonly="1"/>
+                            <field name="reported_by_id" readonly="1"/>
+                            <field name="stage_due_date" readonly="1"/>
+                            <field name="days_overdue" readonly="1"
+                                   invisible="not sla_overdue"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 flex-wrap mb-3">
+                        <button name="action_refresh_appraisal_feedback" type="object"
+                                string="Refresh Appraisal Evidence"
+                                class="btn-secondary"
+                                groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                        <button name="action_open_policy_reference" type="object"
+                                string="Open Policy Reference"
+                                class="btn-secondary"
+                                invisible="not policy_reference"
+                                groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                        <button name="action_queue_hearing_notice" type="object"
+                                string="Queue Hearing Notice"
+                                class="btn-secondary"
+                                invisible="state not in ('hearing', 'decision') or not hearing_scheduled_at"
+                                groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                        <button name="action_create_sanction" type="object"
+                                string="Create Sanction / Decision"
+                                class="btn-secondary"
+                                invisible="state != 'decision'"
+                                groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                        <button name="action_print_case_outcome" type="object"
+                                string="Print Case Outcome"
+                                class="btn-secondary"
+                                invisible="state not in ('decision', 'closed')"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Incident &amp; Classification">
+                            <group>
+                                <group string="Incident">
+                                    <field name="incident_date"
+                                           readonly="state != 'reported'"/>
+                                    <field name="incident_location"
+                                           readonly="state != 'reported'"/>
+                                    <field name="source_type"
+                                           readonly="state != 'reported'"/>
+                                    <field name="policy_reference"
+                                           readonly="state != 'reported'"
+                                           groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                                </group>
+                                <group string="Violation Classification">
+                                    <field name="violation_code"
+                                           readonly="state != 'reported'"
+                                           groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                                    <field name="violation_category"
+                                           readonly="state != 'reported'"
+                                           groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                                    <field name="severity"
+                                           readonly="state != 'reported'"
+                                           groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                                    <field name="violation_weight"
+                                           readonly="state != 'reported'"
+                                           groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                                    <field name="prior_case_count" readonly="1"
+                                           groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                                    <field name="repeat_offense" readonly="1"
+                                           groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                                </group>
+                            </group>
+                            <label for="allegation_summary"/>
+                            <field name="allegation_summary"
+                                   readonly="state != 'reported'"
+                                   placeholder="Neutral allegation statement; avoid conclusory language before investigation."/>
+                            <label for="chronology"/>
+                            <field name="chronology"
+                                   readonly="state != 'reported'"
+                                   placeholder="Known chronology at time of report..."/>
+                            <field name="witnesses_text"
+                                   readonly="state not in ('reported', 'investigation')"
+                                   placeholder="Witness names/contact references relevant to this case only..."/>
+                            <field name="evidence_attachment_ids"
+                                   widget="many2many_binary"
+                                   readonly="state not in ('reported', 'investigation')"/>
+                        </page>
+
+                        <page string="Investigation">
+                            <group>
+                                <group string="Investigation SLA">
+                                    <field name="investigation_started_at" readonly="1"/>
+                                    <field name="investigation_due_date" readonly="1"/>
+                                    <field name="evidence_assessment"
+                                           readonly="state not in ('reported', 'investigation')"/>
+                                </group>
+                                <group string="External Appraisal Evidence"
+                                       groups="onehr_discipline.group_onehr_discipline_hrbp">
+                                    <field name="appraisal_reference" readonly="1"/>
+                                    <field name="appraisal_cycle_code" readonly="1"/>
+                                    <field name="appraisal_final_score" readonly="1"/>
+                                    <field name="appraisal_final_rating" readonly="1"/>
+                                    <field name="appraisal_refreshed_at" readonly="1"/>
+                                </group>
+                            </group>
+                            <field name="investigation_questions"
+                                   readonly="state not in ('reported', 'investigation')"
+                                   placeholder="Planned interview questions and evidence checks..."/>
+                            <field name="investigation_findings"
+                                   readonly="state not in ('reported', 'investigation')"
+                                   placeholder="Fact-based findings, with supporting evidence references..."/>
+                            <field name="investigation_recommendation"
+                                   readonly="state not in ('reported', 'investigation')"
+                                   placeholder="Investigator recommendation without overriding formal decision authority..."/>
+                            <field name="appraisal_improvement_areas"
+                                   readonly="1"
+                                   groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                            <button name="action_move_to_hearing" type="object"
+                                    string="Complete Investigation &amp; Move to Hearing"
+                                    class="btn-primary"
+                                    invisible="state != 'investigation'"/>
+                        </page>
+
+                        <page string="Hearing / Clarification">
+                            <group>
+                                <group string="Schedule">
+                                    <field name="hearing_scheduled_at"
+                                           readonly="state not in ('investigation', 'hearing')"/>
+                                    <field name="hearing_due_date" readonly="1"/>
+                                    <field name="hearing_location"
+                                           readonly="state not in ('investigation', 'hearing')"/>
+                                </group>
+                                <group string="Attendance">
+                                    <field name="hearing_attendee_names"
+                                           readonly="state not in ('investigation', 'hearing')"/>
+                                </group>
+                            </group>
+                            <field name="employee_statement"
+                                   readonly="state not in ('investigation', 'hearing')"
+                                   placeholder="Employee clarification/statement..."/>
+                            <field name="witness_statement"
+                                   readonly="state not in ('investigation', 'hearing')"
+                                   placeholder="Relevant witness statements..."/>
+                            <field name="hearing_minutes"
+                                   readonly="state not in ('investigation', 'hearing')"
+                                   placeholder="Formal hearing minutes..."/>
+                            <field name="hearing_recommendation"
+                                   readonly="state not in ('investigation', 'hearing')"
+                                   placeholder="Hearing recommendation for decision authority..."/>
+                            <field name="hearing_attachment_ids"
+                                   widget="many2many_binary"
+                                   readonly="state not in ('investigation', 'hearing')"/>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button name="action_print_hearing_summons" type="object"
+                                        string="Print Hearing Summons"
+                                        class="btn-secondary"
+                                        invisible="not hearing_scheduled_at"/>
+                                <button name="action_queue_hearing_notice" type="object"
+                                        string="Queue Hearing Notice"
+                                        class="btn-secondary"
+                                        invisible="state not in ('hearing', 'decision') or not hearing_scheduled_at"
+                                        groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                                <button name="action_print_hearing_minutes" type="object"
+                                        string="Print Hearing Minutes"
+                                        class="btn-secondary"
+                                        invisible="not hearing_minutes"/>
+                                <button name="action_move_to_decision" type="object"
+                                        string="Complete Hearing &amp; Move to Decision"
+                                        class="btn-primary"
+                                        invisible="state != 'hearing'"
+                                        groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                            </div>
+                        </page>
+
+                        <page string="Decision &amp; Sanctions">
+                            <group>
+                                <group string="Case Decision">
+                                    <field name="decision_due_date" readonly="1"/>
+                                    <field name="final_disposition"
+                                           readonly="state != 'decision'"
+                                           groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                                    <field name="active_sanction_type" readonly="1"/>
+                                    <field name="approved_sanction_count" readonly="1"/>
+                                    <field name="executed_sanction_count" readonly="1"/>
+                                </group>
+                                <group string="Closure">
+                                    <field name="closed_at" readonly="1"/>
+                                    <field name="closed_by_name" readonly="1"/>
+                                    <field name="retention_until" readonly="1"/>
+                                    <field name="resolution_days" readonly="1"/>
+                                </group>
+                            </group>
+                            <field name="decision_summary"
+                                   readonly="state != 'decision'"
+                                   groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                            <field name="decision_rationale"
+                                   readonly="state != 'decision'"
+                                   groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+
+                            <field name="sanction_ids" readonly="1">
+                                <list create="false" delete="false"
+                                      decoration-info="state == 'approval'"
+                                      decoration-success="state == 'executed'"
+                                      decoration-danger="state == 'rejected'"
+                                      decoration-muted="state == 'cancelled'">
+                                    <field name="reference"/>
+                                    <field name="sanction_type" widget="badge"/>
+                                    <field name="severity" widget="badge"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="decision_date"/>
+                                    <field name="effective_start_date"/>
+                                    <field name="effective_end_date"/>
+                                    <field name="approved_at" optional="hide"/>
+                                    <field name="executed_at"/>
+                                    <field name="payroll_execution_state" widget="badge" optional="hide"/>
+                                    <button name="action_open_case" type="object"
+                                            string="Case" icon="fa-folder-open"/>
+                                    <button name="action_print_sanction_letter" type="object"
+                                            string="Letter" icon="fa-file-pdf-o"
+                                            invisible="state not in ('approved', 'executed')"/>
+                                    <button name="action_execute" type="object"
+                                            string="Execute" icon="fa-check"
+                                            invisible="state != 'approved'"
+                                            groups="onehr_discipline.group_onehr_discipline_legal"/>
+                                </list>
+                            </field>
+
+                            <div class="d-flex gap-2 flex-wrap mt-3">
+                                <button name="action_create_sanction" type="object"
+                                        string="Create Sanction / Decision"
+                                        class="btn-secondary"
+                                        invisible="state != 'decision'"
+                                        groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                                <button name="action_close_case" type="object"
+                                        string="Close Case"
+                                        class="btn-primary"
+                                        invisible="state != 'decision'"
+                                        groups="onehr_discipline.group_onehr_discipline_manager"/>
+                            </div>
+                        </page>
+
+                        <page string="Appeal">
+                            <group>
+                                <group string="Appeal Status">
+                                    <field name="appeal_state" readonly="1"/>
+                                    <field name="appeal_submitted_at" readonly="1"/>
+                                    <field name="appeal_due_date" readonly="1"/>
+                                    <field name="appeal_decided_at" readonly="1"/>
+                                </group>
+                                <group string="Review Panel"
+                                       groups="onehr_discipline.group_onehr_discipline_legal">
+                                    <field name="appeal_panel_user_ids"
+                                           widget="many2many_tags"
+                                           readonly="state != 'decision'"/>
+                                </group>
+                            </group>
+                            <field name="appeal_reason"
+                                   readonly="state != 'decision' or appeal_state not in ('none', 'submitted')"
+                                   placeholder="Record the employee's formal appeal grounds..."/>
+                            <field name="appeal_review_notes"
+                                   readonly="appeal_state not in ('submitted', 'review')"
+                                   groups="onehr_discipline.group_onehr_discipline_legal"/>
+                            <field name="appeal_outcome_summary"
+                                   readonly="appeal_state not in ('submitted', 'review')"
+                                   groups="onehr_discipline.group_onehr_discipline_legal"/>
+                            <field name="appeal_attachment_ids"
+                                   widget="many2many_binary"
+                                   readonly="state != 'decision'"/>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button name="action_record_appeal" type="object"
+                                        string="Record Employee Appeal"
+                                        class="btn-secondary"
+                                        invisible="state != 'decision' or appeal_state != 'none'"
+                                        groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                                <button name="action_start_appeal_review" type="object"
+                                        string="Start Appeal Review"
+                                        class="btn-secondary"
+                                        invisible="appeal_state != 'submitted'"
+                                        groups="onehr_discipline.group_onehr_discipline_legal"/>
+                                <button name="action_uphold_appeal" type="object"
+                                        string="Uphold Decision"
+                                        class="btn-primary"
+                                        invisible="appeal_state not in ('submitted', 'review')"
+                                        groups="onehr_discipline.group_onehr_discipline_legal"/>
+                                <button name="action_modify_appeal" type="object"
+                                        string="Modify Decision"
+                                        class="btn-secondary"
+                                        invisible="appeal_state not in ('submitted', 'review')"
+                                        groups="onehr_discipline.group_onehr_discipline_legal"/>
+                                <button name="action_overturn_appeal" type="object"
+                                        string="Overturn Decision"
+                                        class="btn-secondary"
+                                        invisible="appeal_state not in ('submitted', 'review')"
+                                        groups="onehr_discipline.group_onehr_discipline_legal"/>
+                            </div>
+                        </page>
+
+                        <page string="Closure &amp; Audit">
+                            <field name="closure_note"
+                                   readonly="state in ('closed', 'cancelled')"/>
+                            <group>
+                                <field name="reported_at" readonly="1"/>
+                                <field name="investigation_started_at" readonly="1"/>
+                                <field name="closed_at" readonly="1"/>
+                                <field name="retention_until" readonly="1"/>
+                                <field name="resolution_days" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_discipline_case_search" model="ir.ui.view">
+        <field name="name">onehr.discipline.case.search.enterprise</field>
+        <field name="model">onehr.discipline.case</field>
+        <field name="arch" type="xml">
+            <search string="Search Discipline Cases">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="employee_number"
+                       groups="onehr_discipline.group_onehr_discipline_hrbp,onehr_discipline.group_onehr_discipline_manager,onehr_discipline.group_onehr_discipline_legal"/>
+                <field name="employee_name"/>
+                <field name="department_name"/>
+                <field name="violation_code"/>
+                <field name="policy_reference"/>
+                <field name="investigator_user_id"/>
+                <filter name="reported" string="Reported"
+                        domain="[('state', '=', 'reported')]"/>
+                <filter name="investigation" string="Under Investigation"
+                        domain="[('state', '=', 'investigation')]"/>
+                <filter name="hearing" string="Hearing"
+                        domain="[('state', '=', 'hearing')]"/>
+                <filter name="decision" string="Decision"
+                        domain="[('state', '=', 'decision')]"/>
+                <filter name="closed" string="Closed"
+                        domain="[('state', '=', 'closed')]"/>
+                <filter name="critical" string="Critical"
+                        domain="[('severity', '=', 'critical')]"/>
+                <filter name="repeat" string="Repeat Offense"
+                        domain="[('repeat_offense', '=', True)]"/>
+                <filter name="appeal" string="Appeal Active"
+                        domain="[('appeal_state', 'in', ['submitted', 'review'])]"/>
+                <filter name="sla_overdue" string="SLA Overdue"
+                        domain="[('sla_overdue', '=', True)]"/>
+                <group>
+                    <filter name="group_state" string="Stage"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_category" string="Violation Category"
+                            context="{'group_by': 'violation_category'}"/>
+                    <filter name="group_severity" string="Severity"
+                            context="{'group_by': 'severity'}"/>
+                    <filter name="group_department" string="Department"
+                            context="{'group_by': 'department_id'}"/>
+                    <filter name="group_investigator" string="Investigator"
+                            context="{'group_by': 'investigator_user_id'}"/>
+                    <filter name="group_reported" string="Reported Date"
+                            context="{'group_by': 'reported_at'}"/>
+                    <filter name="group_company" string="Company"
+                            context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_discipline_case_calendar" model="ir.ui.view">
+        <field name="name">onehr.discipline.case.calendar.hearing</field>
+        <field name="model">onehr.discipline.case</field>
+        <field name="arch" type="xml">
+            <calendar string="Discipline Hearing Calendar"
+                      date_start="hearing_scheduled_at"
+                      color="severity">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="hearing_location"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_onehr_discipline_case_pivot" model="ir.ui.view">
+        <field name="name">onehr.discipline.case.pivot.enterprise</field>
+        <field name="model">onehr.discipline.case</field>
+        <field name="arch" type="xml">
+            <pivot string="Discipline Case Analytics">
+                <field name="violation_category" type="row"/>
+                <field name="severity" type="row"/>
+                <field name="state" type="col"/>
+                <field name="resolution_days" type="measure"/>
+                <field name="sanction_count" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_discipline_case_graph" model="ir.ui.view">
+        <field name="name">onehr.discipline.case.graph.enterprise</field>
+        <field name="model">onehr.discipline.case</field>
+        <field name="arch" type="xml">
+            <graph string="Discipline Cases by Violation Category" type="bar">
+                <field name="violation_category"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_discipline_cases" model="ir.actions.act_window">
+        <field name="name">Discipline Cases</field>
+        <field name="res_model">onehr.discipline.case</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_onehr_discipline_case_search"/>
+    </record>
+
+    <record id="action_onehr_discipline_investigations" model="ir.actions.act_window">
+        <field name="name">Active Investigations</field>
+        <field name="res_model">onehr.discipline.case</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_onehr_discipline_case_search"/>
+        <field name="domain">[('state', 'in', ['investigation', 'hearing'])]</field>
+    </record>
+
+    <record id="action_onehr_discipline_hearing_calendar" model="ir.actions.act_window">
+        <field name="name">Hearing Calendar</field>
+        <field name="res_model">onehr.discipline.case</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="search_view_id" ref="view_onehr_discipline_case_search"/>
+        <field name="domain">[('hearing_scheduled_at', '!=', False)]</field>
+    </record>
+
+    <record id="action_onehr_discipline_case_analytics" model="ir.actions.act_window">
+        <field name="name">Discipline Case Analytics</field>
+        <field name="res_model">onehr.discipline.case</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_onehr_discipline_case_search"/>
+    </record>
+</odoo>

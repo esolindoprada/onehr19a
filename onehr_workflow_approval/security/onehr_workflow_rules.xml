@@ -1,0 +1,115 @@
+<odoo>
+    <!-- Global company boundaries intersect all role-specific visibility rules. -->
+    <record id="rule_approval_rule_company" model="ir.rule">
+        <field name="name">Approval Rule — allowed companies/global</field>
+        <field name="model_id" ref="model_onehr_approval_rule"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_approval_step_company" model="ir.rule">
+        <field name="name">Approval Step — allowed companies/global</field>
+        <field name="model_id" ref="model_onehr_approval_step"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_approval_request_company" model="ir.rule">
+        <field name="name">Approval Request — allowed companies</field>
+        <field name="model_id" ref="model_onehr_approval_request"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_approval_decision_company" model="ir.rule">
+        <field name="name">Approval Decision — allowed companies</field>
+        <field name="model_id" ref="model_onehr_approval_decision"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_approval_delegate_company" model="ir.rule">
+        <field name="name">Approval Delegation — allowed companies</field>
+        <field name="model_id" ref="model_onehr_approval_delegate"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_approval_escalation_company" model="ir.rule">
+        <field name="name">Approval Escalation — allowed companies</field>
+        <field name="model_id" ref="model_onehr_approval_escalation_log"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_approval_kpi_company" model="ir.rule">
+        <field name="name">Approval KPI — allowed companies</field>
+        <field name="model_id" ref="model_onehr_approval_kpi_daily"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Ordinary participants see requests they requested, currently approve,
+         previously acted on, or were subscribed to while routed. -->
+    <record id="rule_approval_request_participant" model="ir.rule">
+        <field name="name">Approval Request — participant visibility</field>
+        <field name="model_id" ref="model_onehr_approval_request"/>
+        <field name="groups" eval="[Command.link(ref('onehr_workflow_approval.group_onehr_approval_user'))]"/>
+        <field name="domain_force">[
+            '|', '|', '|',
+            ('requested_by_id', '=', user.id),
+            ('current_approver_ids', 'in', user.id),
+            ('decision_ids.approver_id', '=', user.id),
+            ('message_partner_ids', 'in', user.partner_id.id)
+        ]</field>
+    </record>
+    <record id="rule_approval_request_manager_all" model="ir.rule">
+        <field name="name">Approval Request — Workflow Manager company scope</field>
+        <field name="model_id" ref="model_onehr_approval_request"/>
+        <field name="groups" eval="[Command.link(ref('onehr_workflow_approval.group_onehr_workflow_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_approval_decision_participant" model="ir.rule">
+        <field name="name">Approval Decision — participant visibility</field>
+        <field name="model_id" ref="model_onehr_approval_decision"/>
+        <field name="groups" eval="[Command.link(ref('onehr_workflow_approval.group_onehr_approval_user'))]"/>
+        <field name="domain_force">[
+            '|', '|',
+            ('request_id.requested_by_id', '=', user.id),
+            ('request_id.decision_ids.approver_id', '=', user.id),
+            ('request_id.message_partner_ids', 'in', user.partner_id.id)
+        ]</field>
+    </record>
+    <record id="rule_approval_decision_manager_all" model="ir.rule">
+        <field name="name">Approval Decision — Workflow Manager company scope</field>
+        <field name="model_id" ref="model_onehr_approval_decision"/>
+        <field name="groups" eval="[Command.link(ref('onehr_workflow_approval.group_onehr_workflow_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_approval_escalation_participant" model="ir.rule">
+        <field name="name">Approval Escalation — participant visibility</field>
+        <field name="model_id" ref="model_onehr_approval_escalation_log"/>
+        <field name="groups" eval="[Command.link(ref('onehr_workflow_approval.group_onehr_approval_user'))]"/>
+        <field name="domain_force">[
+            '|', '|',
+            ('request_id.requested_by_id', '=', user.id),
+            ('request_id.decision_ids.approver_id', '=', user.id),
+            ('request_id.message_partner_ids', 'in', user.partner_id.id)
+        ]</field>
+    </record>
+    <record id="rule_approval_escalation_manager_all" model="ir.rule">
+        <field name="name">Approval Escalation — Workflow Manager company scope</field>
+        <field name="model_id" ref="model_onehr_approval_escalation_log"/>
+        <field name="groups" eval="[Command.link(ref('onehr_workflow_approval.group_onehr_workflow_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_approval_delegate_own" model="ir.rule">
+        <field name="name">Approval Delegation — own participation</field>
+        <field name="model_id" ref="model_onehr_approval_delegate"/>
+        <field name="groups" eval="[Command.link(ref('onehr_workflow_approval.group_onehr_approver'))]"/>
+        <field name="domain_force">['|', ('delegator_user_id', '=', user.id), ('delegate_user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_approval_delegate_manager_all" model="ir.rule">
+        <field name="name">Approval Delegation — Workflow Manager company scope</field>
+        <field name="model_id" ref="model_onehr_approval_delegate"/>
+        <field name="groups" eval="[Command.link(ref('onehr_workflow_approval.group_onehr_workflow_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

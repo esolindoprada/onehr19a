@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Global company boundaries are authoritative. Group rules below can only narrow/expand inside them. -->
+    <record id="rule_requisition_company" model="ir.rule">
+        <field name="name">OneHR Recruitment Requisition: allowed companies</field>
+        <field name="model_id" ref="model_onehr_recruitment_requisition"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_interview_template_company" model="ir.rule">
+        <field name="name">OneHR Interview Template: allowed companies/global</field>
+        <field name="model_id" ref="model_onehr_interview_template"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_interview_session_company" model="ir.rule">
+        <field name="name">OneHR Interview Session: allowed companies</field>
+        <field name="model_id" ref="model_onehr_interview_session"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_interview_score_company" model="ir.rule">
+        <field name="name">OneHR Interview Score: allowed companies</field>
+        <field name="model_id" ref="model_onehr_interview_score"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_offer_company" model="ir.rule">
+        <field name="name">OneHR Offer: allowed companies</field>
+        <field name="model_id" ref="model_onehr_offer"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_preboarding_company" model="ir.rule">
+        <field name="name">OneHR Preboarding: allowed companies</field>
+        <field name="model_id" ref="model_onehr_preboarding"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_source_metric_company" model="ir.rule">
+        <field name="name">OneHR Recruitment Source Metric: allowed companies</field>
+        <field name="model_id" ref="model_onehr_recruitment_source_metric"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Hiring managers only see their assigned operational facts unless they also hold Recruiter/Manager. -->
+    <record id="rule_requisition_hiring_manager" model="ir.rule">
+        <field name="name">Hiring Manager: assigned requisitions</field>
+        <field name="model_id" ref="model_onehr_recruitment_requisition"/>
+        <field name="groups" eval="[Command.link(ref('group_onehr_hiring_manager'))]"/>
+        <field name="domain_force">[('hiring_manager_user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_interview_session_hiring_manager" model="ir.rule">
+        <field name="name">Hiring Manager: assigned interviews</field>
+        <field name="model_id" ref="model_onehr_interview_session"/>
+        <field name="groups" eval="[Command.link(ref('group_onehr_hiring_manager'))]"/>
+        <field name="domain_force">['|', ('interviewer_user_ids', 'in', user.id), ('lead_interviewer_user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_interview_score_hiring_manager" model="ir.rule">
+        <field name="name">Hiring Manager: assigned scorecards</field>
+        <field name="model_id" ref="model_onehr_interview_score"/>
+        <field name="groups" eval="[Command.link(ref('group_onehr_hiring_manager'))]"/>
+        <field name="domain_force">['|', ('rater_user_id', '=', user.id), ('session_id.interviewer_user_ids', 'in', user.id)]</field>
+    </record>
+    <record id="rule_offer_hiring_manager" model="ir.rule">
+        <field name="name">Hiring Manager: assigned offers</field>
+        <field name="model_id" ref="model_onehr_offer"/>
+        <field name="groups" eval="[Command.link(ref('group_onehr_hiring_manager'))]"/>
+        <field name="domain_force">[('requisition_id.hiring_manager_user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_preboarding_hiring_manager" model="ir.rule">
+        <field name="name">Hiring Manager: assigned preboarding</field>
+        <field name="model_id" ref="model_onehr_preboarding"/>
+        <field name="groups" eval="[Command.link(ref('group_onehr_hiring_manager'))]"/>
+        <field name="domain_force">[('requisition_id.hiring_manager_user_id', '=', user.id)]</field>
+    </record>
+
+    <!-- Recruiter has company-scoped operational access. Manager inherits Recruiter, so no broad duplicate rule is needed. -->
+    <record id="rule_requisition_recruiter" model="ir.rule">
+        <field name="name">Recruiter: company requisitions</field>
+        <field name="model_id" ref="model_onehr_recruitment_requisition"/>
+        <field name="groups" eval="[Command.link(ref('group_onehr_recruiter'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_interview_session_recruiter" model="ir.rule">
+        <field name="name">Recruiter: company interviews</field>
+        <field name="model_id" ref="model_onehr_interview_session"/>
+        <field name="groups" eval="[Command.link(ref('group_onehr_recruiter'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_interview_score_recruiter" model="ir.rule">
+        <field name="name">Recruiter: company scorecards</field>
+        <field name="model_id" ref="model_onehr_interview_score"/>
+        <field name="groups" eval="[Command.link(ref('group_onehr_recruiter'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_offer_recruiter" model="ir.rule">
+        <field name="name">Recruiter: company offers</field>
+        <field name="model_id" ref="model_onehr_offer"/>
+        <field name="groups" eval="[Command.link(ref('group_onehr_recruiter'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_preboarding_recruiter" model="ir.rule">
+        <field name="name">Recruiter: company preboarding</field>
+        <field name="model_id" ref="model_onehr_preboarding"/>
+        <field name="groups" eval="[Command.link(ref('group_onehr_recruiter'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

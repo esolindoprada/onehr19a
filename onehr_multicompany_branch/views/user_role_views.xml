@@ -1,0 +1,79 @@
+<odoo>
+    <record id="view_onehr_user_role_list_branch" model="ir.ui.view">
+        <field name="name">onehr.user.role.list.branch.enterprise</field>
+        <field name="model">onehr.user.role</field>
+        <field name="inherit_id" ref="onehr_security.view_onehr_user_role_list"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="branch_id" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_onehr_user_role_form_branch" model="ir.ui.view">
+        <field name="name">onehr.user.role.form.branch.enterprise</field>
+        <field name="model">onehr.user.role</field>
+        <field name="inherit_id" ref="onehr_security.view_onehr_user_role_form"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field
+                    name="branch_id"
+                    domain="[('company_id', '=', company_id)]"
+                    readonly="state != 'draft'"
+                />
+            </field>
+        </field>
+    </record>
+
+    <record id="view_onehr_user_role_search_branch" model="ir.ui.view">
+        <field name="name">onehr.user.role.search.branch.enterprise</field>
+        <field name="model">onehr.user.role</field>
+        <field name="inherit_id" ref="onehr_security.view_onehr_user_role_search"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="branch_id"/>
+            </field>
+            <filter name="group_company" position="after">
+                <filter name="group_branch" string="Branch" context="{'group_by': 'branch_id'}"/>
+            </filter>
+            <xpath expr="//search" position="inside">
+                <filter name="company_wide" string="Company-wide Scope" domain="[('branch_id', '=', False)]"/>
+                <filter name="branch_specific" string="Branch-specific Scope" domain="[('branch_id', '!=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_onehr_user_role_pivot_branch" model="ir.ui.view">
+        <field name="name">onehr.user.role.pivot.branch.enterprise</field>
+        <field name="model">onehr.user.role</field>
+        <field name="arch" type="xml">
+            <pivot string="Branch Role Coverage">
+                <field name="company_id" type="row"/>
+                <field name="branch_id" type="row"/>
+                <field name="role_id" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_user_role_graph_branch" model="ir.ui.view">
+        <field name="name">onehr.user.role.graph.branch.enterprise</field>
+        <field name="model">onehr.user.role</field>
+        <field name="arch" type="xml">
+            <graph string="Branch Role Coverage" type="bar">
+                <field name="branch_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_branch_role_coverage" model="ir.actions.act_window">
+        <field name="name">Branch Role Coverage</field>
+        <field name="res_model">onehr.user.role</field>
+        <field name="view_mode">pivot,graph,list,form</field>
+        <field name="search_view_id" ref="onehr_security.view_onehr_user_role_search"/>
+        <field name="domain">[('state', '=', 'active')]</field>
+        <field name="context">{'search_default_branch_specific': 1}</field>
+        <field name="help" type="html">
+            <p>Consolidated active role coverage by legal company and branch. Visibility still follows company and explicit branch scope.</p>
+        </field>
+    </record>
+</odoo>

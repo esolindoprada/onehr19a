@@ -1,0 +1,117 @@
+PASS: HARD GATE 0 manifest parse
+PASS: HARD GATE 0 project/addon identity
+PASS: Manifest version 19.0.1.0.1
+PASS: Hard dependencies exactly CoreHR + Security
+PASS: All manifest data files exist
+PASS: Python syntax (14 files)
+PASS: HARD GATE 4 exact three Appraisal persistent model names
+PASS: Persistent model implemented: onehr.appraisal.cycle
+PASS: Persistent model implemented: onehr.appraisal.form
+PASS: Persistent model implemented: onehr.appraisal.score
+PASS: All three Appraisal business models use approved OneHR audit mixin
+PASS: No duplicate direct chatter mixin ownership in Appraisal models
+PASS: Odoo 19 @api.depends contains no explicit .id dependency
+PASS: Tutorial scaffold removed completely
+PASS: No tutorial model/controller residue
+PASS: No legacy _sql_constraints
+PASS: No business sudo() bypass
+PASS: No public unauthenticated Appraisal controller
+PASS: XML syntax (9 files)
+PASS: Odoo 19 list syntax uses <list>
+PASS: Odoo 19 direct view modifiers
+PASS: Odoo 19 search <group> elements have no attributes
+PASS: Odoo 19 date-filter default_period contract
+PASS: HARD GATE 7/8/9 List/Form/Search views: onehr.appraisal.cycle
+PASS: HARD GATE 7/8/9 List/Form/Search views: onehr.appraisal.form
+PASS: HARD GATE 7/8/9 List/Form/Search views: onehr.appraisal.score
+PASS: HARD GATE 6 enterprise UI — Statusbar widgets
+PASS: HARD GATE 6 enterprise UI — Smart buttons
+PASS: HARD GATE 6 enterprise UI — Body form action buttons
+PASS: HARD GATE 6 enterprise UI — One2many row action buttons
+PASS: HARD GATE 6 enterprise UI — Chatter
+PASS: HARD GATE 6 enterprise UI — Kanban
+PASS: HARD GATE 6 enterprise UI — Calendar
+PASS: HARD GATE 6 enterprise UI — Pivot
+PASS: HARD GATE 6 enterprise UI — Graph
+PASS: HARD GATE 6 enterprise UI — Badges
+PASS: HARD GATE 6 enterprise UI — Ribbons
+PASS: Object button → Python method cross-reference
+PASS: Unique local XML external IDs
+PASS: ACL CSV parse (12 rows)
+PASS: HARD GATE 10 no broad base.group_user Appraisal CRUD
+PASS: Security role present: group_onehr_appraisal_participant
+PASS: Security role present: group_onehr_appraisal_manager
+PASS: Security role present: group_onehr_appraisal_hr
+PASS: Security role present: group_onehr_appraisal_admin
+PASS: Odoo 19 res.groups.privilege pattern used
+PASS: Global company isolation rules on all Appraisal models
+PASS: Participant self-scope uses stored user boundary
+PASS: Manager team-scope uses stored user boundary
+PASS: Peer assignment scope uses stored user boundary
+PASS: Action-controlled lifecycle state guards present
+PASS: Historical evidence deletion guards present
+PASS: HARD GATE 3/15 functional contract — Annual cycle type
+PASS: HARD GATE 3/15 functional contract — Biannual cycle type
+PASS: HARD GATE 3/15 functional contract — Quarterly cycle type
+PASS: HARD GATE 3/15 functional contract — Custom cycle type
+PASS: HARD GATE 3/15 functional contract — Self rater weighting
+PASS: HARD GATE 3/15 functional contract — Manager rater weighting
+PASS: HARD GATE 3/15 functional contract — Peer rater weighting
+PASS: HARD GATE 3/15 functional contract — Employee appraisal generation
+PASS: HARD GATE 3/15 functional contract — Self review submission
+PASS: HARD GATE 3/15 functional contract — Manager review submission
+PASS: HARD GATE 3/15 functional contract — Peer feedback generation
+PASS: HARD GATE 3/15 functional contract — Consolidation workflow
+PASS: HARD GATE 3/15 functional contract — Employee acknowledgement
+PASS: HARD GATE 3/15 functional contract — Optional 9-box output
+PASS: HARD GATE 3/15 functional contract — Individual Development Plan
+PASS: HARD GATE 3/15 functional contract — Soft Learning hand-off
+PASS: HARD GATE 3/15 functional contract — Accepted Learning enrollment service contract
+PASS: HARD GATE 3/15 functional contract — Analytics KPI snapshot service
+PASS: HARD GATE 3/15 functional contract — Career/Succession feedback contract
+PASS: HARD GATE 3/15 functional contract — Discipline evidence contract
+PASS: HARD GATE 3/15 functional contract — Portal/self-service payload
+PASS: HARD GATE 3/15 functional contract — Integrations API model-service boundary
+PASS: HARD GATE 3/15 functional contract — KPI target CSV import
+PASS: HARD GATE 3/15 functional contract — Appraisal result CSV export
+PASS: HARD GATE 3/15 functional contract — Rating distribution output
+PASS: HARD GATE 3/15 functional contract — Grade distribution dimension
+PASS: HARD GATE 3/15 functional contract — Review deadline reminder cron
+PASS: Appraisal QWeb PDF report
+PASS: Integrated OneHR root navigation without sibling source edit
+PASS: Runtime test inventory exactly 24 methods
+PASS: Runtime test suites are post-install tagged
+PASS: Mandatory Enterprise documentation set
+PASS: Guardrail contains HARD GATE 0
+PASS: Guardrail contains HARD GATE 1
+PASS: Guardrail contains HARD GATE 2
+PASS: Guardrail contains HARD GATE 3
+PASS: Guardrail contains HARD GATE 4
+PASS: Guardrail contains HARD GATE 5
+PASS: Guardrail contains HARD GATE 6
+PASS: Guardrail contains HARD GATE 7
+PASS: Guardrail contains HARD GATE 8
+PASS: Guardrail contains HARD GATE 9
+PASS: Guardrail contains HARD GATE 10
+PASS: Guardrail contains HARD GATE 12
+PASS: Guardrail contains HARD GATE 13
+PASS: Guardrail contains HARD GATE 14
+PASS: Guardrail contains HARD GATE 15
+PASS: Codex role locked to bounded implementation worker
+PASS: Codex retry limit = 2
+WARN: Exact Master Model Registry ED rows remain pending; classifications were not invented
+WARN: Native Gantt intentionally not fabricated on Odoo 19 CE
+
+SOURCE_FILES_PYTHON=14
+SOURCE_FILES_XML=9
+CUSTOM_PERSISTENT_MODELS=3
+ACL_ROWS=12
+RUNTIME_TEST_METHODS=24
+SOURCE_ACCEPTANCE_PASS_COUNT=101
+SOURCE_ACCEPTANCE_WARN_COUNT=2
+SOURCE_ACCEPTANCE_FAIL_COUNT=0
+ONEHR_APPRAISAL_DIRECT_FULL_SOURCE_ACCEPTANCE=PASS
+SOURCE_ENTERPRISE_COMPLETENESS=PASS_FOR_RUNTIME
+REGISTRY_ED_CLASSIFICATION=PENDING_EXACT_REGISTRY_ROW_VERIFICATION
+WINDOWS_RUNTIME_ACCEPTANCE=PENDING
+ONEHR_APPRAISAL_MOVE_FORWARD_READY=NO

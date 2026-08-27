@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_learning_enrollment_list" model="ir.ui.view">
+        <field name="name">onehr.learning.enrollment.list.enterprise</field>
+        <field name="model">onehr.learning.enrollment</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'requested'"
+                  decoration-warning="state == 'waitlisted'"
+                  decoration-success="state in ['passed', 'certified']"
+                  decoration-danger="state in ['failed', 'rejected', 'no_show']"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="employee_number"
+                       groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_manager_approver"
+                       optional="show"/>
+                <field name="course_id"/>
+                <field name="session_id"/>
+                <field name="state" widget="badge"/>
+                <field name="attendance_percent" optional="show"/>
+                <field name="post_test_score" optional="show"/>
+                <field name="reaction_score" optional="hide"/>
+                <field name="onehr_latest_approval_state" widget="badge" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <button name="action_request_approval" type="object" string="Request"
+                        icon="fa-paper-plane" invisible="state != 'draft'"
+                        groups="onehr_learning.group_onehr_learning_officer"/>
+                <button name="action_enroll" type="object" string="Enroll"
+                        icon="fa-user-plus" invisible="state != 'approved'"
+                        groups="onehr_learning.group_onehr_learning_officer"/>
+                <button name="action_evaluate_result" type="object" string="Evaluate"
+                        icon="fa-graduation-cap" invisible="state != 'attended'"
+                        groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_trainer"/>
+                <button name="action_issue_certificate" type="object" string="Certificate"
+                        icon="fa-certificate" invisible="state != 'passed'"
+                        groups="onehr_learning.group_onehr_learning_officer"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_enrollment_kanban" model="ir.ui.view">
+        <field name="name">onehr.learning.enrollment.kanban.enterprise</field>
+        <field name="model">onehr.learning.enrollment</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="course_id"/>
+                <field name="session_id"/>
+                <field name="state"/>
+                <field name="attendance_percent"/>
+                <field name="post_test_score"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between">
+                            <strong><field name="employee_name"/></strong>
+                            <field name="state" widget="badge"/>
+                        </div>
+                        <div class="mt-2"><field name="course_id"/></div>
+                        <div class="text-muted"><field name="session_id"/></div>
+                        <div class="mt-2">
+                            Attendance <field name="attendance_percent"/>%
+                            · Score <field name="post_test_score"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_enrollment_form" model="ir.ui.view">
+        <field name="name">onehr.learning.enrollment.form.enterprise</field>
+        <field name="model">onehr.learning.enrollment</field>
+        <field name="arch" type="xml">
+            <form string="Learning Enrollment">
+                <header>
+                    <button name="action_request_approval" type="object" string="Request Approval"
+                            class="oe_highlight" invisible="state != 'draft'"
+                            groups="onehr_learning.group_onehr_learning_officer"/>
+                    <button name="action_enroll" type="object" string="Enroll / Waitlist"
+                            class="oe_highlight" invisible="state != 'approved'"
+                            groups="onehr_learning.group_onehr_learning_officer"/>
+                    <button name="action_evaluate_result" type="object" string="Evaluate Result"
+                            class="oe_highlight" invisible="state != 'attended'"
+                            groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_trainer"/>
+                    <button name="action_issue_certificate" type="object" string="Issue Certificate"
+                            class="oe_highlight" invisible="state != 'passed'"
+                            groups="onehr_learning.group_onehr_learning_officer"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            invisible="state != 'rejected'"
+                            groups="onehr_learning.group_onehr_learning_officer"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state not in ['draft','requested','approved','waitlisted','enrolled']"
+                            groups="onehr_learning.group_onehr_learning_officer"
+                            confirm="Cancel this Learning Enrollment?"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,requested,approved,enrolled,waitlisted,attended,passed,failed,certified,rejected,cancelled,no_show"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_approval_requests" type="object"
+                                class="oe_stat_button" icon="fa-check-square-o"
+                                groups="onehr_learning.group_onehr_learning_officer">
+                            <field name="onehr_approval_request_count" widget="statinfo" string="Approvals"/>
+                        </button>
+                        <button name="action_open_attendance" type="object"
+                                class="oe_stat_button" icon="fa-clock-o"
+                                invisible="state not in ['enrolled','attended','passed','failed','certified','no_show']"
+                                groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_trainer">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Attendance</span>
+                            </div>
+                        </button>
+                        <button name="action_open_certificate" type="object"
+                                class="oe_stat_button" icon="fa-certificate"
+                                invisible="not certificate_id"
+                                groups="onehr_learning.group_onehr_learning_officer">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Certificate</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                        <div class="text-muted">
+                            <field name="employee_name"/> · <field name="course_id"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Participant &amp; Program">
+                            <field name="employee_id"
+                                   groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_manager_approver"/>
+                            <field name="employee_name" readonly="1"/>
+                            <field name="employee_number" readonly="1"
+                                   groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_manager_approver"/>
+                            <field name="department_name" readonly="1"/>
+                            <field name="session_id"/>
+                            <field name="course_id" readonly="1"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Workflow Evidence">
+                            <field name="onehr_latest_approval_state" widget="badge" readonly="1"/>
+                            <field name="requested_at" readonly="1"/>
+                            <field name="requested_by_id" readonly="1"/>
+                            <field name="approved_at" readonly="1"/>
+                            <field name="approved_by_id" readonly="1"/>
+                            <field name="enrolled_at" readonly="1"/>
+                            <field name="completed_at" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Business Actions">
+                        <button name="action_approve_prerequisite_override" type="object"
+                                string="Approve Prerequisite Exception" icon="fa-shield"
+                                invisible="state != 'draft'"
+                                groups="onehr_learning.group_onehr_learning_manager_approver"/>
+                        <button name="action_generate_training_leave" type="object"
+                                string="Generate Training Leave" icon="fa-calendar-minus-o"
+                                invisible="state not in ['approved','enrolled','waitlisted'] or timeoff_target_res_id != 0"
+                                groups="onehr_learning.group_onehr_learning_officer"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Request &amp; Prerequisites" name="request">
+                            <group>
+                                <field name="request_reason"/>
+                                <field name="prerequisite_override_reason"
+                                       readonly="state != 'draft'"/>
+                                <field name="prerequisite_override_by_id" readonly="1"/>
+                                <field name="prerequisite_override_at" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Assessment &amp; Reaction" name="assessment">
+                            <group>
+                                <group string="Assessment">
+                                    <field name="pre_test_score"/>
+                                    <field name="post_test_score"/>
+                                    <field name="result_note"/>
+                                </group>
+                                <group string="Reaction Survey">
+                                    <field name="reaction_score"/>
+                                    <field name="reaction_comment"/>
+                                    <field name="attendance_percent" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="External LMS Evidence" name="external"
+                              groups="onehr_learning.group_onehr_learning_officer">
+                            <group>
+                                <field name="external_system"/>
+                                <field name="external_reference"/>
+                                <field name="external_payload_hash" readonly="1"/>
+                            </group>
+                            <div class="alert alert-info" role="alert">
+                                Authentication, webhooks and SCORM/xAPI transport remain owned by
+                                onehr_integrations_api when that optional addon is installed.
+                            </div>
+                        </page>
+
+                        <page string="Soft Integration Evidence" name="integration"
+                              groups="onehr_learning.group_onehr_learning_officer">
+                            <group>
+                                <field name="timeoff_target_model" readonly="1"/>
+                                <field name="timeoff_target_res_id" readonly="1"/>
+                                <field name="timeoff_target_label" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_enrollment_search" model="ir.ui.view">
+        <field name="name">onehr.learning.enrollment.search.enterprise</field>
+        <field name="model">onehr.learning.enrollment</field>
+        <field name="arch" type="xml">
+            <search string="Learning Enrollments">
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="employee_number"
+                       groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_manager_approver"/>
+                <field name="course_id"/>
+                <field name="session_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter name="requested" string="Requested" domain="[('state', '=', 'requested')]"/>
+                <filter name="approved" string="Approved" domain="[('state', '=', 'approved')]"/>
+                <filter name="enrolled" string="Enrolled" domain="[('state', '=', 'enrolled')]"/>
+                <filter name="waitlisted" string="Waitlisted" domain="[('state', '=', 'waitlisted')]"/>
+                <filter name="attended" string="Attended" domain="[('state', '=', 'attended')]"/>
+                <filter name="passed" string="Passed" domain="[('state', 'in', ['passed','certified'])]"/>
+                <filter name="failed" string="Failed / No Show" domain="[('state', 'in', ['failed','no_show'])]"/>
+                <filter name="request_date" string="Requested Date" date="requested_at"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_course" string="Course" context="{'group_by': 'course_id'}"/>
+                    <filter name="group_session" string="Session" context="{'group_by': 'session_id'}"/>
+                    <filter name="group_department" string="Department" context="{'group_by': 'department_name'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_enrollment_pivot" model="ir.ui.view">
+        <field name="name">onehr.learning.enrollment.pivot.enterprise</field>
+        <field name="model">onehr.learning.enrollment</field>
+        <field name="arch" type="xml">
+            <pivot string="Learning Completion Analysis">
+                <field name="course_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="post_test_score" type="measure"/>
+                <field name="reaction_score" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_enrollment_graph" model="ir.ui.view">
+        <field name="name">onehr.learning.enrollment.graph.enterprise</field>
+        <field name="model">onehr.learning.enrollment</field>
+        <field name="arch" type="xml">
+            <graph string="Learning Enrollment Results">
+                <field name="course_id"/>
+                <field name="post_test_score" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_learning_enrollments" model="ir.actions.act_window">
+        <field name="name">Enrollments</field>
+        <field name="res_model">onehr.learning.enrollment</field>
+        <field name="view_mode">kanban,list,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_learning_enrollment_search"/>
+    </record>
+</odoo>

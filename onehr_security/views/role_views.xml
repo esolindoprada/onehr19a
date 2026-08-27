@@ -1,0 +1,155 @@
+<odoo>
+    <record id="view_onehr_role_list" model="ir.ui.view">
+        <field name="name">onehr.role.list.enterprise</field>
+        <field name="model">onehr.role</field>
+        <field name="arch" type="xml">
+            <list
+                string="OneHR Roles"
+                decoration-muted="not active"
+                decoration-warning="sensitivity == 'sensitive'"
+                decoration-danger="sensitivity == 'restricted'"
+            >
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="sensitivity" widget="badge"/>
+                <field name="active_user_count" string="Effective Users"/>
+                <field name="assignment_count" optional="hide"/>
+                <field name="sod_rule_count" optional="hide"/>
+                <field name="valid_from"/>
+                <field name="valid_to" optional="show"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_role_form" model="ir.ui.view">
+        <field name="name">onehr.role.form.enterprise</field>
+        <field name="model">onehr.role</field>
+        <field name="arch" type="xml">
+            <form string="OneHR Business Role">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_assignments" type="object" class="oe_stat_button" icon="fa-id-badge" invisible="not id">
+                            <field name="assignment_count" widget="statinfo" string="Assignments"/>
+                        </button>
+                        <button name="action_open_effective_users" type="object" class="oe_stat_button" icon="fa-users" invisible="not id">
+                            <field name="active_user_count" widget="statinfo" string="Effective Users"/>
+                        </button>
+                        <button name="action_open_sod_rules" type="object" class="oe_stat_button" icon="fa-random" invisible="not id">
+                            <field name="sod_rule_count" widget="statinfo" string="SoD Rules"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. HR Business Partner"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Business Identity">
+                            <field name="code"/>
+                            <field name="sequence"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="sensitivity"/>
+                        </group>
+                        <group string="Effective Validity">
+                            <field name="valid_from"/>
+                            <field name="valid_to"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3" groups="onehr_security.group_onehr_security_manager">
+                        <button
+                            name="action_reconcile_assigned_users"
+                            type="object"
+                            string="Reconcile Assigned Users"
+                            class="btn-secondary"
+                            icon="fa-refresh"
+                            invisible="not id"
+                        />
+                    </div>
+
+                    <notebook>
+                        <page string="Odoo Group Mapping" name="groups">
+                            <field name="group_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <div class="text-muted mt-2">
+                                Mapping a group declares that its direct user membership is managed by
+                                effective OneHR role assignments. Other manually assigned Odoo groups are preserved.
+                            </div>
+                        </page>
+
+                        <page string="Assignments" name="assignments">
+                            <field name="assignment_ids" context="{'default_role_id': id}">
+                                <list
+                                    decoration-success="effective_status == 'effective'"
+                                    decoration-warning="effective_status in ('scheduled', 'blocked')"
+                                    decoration-muted="effective_status in ('expired', 'revoked')"
+                                >
+                                    <field name="user_id"/>
+                                    <field name="company_id" groups="base.group_multi_company"/>
+                                    <field name="valid_from"/>
+                                    <field name="valid_to"/>
+                                    <field name="effective_status" widget="badge"/>
+                                    <button
+                                        name="action_activate"
+                                        type="object"
+                                        string="Activate"
+                                        icon="fa-check"
+                                        groups="onehr_security.group_onehr_security_manager"
+                                        invisible="state not in ('draft', 'blocked')"
+                                    />
+                                    <button
+                                        name="action_revoke"
+                                        type="object"
+                                        string="Revoke"
+                                        icon="fa-ban"
+                                        groups="onehr_security.group_onehr_security_manager"
+                                        invisible="state == 'revoked'"
+                                    />
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Business responsibility, permitted scope and governance notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_role_search" model="ir.ui.view">
+        <field name="name">onehr.role.search.enterprise</field>
+        <field name="model">onehr.role</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="group_ids"/>
+                <field name="sensitivity"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <filter name="sensitive" string="Sensitive / Restricted" domain="[('sensitivity', 'in', ('sensitive', 'restricted'))]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    <filter name="group_sensitivity" string="Sensitivity" context="{'group_by': 'sensitivity'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_roles" model="ir.actions.act_window">
+        <field name="name">OneHR Roles</field>
+        <field name="res_model">onehr.role</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_role_search"/>
+    </record>
+</odoo>

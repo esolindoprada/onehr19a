@@ -1,0 +1,21 @@
+<odoo>
+    <menuitem id="menu_onehr_root" name="OneHR" sequence="30" groups="hr.group_hr_user"/>
+    <menuitem id="menu_onehr_organization" name="Organization" parent="menu_onehr_root" sequence="10"/>
+    <menuitem id="menu_departments" name="Organization Units / Departments" parent="menu_onehr_organization" action="action_departments" sequence="10"/>
+    <menuitem id="menu_jobs" name="Jobs / Roles" parent="menu_onehr_organization" action="action_jobs" sequence="20"/>
+    <menuitem id="menu_positions" name="Positions" parent="menu_onehr_organization" action="action_positions" sequence="30"/>
+    <menuitem id="menu_hierarchies" name="Position Hierarchies" parent="menu_onehr_organization" action="action_hierarchies" sequence="40"/>
+    <menuitem id="menu_job_families" name="Job Families" parent="menu_onehr_organization" action="action_job_families" sequence="50"/>
+    <menuitem id="menu_grades" name="Grades" parent="menu_onehr_organization" action="action_grades" sequence="60"/>
+    <menuitem id="menu_work_locations" name="Work Locations" parent="menu_onehr_organization" action="action_work_locations" sequence="70"/>
+
+    <menuitem id="menu_onehr_configuration" name="Configuration" parent="menu_onehr_root" sequence="20" groups="hr.group_hr_manager"/>
+    <menuitem id="menu_sequence_rules" name="Sequence Rules" parent="menu_onehr_configuration" action="action_sequence_rules" sequence="10"/>
+    <menuitem id="menu_eligibility" name="Eligibility Profiles" parent="menu_onehr_configuration" action="action_eligibility_profiles" sequence="20"/>
+    <menuitem id="menu_lifecycle_types" name="Lifecycle Event Types" parent="menu_onehr_configuration" action="action_lifecycle_event_types" sequence="30"/>
+    <menuitem id="menu_checklist_templates" name="Checklist Templates" parent="menu_onehr_configuration" action="action_checklist_templates" sequence="40"/>
+
+    <menuitem id="menu_onehr_lifecycle" name="Lifecycle Operations" parent="menu_onehr_root" sequence="30"/>
+    <menuitem id="menu_checklist_instances" name="Checklist Instances" parent="menu_onehr_lifecycle" action="action_checklist_instances" sequence="10"/>
+    <menuitem id="menu_checklist_tasks" name="Checklist Tasks" parent="menu_onehr_lifecycle" action="action_checklist_tasks" sequence="20"/>
+</odoo>

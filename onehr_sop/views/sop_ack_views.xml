@@ -1,0 +1,196 @@
+<odoo>
+    <record id="view_onehr_sop_ack_list" model="ir.ui.view">
+        <field name="name">onehr.sop.ack.list.enterprise</field>
+        <field name="model">onehr.sop.ack</field>
+        <field name="arch" type="xml">
+            <list string="SOP Acknowledgements"
+                  decoration-success="state == 'acknowledged'"
+                  decoration-warning="state == 'pending'">
+                <field name="sop_id"/>
+                <field name="version_id"/>
+                <field name="employee_number"
+                       groups="onehr_sop.group_onehr_sop_editor"/>
+                <field name="employee_name"/>
+                <field name="department_name"/>
+                <field name="job_name"/>
+                <field name="state" widget="badge"/>
+                <field name="published_at"/>
+                <field name="acknowledged_at"/>
+                <field name="days_to_ack"/>
+                <field name="acknowledgement_source" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_sop_version" type="object"
+                        string="Open SOP" icon="fa-book"/>
+                <button name="action_acknowledge" type="object"
+                        string="Read &amp; Agree" icon="fa-check-square-o"
+                        invisible="state == 'acknowledged'"/>
+                <button name="action_open_employee" type="object"
+                        string="Employee" icon="fa-user"
+                        groups="onehr_sop.group_onehr_sop_editor"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_sop_ack_form" model="ir.ui.view">
+        <field name="name">onehr.sop.ack.form.enterprise</field>
+        <field name="model">onehr.sop.ack</field>
+        <field name="arch" type="xml">
+            <form string="SOP Acknowledgement">
+                <header>
+                    <button name="action_acknowledge" type="object"
+                            string="Read &amp; Agree" class="btn-primary"
+                            invisible="state == 'acknowledged'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,acknowledged"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_sop_version" type="object"
+                                class="oe_stat_button" icon="fa-book">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Open SOP</span>
+                            </div>
+                        </button>
+                        <button name="action_open_employee" type="object"
+                                class="oe_stat_button" icon="fa-user"
+                                groups="onehr_sop.group_onehr_sop_editor">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Employee</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="ACKNOWLEDGED"
+                            bg_color="text-bg-success"
+                            invisible="state != 'acknowledged'"/>
+
+                    <div class="oe_title">
+                        <h1><field name="employee_name" readonly="1"/></h1>
+                        <div class="text-muted">
+                            <field name="sop_id" readonly="1"/> · <field name="version_id" readonly="1"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Assignment">
+                            <field name="employee_number" readonly="1"
+                                   groups="onehr_sop.group_onehr_sop_editor"/>
+                            <field name="department_name" readonly="1"/>
+                            <field name="job_name" readonly="1"/>
+                            <field name="company_id" readonly="1"
+                                   groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Acknowledgement Evidence">
+                            <field name="published_at" readonly="1"/>
+                            <field name="acknowledged_at" readonly="1"/>
+                            <field name="acknowledged_by_name" readonly="1"/>
+                            <field name="acknowledgement_source" readonly="1"/>
+                            <field name="days_to_ack" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 mb-3">
+                        <button name="action_open_sop_version" type="object"
+                                string="Read Published SOP"
+                                class="btn-secondary"/>
+                        <button name="action_acknowledge" type="object"
+                                string="Read &amp; Agree"
+                                class="btn-primary"
+                                invisible="state == 'acknowledged'"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Employee Comment">
+                            <field name="acknowledgement_comment" readonly="1"
+                                   placeholder="Optional acknowledgement comment captured by a governed client."/>
+                        </page>
+                    </notebook>
+
+                    <chatter groups="onehr_sop.group_onehr_sop_editor"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_sop_ack_search" model="ir.ui.view">
+        <field name="name">onehr.sop.ack.search.enterprise</field>
+        <field name="model">onehr.sop.ack</field>
+        <field name="arch" type="xml">
+            <search string="Search SOP Acknowledgements">
+                <field name="sop_id"/>
+                <field name="version_id"/>
+                <field name="employee_number"
+                       groups="onehr_sop.group_onehr_sop_editor"/>
+                <field name="employee_name"/>
+                <field name="department_name"/>
+                <field name="job_name"/>
+                <filter name="pending" string="Pending"
+                        domain="[('state', '=', 'pending')]"/>
+                <filter name="acknowledged" string="Acknowledged"
+                        domain="[('state', '=', 'acknowledged')]"/>
+                <separator/>
+                <group>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_sop" string="SOP"
+                            context="{'group_by': 'sop_id'}"/>
+                    <filter name="group_department" string="Department"
+                            context="{'group_by': 'department_id'}"
+                            groups="onehr_sop.group_onehr_sop_editor"/>
+                    <filter name="group_job" string="Job / Role"
+                            context="{'group_by': 'job_id'}"
+                            groups="onehr_sop.group_onehr_sop_editor"/>
+                    <filter name="group_company" string="Company"
+                            context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_sop_ack_pivot" model="ir.ui.view">
+        <field name="name">onehr.sop.ack.pivot.enterprise</field>
+        <field name="model">onehr.sop.ack</field>
+        <field name="arch" type="xml">
+            <pivot string="SOP Compliance by Unit">
+                <field name="department_id" type="row"/>
+                <field name="sop_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="days_to_ack" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_sop_ack_graph" model="ir.ui.view">
+        <field name="name">onehr.sop.ack.graph.enterprise</field>
+        <field name="model">onehr.sop.ack</field>
+        <field name="arch" type="xml">
+            <graph string="SOP Acknowledgement Compliance" type="bar">
+                <field name="department_id"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_sop_my_ack" model="ir.actions.act_window">
+        <field name="name">My SOP Acknowledgements</field>
+        <field name="res_model">onehr.sop.ack</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_sop_ack_search"/>
+        <field name="domain">[('employee_user_id', '=', uid)]</field>
+    </record>
+
+    <record id="action_onehr_sop_ack_all" model="ir.actions.act_window">
+        <field name="name">Acknowledgement Register</field>
+        <field name="res_model">onehr.sop.ack</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_sop_ack_search"/>
+    </record>
+
+    <record id="action_onehr_sop_ack_compliance" model="ir.actions.act_window">
+        <field name="name">Compliance by Unit</field>
+        <field name="res_model">onehr.sop.ack</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_onehr_sop_ack_search"/>
+    </record>
+</odoo>

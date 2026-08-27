@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_onehr_kiosk_device_usage" model="ir.actions.report">
+        <field name="name">Kiosk Device Usage Summary</field>
+        <field name="model">onehr.kiosk.device</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_mobile_kiosk.report_onehr_kiosk_device_usage</field>
+        <field name="report_file">onehr_mobile_kiosk.report_onehr_kiosk_device_usage</field>
+        <field name="binding_model_id" ref="model_onehr_kiosk_device"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[Command.link(ref('onehr_mobile_kiosk.group_onehr_kiosk_admin'))]"/>
+        <field name="print_report_name">'Kiosk-%s-Usage' % object.code</field>
+    </record>
+
+    <template id="report_onehr_kiosk_device_usage">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>OneHR Kiosk Device Usage Summary</h2>
+                        <p class="text-muted">
+                            <strong t-field="doc.name"/> · <span t-field="doc.code"/>
+                        </p>
+
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Company</th><td t-field="doc.company_id.name"/>
+                                    <th>State</th><td t-field="doc.state"/>
+                                </tr>
+                                <tr>
+                                    <th>Device Kind</th><td t-field="doc.device_kind"/>
+                                    <th>Platform</th><td t-field="doc.platform"/>
+                                </tr>
+                                <tr>
+                                    <th>Work Location</th><td><span t-field="doc.work_location_id"/></td>
+                                    <th>Service User</th><td t-field="doc.service_user_id.name"/>
+                                </tr>
+                                <tr>
+                                    <th>Last Seen</th><td><span t-field="doc.last_seen_at"/></td>
+                                    <th>Last Sync</th><td><span t-field="doc.last_sync_at"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 class="mt-4">Operational KPIs</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr><th>Total Events</th><th>Queued</th><th>Errors</th><th>Average Latency (ms)</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td t-field="doc.log_count"/>
+                                    <td t-field="doc.queued_count"/>
+                                    <td t-field="doc.error_count"/>
+                                    <td t-field="doc.average_latency_ms"/>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 class="mt-4">Recent Activity</h4>
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Event Time</th><th>Employee</th><th>Type</th>
+                                    <th>Geofence</th><th>Sync</th><th>Latency (ms)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.log_ids[:20]" t-as="line">
+                                    <tr>
+                                        <td t-field="line.event_at"/>
+                                        <td t-esc="line.employee_name or '-'"/>
+                                        <td t-field="line.event_type"/>
+                                        <td t-field="line.geofence_status"/>
+                                        <td t-field="line.sync_state"/>
+                                        <td t-field="line.latency_ms"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <p class="text-muted mt-4">
+                            Device token plaintext, QR/NFC credential values and biometric material
+                            are intentionally excluded from this report and from kiosk evidence storage.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

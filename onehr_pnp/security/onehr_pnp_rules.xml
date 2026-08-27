@@ -1,0 +1,76 @@
+<odoo>
+    <!-- Company is the non-negotiable legal boundary. -->
+    <record id="rule_onehr_policy_company_global" model="ir.rule">
+        <field name="name">PnP Policy — allowed companies</field>
+        <field name="model_id" ref="model_onehr_policy"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_policy_ack_company_global" model="ir.rule">
+        <field name="name">PnP Acknowledgement — allowed companies</field>
+        <field name="model_id" ref="model_onehr_policy_ack"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_policy_evidence_company_global" model="ir.rule">
+        <field name="name">PnP Evidence — allowed companies</field>
+        <field name="model_id" ref="model_onehr_policy_evidence"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Reader visibility is derived from generated publication assignments. -->
+    <record id="rule_onehr_policy_reader_assignment" model="ir.rule">
+        <field name="name">PnP Policy Reader — assigned publication history</field>
+        <field name="model_id" ref="model_onehr_policy"/>
+        <field name="groups" eval="[Command.link(ref('onehr_pnp.group_onehr_pnp_reader'))]"/>
+        <field name="domain_force">[
+            ('state', 'in', ['published', 'review', 'archived']),
+            ('ack_ids.employee_user_id', '=', user.id)
+        ]</field>
+    </record>
+
+    <record id="rule_onehr_policy_owner_own" model="ir.rule">
+        <field name="name">PnP Policy Owner — owned policy versions</field>
+        <field name="model_id" ref="model_onehr_policy"/>
+        <field name="groups" eval="[Command.link(ref('onehr_pnp.group_onehr_pnp_owner'))]"/>
+        <field name="domain_force">[('owner_user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_onehr_policy_compliance_company" model="ir.rule">
+        <field name="name">PnP Compliance — company policy set</field>
+        <field name="model_id" ref="model_onehr_policy"/>
+        <field name="groups" eval="[Command.link(ref('onehr_pnp.group_onehr_pnp_compliance'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_onehr_policy_ack_reader_own" model="ir.rule">
+        <field name="name">PnP Acknowledgement Reader — own assignment</field>
+        <field name="model_id" ref="model_onehr_policy_ack"/>
+        <field name="groups" eval="[Command.link(ref('onehr_pnp.group_onehr_pnp_reader'))]"/>
+        <field name="domain_force">[('employee_user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_onehr_policy_ack_compliance_company" model="ir.rule">
+        <field name="name">PnP Compliance — company acknowledgement set</field>
+        <field name="model_id" ref="model_onehr_policy_ack"/>
+        <field name="groups" eval="[Command.link(ref('onehr_pnp.group_onehr_pnp_compliance'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_onehr_policy_evidence_reader_own" model="ir.rule">
+        <field name="name">PnP Evidence Reader — own evidence</field>
+        <field name="model_id" ref="model_onehr_policy_evidence"/>
+        <field name="groups" eval="[Command.link(ref('onehr_pnp.group_onehr_pnp_reader'))]"/>
+        <field name="domain_force">[('employee_user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_onehr_policy_evidence_compliance_company" model="ir.rule">
+        <field name="name">PnP Compliance — company evidence set</field>
+        <field name="model_id" ref="model_onehr_policy_evidence"/>
+        <field name="groups" eval="[Command.link(ref('onehr_pnp.group_onehr_pnp_compliance'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

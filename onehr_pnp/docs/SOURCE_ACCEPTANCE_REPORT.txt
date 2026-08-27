@@ -1,0 +1,139 @@
+PASS: HARD GATE 0 manifest parse
+PASS: HARD GATE 0 project/addon identity
+PASS: Manifest version 19.0.1.0.0
+PASS: Hard dependencies exactly Security + Document + Workflow Approval
+PASS: Soft/downstream modules were not promoted to hard dependencies
+PASS: All manifest data files exist
+PASS: Python syntax (15 files)
+PASS: HARD GATE 4 exact three persistent PnP model names
+PASS: Approved res.config.settings transient extension present
+PASS: Persistent model implemented: onehr.policy
+PASS: Persistent model implemented: onehr.policy.ack
+PASS: Persistent model implemented: onehr.policy.evidence
+PASS: Policy integrates OneHR audit + approved Workflow source mixin
+PASS: Acknowledgement/Evidence use OneHR audit mixin
+PASS: No duplicate direct chatter/activity ownership
+PASS: Odoo 19 @api.depends contains no explicit id/.id dependency
+PASS: Generic tutorial scaffold removed completely
+PASS: No tutorial model/controller residue
+PASS: No legacy _sql_constraints
+PASS: No business sudo() bypass
+PASS: No public unauthenticated PnP controller
+PASS: Odoo 19 models.Constraint used for governed uniqueness
+PASS: HARD GATE 11 valid ORM model name: onehr.policy
+PASS: HARD GATE 11 safe canonical table: onehr_policy
+PASS: HARD GATE 11 valid ORM model name: onehr.policy.ack
+PASS: HARD GATE 11 safe canonical table: onehr_policy_ack
+PASS: HARD GATE 11 valid ORM model name: onehr.policy.evidence
+PASS: HARD GATE 11 safe canonical table: onehr_policy_evidence
+PASS: HARD GATE 11 safe ORM field/index identifiers (122 persistent fields; 5 extension fields)
+PASS: HARD GATE 11 explicit unique Many2many identifiers (6 relations)
+PASS: HARD GATE 11 no static ORM relation to soft-module models
+PASS: HARD GATE 11 safe constraint identifiers (2 constraints)
+PASS: XML syntax (11 files)
+PASS: Odoo 19 operational lists use <list>
+PASS: Odoo 19 direct view modifiers
+PASS: Odoo 19 search <group> elements have no attributes
+PASS: HARD GATE 7/8/9 List/Form/Search: onehr.policy
+PASS: HARD GATE 7/8/9 List/Form/Search: onehr.policy.ack
+PASS: HARD GATE 7/8/9 List/Form/Search: onehr.policy.evidence
+PASS: HARD GATE 6 enterprise UI — Statusbar
+PASS: HARD GATE 6 enterprise UI — Smart Button
+PASS: HARD GATE 6 enterprise UI — Body Button
+PASS: HARD GATE 6 enterprise UI — One2many Row Button
+PASS: HARD GATE 6 enterprise UI — Kanban
+PASS: HARD GATE 6 enterprise UI — Calendar
+PASS: HARD GATE 6 enterprise UI — Pivot
+PASS: HARD GATE 6 enterprise UI — Graph
+PASS: HARD GATE 6 enterprise UI — Badge
+PASS: HARD GATE 6 enterprise UI — Ribbon
+PASS: HARD GATE 6 enterprise UI — Chatter
+PASS: Object button → Python/inherited method cross-reference
+PASS: HARD GATE 11 unique local XML external IDs (63 IDs)
+PASS: ACL CSV parse (12 rows)
+PASS: HARD GATE 10 no broad base.group_user PnP CRUD
+PASS: Security role present: group_onehr_pnp_reader
+PASS: Security role present: group_onehr_pnp_owner
+PASS: Security role present: group_onehr_pnp_compliance
+PASS: Security role present: group_onehr_pnp_admin
+PASS: Odoo 19 res.groups.privilege pattern used
+PASS: Global company isolation rules on all three PnP models
+PASS: Reader Policy assignment boundary
+PASS: Policy Owner own-policy boundary
+PASS: Reader own ack/evidence boundary
+PASS: Server-side lifecycle/evidence action guards present
+PASS: Historical deletion guards cover all three PnP models
+PASS: HARD GATE 3/15 functional contract — Workflow Approval source ownership
+PASS: HARD GATE 3/15 functional contract — Draft/Rejected → Approval
+PASS: HARD GATE 3/15 functional contract — Approval callback
+PASS: HARD GATE 3/15 functional contract — Approved → Published
+PASS: HARD GATE 3/15 functional contract — approved execution evidence
+PASS: HARD GATE 3/15 functional contract — Published → Review
+PASS: HARD GATE 3/15 functional contract — Review renewal without content rewrite
+PASS: HARD GATE 3/15 functional contract — controlled version successor
+PASS: HARD GATE 3/15 functional contract — Published/Review → Archived
+PASS: HARD GATE 3/15 functional contract — target department/unit audience
+PASS: HARD GATE 3/15 functional contract — target job/role audience
+PASS: HARD GATE 3/15 functional contract — specific employee audience
+PASS: HARD GATE 3/15 functional contract — soft branch/site extension key
+PASS: HARD GATE 3/15 functional contract — employee acknowledgement
+PASS: HARD GATE 3/15 functional contract — employee/unit/policy evidence scope
+PASS: HARD GATE 3/15 functional contract — file/photo evidence
+PASS: HARD GATE 3/15 functional contract — URL evidence
+PASS: HARD GATE 3/15 functional contract — controlled Document evidence
+PASS: HARD GATE 3/15 functional contract — Compliance evidence verification
+PASS: HARD GATE 3/15 functional contract — review/reminder scheduler
+PASS: HARD GATE 3/15 functional contract — Document archive snapshot
+PASS: HARD GATE 3/15 functional contract — Portal policy service
+PASS: HARD GATE 3/15 functional contract — Portal/API evidence service
+PASS: HARD GATE 3/15 functional contract — API acknowledgement status
+PASS: HARD GATE 3/15 functional contract — Analytics compliance service
+PASS: HARD GATE 3/15 functional contract — soft SOP reference
+PASS: OneHR SOP integration is runtime-soft, not static ORM ownership
+PASS: Policy QWeb PDF
+PASS: Policy Compliance Summary QWeb PDF
+PASS: Review/Expiry Register QWeb PDF
+PASS: Evidence Coverage Register QWeb PDF
+PASS: Integrated OneHR root navigation without sibling source edit
+PASS: Runtime test inventory exactly 47 methods
+PASS: Runtime test suites are post-install tagged
+PASS: Mandatory Enterprise documentation set
+PASS: Guardrail contains HARD GATE 0
+PASS: Guardrail contains HARD GATE 1
+PASS: Guardrail contains HARD GATE 2
+PASS: Guardrail contains HARD GATE 3
+PASS: Guardrail contains HARD GATE 4
+PASS: Guardrail contains HARD GATE 5
+PASS: Guardrail contains HARD GATE 6
+PASS: Guardrail contains HARD GATE 7
+PASS: Guardrail contains HARD GATE 8
+PASS: Guardrail contains HARD GATE 9
+PASS: Guardrail contains HARD GATE 10
+PASS: Guardrail contains HARD GATE 11
+PASS: Guardrail contains HARD GATE 12
+PASS: Guardrail contains HARD GATE 13
+PASS: Guardrail contains HARD GATE 14
+PASS: Guardrail contains HARD GATE 15
+PASS: Codex role locked to bounded implementation worker
+PASS: Codex retry limit = 2
+PASS: HARD GATE 11 dedicated identifier-safety evidence
+WARN: Exact Master Model Registry ED rows remain pending; classifications were not invented
+WARN: Native Gantt intentionally not fabricated on Odoo 19 CE
+
+SOURCE_FILES_PYTHON=15
+SOURCE_FILES_XML=11
+CUSTOM_PERSISTENT_MODELS=3
+ORM_FIELD_COUNT=122
+SETTINGS_EXTENSION_FIELDS=5
+M2M_RELATION_COUNT=6
+LOCAL_XML_ID_COUNT=63
+ACL_ROWS=12
+RUNTIME_TEST_METHODS=47
+SOURCE_ACCEPTANCE_PASS_COUNT=119
+SOURCE_ACCEPTANCE_WARN_COUNT=2
+SOURCE_ACCEPTANCE_FAIL_COUNT=0
+ONEHR_PNP_DIRECT_FULL_SOURCE_ACCEPTANCE=PASS
+SOURCE_ENTERPRISE_COMPLETENESS=PASS_FOR_RUNTIME
+REGISTRY_ED_CLASSIFICATION=PENDING_EXACT_REGISTRY_ROW_VERIFICATION
+WINDOWS_RUNTIME_ACCEPTANCE=PENDING
+ONEHR_PNP_MOVE_FORWARD_READY=NO

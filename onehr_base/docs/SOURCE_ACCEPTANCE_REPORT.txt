@@ -1,0 +1,26 @@
+PASS: PROJECT/ADDON identity
+PASS: manifest Odoo 19 version
+PASS: hard dependencies exactly ['hr', 'mail']
+PASS: all Python sources compile
+PASS: all XML files parse
+PASS: Odoo 19 plain-Python model-base mixin pattern absent
+PASS: business actions contain no sudo() authorization bypass
+PASS: ACL inventory preserved at 28 rows
+PASS: no broad base.group_user custom-model ACL
+TEST_METHOD_COUNT: 12
+PASS: test method inventory exactly 12
+PASS: enterprise list coverage for all custom persistent models
+PASS: professional form coverage for all custom persistent models
+PASS: mandatory search coverage for all custom persistent models
+PASS: statusbar widgets
+PASS: smart buttons
+PASS: body-form operational action
+PASS: One2many/list row operational buttons
+PASS: chatter integration
+PASS: business history deletion protection uses uninstall-safe api.ondelete
+PASS: no uninstall-blocking checklist unlink() override
+PASS: governance/completeness documents present
+
+ONEHR_BASE_DIRECT_FULL_SOURCE_ACCEPTANCE: PASS
+WINDOWS_RUNTIME_ACCEPTANCE: PENDING
+ONEHR_BASE_MOVE_FORWARD_READY: NO

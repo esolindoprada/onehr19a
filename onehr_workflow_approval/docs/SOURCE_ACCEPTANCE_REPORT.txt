@@ -1,0 +1,58 @@
+PASS: HARD_GATE_0 PROJECT/ADDON identity
+PASS: Odoo 19 manifest version
+PASS: hard dependencies exactly onehr_security, mail
+PASS: all Python sources compile
+PASS: Odoo 19 IR_MODELS Many2one ondelete compatibility
+PASS: onehr.approval.rule.model_id uses required + cascade contract
+PASS: all XML files parse
+PASS: HARD_GATE_4 exact eight Master Model Registry rows
+PASS: Odoo 19 model definitions use Odoo-only Python bases
+PASS: safe structured routing contains no safe_eval/eval/exec calls
+PASS: HARD_GATE_10 sudo limited to documented routing/system-evidence paths; source sudo absent
+PASS: generic approval engine preserves narrow source ownership contract
+PASS: HARD_GATE_2 workflow/delegation/SLA/immutability preservation controls present
+PASS: OneHR Security audit action contract compatible
+PASS: ACL inventory exactly 18 rows
+PASS: HARD_GATE_10 no broad base.group_user custom-model ACL
+PASS: Workflow Manager/Admin do not imply OneHR Security Manager/Admin
+PASS: company and participant record-rule coverage present
+PASS: HARD_GATE_9 enterprise list coverage for all persistent models
+PASS: HARD_GATE_6 professional form coverage for all persistent models
+PASS: HARD_GATE_8 search view coverage for all persistent models
+PASS: statusbar widgets
+PASS: smart buttons
+PASS: body-form reminder action
+PASS: body-form reassignment action
+PASS: One2many/list row actions
+PASS: chatter integration
+PASS: pivot reporting
+PASS: graph reporting
+PASS: OneHR root menu visibility extended without granting HR Officer group
+TEST_METHOD_COUNT: 20
+PASS: exactly 20 enterprise runtime test methods
+PASS: generic scaffold controllers/demo/models/views removed
+PASS: active app description is Odoo 19 only
+PASS: Odoo 19 cron source contract present
+PASS: Odoo 19 models.Constraint used for SQL-backed uniqueness where appropriate
+PASS: HARD_GATE_15 governance/completeness documents present
+PASS: no generated cache/log/database artifacts inside addon
+
+HARD_GATE_0_PROJECT_IDENTITY_PREFLIGHT: PASS
+HARD_GATE_1_CODEX_NOT_ARCHITECT: PASS (package built without Codex)
+HARD_GATE_2_EXISTING_FUNCTION_PRESERVATION: PASS (source)
+HARD_GATE_3_ENTERPRISE_COMPLETENESS_NOT_TEST_ONLY: ENFORCED
+HARD_GATE_4_FULL_STRUCTURAL_INVENTORY: PASS
+HARD_GATE_5_HUMAN_FRIENDLY_STRUCTURE: PASS
+HARD_GATE_6_PROFESSIONAL_FORM_DESIGN: PASS
+HARD_GATE_7_UI_UX_MATRIX: PASS
+HARD_GATE_8_SEARCH_VIEW_REQUIRED: PASS
+HARD_GATE_9_ENTERPRISE_LIST_QUALITY: PASS
+HARD_GATE_10_SECURITY_NOT_DEFEATED_BY_UI: PASS (source)
+HARD_GATE_12_HUMAN_FRIENDLY_CODE_STYLE: PASS
+HARD_GATE_13_USEFUL_COMMENTS: PASS
+HARD_GATE_14_CODEX_RETRY_LIMIT: ENFORCED
+HARD_GATE_15_ENTERPRISE_COMPLETENESS_MATRIX: PASS (source matrix; runtime pending)
+
+ONEHR_WORKFLOW_APPROVAL_DIRECT_FULL_SOURCE_ACCEPTANCE: PASS
+WINDOWS_RUNTIME_ACCEPTANCE: PENDING
+ONEHR_WORKFLOW_APPROVAL_MOVE_FORWARD_READY: NO

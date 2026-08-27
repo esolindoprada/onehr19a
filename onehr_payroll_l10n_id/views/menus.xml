@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_onehr_payroll_localization_id"
+              name="Localization (ID)"
+              parent="onehr_payroll_bridge.menu_onehr_payroll_root"
+              action="action_onehr_payroll_l10n_params"
+              sequence="40"
+              groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+</odoo>

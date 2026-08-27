@@ -1,0 +1,48 @@
+PASS: PROJECT/ADDON identity
+PASS: Odoo 19 manifest version
+PASS: hard dependencies exactly onehr_base, onehr_security, hr
+PASS: soft-integration owners are not hard dependencies
+PASS: all Python sources compile
+PASS: all XML files parse
+PASS: all manifest data files exist
+PASS: exact nine custom Registry models
+PASS: exact four inherited Registry rows
+PASS: no parallel employee/document/branch ownership
+PASS: only Registry-approved res.config.settings transient extension is present
+PASS: hr.employee.public exposes only approved OneHR employee number
+PASS: generic scaffold controllers/demo/models/views removed
+PASS: active addon description is Odoo 19 only
+PASS: ACL CSV header
+PASS: ACL inventory exactly 10 rows
+PASS: no broad base.group_user custom-model ACL
+PASS: Core HR Manager does not imply Occupational Health access
+PASS: Core HR privilege graph does not imply Security Admin
+PASS: company/global record-rule coverage for all nine custom models
+PASS: identifier masking/fingerprint/audit controls present
+PASS: identifier masking company-setting key contract is aligned
+PASS: restricted occupational-health audit/immutability/correction controls present
+PASS: ED1 custom-model effective dating coverage present
+PASS: native employee/version architecture contract present
+PASS: enterprise list coverage for all custom persistent models
+PASS: professional form coverage for all custom persistent models
+PASS: mandatory search coverage for all custom persistent models
+PASS: statusbar widgets
+PASS: smart buttons
+PASS: body-form Create Medical Assessment
+PASS: medical correction action
+PASS: One2many/list emergency primary action
+PASS: One2many/list effective-history expiry actions
+PASS: chatter integration
+PASS: native employee form inheritance
+PASS: native employee list inheritance
+PASS: native employee search inheritance
+PASS: ir.actions.report Odoo 19 field contract uses group_ids
+PASS: safe native-employee PDF report present without restricted payload
+TEST_METHOD_COUNT: 16
+PASS: exactly 16 enterprise runtime test methods
+PASS: governance/preservation/registry/UI/security/completeness docs present
+PASS: no generated cache/log/database artifacts inside addon
+
+ONEHR_COREHR_DIRECT_FULL_SOURCE_ACCEPTANCE: PASS
+WINDOWS_RUNTIME_ACCEPTANCE: PENDING
+ONEHR_COREHR_MOVE_FORWARD_READY: NO

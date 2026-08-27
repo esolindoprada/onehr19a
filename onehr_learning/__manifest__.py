@@ -1,0 +1,39 @@
+{
+    "name": "OneHR Learning",
+    "summary": "Enterprise learning, training, enrollment, certification and L&D costing",
+    "description": '''
+OneHR Learning & Development for Odoo 19 Community Edition:
+course catalog, training sessions, governed enrollment approval, waitlist,
+training attendance, assessment, certificates, vendors, budgets and costs.
+''',
+    "version": "19.0.1.0.0",
+    "category": "Human Resources/Learning",
+    "author": "PT Dua Empat Tujuh Open Source",
+    "website": "https://odoocamp.net",
+    "license": "LGPL-3",
+    "depends": [
+        "onehr_base",
+        "onehr_corehr",
+        "onehr_security",
+        "onehr_workflow_approval",
+    ],
+    "data": [
+        "security/onehr_learning_groups.xml",
+        "security/ir.model.access.csv",
+        "security/onehr_learning_rules.xml",
+        "data/learning_sequence_data.xml",
+        "data/learning_cron_data.xml",
+        "views/course_views.xml",
+        "views/vendor_views.xml",
+        "views/session_views.xml",
+        "views/enrollment_views.xml",
+        "views/attendance_views.xml",
+        "views/certificate_views.xml",
+        "views/budget_views.xml",
+        "views/cost_line_views.xml",
+        "reports/learning_reports.xml",
+        "views/menus.xml",
+    ],
+    "installable": True,
+    "application": True,
+}

@@ -1,0 +1,166 @@
+<odoo>
+    <record id="view_onehr_position_competency_list" model="ir.ui.view">
+        <field name="name">onehr.position.competency.list</field>
+        <field name="model">onehr.position.competency</field>
+        <field name="arch" type="xml">
+            <list string="Position Competency Requirements"
+                  decoration-danger="mandatory and required_level &gt;= 4"
+                  decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="position_code"/>
+                <field name="position_name"/>
+                <field name="competency_id"/>
+                <field name="competency_category" widget="badge"/>
+                <field name="required_level"/>
+                <field name="weight"/>
+                <field name="mandatory"/>
+                <field name="evidence_required"/>
+                <field name="department_id" optional="show"/>
+                <field name="job_id" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active" optional="hide"/>
+                <button name="action_open_talent_gap" type="object"
+                        string="Talent Gap" icon="fa-users"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_position_competency_form" model="ir.ui.view">
+        <field name="name">onehr.position.competency.form</field>
+        <field name="model">onehr.position.competency</field>
+        <field name="arch" type="xml">
+            <form string="Position Competency Requirement">
+                <header>
+                    <button name="action_archive_governed" type="object"
+                            string="Archive" class="btn-secondary"
+                            invisible="not active"
+                            groups="onehr_career_succession.group_onehr_talent_manager"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_position" type="object"
+                                class="oe_stat_button" icon="fa-sitemap">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Position</span>
+                            </div>
+                        </button>
+                        <button name="action_open_talent_gap" type="object"
+                                class="oe_stat_button" icon="fa-users">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Talent Gap</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Archived"
+                            bg_color="text-bg-secondary"
+                            invisible="active"/>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="position_name" readonly="1"/>
+                        </h1>
+                        <div class="text-muted">
+                            <field name="competency_id"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Requirement">
+                            <field name="position_id"/>
+                            <field name="competency_id"/>
+                            <field name="required_level"/>
+                            <field name="weight"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group string="Governance">
+                            <field name="mandatory"/>
+                            <field name="evidence_required"/>
+                            <field name="active"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Expected Behaviour / Evidence">
+                        <field name="behavioral_evidence"
+                               placeholder="Describe evidence required at this level..."/>
+                    </group>
+
+                    <group string="Position Context">
+                        <field name="position_code" readonly="1"/>
+                        <field name="department_id" readonly="1"/>
+                        <field name="job_id" readonly="1"/>
+                        <field name="competency_category" readonly="1"/>
+                    </group>
+
+                    <div class="mt-2">
+                        <button name="action_open_talent_gap" type="object"
+                                string="Review Talent Readiness Against This Position"
+                                class="btn-secondary"/>
+                    </div>
+
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_position_competency_search" model="ir.ui.view">
+        <field name="name">onehr.position.competency.search</field>
+        <field name="model">onehr.position.competency</field>
+        <field name="arch" type="xml">
+            <search string="Search Position Competencies">
+                <field name="position_id"/>
+                <field name="position_code"/>
+                <field name="competency_id"/>
+                <field name="department_id"/>
+                <field name="job_id"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="mandatory" string="Mandatory"
+                        domain="[('mandatory', '=', True)]"/>
+                <filter name="high_level" string="Level 4+"
+                        domain="[('required_level', '&gt;=', 4)]"/>
+                <separator/>
+                <filter name="group_position" string="Position"
+                        context="{'group_by': 'position_id'}"/>
+                <filter name="group_competency" string="Competency"
+                        context="{'group_by': 'competency_id'}"/>
+                <filter name="group_department" string="Department"
+                        context="{'group_by': 'department_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_position_competency_pivot" model="ir.ui.view">
+        <field name="name">onehr.position.competency.pivot</field>
+        <field name="model">onehr.position.competency</field>
+        <field name="arch" type="xml">
+            <pivot string="Position Competency Matrix">
+                <field name="position_id" type="row"/>
+                <field name="competency_id" type="col"/>
+                <field name="required_level" type="measure"/>
+                <field name="weight" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_position_competency_graph" model="ir.ui.view">
+        <field name="name">onehr.position.competency.graph</field>
+        <field name="model">onehr.position.competency</field>
+        <field name="arch" type="xml">
+            <graph string="Competency Requirement Analysis" type="bar">
+                <field name="competency_id"/>
+                <field name="required_level" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_position_competency" model="ir.actions.act_window">
+        <field name="name">Position Competencies</field>
+        <field name="res_model">onehr.position.competency</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_onehr_position_competency_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+</odoo>

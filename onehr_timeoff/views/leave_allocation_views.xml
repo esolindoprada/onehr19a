@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_leave_allocation_list" model="ir.ui.view">
+        <field name="name">onehr.leave.allocation.list.enterprise</field>
+        <field name="model">onehr.leave.allocation</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'confirmed'" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="allocation_scope" widget="badge" optional="show"/>
+                <field name="employee_name" string="Employee"/>
+                <field name="leave_type_id"/>
+                <field name="source" widget="badge"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="expires_on" optional="show"/>
+                <field name="allocated_days" sum="Allocated"/>
+                <field name="used_days" sum="Used" optional="show"/>
+                <field name="available_days" sum="Available" optional="show"/>
+                <field name="generated_count" optional="hide" groups="onehr_timeoff.group_onehr_timeoff_hr"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <button name="action_open_requests_using_allocation" type="object" string="Requests" icon="fa-calendar-check-o"
+                        invisible="allocation_scope != 'single'"/>
+                <button name="action_open_generated_allocations" type="object" string="Generated" icon="fa-sitemap"
+                        groups="onehr_timeoff.group_onehr_timeoff_hr" invisible="allocation_scope != 'mass' or generated_count == 0"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_leave_allocation_form" model="ir.ui.view">
+        <field name="name">onehr.leave.allocation.form.enterprise</field>
+        <field name="model">onehr.leave.allocation</field>
+        <field name="arch" type="xml">
+            <form string="Leave Allocation">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" class="btn-primary"
+                            groups="onehr_timeoff.group_onehr_timeoff_hr" invisible="state != 'draft' or allocation_scope != 'single'"/>
+                    <button name="action_generate_mass_allocations" type="object" string="Generate Allocations" class="btn-primary"
+                            groups="onehr_timeoff.group_onehr_timeoff_hr" invisible="state != 'draft' or allocation_scope != 'mass'"/>
+                    <button name="action_cancel" type="object" string="Cancel Allocation" class="btn-secondary"
+                            groups="onehr_timeoff.group_onehr_timeoff_hr" invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-secondary" invisible="state != 'cancelled'"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_generated_allocations" type="object" class="oe_stat_button" icon="fa-sitemap"
+                                groups="onehr_timeoff.group_onehr_timeoff_hr" invisible="allocation_scope != 'mass'">
+                            <field name="generated_count" widget="statinfo" string="Generated"/>
+                        </button>
+                        <button name="action_open_requests_using_allocation" type="object" class="oe_stat_button" icon="fa-calendar-check-o"
+                                invisible="allocation_scope != 'single'">
+                            <div class="o_stat_info"><span class="o_stat_text">Using</span><span class="o_stat_text">Requests</span></div>
+                        </button>
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-user"
+                                groups="onehr_timeoff.group_onehr_timeoff_hr" invisible="allocation_scope != 'single'">
+                            <div class="o_stat_info"><span class="o_stat_text">Employee</span></div>
+                        </button>
+                        <button name="action_open_leave_type" type="object" class="oe_stat_button" icon="fa-cogs">
+                            <div class="o_stat_info"><span class="o_stat_text">Leave Policy</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2><field name="employee_name" readonly="1" invisible="allocation_scope != 'single'"/></h2>
+                    </div>
+
+                    <group>
+                        <group string="Entitlement">
+                            <field name="allocation_scope" readonly="state != 'draft'"/>
+                            <field name="employee_id" readonly="state != 'draft'" groups="onehr_timeoff.group_onehr_timeoff_hr"
+                                   invisible="allocation_scope != 'single'"/>
+                            <field name="employee_ids" widget="many2many_tags" readonly="state != 'draft'"
+                                   groups="onehr_timeoff.group_onehr_timeoff_hr" invisible="allocation_scope != 'mass'"/>
+                            <field name="leave_type_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="source" readonly="state != 'draft'"/>
+                            <field name="company_id" readonly="state != 'draft'" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Period &amp; Balance">
+                            <field name="period_start" readonly="state != 'draft'"/>
+                            <field name="period_end" readonly="state != 'draft'"/>
+                            <field name="expires_on" readonly="state != 'draft'"/>
+                            <field name="allocated_days" readonly="state != 'draft'"/>
+                            <field name="used_days" readonly="1" invisible="allocation_scope != 'single'"/>
+                            <field name="available_days" readonly="1" invisible="allocation_scope != 'single'"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3" groups="onehr_timeoff.group_onehr_timeoff_hr">
+                        <button name="action_generate_mass_allocations" type="object" string="Generate Employee Allocations"
+                                class="btn-secondary" icon="fa-users" invisible="state != 'draft' or allocation_scope != 'mass'"/>
+                        <button name="action_open_generated_allocations" type="object" string="Review Generated Allocations"
+                                class="btn-secondary" icon="fa-sitemap" invisible="allocation_scope != 'mass' or generated_count == 0"/>
+                        <button name="action_open_requests_using_allocation" type="object" string="Review Consuming Requests"
+                                class="btn-secondary" icon="fa-calendar-check-o" invisible="allocation_scope != 'single' or state != 'confirmed'"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Generated Allocations" name="generated" groups="onehr_timeoff.group_onehr_timeoff_hr"
+                              invisible="allocation_scope != 'mass'">
+                            <field name="generated_allocation_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="employee_name" string="Employee"/>
+                                    <field name="leave_type_id"/>
+                                    <field name="allocated_days"/>
+                                    <field name="period_start"/>
+                                    <field name="period_end"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_employee" type="object" string="Employee" icon="fa-user"/>
+                                    <button name="action_open_requests_using_allocation" type="object" string="Requests" icon="fa-calendar-check-o"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Source &amp; Audit" name="source_audit">
+                            <group>
+                                <field name="batch_parent_id" readonly="1" groups="onehr_timeoff.group_onehr_timeoff_hr"/>
+                                <field name="source_key" readonly="1" groups="onehr_timeoff.group_onehr_timeoff_hr"/>
+                            </group>
+                            <field name="note" readonly="state != 'draft'"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_leave_allocation_search" model="ir.ui.view">
+        <field name="name">onehr.leave.allocation.search.enterprise</field>
+        <field name="model">onehr.leave.allocation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_name" string="Employee"/>
+                <field name="leave_type_id"/>
+                <field name="source"/>
+                <field name="state"/>
+                <field name="company_id"/>
+                <filter name="confirmed" string="Confirmed" domain="[('state','=','confirmed')]"/>
+                <filter name="current" string="Current Entitlement"
+                        domain="[('state','=','confirmed'),('allocation_scope','=','single'),('period_start','&lt;=',context_today()),('period_end','&gt;=',context_today()),'|',('expires_on','=',False),('expires_on','&gt;=',context_today())]"/>
+                <filter name="opening" string="Opening Balance" domain="[('source','=','opening')]"/>
+                <filter name="accrual" string="Accrual" domain="[('source','=','accrual')]"/>
+                <filter name="carryover" string="Carry-over" domain="[('source','=','carryover')]"/>
+                <filter name="mass" string="Mass Batches" domain="[('allocation_scope','=','mass')]"/>
+                <separator/>
+                <group>
+                    <filter name="group_type" string="Leave Type" context="{'group_by':'leave_type_id'}"/>
+                    <filter name="group_source" string="Source" context="{'group_by':'source'}"/>
+                    <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+                    <filter name="group_period" string="Period Year" context="{'group_by':'period_start:year'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_leave_allocation_pivot" model="ir.ui.view">
+        <field name="name">onehr.leave.allocation.pivot.enterprise</field>
+        <field name="model">onehr.leave.allocation</field>
+        <field name="arch" type="xml">
+            <pivot string="Leave Balance Analysis">
+                <field name="leave_type_id" type="row"/>
+                <field name="source" type="col"/>
+                <field name="allocated_days" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_leave_allocation_graph" model="ir.ui.view">
+        <field name="name">onehr.leave.allocation.graph.enterprise</field>
+        <field name="model">onehr.leave.allocation</field>
+        <field name="arch" type="xml">
+            <graph string="Leave Entitlement by Type" type="bar">
+                <field name="leave_type_id"/>
+                <field name="allocated_days" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_leave_allocation" model="ir.actions.act_window">
+        <field name="name">Leave Allocations</field>
+        <field name="res_model">onehr.leave.allocation</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_leave_allocation_search"/>
+        <field name="context">{'search_default_confirmed': 1}</field>
+    </record>
+
+    <record id="action_onehr_my_leave_balance" model="ir.actions.act_window">
+        <field name="name">My Leave Balances</field>
+        <field name="res_model">onehr.leave.allocation</field>
+        <field name="view_mode">list,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_leave_allocation_search"/>
+        <field name="domain">[('allocation_scope','=','single'),('employee_user_id','=',uid)]</field>
+        <field name="context">{'search_default_current': 1}</field>
+    </record>
+
+    <record id="action_onehr_mass_leave_allocation" model="ir.actions.act_window">
+        <field name="name">Mass Leave Allocation</field>
+        <field name="res_model">onehr.leave.allocation</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_allocation_scope':'mass','default_source':'mass'}</field>
+    </record>
+
+    <record id="action_onehr_leave_balance_analytics" model="ir.actions.act_window">
+        <field name="name">Leave Balance Analytics</field>
+        <field name="res_model">onehr.leave.allocation</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_onehr_leave_allocation_search"/>
+        <field name="domain">[('allocation_scope','=','single'),('state','=','confirmed')]</field>
+    </record>
+</odoo>

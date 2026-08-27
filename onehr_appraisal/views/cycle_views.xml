@@ -1,0 +1,273 @@
+<odoo>
+    <record id="view_onehr_appraisal_cycle_list" model="ir.ui.view">
+        <field name="name">onehr.appraisal.cycle.list</field>
+        <field name="model">onehr.appraisal.cycle</field>
+        <field name="arch" type="xml">
+            <list string="Appraisal Cycles"
+                  decoration-success="state == 'closed'"
+                  decoration-info="state == 'in_review'"
+                  decoration-warning="state == 'consolidation'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="cycle_type"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="form_count"/>
+                <field name="completion_rate"/>
+                <field name="average_score"/>
+                <field name="state" widget="badge"/>
+                <button name="action_open_forms" type="object" string="Forms" icon="fa-list"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_appraisal_cycle_kanban" model="ir.ui.view">
+        <field name="name">onehr.appraisal.cycle.kanban</field>
+        <field name="model">onehr.appraisal.cycle</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="state"/>
+                <field name="cycle_type"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="completion_rate"/>
+                <field name="average_score"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong><field name="name"/></strong>
+                            <field name="state" widget="badge"/>
+                        </div>
+                        <div class="text-muted"><field name="code"/> · <field name="cycle_type"/></div>
+                        <div class="mt-2"><field name="date_start"/> → <field name="date_end"/></div>
+                        <div class="mt-2"><strong>Completion: </strong><field name="completion_rate"/>%</div>
+                        <div><strong>Average Score: </strong><field name="average_score"/></div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_onehr_appraisal_cycle_calendar" model="ir.ui.view">
+        <field name="name">onehr.appraisal.cycle.calendar</field>
+        <field name="model">onehr.appraisal.cycle</field>
+        <field name="arch" type="xml">
+            <calendar string="Appraisal Cycle Calendar"
+                      date_start="date_start"
+                      date_stop="date_end"
+                      color="company_id">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="cycle_type"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_onehr_appraisal_cycle_form" model="ir.ui.view">
+        <field name="name">onehr.appraisal.cycle.form</field>
+        <field name="model">onehr.appraisal.cycle</field>
+        <field name="arch" type="xml">
+            <form string="Appraisal Cycle">
+                <header>
+                    <button name="action_open_cycle" type="object" string="Open Cycle"
+                            class="btn-primary" invisible="state != 'draft'"
+                            groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+                    <button name="action_generate_appraisal_forms" type="object"
+                            string="Generate Employee Forms" class="btn-secondary"
+                            invisible="state not in ('draft', 'in_review')"
+                            groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+                    <button name="action_start_consolidation" type="object"
+                            string="Start Consolidation" class="btn-primary"
+                            invisible="state != 'in_review'"
+                            groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+                    <button name="action_close_cycle" type="object"
+                            string="Close Cycle" class="btn-primary"
+                            invisible="state != 'consolidation'"
+                            groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('closed', 'cancelled')"
+                            groups="onehr_appraisal.group_onehr_appraisal_admin"/>
+                    <button name="action_reset_draft" type="object" string="Reset to Draft"
+                            invisible="state == 'draft'"
+                            groups="onehr_appraisal.group_onehr_appraisal_admin"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,in_review,consolidation,closed"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_forms" type="object" class="oe_stat_button"
+                                icon="fa-users">
+                            <field name="form_count" widget="statinfo" string="Appraisals"/>
+                        </button>
+                        <button name="action_open_templates" type="object" class="oe_stat_button"
+                                icon="fa-bullseye">
+                            <field name="template_count" widget="statinfo" string="Targets"/>
+                        </button>
+                        <button name="action_open_forms" type="object" class="oe_stat_button"
+                                icon="fa-check-circle">
+                            <field name="completed_form_count" widget="statinfo" string="Completed"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Closed" bg_color="text-bg-success"
+                            invisible="state != 'closed'"/>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-secondary"
+                            invisible="state != 'cancelled'"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="2026 Annual Performance Review"/></h1>
+                        <div class="text-muted"><field name="code"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Cycle">
+                            <field name="code" readonly="state != 'draft'"/>
+                            <field name="cycle_type" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="state != 'draft'"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Performance Snapshot">
+                            <field name="completion_rate" readonly="1"/>
+                            <field name="average_score" readonly="1"/>
+                            <field name="outstanding_count" readonly="1"/>
+                            <field name="needs_attention_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Schedule" name="schedule">
+                            <group>
+                                <group>
+                                    <field name="date_start" readonly="state != 'draft'"/>
+                                    <field name="date_end" readonly="state != 'draft'"/>
+                                </group>
+                                <group>
+                                    <field name="self_review_deadline"
+                                           readonly="state not in ('draft', 'in_review')"/>
+                                    <field name="manager_review_deadline"
+                                           readonly="state not in ('draft', 'in_review')"/>
+                                    <field name="consolidation_deadline"
+                                           readonly="state not in ('draft', 'in_review')"/>
+                                </group>
+                            </group>
+                            <field name="target_department_ids" widget="many2many_tags"
+                                   readonly="state != 'draft'"/>
+                        </page>
+
+                        <page string="Objective / KPI Template" name="targets">
+                            <div class="d-flex gap-2 mb-2"
+                                 groups="onehr_appraisal.group_onehr_appraisal_hr">
+                                <button name="action_import_kpi_targets" type="object"
+                                        string="Import / Update KPI CSV"
+                                        class="btn-secondary"
+                                        invisible="state != 'draft'"/>
+                                <button name="action_open_templates" type="object"
+                                        string="Open Full Target Workspace"
+                                        class="btn-link"/>
+                            </div>
+                            <group invisible="state != 'draft'">
+                                <field name="kpi_import_file" filename="kpi_import_filename"/>
+                                <field name="kpi_import_filename" invisible="1"/>
+                            </group>
+                            <field name="template_score_ids"
+                                   context="{'default_cycle_id': id, 'default_is_template': True, 'default_rater_type': 'target'}"
+                                   readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="item_code"/>
+                                    <field name="line_type"/>
+                                    <field name="title"/>
+                                    <field name="weight" sum="Total Weight"/>
+                                    <field name="target_value"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Rating &amp; Rater Weights" name="rating">
+                            <group>
+                                <group string="Rating Scale">
+                                    <field name="rating_min" readonly="state != 'draft'"/>
+                                    <field name="rating_max" readonly="state != 'draft'"/>
+                                </group>
+                                <group string="Rater Mix (%)">
+                                    <field name="self_weight" readonly="state != 'draft'"/>
+                                    <field name="manager_weight" readonly="state != 'draft'"/>
+                                    <field name="peer_weight" readonly="state != 'draft'"/>
+                                    <field name="retention_years" readonly="state != 'draft'"/>
+                                </group>
+                            </group>
+                            <field name="instructions"
+                                   placeholder="Explain objective evidence, rating anchors and calibration principles..."/>
+                        </page>
+
+                        <page string="Consolidation" name="consolidation">
+                            <field name="calibration_notes"/>
+                            <field name="closure_notes"/>
+                        </page>
+
+                        <page string="Import / Export" name="import_export">
+                            <group>
+                                <group string="KPI Import">
+                                    <field name="kpi_import_file" filename="kpi_import_filename"/>
+                                    <field name="kpi_import_filename" invisible="1"/>
+                                    <button name="action_import_kpi_targets" type="object"
+                                            string="Process KPI CSV" class="btn-secondary"
+                                            invisible="state != 'draft'"
+                                            groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+                                </group>
+                                <group string="Result Export">
+                                    <button name="action_export_results_csv" type="object"
+                                            string="Prepare Result CSV" class="btn-secondary"/>
+                                    <field name="export_file" filename="export_filename" readonly="1"/>
+                                    <field name="export_filename" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_appraisal_cycle_search" model="ir.ui.view">
+        <field name="name">onehr.appraisal.cycle.search</field>
+        <field name="model">onehr.appraisal.cycle</field>
+        <field name="arch" type="xml">
+            <search string="Appraisal Cycles">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id"/>
+                <field name="cycle_type"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="in_review" string="In Review" domain="[('state', '=', 'in_review')]"/>
+                <filter name="consolidation" string="Consolidation"
+                        domain="[('state', '=', 'consolidation')]"/>
+                <filter name="closed" string="Closed" domain="[('state', '=', 'closed')]"/>
+                <separator/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <group>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_type" string="Cycle Type"
+                            context="{'group_by': 'cycle_type'}"/>
+                    <filter name="group_company" string="Company"
+                            context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_appraisal_cycles" model="ir.actions.act_window">
+        <field name="name">Appraisal Cycles</field>
+        <field name="res_model">onehr.appraisal.cycle</field>
+        <field name="view_mode">kanban,list,calendar,form</field>
+        <field name="search_view_id" ref="view_onehr_appraisal_cycle_search"/>
+    </record>
+</odoo>

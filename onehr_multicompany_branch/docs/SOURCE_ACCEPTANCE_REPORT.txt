@@ -1,0 +1,79 @@
+ONEHR_MULTICOMPANY_BRANCH_SOURCE_ACCEPTANCE_V1
+TARGET: /mnt/data/OneHR_Multicompany_Branch_Direct_Full_Build_v1/onehr_multicompany_branch
+SOURCE_FINGERPRINT_SHA256: CDB1F5832588F3E3367E88F67E4280A1AE07E9037EA66C353705974D4E66B6BC
+PASS_COUNT: 69
+FAIL_COUNT: 0
+
+PASS: Odoo 19 manifest version
+PASS: exact approved hard dependency: onehr_security
+PASS: installable foundation-addon contract
+PASS: generic controller/demo scaffold removed
+PASS: Python syntax/AST validation (15 files)
+PASS: HARD GATE 4 exact target Master Model Registry named models
+PASS: Odoo 19 model classes use exactly one Odoo Python base
+PASS: onehr.branch NEW ED1
+PASS: onehr.mixin.branch NEW abstract ED0
+PASS: res.company native extension
+PASS: res.users native extension
+PASS: security-owned onehr.user.role branch extension
+PASS: Odoo 19 models.Constraint usage
+PASS: explicit allowed-branch user scope
+PASS: default branch preference
+PASS: onehr_security branch-domain hook
+PASS: branch-aware managed-group derivation
+PASS: branch-aware role overlap hook
+PASS: branch scope label hook
+PASS: company branch enablement enforcement
+PASS: obsolete generic scaffold model rejected per Registry
+PASS: no legacy _sql_constraints usage
+PASS: no safe_eval/eval/exec business primitive
+PASS: no sudo() bypass path
+PASS: exact seven reviewed narrow SUPERUSER integrity/derivation/persistence paths
+PASS: exact 7 reviewed ACL rows
+PASS: no direct base.group_user ACL
+PASS: no branch-addon ACL grants unlink
+PASS: Odoo 19 privilege classification
+PASS: Branch User group
+PASS: Branch Manager group
+PASS: Branch Admin group
+PASS: Central Office group
+PASS: global legal-company branch partition
+PASS: explicit allowed-branch record-rule scope
+PASS: Branch Admin user company rule
+PASS: global user-role branch narrowing
+PASS: self-history preservation inside role branch rule
+PASS: server-side Branch Admin authorization
+PASS: Branch Admin res.users write is server-side field-bounded
+PASS: Branch Admin branch IDs are server-validated against caller legal-company scope
+PASS: XML well-formedness (7 files)
+PASS: onehr.branch dedicated views
+PASS: enterprise list view
+PASS: professional form view
+PASS: mandatory search view
+PASS: statusbar widget
+PASS: smart buttons
+PASS: controlled body/quick-selector action
+PASS: controlled lifecycle action
+PASS: hierarchy One2many
+PASS: One2many/list row action
+PASS: chatter integration
+PASS: semantic list decoration
+PASS: native res.company form extension
+PASS: native res.company list extension
+PASS: res.company dedicated branch search view
+PASS: native res.users form extension
+PASS: Odoo 19 base user-list role anchor
+PASS: onehr_security user form integration
+PASS: security role list integration
+PASS: security role form integration
+PASS: security role search integration
+PASS: central-office pivot coverage
+PASS: central-office graph coverage
+PASS: views avoid function-style authorization expressions
+PASS: exact 18 enterprise runtime test methods
+PASS: all required governance/preservation/UI/security/completeness documents present
+PASS: no active Odoo 18 metadata/description remains
+
+ONEHR_MULTICOMPANY_BRANCH_DIRECT_FULL_SOURCE_ACCEPTANCE: PASS
+WINDOWS_RUNTIME_ACCEPTANCE: PENDING
+ONEHR_MULTICOMPANY_BRANCH_MOVE_FORWARD_READY: NO

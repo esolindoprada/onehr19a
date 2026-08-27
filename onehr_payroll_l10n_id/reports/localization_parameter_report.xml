@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_onehr_payroll_l10n_param" model="ir.actions.report">
+        <field name="name">Indonesia Payroll Parameter Record</field>
+        <field name="model">onehr.payroll.l10n.param</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_payroll_l10n_id.report_onehr_payroll_l10n_param_document</field>
+        <field name="report_file">onehr_payroll_l10n_id.report_onehr_payroll_l10n_param_document</field>
+        <field name="binding_model_id" ref="model_onehr_payroll_l10n_param"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_payroll_bridge.group_onehr_payroll_manager'))
+        ]"/>
+        <field name="print_report_name">'Indonesia Payroll Parameters - %s - R%s' % (object.code, object.revision)</field>
+    </record>
+
+    <template id="report_onehr_payroll_l10n_param_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Indonesia Payroll Localization Parameters</h2>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Company</th><td><span t-field="o.company_id"/></td>
+                                    <th>Code / Revision</th><td><span t-field="o.code"/> / <span t-field="o.revision"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Effective Period</th>
+                                    <td><span t-field="o.valid_from"/> → <span t-field="o.valid_to"/></td>
+                                    <th>Regulatory Review</th><td><span t-field="o.regulatory_reviewed_on"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Parameter SHA-256</th><td colspan="3"><span t-field="o.parameter_sha256"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>PPh21 / PTKP</h4>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Default Method</th><td><span t-field="o.default_tax_method"/></td>
+                                    <th>Job Expense</th>
+                                    <td><span t-field="o.job_expense_rate_percent"/>%,
+                                        monthly ceiling <span t-field="o.job_expense_monthly_ceiling"/></td>
+                                </tr>
+                                <tr>
+                                    <th>TER Daily 0%</th><td>≤ <span t-field="o.ter_daily_zero_ceiling"/></td>
+                                    <th>TER Daily 0.5%</th><td>≤ <span t-field="o.ter_daily_half_percent_ceiling"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>BPJS</h4>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>BPJS Kesehatan</th>
+                                    <td>Employer <span t-field="o.bpjs_health_employer_rate_percent"/>% /
+                                        Employee <span t-field="o.bpjs_health_employee_rate_percent"/>%</td>
+                                    <th>Health Wage Ceiling</th><td><span t-field="o.bpjs_health_wage_ceiling"/></td>
+                                </tr>
+                                <tr>
+                                    <th>JHT</th>
+                                    <td>Employer <span t-field="o.bpjs_jht_employer_rate_percent"/>% /
+                                        Employee <span t-field="o.bpjs_jht_employee_rate_percent"/>%</td>
+                                    <th>JP</th>
+                                    <td>Employer <span t-field="o.bpjs_jp_employer_rate_percent"/>% /
+                                        Employee <span t-field="o.bpjs_jp_employee_rate_percent"/>%</td>
+                                </tr>
+                                <tr>
+                                    <th>JP Wage Ceiling</th><td><span t-field="o.bpjs_jp_wage_ceiling"/></td>
+                                    <th>JP Ceiling Effective</th><td><span t-field="o.bpjs_jp_ceiling_effective_from"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>THR</h4>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Minimum Service</th><td><span t-field="o.thr_min_service_months"/> month(s)</td>
+                                    <th>Full Entitlement</th><td><span t-field="o.thr_full_service_months"/> month(s)</td>
+                                </tr>
+                                <tr>
+                                    <th>Full Multiplier</th><td><span t-field="o.thr_full_month_multiplier"/> month wage</td>
+                                    <th>Payment Deadline</th><td><span t-field="o.thr_payment_deadline_days_before_holiday"/> days before holiday</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Legal References</h4>
+                        <p><strong>PPh21:</strong> <span t-field="o.pph21_legal_reference"/></p>
+                        <p><strong>BPJS Kesehatan:</strong> <span t-field="o.bpjs_health_legal_reference"/></p>
+                        <p><strong>BPJS Ketenagakerjaan:</strong> <span t-field="o.bpjs_tk_legal_reference"/></p>
+                        <p><strong>THR:</strong> <span t-field="o.thr_legal_reference"/></p>
+
+                        <p class="text-muted">
+                            This document records reviewed payroll-localization parameters. It is not a payslip,
+                            tax filing, payment order, legal opinion, or accounting entry.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

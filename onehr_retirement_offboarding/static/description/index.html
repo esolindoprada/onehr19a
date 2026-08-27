@@ -1,0 +1,214 @@
+<!--
+OneHR — Retirement & Offboarding
+File: static/description/index.html
+Odoo 18 CE | License: LGPL-3.0
+
+CATATAN:
+- README.md di root untuk dokumentasi panjang; file ini tampil di Apps UI Odoo.
+- Hindari <blockquote> sesuai pedoman proyek.
+-->
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span3">
+      <img src="icon.png" alt="OneHR Retirement & Offboarding Icon" style="width:100%; border-radius:16px;">
+    </div>
+    <div class="oe_span9">
+      <h1 class="oe_slogan">OneHR — Retirement &amp; Offboarding</h1>
+      <h2 class="oe_slogan">Resign/Retire • Checklist Handover • Exit Interview • Revoke Akses • Final Benefit</h2>
+      <p>
+        Modul offboarding terpadu untuk mengelola <b>pengunduran diri &amp; pensiun</b> karyawan:
+        buat <b>kasus offboarding</b>, hasilkan <b>checklist clearance</b> lintas fungsi (HR/IT/Finance),
+        lakukan <b>exit interview</b>, <b>cabut akses</b>, dan siapkan <b>final payout/benefit</b>—
+        terintegrasi dengan ekosistem <b>OneHR</b> pada <b>Odoo 18 Community Edition</b>.
+      </p>
+      <p>
+        <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+        <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company/Branch</span>
+        <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Workflow Approval</span>
+        <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Portal Self-Service</span>
+        <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail &amp; Activities</span>
+        <span style="display:inline-block;background:#2e7d32;color:#fff;padding:4px 8px;border-radius:6px;">Attrition Analytics</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Overview</h3>
+      <p>
+        OneHR — Retirement &amp; Offboarding memusatkan proses akhir masa kerja karyawan:
+        dari <b>permintaan offboarding</b>, <b>penugasan checklist</b> per pemilik tugas (HR/IT/Finance/Line Manager),
+        <b>penjadwalan exit interview</b>, <b>revokasi akses</b> sistem/SSO, hingga <b>rekap clearance</b> &amp; pengukuran KPI.
+        Semua berlangsung dengan <i>approval matrix</i>, pengingat SLA, dan dukungan multi-company/branch.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Key Features</h3>
+      <ul>
+        <li><b>Offboarding Case</b> dengan tahapan <i>Requested → In Progress → Completed → Closed</i></li>
+        <li><b>Checklist Template</b> per job family/grade; auto-generate tugas clearance</li>
+        <li><b>Ownership</b> tugas lintas fungsi (HR/IT/Finance/Line Manager) + SLA &amp; reminder</li>
+        <li><b>Asset &amp; Clearance</b>: daftar item (laptop, kartu akses, email alias, dll.) &amp; status pengembalian</li>
+        <li><b>Exit Interview</b> (pertanyaan, skor, alasan keluar) + analitik attrition</li>
+        <li><b>Revoke Access</b>: penonaktifan <i>users</i> Odoo &amp; trigger SSO (via integrasi)</li>
+        <li><b>Final Benefit</b>: jembatan ke payroll/finance untuk perhitungan final payout</li>
+        <li><b>Mail/Activities</b>: undangan, reminder tugas, &amp; notifikasi kelulusan clearance</li>
+        <li><b>Portal</b>: karyawan melihat status offboarding &amp; mengisi exit interview</li>
+        <li><b>Audit &amp; Compliance</b>: jejak aktivitas, siapa mencabut apa &amp; kapan</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Core Models</h3>
+      <ul>
+        <li><b>onehr.offboarding</b> — master kasus offboarding (karyawan, tanggal, state, SLA)</li>
+        <li><b>onehr.offboarding.checklist</b> — tugas clearance per owner (HR/IT/Finance/Manager)</li>
+        <li><b>onehr.clearance.item</b> — katalog item serah-terima (asset, credential, akses)</li>
+        <li><b>onehr.exit.interview</b> — form pertanyaan, skor, &amp; alasan keluar</li>
+        <li><b>hr.employee (inherit)</b> — <i>exit_date</i>, <i>exit_reason</i>, tombol smart Offboarding</li>
+        <li><b>hr.contract (inherit)</b> — keterkaitan terminasi &amp; final payout</li>
+        <li><b>res.users (inherit)</b> — flag/referensi revokasi akses</li>
+      </ul>
+      <p style="margin-top:8px;">Pelaporan: <i>time-to-close</i>, tugas terlambat, distribusi alasan keluar.</p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Workflow Ringkas</h3>
+      <ol>
+        <li>HR/Manager membuat <b>Offboarding</b> (resign/retire), tetapkan tanggal &amp; alasan.</li>
+        <li>Generate <b>Checklist</b> dari template → tugas dibagikan ke HR/IT/Finance/Manager.</li>
+        <li>Jadwalkan <b>Exit Interview</b>; karyawan mengisi kuesioner (portal).</li>
+        <li><b>Revoke Access</b> &amp; penarikan aset (kartu, laptop, email, SSO, dsb.).</li>
+        <li>Proses <b>Final Benefit/Payout</b> (bridge ke payroll/finance).</li>
+        <li>Semua tugas <b>Completed</b> → kasus <b>Closed</b>; dokumen &amp; audit tersimpan.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Holistic Integrations (OneHR Suite)</h3>
+      <p>
+        Terintegrasi dengan: <i>onehr_corehr</i>, <i>onehr_security</i>, <i>onehr_workflow_approval</i>,
+        <i>onehr_document</i> (lampiran &amp; form), <i>onehr_portal_self_service</i> (akses karyawan),
+        <i>onehr_payroll_bridge</i> (final payout), serta modul analytics/reporting OneHR.
+        Integrasi bersifat <i>soft-coupled</i> via relasi, server action, mail template, dan event log.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span4">
+      <h3>Installation</h3>
+      <ol>
+        <li>Tambahkan modul ke <i>addons_path</i> Odoo.</li>
+        <li>Update Apps list, cari <b>OneHR — Retirement &amp; Offboarding</b>.</li>
+        <li>Install; dependensi inti akan terpasang otomatis.</li>
+      </ol>
+    </div>
+    <div class="oe_span4">
+      <h3>Configuration</h3>
+      <ul>
+        <li>Atur <b>Checklist Templates</b> per job family/grade &amp; owner tugas.</li>
+        <li>Tentukan <b>Approval Matrix</b>, SLA &amp; reminder (cron/activities).</li>
+        <li>Siapkan <b>Exit Interview</b> Q&amp;A &amp; kategori alasan keluar.</li>
+        <li>Aktifkan <b>bridges</b>: document, payroll, &amp; revoke SSO bila diperlukan.</li>
+      </ul>
+    </div>
+    <div class="oe_span4">
+      <h3>Security</h3>
+      <ul>
+        <li>Groups: HR Manager, HR Officer, IT Stakeholder, Finance Stakeholder.</li>
+        <li>Record Rules: scope perusahaan/cabang &amp; kepemilikan tugas.</li>
+        <li>Audit: pencatatan aksi revokasi &amp; clearance untuk keperluan compliance.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Grid screenshot; ganti s1.png..s6.png dengan tangkapan layar Anda -->
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Screenshots</h3>
+    </div>
+    <div class="oe_span4"><img src="s1.png" alt="Offboarding Kanban" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s2.png" alt="Offboarding Form" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s3.png" alt="Checklist Tasks" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s4.png" alt="Exit Interview" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+    <div class="oe_span4"><img src="s5.png" alt="Revoke Access Summary" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+    <div class="oe_span4"><img src="s6.png" alt="Attrition Analytics" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Demo &amp; Testing</h3>
+      <ul>
+        <li>Demo data: contoh template checklist, kasus resign/retire, exit interview.</li>
+        <li>Unit tests: alur status, SLA reminder, rule akses, &amp; konsistensi revoke.</li>
+        <li>UAT: request → checklist → exit interview → revoke → final payout → closed.</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Performance Notes</h3>
+      <ul>
+        <li>Index: employee_id, owner_id, state, due_date, exit_date.</li>
+        <li>Gunakan <i>read_group</i> untuk agregasi; hindari compute berat di list.</li>
+        <li>Arsipkan checklist selesai untuk menjaga performa pada volume besar.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Assets</h3>
+      <ul>
+        <li>JS: <i>offboarding_widget.js</i></li>
+        <li>QWeb: <i>offboarding_templates.xml</i></li>
+        <li>CSS: <i>style.css</i></li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Upgrade &amp; Migration</h3>
+      <ul>
+        <li>Nama &amp; state model konsisten di OneHR suite.</li>
+        <li>Compat field disediakan saat penyesuaian data historis.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>License</h3>
+      <p>Distribusi di bawah lisensi <b>LGPL-3.0</b>. Lihat berkas <i>LICENSE</i>.</p>
+    </div>
+    <div class="oe_span6">
+      <h3>Support &amp; Contribution</h3>
+      <p>
+        Laporkan isu &amp; ajukan perbaikan melalui alur kontribusi OneHR:
+        sertakan test, ikuti style code, dan dokumentasikan dampak migrasi.
+      </p>
+    </div>
+  </div>
+</section>

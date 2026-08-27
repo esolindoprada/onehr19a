@@ -1,0 +1,581 @@
+<odoo>
+    <record id="view_onehr_policy_list" model="ir.ui.view">
+        <field name="name">onehr.policy.list.enterprise</field>
+        <field name="model">onehr.policy</field>
+        <field name="arch" type="xml">
+            <list string="Policies &amp; Procedures"
+                  decoration-success="state == 'published' and acknowledgement_rate >= 90.0 and not review_overdue"
+                  decoration-info="state == 'approval'"
+                  decoration-warning="state == 'review' or review_overdue"
+                  decoration-danger="state == 'rejected'"
+                  decoration-muted="state == 'archived' or not active">
+                <field name="is_current" column_invisible="True"/>
+                <field name="review_overdue" column_invisible="True"/>
+                <field name="policy_code"/>
+                <field name="name"/>
+                <field name="version_no"/>
+                <field name="policy_type" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="is_current"/>
+                <field name="owner_name"/>
+                <field name="effective_from"/>
+                <field name="review_due_date"/>
+                <field name="audience_count"/>
+                <field name="pending_ack_count"/>
+                <field name="acknowledgement_rate" widget="percentage"/>
+                <field name="evidence_coverage_rate" widget="percentage" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_print_policy" type="object"
+                        string="Print" icon="fa-file-pdf-o"
+                        invisible="state not in ('approved', 'published', 'review', 'archived')"/>
+                <button name="action_create_revision" type="object"
+                        string="Revise" icon="fa-copy"
+                        invisible="state not in ('published', 'review')"
+                        groups="onehr_pnp.group_onehr_pnp_compliance"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_policy_kanban" model="ir.ui.view">
+        <field name="name">onehr.policy.kanban.enterprise</field>
+        <field name="model">onehr.policy</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="policy_code"/>
+                <field name="name"/>
+                <field name="version_no"/>
+                <field name="policy_type"/>
+                <field name="state"/>
+                <field name="owner_name"/>
+                <field name="is_current"/>
+                <field name="review_due_date"/>
+                <field name="review_overdue"/>
+                <field name="acknowledgement_rate"/>
+                <field name="evidence_coverage_rate"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong><field name="name"/></strong>
+                            <field name="state" widget="badge"/>
+                        </div>
+                        <div class="text-muted">
+                            <field name="policy_code"/> · V<field name="version_no"/>
+                        </div>
+                        <div class="mt-2">
+                            <span class="me-2"><field name="policy_type" widget="badge"/></span>
+                            <span t-if="record.is_current.raw_value"
+                                  class="badge text-bg-success">CURRENT</span>
+                        </div>
+                        <div class="mt-2">
+                            <strong>Owner:</strong> <field name="owner_name"/>
+                        </div>
+                        <div class="mt-2">
+                            <strong>Acknowledgement:</strong>
+                            <field name="acknowledgement_rate" widget="percentage"/>
+                        </div>
+                        <div>
+                            <strong>Evidence Coverage:</strong>
+                            <field name="evidence_coverage_rate" widget="percentage"/>
+                        </div>
+                        <div t-if="record.review_due_date.raw_value">
+                            <strong>Review Due:</strong> <field name="review_due_date"/>
+                        </div>
+                        <div t-if="record.review_overdue.raw_value" class="mt-1">
+                            <span class="badge text-bg-warning">REVIEW OVERDUE</span>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_onehr_policy_form" model="ir.ui.view">
+        <field name="name">onehr.policy.form.enterprise</field>
+        <field name="model">onehr.policy</field>
+        <field name="arch" type="xml">
+            <form string="Policy / Procedure">
+                <header>
+                    <button name="action_submit_policy_approval" type="object"
+                            string="Submit for Approval"
+                            class="btn-primary"
+                            invisible="state not in ('draft', 'rejected')"
+                            groups="onehr_pnp.group_onehr_pnp_owner"/>
+                    <button name="action_return_to_draft" type="object"
+                            string="Return to Draft"
+                            invisible="state not in ('approved', 'rejected')"
+                            groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                    <button name="action_publish" type="object"
+                            string="Publish"
+                            class="btn-primary"
+                            invisible="state != 'approved'"
+                            groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                    <button name="action_start_review" type="object"
+                            string="Start Review"
+                            invisible="state != 'published' or not is_current"
+                            groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                    <button name="action_complete_review_no_change" type="object"
+                            string="Review Complete — No Change"
+                            class="btn-primary"
+                            invisible="state != 'review' or not is_current"
+                            groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                    <button name="action_create_revision" type="object"
+                            string="Create Controlled Revision"
+                            invisible="state not in ('published', 'review')"
+                            groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                    <button name="action_archive" type="object"
+                            string="Archive"
+                            invisible="state not in ('published', 'review')"
+                            groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,approval,approved,published,review,archived,rejected"/>
+                </header>
+
+                <sheet>
+                    <field name="is_current" invisible="1"/>
+                    <field name="review_overdue" invisible="1"/>
+                    <field name="active" invisible="1"/>
+                    <field name="previous_policy_id" invisible="1"
+                           groups="onehr_pnp.group_onehr_pnp_owner"/>
+                    <field name="archive_document_id" invisible="1"
+                           groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                    <field name="archive_document_version_id" invisible="1"
+                           groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                    <field name="onehr_approval_request_count" invisible="1"
+                           groups="onehr_pnp.group_onehr_pnp_owner"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_approval_requests" type="object"
+                                class="oe_stat_button" icon="fa-check-square-o"
+                                groups="onehr_pnp.group_onehr_pnp_owner">
+                            <field name="onehr_approval_request_count"
+                                   widget="statinfo" string="Approvals"/>
+                        </button>
+                        <button name="action_open_versions" type="object"
+                                class="oe_stat_button" icon="fa-history"
+                                groups="onehr_pnp.group_onehr_pnp_owner">
+                            <field name="version_count"
+                                   widget="statinfo" string="Versions"/>
+                        </button>
+                        <button name="action_open_acknowledgements" type="object"
+                                class="oe_stat_button" icon="fa-check-circle">
+                            <field name="audience_count"
+                                   widget="statinfo" string="Audience"/>
+                        </button>
+                        <button name="action_open_evidence" type="object"
+                                class="oe_stat_button" icon="fa-folder-open">
+                            <field name="verified_evidence_count"
+                                   widget="statinfo" string="Evidence"/>
+                        </button>
+                        <button name="action_open_archive_document" type="object"
+                                class="oe_stat_button" icon="fa-archive"
+                                invisible="not archive_document_id"
+                                groups="onehr_pnp.group_onehr_pnp_compliance">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Document Archive</span>
+                            </div>
+                        </button>
+                        <button name="action_open_archive_snapshot" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not archive_document_version_id"
+                                groups="onehr_pnp.group_onehr_pnp_compliance">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Archive Snapshot</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="CURRENT"
+                            bg_color="text-bg-success"
+                            invisible="not is_current"/>
+                    <widget name="web_ribbon" title="REVIEW OVERDUE"
+                            bg_color="text-bg-warning"
+                            invisible="not review_overdue"/>
+                    <widget name="web_ribbon" title="ARCHIVED"
+                            bg_color="text-bg-secondary"
+                            invisible="state != 'archived'"/>
+                    <widget name="web_ribbon" title="REJECTED"
+                            bg_color="text-bg-danger"
+                            invisible="state != 'rejected'"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"
+                                   placeholder="Remote Work Policy"
+                                   readonly="state not in ('draft', 'rejected')"/>
+                        </h1>
+                        <div class="text-muted">
+                            <field name="policy_code" readonly="1"/> ·
+                            Version <field name="version_no" readonly="1"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Policy Identity">
+                            <field name="policy_type"
+                                   readonly="state not in ('draft', 'rejected')"/>
+                            <field name="owner_name" readonly="1"/>
+                            <field name="owner_user_id"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   groups="onehr_pnp.group_onehr_pnp_owner"/>
+                            <field name="company_id"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   groups="base.group_multi_company"/>
+                            <field name="risk_level"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   groups="onehr_pnp.group_onehr_pnp_owner"/>
+                            <field name="branch_scope_key"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   groups="onehr_pnp.group_onehr_pnp_owner"/>
+                        </group>
+                        <group string="Effectivity &amp; Compliance">
+                            <field name="effective_from"
+                                   readonly="state not in ('draft', 'rejected')"/>
+                            <field name="effective_to" readonly="1"/>
+                            <field name="review_due_date"
+                                   readonly="state not in ('draft', 'rejected')"/>
+                            <field name="retention_until" readonly="1"
+                                   groups="onehr_pnp.group_onehr_pnp_owner"/>
+                            <field name="acknowledgement_rate"
+                                   widget="progressbar" readonly="1"/>
+                            <field name="evidence_coverage_rate"
+                                   widget="progressbar" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 flex-wrap mb-3">
+                        <button name="action_print_policy" type="object"
+                                string="Print Policy"
+                                class="btn-secondary"/>
+                        <button name="action_preview_audience" type="object"
+                                string="Preview Audience"
+                                class="btn-secondary"
+                                invisible="state not in ('draft', 'rejected')"
+                                groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                        <button name="action_queue_publication_notice" type="object"
+                                string="Queue Publication Notice"
+                                class="btn-secondary"
+                                invisible="state not in ('published', 'review')"
+                                groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                        <button name="action_send_ack_reminders" type="object"
+                                string="Refresh Acknowledgement Reminders"
+                                class="btn-secondary"
+                                invisible="state not in ('published', 'review')"
+                                groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                        <button name="action_print_compliance" type="object"
+                                string="Compliance Report"
+                                class="btn-secondary"
+                                invisible="state not in ('published', 'review', 'archived')"
+                                groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                        <button name="action_open_related_sops" type="object"
+                                string="Open Related SOPs"
+                                class="btn-secondary"
+                                invisible="not related_sop_references"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Purpose &amp; Scope">
+                            <field name="purpose"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   placeholder="Why this policy/procedure exists and the governed outcome..."/>
+                            <field name="scope"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   placeholder="Population, process, locations and exclusions covered..."/>
+                        </page>
+
+                        <page string="Policy / Procedure">
+                            <field name="policy_statement"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   placeholder="Controlled policy requirements or procedural rules..."/>
+                        </page>
+
+                        <page string="Responsibilities &amp; Controls">
+                            <field name="responsibilities"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   placeholder="Policy owner, line management, employee and compliance responsibilities..."/>
+                            <field name="controls"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   placeholder="Mandatory controls, compliance checkpoints and required evidence..."/>
+                            <field name="exceptions"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   placeholder="Exception handling, escalation and approved deviations..."/>
+                            <field name="references"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   placeholder="Legislation, regulations, standards and related controlled documents..."/>
+                            <field name="supporting_attachment_ids"
+                                   widget="many2many_binary"
+                                   readonly="state not in ('draft', 'rejected')"/>
+                        </page>
+
+                        <page string="Publication Audience"
+                              groups="onehr_pnp.group_onehr_pnp_owner">
+                            <group>
+                                <group string="Audience Definition">
+                                    <field name="target_all_employees"
+                                           readonly="state not in ('draft', 'rejected')"/>
+                                    <field name="has_specific_employee_targets"
+                                           readonly="1"/>
+                                    <field name="target_department_ids"
+                                           widget="many2many_tags"
+                                           readonly="state not in ('draft', 'rejected')"
+                                           invisible="target_all_employees"/>
+                                    <field name="target_job_ids"
+                                           widget="many2many_tags"
+                                           readonly="state not in ('draft', 'rejected')"
+                                           invisible="target_all_employees"/>
+                                    <field name="target_employee_ids"
+                                           widget="many2many_tags"
+                                           readonly="state not in ('draft', 'rejected')"
+                                           invisible="target_all_employees"
+                                           groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                                </group>
+                                <group string="Required Employee Actions">
+                                    <field name="acknowledgement_required"
+                                           readonly="state not in ('draft', 'rejected')"/>
+                                    <field name="evidence_required"
+                                           readonly="state not in ('draft', 'rejected')"/>
+                                    <field name="evidence_due_days"
+                                           readonly="state not in ('draft', 'rejected')"
+                                           invisible="not evidence_required"/>
+                                    <field name="related_sop_references"
+                                           readonly="state not in ('draft', 'rejected')"/>
+                                </group>
+                            </group>
+                            <button name="action_preview_audience" type="object"
+                                    string="Resolve &amp; Preview Audience"
+                                    class="btn-secondary"
+                                    invisible="state not in ('draft', 'rejected')"
+                                    groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                        </page>
+
+                        <page string="Governance"
+                              groups="onehr_pnp.group_onehr_pnp_owner">
+                            <group>
+                                <group string="Review &amp; Retention">
+                                    <field name="review_interval_months"
+                                           readonly="state not in ('draft', 'rejected')"/>
+                                    <field name="ack_reminder_days"
+                                           readonly="state not in ('draft', 'rejected')"/>
+                                    <field name="retention_years"
+                                           readonly="state not in ('draft', 'rejected')"/>
+                                    <field name="document_category_id"
+                                           readonly="state not in ('draft', 'rejected')"/>
+                                </group>
+                                <group string="Workflow &amp; Notifications">
+                                    <field name="compliance_user_ids"
+                                           widget="many2many_tags"
+                                           readonly="state not in ('draft', 'rejected')"/>
+                                    <field name="onehr_latest_approval_state" readonly="1"/>
+                                    <field name="publication_template_id"/>
+                                    <field name="reminder_template_id"/>
+                                    <field name="auto_email_reminders"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Acknowledgements">
+                            <field name="ack_ids" readonly="1">
+                                <list create="false" delete="false"
+                                      decoration-success="state == 'acknowledged'"
+                                      decoration-warning="state == 'pending'"
+                                      decoration-muted="state == 'not_required'">
+                                    <field name="employee_number"
+                                           groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                                    <field name="employee_name"/>
+                                    <field name="department_name"/>
+                                    <field name="job_name"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="due_date"/>
+                                    <field name="acknowledged_at"/>
+                                    <field name="days_to_ack"/>
+                                    <field name="verified_evidence_count"/>
+                                    <button name="action_open_policy" type="object"
+                                            string="Policy" icon="fa-book"/>
+                                    <button name="action_open_evidence" type="object"
+                                            string="Evidence" icon="fa-folder-open"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Compliance Evidence">
+                            <field name="evidence_ids" readonly="1">
+                                <list create="false" delete="false"
+                                      decoration-success="state == 'verified'"
+                                      decoration-info="state == 'submitted'"
+                                      decoration-danger="state == 'rejected'">
+                                    <field name="ack_id" column_invisible="True"/>
+                                    <field name="evidence_scope" widget="badge"/>
+                                    <field name="employee_number"
+                                           groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                                    <field name="employee_name"/>
+                                    <field name="department_name"/>
+                                    <field name="title"/>
+                                    <field name="evidence_type" widget="badge"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="due_date"/>
+                                    <field name="submitted_at"/>
+                                    <field name="verified_at"/>
+                                    <button name="action_open_acknowledgement" type="object"
+                                            string="Assignment" icon="fa-check-square-o"
+                                            invisible="not ack_id"/>
+                                    <button name="action_verify" type="object"
+                                            string="Verify" icon="fa-check"
+                                            invisible="state != 'submitted'"
+                                            groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Version &amp; Approval Evidence"
+                              groups="onehr_pnp.group_onehr_pnp_owner">
+                            <group>
+                                <group string="Version History">
+                                    <field name="previous_policy_id" readonly="1"/>
+                                    <field name="version_count" readonly="1"/>
+                                    <field name="change_summary"
+                                           readonly="state not in ('draft', 'rejected')"/>
+                                    <field name="content_fingerprint" readonly="1"/>
+                                </group>
+                                <group string="Approval / Publication">
+                                    <field name="last_approval_request_id" readonly="1"/>
+                                    <field name="approval_finalized_at" readonly="1"/>
+                                    <field name="approved_at" readonly="1"/>
+                                    <field name="approved_by_name" readonly="1"/>
+                                    <field name="published_at" readonly="1"/>
+                                    <field name="published_by_name" readonly="1"/>
+                                    <field name="review_started_at" readonly="1"/>
+                                    <field name="archived_at" readonly="1"/>
+                                    <field name="archived_by_name" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+
+                    <chatter groups="onehr_pnp.group_onehr_pnp_owner"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_policy_search" model="ir.ui.view">
+        <field name="name">onehr.policy.search.enterprise</field>
+        <field name="model">onehr.policy</field>
+        <field name="arch" type="xml">
+            <search string="Search Policies &amp; Procedures">
+                <field name="policy_code"/>
+                <field name="name"/>
+                <field name="owner_name"/>
+                <field name="policy_type"/>
+                <filter name="current" string="Current"
+                        domain="[('is_current', '=', True)]"/>
+                <filter name="draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="approval" string="Approval"
+                        domain="[('state', '=', 'approval')]"/>
+                <filter name="approved" string="Approved"
+                        domain="[('state', '=', 'approved')]"/>
+                <filter name="published" string="Published"
+                        domain="[('state', '=', 'published')]"/>
+                <filter name="review" string="Review"
+                        domain="[('state', '=', 'review')]"/>
+                <filter name="rejected" string="Rejected"
+                        domain="[('state', '=', 'rejected')]"/>
+                <filter name="archived" string="Archived"
+                        domain="[('state', '=', 'archived')]"/>
+                <separator/>
+                <filter name="review_overdue" string="Review Overdue"
+                        domain="[('review_overdue', '=', True)]"/>
+                <filter name="pending_ack" string="Pending Acknowledgements"
+                        domain="[('pending_ack_count', '&gt;', 0)]"/>
+                <filter name="evidence_gap" string="Evidence Coverage &lt; 100%"
+                        domain="[('evidence_required', '=', True), ('evidence_coverage_rate', '&lt;', 100.0)]"/>
+                <group>
+                    <filter name="group_state" string="State"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_type" string="Policy Type"
+                            context="{'group_by': 'policy_type'}"/>
+                    <filter name="group_owner" string="Owner"
+                            context="{'group_by': 'owner_user_id'}"/>
+                    <filter name="group_review_due" string="Review Due"
+                            context="{'group_by': 'review_due_date'}"/>
+                    <filter name="group_company" string="Company"
+                            context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_policy_calendar" model="ir.ui.view">
+        <field name="name">onehr.policy.calendar.review.enterprise</field>
+        <field name="model">onehr.policy</field>
+        <field name="arch" type="xml">
+            <calendar string="Policy Review Calendar"
+                      date_start="review_due_date"
+                      color="policy_type">
+                <field name="policy_code"/>
+                <field name="name"/>
+                <field name="state"/>
+                <field name="owner_name"/>
+                <field name="acknowledgement_rate"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_onehr_policy_pivot" model="ir.ui.view">
+        <field name="name">onehr.policy.pivot.compliance.enterprise</field>
+        <field name="model">onehr.policy</field>
+        <field name="arch" type="xml">
+            <pivot string="Policy Compliance Portfolio">
+                <field name="policy_type" type="row"/>
+                <field name="state" type="col"/>
+                <field name="audience_count" type="measure"/>
+                <field name="pending_ack_count" type="measure"/>
+                <field name="acknowledgement_rate" type="measure"/>
+                <field name="evidence_coverage_rate" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_policy_graph" model="ir.ui.view">
+        <field name="name">onehr.policy.graph.compliance.enterprise</field>
+        <field name="model">onehr.policy</field>
+        <field name="arch" type="xml">
+            <graph string="Policy Acknowledgement Compliance" type="bar">
+                <field name="policy_type"/>
+                <field name="acknowledgement_rate" type="measure"/>
+                <field name="evidence_coverage_rate" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_policy_my_current" model="ir.actions.act_window">
+        <field name="name">My Current Policies</field>
+        <field name="res_model">onehr.policy</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_onehr_policy_search"/>
+        <field name="domain">[('is_current', '=', True), ('state', 'in', ['published', 'review'])]</field>
+    </record>
+
+    <record id="action_onehr_policy_register" model="ir.actions.act_window">
+        <field name="name">Policy Register</field>
+        <field name="res_model">onehr.policy</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_onehr_policy_search"/>
+    </record>
+
+    <record id="action_onehr_policy_review_calendar" model="ir.actions.act_window">
+        <field name="name">Policy Review Calendar</field>
+        <field name="res_model">onehr.policy</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="search_view_id" ref="view_onehr_policy_search"/>
+        <field name="domain">[('is_current', '=', True), ('state', 'in', ['published', 'review'])]</field>
+    </record>
+
+    <record id="action_onehr_policy_analytics" model="ir.actions.act_window">
+        <field name="name">Policy Compliance Analytics</field>
+        <field name="res_model">onehr.policy</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_onehr_policy_search"/>
+        <field name="domain">[('is_current', '=', True), ('state', 'in', ['published', 'review'])]</field>
+    </record>
+</odoo>

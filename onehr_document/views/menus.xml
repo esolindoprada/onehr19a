@@ -1,0 +1,67 @@
+<odoo>
+    <menuitem id="menu_onehr_document_root"
+              name="Documents"
+              sequence="70"
+              groups="onehr_document.group_onehr_document_user"/>
+
+    <menuitem id="menu_onehr_document_operations"
+              name="Operations"
+              parent="menu_onehr_document_root"
+              sequence="10"
+              groups="onehr_document.group_onehr_document_user"/>
+
+    <menuitem id="menu_onehr_documents"
+              name="HR Documents"
+              parent="menu_onehr_document_operations"
+              action="action_documents"
+              sequence="10"
+              groups="onehr_document.group_onehr_document_user"/>
+
+    <menuitem id="menu_onehr_document_versions"
+              name="Document Versions"
+              parent="menu_onehr_document_operations"
+              action="action_document_versions"
+              sequence="20"
+              groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance"/>
+
+    <menuitem id="menu_onehr_document_expiry_dashboard"
+              name="Expiry &amp; Retention"
+              parent="menu_onehr_document_operations"
+              action="action_document_expiry_dashboard"
+              sequence="30"
+              groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance"/>
+
+    <menuitem id="menu_onehr_esign_transactions"
+              name="E-Sign Transactions"
+              parent="menu_onehr_document_operations"
+              action="action_esign_transactions"
+              sequence="40"
+              groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance"/>
+
+    <menuitem id="menu_onehr_document_configuration"
+              name="Configuration"
+              parent="menu_onehr_document_root"
+              sequence="80"
+              groups="onehr_document.group_onehr_document_manager,onehr_document.group_onehr_document_compliance"/>
+
+    <menuitem id="menu_onehr_document_categories"
+              name="Categories"
+              parent="menu_onehr_document_configuration"
+              action="action_document_categories"
+              sequence="10"
+              groups="onehr_document.group_onehr_document_manager,onehr_document.group_onehr_document_compliance"/>
+
+    <menuitem id="menu_onehr_document_templates"
+              name="Templates"
+              parent="menu_onehr_document_configuration"
+              action="action_document_templates"
+              sequence="20"
+              groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance"/>
+
+    <menuitem id="menu_onehr_document_template_versions"
+              name="Template Versions"
+              parent="menu_onehr_document_configuration"
+              action="action_document_template_versions"
+              sequence="30"
+              groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance"/>
+</odoo>

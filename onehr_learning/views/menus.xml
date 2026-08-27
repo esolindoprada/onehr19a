@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_onehr_learning_root"
+              name="Learning"
+              parent="onehr_base.menu_onehr_root"
+              sequence="60"
+              groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_trainer,onehr_learning.group_onehr_learning_manager_approver"/>
+
+    <menuitem id="menu_onehr_learning_operations"
+              name="Learning Operations"
+              parent="menu_onehr_learning_root"
+              sequence="10"
+              groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_trainer,onehr_learning.group_onehr_learning_manager_approver"/>
+    <menuitem id="menu_onehr_learning_courses"
+              name="Courses"
+              parent="menu_onehr_learning_operations"
+              action="action_onehr_learning_courses"
+              sequence="10"/>
+    <menuitem id="menu_onehr_learning_sessions"
+              name="Sessions"
+              parent="menu_onehr_learning_operations"
+              action="action_onehr_learning_sessions"
+              sequence="20"/>
+    <menuitem id="menu_onehr_learning_enrollments"
+              name="Enrollments"
+              parent="menu_onehr_learning_operations"
+              action="action_onehr_learning_enrollments"
+              sequence="30"/>
+    <menuitem id="menu_onehr_learning_attendance"
+              name="Training Attendance"
+              parent="menu_onehr_learning_operations"
+              action="action_onehr_learning_attendance"
+              sequence="40"/>
+    <menuitem id="menu_onehr_learning_certificates"
+              name="Certificates"
+              parent="menu_onehr_learning_operations"
+              action="action_onehr_learning_certificates"
+              sequence="50"/>
+
+    <menuitem id="menu_onehr_learning_finance"
+              name="Budget &amp; Cost"
+              parent="menu_onehr_learning_root"
+              sequence="20"
+              groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_manager_approver"/>
+    <menuitem id="menu_onehr_learning_budgets"
+              name="Budgets"
+              parent="menu_onehr_learning_finance"
+              action="action_onehr_learning_budgets"
+              sequence="10"
+              groups="onehr_learning.group_onehr_learning_manager_approver"/>
+    <menuitem id="menu_onehr_learning_cost_lines"
+              name="Training Costs"
+              parent="menu_onehr_learning_finance"
+              action="action_onehr_learning_cost_lines"
+              sequence="20"/>
+
+    <menuitem id="menu_onehr_learning_configuration"
+              name="Learning Configuration"
+              parent="menu_onehr_learning_root"
+              sequence="30"
+              groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_manager_approver"/>
+    <menuitem id="menu_onehr_learning_vendors"
+              name="Training Vendors"
+              parent="menu_onehr_learning_configuration"
+              action="action_onehr_learning_vendors"
+              sequence="10"/>
+</odoo>

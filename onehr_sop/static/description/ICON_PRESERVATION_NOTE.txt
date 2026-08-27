@@ -1,0 +1,1 @@
+No project-owned SOP icon was present in the supplied tutorial scaffold. This Direct Full build does not fabricate or overwrite a binary icon.

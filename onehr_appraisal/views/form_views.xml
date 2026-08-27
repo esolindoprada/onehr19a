@@ -1,0 +1,438 @@
+<odoo>
+    <record id="view_onehr_appraisal_form_list" model="ir.ui.view">
+        <field name="name">onehr.appraisal.form.list</field>
+        <field name="model">onehr.appraisal.form</field>
+        <field name="arch" type="xml">
+            <list string="Appraisals"
+                  decoration-success="state == 'closed'"
+                  decoration-info="state == 'in_review'"
+                  decoration-warning="state == 'consolidation'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="employee_number" optional="hide" groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+                <field name="department_name" optional="show"/>
+                <field name="grade_name" optional="show"/>
+                <field name="job_name" optional="hide"/>
+                <field name="manager_name"/>
+                <field name="cycle_id"/>
+                <field name="self_review_state" widget="badge" optional="hide"/>
+                <field name="manager_review_state" widget="badge" optional="hide"/>
+                <field name="overall_score"/>
+                <field name="final_score"/>
+                <field name="final_rating_label" widget="badge"/>
+                <field name="employee_acknowledged" optional="show"/>
+                <field name="state" widget="badge"/>
+                <button name="action_open_objectives" type="object"
+                        string="Scorecard" icon="fa-bullseye"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_appraisal_form_kanban" model="ir.ui.view">
+        <field name="name">onehr.appraisal.form.kanban</field>
+        <field name="model">onehr.appraisal.form</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="manager_name"/>
+                <field name="state"/>
+                <field name="overall_score"/>
+                <field name="final_score"/>
+                <field name="final_rating_label"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between">
+                            <strong><field name="employee_name"/></strong>
+                            <field name="state" widget="badge"/>
+                        </div>
+                        <div class="text-muted"><field name="name"/></div>
+                        <div class="mt-2">
+                            <strong>Manager: </strong><field name="manager_name"/>
+                        </div>
+                        <div>
+                            <strong>Overall: </strong><field name="overall_score"/>
+                            <span class="ms-2"><strong>Final: </strong><field name="final_score"/></span>
+                        </div>
+                        <div class="mt-1"><field name="final_rating_label" widget="badge"/></div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_onehr_appraisal_form_form" model="ir.ui.view">
+        <field name="name">onehr.appraisal.form.form</field>
+        <field name="model">onehr.appraisal.form</field>
+        <field name="arch" type="xml">
+            <form string="Employee Appraisal">
+                <header>
+                    <button name="action_start_review" type="object" string="Start Review"
+                            class="btn-primary" invisible="state != 'draft'"
+                            groups="onehr_appraisal.group_onehr_appraisal_manager"/>
+                    <button name="action_submit_self_review" type="object"
+                            string="Submit Self Review" class="btn-primary"
+                            invisible="state != 'in_review' or self_review_state in ('done', 'not_required') or self_weight &lt;= 0"
+                            groups="onehr_appraisal.group_onehr_appraisal_participant"/>
+                    <button name="action_request_peer_feedback" type="object"
+                            string="Generate Peer Feedback"
+                            invisible="state != 'in_review' or peer_weight &lt;= 0"
+                            groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+                    <button name="action_submit_manager_review" type="object"
+                            string="Submit Manager Review" class="btn-primary"
+                            invisible="state != 'in_review' or manager_review_state in ('done', 'not_required') or manager_weight &lt;= 0"
+                            groups="onehr_appraisal.group_onehr_appraisal_manager"/>
+                    <button name="action_move_to_consolidation" type="object"
+                            string="Move to Consolidation" class="btn-primary"
+                            invisible="state != 'in_review'"
+                            groups="onehr_appraisal.group_onehr_appraisal_manager"/>
+                    <button name="action_recalculate_score" type="object"
+                            string="Refresh Score"
+                            invisible="state not in ('in_review', 'consolidation')"
+                            groups="onehr_appraisal.group_onehr_appraisal_manager"/>
+                    <button name="action_acknowledge" type="object"
+                            string="Acknowledge" class="btn-secondary"
+                            invisible="state not in ('consolidation', 'closed') or employee_acknowledged"
+                            groups="onehr_appraisal.group_onehr_appraisal_participant"/>
+                    <button name="action_close" type="object" string="Close Appraisal"
+                            class="btn-primary" invisible="state != 'consolidation'"
+                            groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('closed', 'cancelled')"
+                            groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+                    <button name="action_reset_draft" type="object" string="Reset to Draft"
+                            invisible="state == 'draft'"
+                            groups="onehr_appraisal.group_onehr_appraisal_admin"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,in_review,consolidation,closed"/>
+                    <field name="self_weight" invisible="1"/>
+                    <field name="manager_weight" invisible="1"/>
+                    <field name="peer_weight" invisible="1"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_objectives" type="object"
+                                class="oe_stat_button" icon="fa-bullseye">
+                            <field name="objective_count" widget="statinfo" string="Objectives"/>
+                        </button>
+                        <button name="action_open_peer_feedback" type="object"
+                                class="oe_stat_button" icon="fa-users">
+                            <field name="peer_feedback_count" widget="statinfo" string="Peer Ratings"/>
+                        </button>
+                        <button name="action_open_development" type="object"
+                                class="oe_stat_button" icon="fa-graduation-cap">
+                            <field name="development_count" widget="statinfo" string="Development"/>
+                        </button>
+                        <button name="action_print_appraisal" type="object"
+                                class="oe_stat_button" icon="fa-print">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Print Appraisal</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Closed" bg_color="text-bg-success"
+                            invisible="state != 'closed'"/>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-secondary"
+                            invisible="state != 'cancelled'"/>
+
+                    <div class="oe_title">
+                        <label for="employee_name"/>
+                        <h1><field name="employee_name" readonly="1"/></h1>
+                        <div class="text-muted"><field name="name"/> · <field name="cycle_id"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Employee &amp; Organization">
+                            <field name="employee_id"
+                                   groups="onehr_appraisal.group_onehr_appraisal_hr"
+                                   readonly="state != 'draft'"/>
+                            <field name="employee_number" readonly="1"
+                                   groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+                            <field name="department_name" readonly="1"/>
+                            <field name="job_name" readonly="1"/>
+                            <field name="grade_name" readonly="1"/>
+                            <field name="manager_name" readonly="1"/>
+                            <field name="manager_employee_id"
+                                   readonly="state not in ('draft', 'in_review')"
+                                   groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                        <group string="Review Progress">
+                            <field name="self_review_state" widget="badge" readonly="1"/>
+                            <field name="manager_review_state" widget="badge" readonly="1"/>
+                            <field name="peer_review_state" widget="badge" readonly="1"/>
+                            <field name="submitted_rating_count" readonly="1"/>
+                            <field name="employee_acknowledged" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="row g-2 my-2">
+                        <div class="col-lg-3">
+                            <div class="alert alert-info mb-0">
+                                <strong>Self</strong><br/><field name="self_score"/>%
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="alert alert-info mb-0">
+                                <strong>Manager</strong><br/><field name="manager_score"/>%
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="alert alert-info mb-0">
+                                <strong>Peer</strong><br/><field name="peer_score"/>%
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="alert alert-success mb-0">
+                                <strong>Overall</strong><br/><field name="overall_score"/>%
+                            </div>
+                        </div>
+                    </div>
+
+                    <notebook>
+                        <page string="Objectives &amp; KPIs" name="objectives">
+                            <field name="score_ids"
+                                   domain="[('parent_score_id', '=', False), ('line_type', '!=', 'development')]">
+                                <list create="0" delete="0">
+                                    <field name="sequence"/>
+                                    <field name="item_code"/>
+                                    <field name="line_type"/>
+                                    <field name="title"/>
+                                    <field name="weight"/>
+                                    <field name="target_value"/>
+                                    <field name="actual_value"/>
+                                    <field name="achievement_percent" readonly="1"/>
+                                    <button name="action_open_parent_feedback" type="object"
+                                            string="Feedback" icon="fa-comments"/>
+                                </list>
+                            </field>
+                            <div class="mt-3">
+                                <button name="action_open_objectives" type="object"
+                                        string="Open Detailed Multi-rater Scorecard"
+                                        class="btn-secondary"/>
+                            </div>
+                        </page>
+
+                        <page string="Self Review" name="self_review">
+                            <group>
+                                <field name="employee_achievements"
+                                       readonly="self_review_state == 'done' or state not in ('draft', 'in_review')"/>
+                                <field name="employee_challenges"
+                                       readonly="self_review_state == 'done' or state not in ('draft', 'in_review')"/>
+                            </group>
+                            <field name="employee_comments"
+                                   readonly="self_review_state == 'done' or state not in ('draft', 'in_review')"/>
+                        </page>
+
+                        <page string="Manager &amp; Peer Review" name="manager_peer">
+                            <group>
+                                <group>
+                                    <field name="peer_reviewer_names" readonly="1"/>
+                                    <field name="peer_reviewer_ids" widget="many2many_tags"
+                                           readonly="state not in ('draft', 'in_review')"
+                                           groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+                                </group>
+                                <group>
+                                    <field name="manager_summary"
+                                           readonly="manager_review_state == 'done' or state != 'in_review'"/>
+                                    <field name="strengths"
+                                           readonly="state not in ('in_review', 'consolidation')"/>
+                                    <field name="improvement_areas"
+                                           readonly="state not in ('in_review', 'consolidation')"/>
+                                </group>
+                            </group>
+                            <field name="score_ids"
+                                   domain="[('rater_type', 'in', ('self', 'manager', 'peer'))]">
+                                <list create="0" delete="0"
+                                      decoration-success="rating_state == 'submitted'">
+                                    <field name="item_code"/>
+                                    <field name="title"/>
+                                    <field name="rater_type" widget="badge"/>
+                                    <field name="reviewer_name"/>
+                                    <field name="rating"/>
+                                    <field name="normalized_score" readonly="1"/>
+                                    <field name="rating_state" widget="badge"/>
+                                    <button name="action_submit_rating" type="object"
+                                            string="Submit" icon="fa-check"
+                                            invisible="rating_state == 'submitted'"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Consolidation" name="consolidation">
+                            <group>
+                                <group string="Calibration">
+                                    <field name="potential_score"
+                                           readonly="state != 'consolidation'"
+                                           groups="onehr_appraisal.group_onehr_appraisal_manager"/>
+                                    <field name="nine_box_position" readonly="1"/>
+                                </group>
+                                <group string="Final Result">
+                                    <field name="overall_score" readonly="1"/>
+                                    <field name="final_score"
+                                           readonly="state != 'consolidation'"
+                                           groups="onehr_appraisal.group_onehr_appraisal_manager"/>
+                                    <field name="final_rating_label" widget="badge" readonly="1"/>
+                                </group>
+                            </group>
+                            <field name="final_comments"
+                                   readonly="state not in ('consolidation', 'closed')"/>
+                        </page>
+
+                        <page string="Development Plan" name="development">
+                            <group>
+                                <field name="development_due_date"
+                                       readonly="state not in ('in_review', 'consolidation')"/>
+                            </group>
+                            <field name="development_plan"
+                                   readonly="state not in ('in_review', 'consolidation')"/>
+                            <field name="score_ids"
+                                   domain="[('line_type', '=', 'development')]"
+                                   context="{'default_line_type': 'development', 'default_rater_type': 'manager', 'default_form_id': id, 'default_cycle_id': cycle_id}">
+                                <list editable="bottom"
+                                      decoration-success="development_state == 'done'"
+                                      decoration-muted="development_state == 'cancelled'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="title"/>
+                                    <field name="development_due_date"/>
+                                    <field name="development_state" widget="badge"/>
+                                    <field name="learning_session_reference" optional="show"/>
+                                    <field name="learning_reference" optional="show" readonly="1"/>
+                                    <button name="action_mark_development_planned" type="object"
+                                            string="Plan" icon="fa-calendar-check-o"
+                                            invisible="development_state != 'draft'"/>
+                                    <button name="action_start_development" type="object"
+                                            string="Start" icon="fa-play"
+                                            invisible="development_state not in ('draft', 'planned')"/>
+                                    <button name="action_complete_development" type="object"
+                                            string="Done" icon="fa-check"
+                                            invisible="development_state != 'in_progress'"/>
+                                    <button name="action_push_to_learning" type="object"
+                                            string="Learning" icon="fa-graduation-cap"
+                                            invisible="not learning_session_reference"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Evidence &amp; Acknowledgement" name="evidence">
+                            <field name="evidence_attachment_ids" widget="many2many_binary"/>
+                            <group>
+                                <field name="acknowledgement_comment"
+                                       readonly="employee_acknowledged"/>
+                                <field name="acknowledged_at" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Audit Timeline" name="timeline">
+                            <group>
+                                <field name="review_started_at" readonly="1"/>
+                                <field name="self_submitted_at" readonly="1"/>
+                                <field name="manager_submitted_at" readonly="1"/>
+                                <field name="consolidation_at" readonly="1"/>
+                                <field name="closed_at" readonly="1"/>
+                                <field name="retention_until" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_appraisal_form_search" model="ir.ui.view">
+        <field name="name">onehr.appraisal.form.search</field>
+        <field name="model">onehr.appraisal.form</field>
+        <field name="arch" type="xml">
+            <search string="Appraisals">
+                <field name="name"/>
+                <field name="employee_number"/>
+                <field name="employee_name"/>
+                <field name="manager_name"/>
+                <field name="cycle_id"/>
+                <field name="department_name"/>
+                <field name="job_name"/>
+                <filter name="my_appraisal" string="My Appraisal"
+                        domain="[('employee_user_id', '=', uid)]"/>
+                <filter name="my_team" string="My Team"
+                        domain="[('manager_user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="in_review" string="In Review" domain="[('state', '=', 'in_review')]"/>
+                <filter name="consolidation" string="Consolidation"
+                        domain="[('state', '=', 'consolidation')]"/>
+                <filter name="closed" string="Closed" domain="[('state', '=', 'closed')]"/>
+                <filter name="needs_attention" string="Needs Attention"
+                        domain="[('final_rating_label', 'in', ('below', 'partial'))]"/>
+                <filter name="unacknowledged" string="Not Acknowledged"
+                        domain="[('state', '=', 'closed'), ('employee_acknowledged', '=', False)]"/>
+                <group>
+                    <filter name="group_cycle" string="Cycle" context="{'group_by': 'cycle_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_department" string="Department"
+                            context="{'group_by': 'department_name'}"/>
+                    <filter name="group_manager" string="Manager"
+                            context="{'group_by': 'manager_name'}"/>
+                    <filter name="group_grade" string="Grade"
+                            context="{'group_by': 'grade_name'}"/>
+                    <filter name="group_rating" string="Final Rating"
+                            context="{'group_by': 'final_rating_label'}"/>
+                    <filter name="group_company" string="Company"
+                            context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_appraisal_form_pivot" model="ir.ui.view">
+        <field name="name">onehr.appraisal.form.pivot</field>
+        <field name="model">onehr.appraisal.form</field>
+        <field name="arch" type="xml">
+            <pivot string="Appraisal Results">
+                <field name="cycle_id" type="row"/>
+                <field name="department_name" type="row"/>
+                <field name="grade_name" type="row"/>
+                <field name="final_rating_label" type="col"/>
+                <field name="final_score" type="measure"/>
+                <field name="overall_score" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_appraisal_form_graph" model="ir.ui.view">
+        <field name="name">onehr.appraisal.form.graph</field>
+        <field name="model">onehr.appraisal.form</field>
+        <field name="arch" type="xml">
+            <graph string="Appraisal Rating Distribution" type="bar">
+                <field name="final_rating_label"/>
+                <field name="final_score" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_appraisal_forms" model="ir.actions.act_window">
+        <field name="name">Appraisals</field>
+        <field name="res_model">onehr.appraisal.form</field>
+        <field name="view_mode">list,kanban,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_onehr_appraisal_form_search"/>
+    </record>
+
+    <record id="action_onehr_appraisal_my_forms" model="ir.actions.act_window">
+        <field name="name">My Appraisals</field>
+        <field name="res_model">onehr.appraisal.form</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('employee_user_id', '=', uid)]</field>
+        <field name="search_view_id" ref="view_onehr_appraisal_form_search"/>
+    </record>
+
+    <record id="action_onehr_appraisal_team_forms" model="ir.actions.act_window">
+        <field name="name">Team Appraisals</field>
+        <field name="res_model">onehr.appraisal.form</field>
+        <field name="view_mode">list,kanban,form,pivot,graph</field>
+        <field name="domain">[('manager_user_id', '=', uid)]</field>
+        <field name="search_view_id" ref="view_onehr_appraisal_form_search"/>
+    </record>
+</odoo>

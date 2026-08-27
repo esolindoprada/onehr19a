@@ -1,0 +1,244 @@
+<odoo>
+    <record id="action_report_sop_document" model="ir.actions.report">
+        <field name="name">Standard Operating Procedure</field>
+        <field name="model">onehr.sop.version</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_sop.report_sop_document</field>
+        <field name="report_file">onehr_sop.report_sop_document</field>
+        <field name="binding_model_id" ref="model_onehr_sop_version"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'SOP - %s - V%s' % (object.sop_id.code, object.version_no)</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_sop.group_onehr_sop_reader'))
+        ]"/>
+    </record>
+
+    <record id="action_report_sop_compliance" model="ir.actions.report">
+        <field name="name">SOP Compliance Report</field>
+        <field name="model">onehr.sop.version</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_sop.report_sop_compliance</field>
+        <field name="report_file">onehr_sop.report_sop_compliance</field>
+        <field name="print_report_name">'SOP Compliance - %s - V%s' % (object.sop_id.code, object.version_no)</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_sop.group_onehr_sop_approver'))
+        ]"/>
+    </record>
+
+    <record id="action_report_sop_review_register" model="ir.actions.report">
+        <field name="name">SOP Review / Expiry Register</field>
+        <field name="model">onehr.sop</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_sop.report_sop_review_register</field>
+        <field name="report_file">onehr_sop.report_sop_review_register</field>
+        <field name="binding_model_id" ref="model_onehr_sop"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'SOP Review Register'</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_sop.group_onehr_sop_approver'))
+        ]"/>
+    </record>
+
+    <template id="report_sop_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Standard Operating Procedure</h2>
+
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th style="width:20%">SOP Reference</th>
+                                    <td><span t-field="doc.sop_id.code"/></td>
+                                    <th style="width:20%">Version</th>
+                                    <td><span t-field="doc.version_no"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Title</th>
+                                    <td><span t-field="doc.sop_id.name"/></td>
+                                    <th>Status</th>
+                                    <td><span t-field="doc.state"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Effective From</th>
+                                    <td><span t-field="doc.effective_from"/></td>
+                                    <th>Review Due</th>
+                                    <td><span t-field="doc.review_due_date"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="mb-3">
+                            <strong>Publication Scope:</strong>
+                            <span t-if="doc.target_all_employees">All active employees in company</span>
+                            <span t-if="not doc.target_all_employees and doc.target_department_ids">
+                                Departments:
+                                <span t-out="', '.join(doc.target_department_ids.mapped('name'))"/>
+                            </span>
+                            <span t-if="not doc.target_all_employees and doc.target_job_ids">
+                                &#160; Jobs/Roles:
+                                <span t-out="', '.join(doc.target_job_ids.mapped('name'))"/>
+                            </span>
+                        </div>
+
+                        <h4>Purpose</h4>
+                        <div t-field="doc.purpose"/>
+
+                        <h4 class="mt-3">Scope</h4>
+                        <div t-field="doc.scope"/>
+
+                        <h4 class="mt-3">Definitions / Terms</h4>
+                        <div t-field="doc.definitions"/>
+
+                        <h4 class="mt-3">Roles &amp; Responsibilities</h4>
+                        <div t-field="doc.roles_responsibilities"/>
+
+                        <h4 class="mt-3">Procedure / Work Instructions</h4>
+                        <div t-field="doc.procedure_steps"/>
+
+                        <h4 class="mt-3">Controls / Quality Checks</h4>
+                        <div t-field="doc.controls"/>
+
+                        <h4 class="mt-3">Required Records / Evidence</h4>
+                        <div t-field="doc.records_evidence"/>
+
+                        <h4 class="mt-3">Training / Competency Requirements</h4>
+                        <div t-field="doc.training_requirements"/>
+
+                        <h4 class="mt-3">Safety / HSE / K3 Requirements</h4>
+                        <div t-field="doc.safety_notes"/>
+
+                        <h4 class="mt-3">References / Related Documents</h4>
+                        <div t-field="doc.references"/>
+
+                        <div class="mt-4 border-top pt-2"
+                             t-if="doc.state in ('published', 'obsolete')">
+                            <small>
+                                <strong>Published:</strong>
+                                <span t-field="doc.published_at"/>
+                            </small>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_sop_compliance">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>SOP Compliance Report</h2>
+                        <p>
+                            <strong><span t-field="doc.sop_id.code"/></strong>
+                            — <span t-field="doc.sop_id.name"/>
+                            — Version <span t-field="doc.version_no"/>
+                        </p>
+
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Audience</th>
+                                    <td><span t-field="doc.ack_count"/></td>
+                                    <th>Acknowledged</th>
+                                    <td><span t-field="doc.acknowledged_count"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Pending</th>
+                                    <td><span t-field="doc.pending_count"/></td>
+                                    <th>Acknowledgement Rate</th>
+                                    <td><span t-field="doc.ack_rate"/>%</td>
+                                </tr>
+                                <tr>
+                                    <th>Published</th>
+                                    <td><span t-field="doc.published_at"/></td>
+                                    <th>Days to 90%</th>
+                                    <td><span t-field="doc.days_to_90_ack"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Employee Acknowledgement Evidence</h4>
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Department</th>
+                                    <th>Job / Role</th>
+                                    <th>Status</th>
+                                    <th>Acknowledged At</th>
+                                    <th>Days</th>
+                                    <th>Source</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.ack_ids" t-as="ack">
+                                    <tr>
+                                        <td>
+                                            <span t-field="ack.employee_name"/>
+                                            <br/>
+                                            <small t-field="ack.employee_number"/>
+                                        </td>
+                                        <td><span t-field="ack.department_name"/></td>
+                                        <td><span t-field="ack.job_name"/></td>
+                                        <td><span t-field="ack.state"/></td>
+                                        <td><span t-field="ack.acknowledged_at"/></td>
+                                        <td><span t-field="ack.days_to_ack"/></td>
+                                        <td><span t-field="ack.acknowledgement_source"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_sop_review_register">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>SOP Review / Expiry Register</h2>
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>SOP</th>
+                                <th>Owner</th>
+                                <th>Current Version</th>
+                                <th>Review Due</th>
+                                <th>Overdue</th>
+                                <th>Audience</th>
+                                <th>Ack %</th>
+                                <th>Pending</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="doc">
+                                <tr>
+                                    <td>
+                                        <span t-field="doc.code"/>
+                                        <br/>
+                                        <small t-field="doc.name"/>
+                                    </td>
+                                    <td><span t-field="doc.owner_name"/></td>
+                                    <td>
+                                        <span t-if="doc.current_version_id"
+                                              t-field="doc.current_version_id.version_no"/>
+                                    </td>
+                                    <td><span t-field="doc.current_review_due_date"/></td>
+                                    <td><span t-field="doc.review_overdue"/></td>
+                                    <td><span t-field="doc.current_ack_count"/></td>
+                                    <td><span t-field="doc.current_ack_rate"/>%</td>
+                                    <td><span t-field="doc.current_pending_count"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

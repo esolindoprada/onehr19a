@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="ir_cron_onehr_learning_session_reminders" model="ir.cron">
+        <field name="name">OneHR Learning — Upcoming Session Reminders</field>
+        <field name="model_id" ref="model_onehr_learning_session"/>
+        <field name="state">code</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="code">model._cron_schedule_upcoming_reminders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="ir_cron_onehr_learning_certificate_expiry" model="ir.cron">
+        <field name="name">OneHR Learning — Certificate Expiry and Renewal</field>
+        <field name="model_id" ref="model_onehr_learning_certificate"/>
+        <field name="state">code</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="code">model._cron_process_certificate_expiry()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

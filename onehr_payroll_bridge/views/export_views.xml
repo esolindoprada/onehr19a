@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_payroll_export_list" model="ir.ui.view">
+        <field name="name">onehr.payroll.export.list.enterprise</field>
+        <field name="model">onehr.payroll.export</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                  decoration-warning="state == 'posted'"
+                  decoration-success="state == 'reconciled'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="config_id"/>
+                <field name="employee_count"/>
+                <field name="work_entry_hours" optional="show" sum="Work Entry Hours"/>
+                <field name="worked_hours" sum="Worked Hours"/>
+                <field name="rounded_worked_hours" optional="hide" sum="Rounded Hours"/>
+                <field name="overtime_hours" sum="Overtime Hours"/>
+                <field name="paid_leave_days" optional="show" sum="Paid Leave"/>
+                <field name="unpaid_leave_days" optional="show" sum="Unpaid Leave"/>
+                <field name="current_import_count" optional="show"/>
+                <field name="matched_employee_count" optional="show"/>
+                <field name="reconciliation_accuracy" widget="percentage" optional="show"/>
+                <field name="time_to_close_hours" optional="hide"/>
+                <field name="external_batch_reference" optional="hide"/>
+                <field name="export_sha256" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="state" widget="badge"/>
+                <button name="action_download_export" type="object" string="CSV" icon="fa-download"
+                        invisible="not generated"
+                        groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                <button name="action_open_imports" type="object" string="Results" icon="fa-external-link"
+                        invisible="state == 'draft'"
+                        groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_payroll_export_form" model="ir.ui.view">
+        <field name="name">onehr.payroll.export.form.enterprise</field>
+        <field name="model">onehr.payroll.export</field>
+        <field name="arch" type="xml">
+            <form string="Payroll Export">
+                <header>
+                    <button name="action_generate_export" type="object" string="Generate / Refresh CSV"
+                            class="oe_highlight" invisible="state != 'draft'"
+                            groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                    <button name="action_post_to_payroll" type="object" string="Post to Payroll"
+                            class="oe_highlight" invisible="state != 'draft' or not generated"
+                            groups="onehr_payroll_bridge.group_onehr_payroll_manager"
+                            confirm="Post this frozen payroll source package to the payroll boundary? Source evidence will become immutable."/>
+                    <button name="action_reconcile" type="object" string="Reconcile"
+                            class="oe_highlight" invisible="state != 'posted'"
+                            groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                    <button name="action_cancel_draft" type="object" string="Cancel"
+                            invisible="state != 'draft'"
+                            groups="onehr_payroll_bridge.group_onehr_payroll_manager"
+                            confirm="Cancel this draft payroll export?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,posted,reconciled,cancelled"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_config" type="object" class="oe_stat_button" icon="fa-cogs"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager">
+                            <div class="o_stat_info"><span class="o_stat_text">Configuration</span></div>
+                        </button>
+                        <button name="action_open_imports" type="object" class="oe_stat_button" icon="fa-download"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager">
+                            <field name="current_import_count" widget="statinfo" string="Current Results"/>
+                        </button>
+                        <button name="action_open_imports" type="object" class="oe_stat_button" icon="fa-history"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_manager">
+                            <field name="import_count" widget="statinfo" string="All Revisions"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Posted" bg_color="text-bg-warning" invisible="state != 'posted'"/>
+                    <widget name="web_ribbon" title="Reconciled" bg_color="text-bg-success" invisible="state != 'reconciled'"/>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-secondary" invisible="state != 'cancelled'"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                        <div class="text-muted">
+                            <field name="period_start" readonly="state != 'draft'"/>
+                            <span> → </span>
+                            <field name="period_end" readonly="state != 'draft'"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Payroll Period &amp; Scope">
+                            <field name="config_id" readonly="state != 'draft'" domain="[('active', '=', True)]"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="currency_id" readonly="1"/>
+                            <field name="employee_ids" widget="many2many_tags" readonly="state != 'draft'" domain="[('company_id', '=', company_id), ('active', '=', True)]"
+                                   options="{'no_create': True}"/>
+                            <field name="external_batch_reference" readonly="state == 'reconciled'"/>
+                        </group>
+                        <group string="Frozen Package Evidence">
+                            <field name="generated" readonly="1"/>
+                            <field name="export_filename" readonly="1"/>
+                            <field name="export_sha256" readonly="1"/>
+                            <field name="generated_at" readonly="1"/>
+                            <field name="generated_by_id" readonly="1"/>
+                            <field name="posted_at" readonly="1"/>
+                            <field name="posted_by_id" readonly="1"/>
+                            <field name="reconciled_at" readonly="1"/>
+                            <field name="reconciled_by_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Operational Actions">
+                        <button name="action_reset_generation" type="object" string="Reset Generated Package"
+                                icon="fa-undo" invisible="state != 'draft' or not generated"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager"
+                                confirm="Reset the generated CSV and frozen source snapshot so Draft scope can be edited again?"/>
+                        <button name="action_download_export" type="object" string="Download Payroll CSV"
+                                icon="fa-download" invisible="not generated"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                        <button name="action_schedule_payroll_review" type="object" string="Schedule Payroll Review"
+                                icon="fa-calendar-check-o"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                        <button name="action_validate_imports" type="object" string="Validate Current Results"
+                                icon="fa-check-square-o" invisible="state != 'posted' or current_import_count == 0"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                        <button name="action_prepare_costing_payload" type="object" string="Prepare Costing Payload"
+                                icon="fa-pie-chart" invisible="state not in ['posted', 'reconciled'] or current_import_count == 0"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                    </group>
+
+                    <group string="Source Totals">
+                        <group>
+                            <field name="employee_count" readonly="1"/>
+                            <field name="work_entry_count" readonly="1"/>
+                            <field name="work_entry_hours" readonly="1"/>
+                            <field name="attendance_count" readonly="1"/>
+                            <field name="worked_hours" readonly="1"/>
+                            <field name="rounded_worked_hours" readonly="1"/>
+                            <field name="overtime_hours" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="paid_leave_days" readonly="1"/>
+                            <field name="unpaid_leave_days" readonly="1"/>
+                            <field name="source_row_count" readonly="1"/>
+                            <field name="reconciliation_accuracy" widget="percentage" readonly="1"/>
+                            <field name="time_to_close_hours" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Vendor Payroll Result" name="vendor_result">
+                            <group>
+                                <group string="CSV Import">
+                                    <field name="vendor_import_file" filename="vendor_import_filename"
+                                           readonly="state != 'posted'"/>
+                                    <field name="vendor_import_filename" invisible="1"/>
+                                    <field name="vendor_import_sha256" readonly="1"/>
+                                    <field name="vendor_imported_at" readonly="1"/>
+                                    <field name="vendor_imported_by_id" readonly="1"/>
+                                    <button name="action_import_vendor_results" type="object"
+                                            string="Import / Refresh Vendor CSV" class="oe_highlight"
+                                            icon="fa-upload" invisible="state != 'posted' or not vendor_import_file"
+                                            groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                                </group>
+                                <group string="Imported Totals">
+                                    <field name="imported_gross_total" readonly="1"/>
+                                    <field name="imported_deduction_total" readonly="1"/>
+                                    <field name="imported_net_total" readonly="1"/>
+                                    <field name="imported_employer_cost_total" readonly="1"/>
+                                    <field name="matched_employee_count" readonly="1"/>
+                                </group>
+                            </group>
+
+                            <field name="import_ids">
+                                <list create="0" edit="0" delete="0"
+                                      decoration-info="state == 'draft'"
+                                      decoration-success="state == 'validated'"
+                                      decoration-warning="state == 'error'"
+                                      decoration-muted="state == 'superseded'">
+                                    <field name="name"/>
+                                    <field name="employee_number_snapshot"/>
+                                    <field name="employee_name_snapshot"/>
+                                    <field name="external_reference"/>
+                                    <field name="revision"/>
+                                    <field name="gross_amount" sum="Gross"/>
+                                    <field name="deduction_amount" sum="Deductions"/>
+                                    <field name="net_amount" sum="Net"/>
+                                    <field name="employer_cost" sum="Employer Cost"/>
+                                    <field name="is_current_revision" widget="boolean"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_validate" type="object" string="Validate" icon="fa-check"
+                                            invisible="state not in ['draft', 'error'] or not is_current_revision"/>
+                                    <button name="action_open_employee" type="object" string="Employee" icon="fa-user"
+                                            invisible="not employee_id"/>
+                                    <button name="action_create_correction" type="object" string="Correct" icon="fa-code-fork"
+                                            invisible="state == 'reconciled' or not is_current_revision"
+                                            groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Frozen Source Rows" name="source_rows"
+                              groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager">
+                            <field name="source_rows_json" nolabel="1" readonly="1"/>
+                        </page>
+
+                        <page string="Mapping Snapshot" name="mapping_snapshot"
+                              groups="onehr_payroll_bridge.group_onehr_payroll_manager">
+                            <field name="config_snapshot_json" nolabel="1" readonly="1"/>
+                        </page>
+
+                        <page string="Costing Payload" name="costing_payload"
+                              groups="onehr_payroll_bridge.group_onehr_payroll_manager">
+                            <field name="costing_payload_json" nolabel="1" readonly="1"/>
+                        </page>
+
+                        <page string="Cancellation" name="cancellation" invisible="state not in ['draft', 'cancelled']">
+                            <group>
+                                <field name="cancellation_reason" readonly="state != 'draft'"/>
+                                <field name="cancelled_at" readonly="1"/>
+                                <field name="cancelled_by_id" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_payroll_export_search" model="ir.ui.view">
+        <field name="name">onehr.payroll.export.search.enterprise</field>
+        <field name="model">onehr.payroll.export</field>
+        <field name="arch" type="xml">
+            <search string="Payroll Exports">
+                <field name="name"/>
+                <field name="config_id"/>
+                <field name="external_batch_reference"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <separator/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="posted" string="Posted" domain="[('state', '=', 'posted')]"/>
+                <filter name="reconciled" string="Reconciled" domain="[('state', '=', 'reconciled')]"/>
+                <filter name="period_end_filter" string="Period End" date="period_end"/>
+                <separator/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_config" string="Configuration" context="{'group_by': 'config_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                    <filter name="group_period_end" string="Period End" context="{'group_by': 'period_end:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_payroll_export_calendar" model="ir.ui.view">
+        <field name="name">onehr.payroll.export.calendar.enterprise</field>
+        <field name="model">onehr.payroll.export</field>
+        <field name="arch" type="xml">
+            <calendar string="Payroll Export Calendar" date_start="period_start" date_stop="period_end" color="config_id">
+                <field name="name"/>
+                <field name="config_id"/>
+                <field name="state"/>
+                <field name="employee_count"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_onehr_payroll_export_pivot" model="ir.ui.view">
+        <field name="name">onehr.payroll.export.pivot.enterprise</field>
+        <field name="model">onehr.payroll.export</field>
+        <field name="arch" type="xml">
+            <pivot string="Payroll Export Analysis">
+                <field name="company_id" type="row"/>
+                <field name="config_id" type="row"/>
+                <field name="period_end" type="col" interval="month"/>
+                <field name="employee_count" type="measure"/>
+                <field name="work_entry_hours" type="measure"/>
+                <field name="worked_hours" type="measure"/>
+                <field name="overtime_hours" type="measure"/>
+                <field name="paid_leave_days" type="measure"/>
+                <field name="unpaid_leave_days" type="measure"/>
+                <field name="reconciliation_accuracy" type="measure"/>
+                <field name="time_to_close_hours" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_payroll_export_graph" model="ir.ui.view">
+        <field name="name">onehr.payroll.export.graph.enterprise</field>
+        <field name="model">onehr.payroll.export</field>
+        <field name="arch" type="xml">
+            <graph string="Payroll Reconciliation KPI" type="bar">
+                <field name="period_end" interval="month"/>
+                <field name="employee_count" type="measure"/>
+                <field name="reconciliation_accuracy" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_payroll_exports" model="ir.actions.act_window">
+        <field name="name">Payroll Exports</field>
+        <field name="res_model">onehr.payroll.export</field>
+        <field name="view_mode">list,calendar,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_payroll_export_search"/>
+    </record>
+
+    <record id="action_onehr_payroll_reconciliation" model="ir.actions.act_window">
+        <field name="name">Payroll Reconciliation</field>
+        <field name="res_model">onehr.payroll.export</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_payroll_export_search"/>
+        <field name="domain">[('state', 'in', ['posted', 'reconciled'])]</field>
+    </record>
+</odoo>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_learning_vendor_list" model="ir.ui.view">
+        <field name="name">onehr.learning.vendor.list.enterprise</field>
+        <field name="model">onehr.learning.vendor</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="vendor_type" widget="badge"/>
+                <field name="accreditation"/>
+                <field name="rating"/>
+                <field name="contact_name" optional="show"/>
+                <field name="contact_email" optional="show"/>
+                <field name="session_count" optional="show"/>
+                <field name="total_actual_cost" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="active"/>
+                <button name="action_open_sessions" type="object" string="Sessions"
+                        icon="fa-calendar"
+                        groups="onehr_learning.group_onehr_learning_officer"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_vendor_form" model="ir.ui.view">
+        <field name="name">onehr.learning.vendor.form.enterprise</field>
+        <field name="model">onehr.learning.vendor</field>
+        <field name="arch" type="xml">
+            <form string="Learning Vendor">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_sessions" type="object" class="oe_stat_button"
+                                icon="fa-calendar" groups="onehr_learning.group_onehr_learning_officer">
+                            <field name="session_count" widget="statinfo" string="Sessions"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-secondary"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div class="text-muted"><field name="code"/></div>
+                    </div>
+                    <group>
+                        <group string="Provider">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="vendor_type"/>
+                            <field name="partner_id"/>
+                            <field name="accreditation"/>
+                            <field name="rating"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Contact">
+                            <field name="contact_name"/>
+                            <field name="contact_email"/>
+                            <field name="contact_phone"/>
+                            <field name="website"/>
+                            <field name="total_actual_cost" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_vendor_search" model="ir.ui.view">
+        <field name="name">onehr.learning.vendor.search.enterprise</field>
+        <field name="model">onehr.learning.vendor</field>
+        <field name="arch" type="xml">
+            <search string="Learning Vendors">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="vendor_type"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_type" string="Vendor Type" context="{'group_by': 'vendor_type'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_learning_vendors" model="ir.actions.act_window">
+        <field name="name">Vendors</field>
+        <field name="res_model">onehr.learning.vendor</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_learning_vendor_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+</odoo>

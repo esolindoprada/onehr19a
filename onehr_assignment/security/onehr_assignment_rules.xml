@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Unit-manager proposal is intentionally narrow: historical/current direct reports only. -->
+    <record id="rule_assignment_proposer_direct_reports" model="ir.rule">
+        <field name="name">Assignment — proposer direct reports</field>
+        <field name="model_id" ref="model_onehr_assignment"/>
+        <field name="groups" eval="[Command.link(ref('onehr_assignment.group_onehr_assignment_proposer'))]"/>
+        <field name="domain_force">[('manager_user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_assignment_officer_company" model="ir.rule">
+        <field name="name">Assignment — officer allowed companies</field>
+        <field name="model_id" ref="model_onehr_assignment"/>
+        <field name="groups" eval="[Command.link(ref('onehr_assignment.group_onehr_assignment_officer'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_cost_allocation_company" model="ir.rule">
+        <field name="name">Assignment Cost Allocation — allowed companies</field>
+        <field name="model_id" ref="model_onehr_assignment_cost_allocation"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_change_request_proposer_own" model="ir.rule">
+        <field name="name">Movement Request — proposer own</field>
+        <field name="model_id" ref="model_onehr_assignment_change_request"/>
+        <field name="groups" eval="[Command.link(ref('onehr_assignment.group_onehr_assignment_proposer'))]"/>
+        <field name="domain_force">[('requested_by_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_change_request_officer_company" model="ir.rule">
+        <field name="name">Movement Request — officer allowed companies</field>
+        <field name="model_id" ref="model_onehr_assignment_change_request"/>
+        <field name="groups" eval="[Command.link(ref('onehr_assignment.group_onehr_assignment_officer'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_change_line_proposer_own" model="ir.rule">
+        <field name="name">Movement Line — proposer own request</field>
+        <field name="model_id" ref="model_onehr_assignment_change_line"/>
+        <field name="groups" eval="[Command.link(ref('onehr_assignment.group_onehr_assignment_proposer'))]"/>
+        <field name="domain_force">[('request_id.requested_by_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_change_line_officer_company" model="ir.rule">
+        <field name="name">Movement Line — officer allowed companies</field>
+        <field name="model_id" ref="model_onehr_assignment_change_line"/>
+        <field name="groups" eval="[Command.link(ref('onehr_assignment.group_onehr_assignment_officer'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_workforce_plan_company" model="ir.rule">
+        <field name="name">Workforce Plan — allowed companies</field>
+        <field name="model_id" ref="model_onehr_workforce_plan"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_workforce_line_company" model="ir.rule">
+        <field name="name">Workforce Plan Line — allowed companies</field>
+        <field name="model_id" ref="model_onehr_workforce_plan_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_position_budget_company" model="ir.rule">
+        <field name="name">Position Budget — allowed companies</field>
+        <field name="model_id" ref="model_onehr_position_budget"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="kiosk_page" name="OneHR Enterprise Kiosk">
+        <t t-call="web.layout">
+            <t t-set="title">OneHR Kiosk — <t t-esc="device.name"/></t>
+            <link rel="stylesheet" type="text/css" href="/onehr_mobile_kiosk/static/src/css/kiosk.css"/>
+            <main id="onehr-kiosk-app"
+                  class="o_onehr_kiosk"
+                  t-att-data-device-code="device_code">
+                <section class="kiosk-shell">
+                    <header class="kiosk-header">
+                        <div>
+                            <div class="kiosk-eyebrow">OneHR Enterprise Kiosk</div>
+                            <h1 t-esc="device.name"/>
+                            <div class="kiosk-subtitle">
+                                <span t-esc="device.code"/>
+                                <t t-if="device.work_location_id"> · <span t-esc="device.work_location_id.display_name"/></t>
+                            </div>
+                        </div>
+                        <div id="kiosk-connectivity" class="kiosk-badge neutral">Connecting</div>
+                    </header>
+
+                    <section id="kiosk-token-panel" class="kiosk-card">
+                        <h2>Secure Device Session</h2>
+                        <p>
+                            Enter the one-time device token issued by a Kiosk Administrator.
+                            It remains only in this browser session and is never placed in the URL.
+                        </p>
+                        <div class="kiosk-row">
+                            <input id="kiosk-device-token" type="password" autocomplete="off"
+                                   placeholder="Device token"/>
+                            <button id="kiosk-connect" type="button" class="kiosk-primary">Connect Device</button>
+                        </div>
+                    </section>
+
+                    <section id="kiosk-workspace" class="kiosk-grid hidden">
+                        <article class="kiosk-card kiosk-span-2">
+                            <div class="kiosk-card-header">
+                                <div>
+                                    <div class="kiosk-eyebrow">Employee Identification</div>
+                                    <h2>Scan QR / NFC or enter employee number</h2>
+                                </div>
+                                <div class="kiosk-actions">
+                                    <button id="kiosk-scan-qr" type="button" class="kiosk-secondary">Scan QR</button>
+                                    <button id="kiosk-scan-nfc" type="button" class="kiosk-secondary">Scan NFC</button>
+                                </div>
+                            </div>
+                            <div class="kiosk-row">
+                                <input id="kiosk-identity" type="text" autocomplete="off"
+                                       placeholder="Employee QR/NFC identifier or employee number"/>
+                                <button id="kiosk-identify" type="button" class="kiosk-primary">Identify</button>
+                            </div>
+                            <video id="kiosk-camera" class="kiosk-camera hidden" playsinline="true"/>
+                            <div id="kiosk-message" class="kiosk-message hidden"/>
+                        </article>
+
+                        <article id="kiosk-employee-card" class="kiosk-card hidden">
+                            <div class="kiosk-eyebrow">Employee</div>
+                            <h2 id="kiosk-employee-name">—</h2>
+                            <div id="kiosk-employee-number" class="kiosk-muted">—</div>
+                            <div class="kiosk-divider"/>
+                            <div class="kiosk-kpi">
+                                <span>Status</span><strong id="kiosk-attendance-status">—</strong>
+                            </div>
+                            <div class="kiosk-kpi">
+                                <span>Check In</span><strong id="kiosk-current-checkin">—</strong>
+                            </div>
+                        </article>
+
+                        <article id="kiosk-schedule-card" class="kiosk-card hidden">
+                            <div class="kiosk-eyebrow">Today's Schedule</div>
+                            <h2 id="kiosk-shift-name">No assigned shift</h2>
+                            <div class="kiosk-kpi">
+                                <span>Planned Start</span><strong id="kiosk-shift-start">—</strong>
+                            </div>
+                            <div class="kiosk-kpi">
+                                <span>Planned End</span><strong id="kiosk-shift-end">—</strong>
+                            </div>
+                        </article>
+
+                        <article id="kiosk-punch-card" class="kiosk-card kiosk-span-2 hidden">
+                            <div class="kiosk-eyebrow">Attendance</div>
+                            <h2>Record Attendance</h2>
+                            <div class="kiosk-punch-actions">
+                                <button id="kiosk-checkin" type="button" class="kiosk-success">Check In</button>
+                                <button id="kiosk-checkout" type="button" class="kiosk-danger">Check Out</button>
+                                <button id="kiosk-autopunch" type="button" class="kiosk-primary">Auto Toggle</button>
+                            </div>
+                            <div id="kiosk-geo-note" class="kiosk-muted">
+                                Geolocation follows the registered device policy.
+                            </div>
+                        </article>
+
+                        <article id="kiosk-timeoff-card" class="kiosk-card kiosk-span-2 hidden">
+                            <div class="kiosk-card-header">
+                                <div>
+                                    <div class="kiosk-eyebrow">Quick Request</div>
+                                    <h2>Time Off</h2>
+                                </div>
+                                <div id="kiosk-leave-balances" class="kiosk-balance-strip"/>
+                            </div>
+                            <div class="kiosk-form-grid">
+                                <label>
+                                    Leave Type
+                                    <select id="kiosk-leave-type"/>
+                                </label>
+                                <label>
+                                    Start Date
+                                    <input id="kiosk-leave-from" type="date"/>
+                                </label>
+                                <label>
+                                    End Date
+                                    <input id="kiosk-leave-to" type="date"/>
+                                </label>
+                                <label class="kiosk-span-2">
+                                    Reason
+                                    <input id="kiosk-leave-reason" type="text" maxlength="1000"
+                                           placeholder="Short reason for the request"/>
+                                </label>
+                            </div>
+                            <button id="kiosk-submit-timeoff" type="button" class="kiosk-primary">Submit Time Off Request</button>
+                        </article>
+
+                        <article class="kiosk-card kiosk-span-2">
+                            <div class="kiosk-card-header">
+                                <div>
+                                    <div class="kiosk-eyebrow">Offline Resilience</div>
+                                    <h2>Synchronization Queue</h2>
+                                </div>
+                                <button id="kiosk-sync-now" type="button" class="kiosk-secondary">Sync Now</button>
+                            </div>
+                            <div class="kiosk-kpi">
+                                <span>Encrypted browser queue</span>
+                                <strong id="kiosk-queue-count">0</strong>
+                            </div>
+                            <p class="kiosk-muted">
+                                Offline events are encrypted in browser storage using a key derived from the
+                                current device token. Raw QR/NFC values are not written to OneHR server logs.
+                            </p>
+                        </article>
+                    </section>
+
+                    <footer class="kiosk-footer">
+                        <span>OneHR Mobile Kiosk</span>
+                        <span id="kiosk-clock">—</span>
+                    </footer>
+                </section>
+            </main>
+            <script type="text/javascript" src="/onehr_mobile_kiosk/static/src/js/kiosk.js"/>
+        </t>
+    </template>
+</odoo>

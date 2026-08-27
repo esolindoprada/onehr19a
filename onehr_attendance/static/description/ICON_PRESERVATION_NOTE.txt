@@ -1,0 +1,2 @@
+This text-only Direct Full Build does not fabricate a replacement binary icon.png.
+The supplied deploy_to_workspace.ps1 preserves the existing onehr_attendance/static/description/icon.png when present in the user's current workspace.

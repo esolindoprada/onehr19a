@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_contract_line_manager,Contract Line Manager,model_onehr_contract,onehr_employment_contract.group_onehr_contract_line_manager,1,0,0,0
+access_contract_officer,Contract Officer,model_onehr_contract,onehr_employment_contract.group_onehr_contract_officer,1,1,1,0
+access_contract_manager,Contract Manager,model_onehr_contract,onehr_employment_contract.group_onehr_contract_manager,1,1,1,0
+access_contract_template_officer,Contract Template Officer Read,model_onehr_contract_template,onehr_employment_contract.group_onehr_contract_officer,1,0,0,0
+access_contract_template_manager,Contract Template Manager,model_onehr_contract_template,onehr_employment_contract.group_onehr_contract_manager,1,1,1,0

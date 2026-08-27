@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================ -->
+    <!-- IMPORT BATCH                                                      -->
+    <!-- ================================================================ -->
+    <record id="view_onehr_attendance_import_batch_list" model="ir.ui.view">
+        <field name="name">onehr.attendance.import.batch.list</field>
+        <field name="model">onehr.attendance.import.batch</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'reconciled'" decoration-danger="state == 'rejected'" decoration-warning="error_row_count &gt; 0">
+                <field name="name"/>
+                <field name="source_system"/>
+                <field name="filename" optional="show"/>
+                <field name="idempotency_key" optional="show"/>
+                <field name="raw_row_count"/>
+                <field name="valid_row_count"/>
+                <field name="error_row_count"/>
+                <field name="reconciliation_count"/>
+                <field name="state" widget="badge"/>
+                <button name="action_parse" type="object" string="Parse" icon="fa-file-text-o" invisible="state not in ('uploaded','rejected')"/>
+                <button name="action_validate" type="object" string="Validate" icon="fa-check-circle" invisible="state != 'parsed'"/>
+                <button name="action_create_reconciliation" type="object" string="Reconcile" icon="fa-random" invisible="state != 'validated' or error_row_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_attendance_import_batch_form" model="ir.ui.view">
+        <field name="name">onehr.attendance.import.batch.form</field>
+        <field name="model">onehr.attendance.import.batch</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Import Batch">
+                <header>
+                    <button name="action_parse" type="object" string="Parse CSV" class="btn-primary" invisible="state not in ('uploaded','rejected')" groups="onehr_attendance.group_onehr_attendance_officer"/>
+                    <button name="action_validate" type="object" string="Validate Rows" class="btn-primary" invisible="state != 'parsed'" groups="onehr_attendance.group_onehr_attendance_officer"/>
+                    <button name="action_create_reconciliation" type="object" string="Create Reconciliation" class="btn-primary" invisible="state != 'validated' or error_row_count" groups="onehr_attendance.group_onehr_attendance_officer"/>
+                    <button name="action_reject" type="object" string="Reject" invisible="state == 'reconciled'" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="uploaded,parsed,validated,reconciled,rejected"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Errors" bg_color="text-bg-danger" invisible="not error_row_count"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_reconciliations" type="object" class="oe_stat_button" icon="fa-random"><field name="reconciliation_count" widget="statinfo" string="Reconciliations"/></button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Source Contract">
+                            <field name="company_id" groups="base.group_multi_company" readonly="state not in ('uploaded','rejected')"/>
+                            <field name="source_system" readonly="state not in ('uploaded','rejected')"/>
+                            <field name="idempotency_key" readonly="state not in ('uploaded','rejected')"/>
+                            <field name="identifier_type" readonly="state not in ('uploaded','rejected')"/>
+                            <field name="timezone" readonly="state not in ('uploaded','rejected')"/>
+                        </group>
+                        <group string="Uploaded File">
+                            <field name="filename" invisible="1"/>
+                            <field name="upload_file" filename="filename" readonly="state not in ('uploaded','rejected')"/>
+                            <field name="parsed_at" readonly="1"/>
+                            <field name="validated_at" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Validation Totals" col="6">
+                        <field name="raw_row_count" readonly="1"/>
+                        <field name="valid_row_count" readonly="1"/>
+                        <field name="error_row_count" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Errors"><field name="error_log" readonly="1" nolabel="1"/></page>
+                        <page string="Validated Candidate Payload"><field name="validation_payload" readonly="1" nolabel="1"/></page>
+                        <page string="Raw Source Rows"><field name="raw_rows_json" readonly="1" nolabel="1"/></page>
+                        <page string="Reconciliations">
+                            <field name="reconciliation_ids" readonly="1">
+                                <list><field name="name"/><field name="source_type"/><field name="candidate_count"/><field name="attendance_count"/><field name="exception_count"/><field name="state" widget="badge"/><button name="action_open_attendances" type="object" string="Attendance" icon="fa-clock-o"/></list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_attendance_import_batch_search" model="ir.ui.view">
+        <field name="name">onehr.attendance.import.batch.search</field>
+        <field name="model">onehr.attendance.import.batch</field>
+        <field name="arch" type="xml">
+            <search string="Attendance Imports">
+                <field name="name"/><field name="source_system"/><field name="idempotency_key"/><field name="filename"/>
+                <filter name="with_errors" string="With Errors" domain="[('error_row_count','&gt;',0)]"/>
+                <filter name="validated" string="Validated" domain="[('state','=','validated')]"/>
+                <filter name="reconciled" string="Reconciled" domain="[('state','=','reconciled')]"/>
+                <group><filter name="group_source" string="Source" context="{'group_by':'source_system'}"/><filter name="group_state" string="Status" context="{'group_by':'state'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/></group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- RECONCILIATION                                                    -->
+    <!-- ================================================================ -->
+    <record id="view_onehr_attendance_reconciliation_list" model="ir.ui.view">
+        <field name="name">onehr.attendance.reconciliation.list</field>
+        <field name="model">onehr.attendance.reconciliation</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'posted'" decoration-warning="state == 'in_review'" decoration-muted="state == 'cancelled'">
+                <field name="name"/><field name="source_type" widget="badge"/><field name="source_system" optional="show"/><field name="import_batch_id" optional="show"/>
+                <field name="candidate_count"/><field name="attendance_count"/><field name="exception_count"/><field name="submitted_at" optional="hide"/><field name="approved_at" optional="hide"/><field name="state" widget="badge"/>
+                <button name="action_validate_candidates" type="object" string="Validate" icon="fa-check-circle" invisible="state != 'draft'"/>
+                <button name="action_submit_review" type="object" string="Review" icon="fa-share" invisible="state != 'draft'"/>
+                <button name="action_open_attendances" type="object" string="Attendance" icon="fa-clock-o"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_attendance_reconciliation_form" model="ir.ui.view">
+        <field name="name">onehr.attendance.reconciliation.form</field>
+        <field name="model">onehr.attendance.reconciliation</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Reconciliation">
+                <header>
+                    <button name="action_submit_review" type="object" string="Submit for Review" class="btn-primary" invisible="state != 'draft'" groups="onehr_attendance.group_onehr_attendance_officer"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="state != 'in_review'" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <button name="action_post" type="object" string="Post Canonical Attendance" class="btn-primary" invisible="state != 'approved'" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state in ('posted','cancelled')" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_review,approved,posted,cancelled"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Posted" bg_color="text-bg-success" invisible="state != 'posted'"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_import_batch" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="not import_batch_id"><div class="o_stat_info"><span class="o_stat_text">Import Batch</span></div></button>
+                        <button name="action_open_attendances" type="object" class="oe_stat_button" icon="fa-clock-o"><field name="attendance_count" widget="statinfo" string="Attendances"/></button>
+                        <button name="action_open_exceptions" type="object" class="oe_stat_button" icon="fa-exclamation-triangle"><field name="exception_count" widget="statinfo" string="Exceptions"/></button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Source"><field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/><field name="source_type" readonly="state != 'draft'"/><field name="source_system" readonly="state != 'draft'"/><field name="import_batch_id" readonly="state != 'draft'"/></group>
+                        <group string="Control Totals"><field name="candidate_count" readonly="1"/><field name="attendance_count" readonly="1"/><field name="exception_count" readonly="1"/></group>
+                    </group>
+                    <button name="action_validate_candidates" type="object" string="Validate Candidate Payload" class="btn-secondary" icon="fa-check-circle" invisible="state != 'draft'" groups="onehr_attendance.group_onehr_attendance_officer"/>
+                    <notebook>
+                        <page string="Candidate Payload"><field name="candidate_payload" readonly="state != 'draft'" nolabel="1"/></page>
+                        <page string="Canonical Attendances">
+                            <field name="attendance_ids" readonly="1">
+                                <list><field name="employee_id"/><field name="date"/><field name="check_in"/><field name="check_out"/><field name="onehr_exception_state" widget="badge"/><field name="onehr_processing_state" widget="badge"/><button name="action_onehr_open_exceptions" type="object" string="Exceptions" icon="fa-exclamation-triangle"/></list>
+                            </field>
+                        </page>
+                        <page string="Exception Evidence">
+                            <field name="exception_ids" readonly="1"><list decoration-danger="severity == 'critical'"><field name="employee_id"/><field name="attendance_date"/><field name="exception_type" widget="badge"/><field name="severity" widget="badge"/><field name="state" widget="badge"/><button name="action_open_attendance" type="object" string="Attendance" icon="fa-external-link" invisible="not attendance_id"/></list></field>
+                        </page>
+                        <page string="Approval / Posting Evidence">
+                            <group>
+                                <group><field name="submitted_at"/><field name="submitted_by_id"/><field name="approved_at"/><field name="approved_by_id"/></group>
+                                <group><field name="posted_at"/><field name="posted_by_id"/><field name="review_note" readonly="state == 'posted'"/></group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_attendance_reconciliation_search" model="ir.ui.view">
+        <field name="name">onehr.attendance.reconciliation.search</field>
+        <field name="model">onehr.attendance.reconciliation</field>
+        <field name="arch" type="xml">
+            <search string="Attendance Reconciliation">
+                <field name="name"/><field name="source_system"/><field name="import_batch_id"/>
+                <filter name="in_review" string="In Review" domain="[('state','=','in_review')]"/><filter name="approved" string="Approved" domain="[('state','=','approved')]"/><filter name="posted" string="Posted" domain="[('state','=','posted')]"/>
+                <group><filter name="group_source" string="Source Type" context="{'group_by':'source_type'}"/><filter name="group_state" string="Status" context="{'group_by':'state'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/></group>
+            </search>
+        </field>
+    </record>
+</odoo>

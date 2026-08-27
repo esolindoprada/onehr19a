@@ -1,0 +1,203 @@
+<odoo>
+    <!-- ============================================================ -->
+    <!-- Odoo-native organization extensions                         -->
+    <!-- ============================================================ -->
+
+    <record id="view_department_form_onehr" model="ir.ui.view">
+        <field name="name">hr.department.form.onehr.enterprise</field>
+        <field name="model">hr.department</field>
+        <field name="inherit_id" ref="hr.view_department_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" name="action_open_onehr_positions" type="object" icon="fa-sitemap" groups="hr.group_hr_user">
+                    <field name="onehr_position_count" widget="statinfo" string="Positions"/>
+                </button>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <group string="OneHR Enterprise" groups="hr.group_hr_user">
+                    <group string="Enterprise Classification">
+                        <field name="onehr_code"/>
+                        <field name="onehr_unit_type"/>
+                    </group>
+                    <group string="Business Validity">
+                        <field name="onehr_valid_from"/>
+                        <field name="onehr_valid_to"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_department_list_onehr" model="ir.ui.view">
+        <field name="name">hr.department.list.onehr.enterprise</field>
+        <field name="model">hr.department</field>
+        <field name="inherit_id" ref="hr.view_department_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="onehr_code" optional="show"/>
+                <field name="onehr_unit_type" optional="show"/>
+                <field name="onehr_valid_from" optional="hide"/>
+                <field name="onehr_valid_to" optional="hide"/>
+                <field name="onehr_position_count" optional="hide" string="Positions"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_department_search_onehr" model="ir.ui.view">
+        <field name="name">hr.department.search.onehr.enterprise</field>
+        <field name="model">hr.department</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="onehr_code"/>
+                <field name="onehr_unit_type"/>
+                <field name="company_id"/>
+                <filter name="onehr_division" string="Divisions" domain="[('onehr_unit_type', '=', 'division')]"/>
+                <filter name="onehr_team" string="Teams" domain="[('onehr_unit_type', '=', 'team')]"/>
+                <group>
+                    <filter name="group_unit_type" string="Unit Type" context="{'group_by': 'onehr_unit_type'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_job_form_onehr" model="ir.ui.view">
+        <field name="name">hr.job.form.onehr.enterprise</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" name="action_open_onehr_positions" type="object" icon="fa-briefcase" groups="hr.group_hr_user">
+                    <field name="onehr_position_count" widget="statinfo" string="Positions"/>
+                </button>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <group string="OneHR Enterprise" groups="hr.group_hr_user">
+                    <group string="Enterprise Classification">
+                        <field name="onehr_code"/>
+                        <field name="onehr_job_family_id"/>
+                        <field name="onehr_grade_ids" widget="many2many_tags"/>
+                    </group>
+                    <group string="Business Validity">
+                        <field name="onehr_valid_from"/>
+                        <field name="onehr_valid_to"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_job_list_onehr" model="ir.ui.view">
+        <field name="name">hr.job.list.onehr.enterprise</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="onehr_code" optional="show"/>
+                <field name="onehr_job_family_id" optional="show"/>
+                <field name="onehr_valid_from" optional="hide"/>
+                <field name="onehr_valid_to" optional="hide"/>
+                <field name="onehr_position_count" optional="hide" string="Positions"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_job_search_onehr" model="ir.ui.view">
+        <field name="name">hr.job.search.onehr.enterprise</field>
+        <field name="model">hr.job</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="onehr_code"/>
+                <field name="onehr_job_family_id"/>
+                <field name="company_id"/>
+                <group>
+                    <filter name="group_family" string="Job Family" context="{'group_by': 'onehr_job_family_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_work_location_form_onehr" model="ir.ui.view">
+        <field name="name">hr.work.location.form.onehr.enterprise</field>
+        <field name="model">hr.work.location</field>
+        <field name="inherit_id" ref="hr.hr_work_location_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button" name="action_open_onehr_positions" type="object" icon="fa-briefcase" groups="hr.group_hr_user">
+                        <field name="onehr_position_count" widget="statinfo" string="Positions"/>
+                    </button>
+                </div>
+                <group string="OneHR Enterprise" groups="hr.group_hr_user">
+                    <group string="Site Information">
+                        <field name="onehr_site_code"/>
+                        <field name="onehr_timezone"/>
+                        <field name="onehr_business_metadata"/>
+                    </group>
+                    <group string="Coordinates &amp; Business Validity">
+                        <field name="onehr_latitude"/>
+                        <field name="onehr_longitude"/>
+                        <field name="onehr_valid_from"/>
+                        <field name="onehr_valid_to"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_work_location_list_onehr" model="ir.ui.view">
+        <field name="name">hr.work.location.list.onehr.enterprise</field>
+        <field name="model">hr.work.location</field>
+        <field name="inherit_id" ref="hr.hr_work_location_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="onehr_site_code" optional="show"/>
+                <field name="onehr_timezone" optional="show"/>
+                <field name="onehr_valid_from" optional="hide"/>
+                <field name="onehr_valid_to" optional="hide"/>
+                <field name="onehr_position_count" optional="hide" string="Positions"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_work_location_search_onehr" model="ir.ui.view">
+        <field name="name">hr.work.location.search.onehr.enterprise</field>
+        <field name="model">hr.work.location</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="onehr_site_code"/>
+                <field name="onehr_timezone"/>
+                <field name="company_id"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_timezone" string="Timezone" context="{'group_by': 'onehr_timezone'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Stable OneHR actions use the enterprise search views above. -->
+    <record id="action_departments" model="ir.actions.act_window">
+        <field name="name">Organization Units / Departments</field>
+        <field name="res_model">hr.department</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_department_search_onehr"/>
+    </record>
+    <record id="action_jobs" model="ir.actions.act_window">
+        <field name="name">Jobs / Roles</field>
+        <field name="res_model">hr.job</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_job_search_onehr"/>
+    </record>
+    <record id="action_work_locations" model="ir.actions.act_window">
+        <field name="name">Work Locations</field>
+        <field name="res_model">hr.work.location</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_work_location_search_onehr"/>
+    </record>
+</odoo>

@@ -1,0 +1,26 @@
+{
+    "name": "OneHR Mobile Kiosk",
+    "summary": "Enterprise kiosk/mobile attendance, device governance, offline sync and quick HR requests",
+    "version": "19.0.1.0.1",
+    "category": "Human Resources/Attendance",
+    "author": "PT Dua Empat Tujuh Open Source",
+    "website": "https://odoocamp.net",
+    "license": "LGPL-3",
+    "depends": [
+        "onehr_attendance",
+    ],
+    "data": [
+        "security/onehr_mobile_kiosk_groups.xml",
+        "security/ir.model.access.csv",
+        "security/onehr_mobile_kiosk_rules.xml",
+        "data/kiosk_sequence_data.xml",
+        "data/kiosk_cron_data.xml",
+        "views/device_views.xml",
+        "views/log_views.xml",
+        "reports/kiosk_usage_report.xml",
+        "views/menus.xml",
+        "views/kiosk_templates.xml",
+    ],
+    "application": True,
+    "installable": True,
+}

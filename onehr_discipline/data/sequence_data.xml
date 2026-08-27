@@ -1,0 +1,17 @@
+<odoo noupdate="1">
+    <record id="seq_onehr_discipline_case" model="ir.sequence">
+        <field name="name">OneHR Discipline Case</field>
+        <field name="code">onehr.discipline.case</field>
+        <field name="prefix">DISC/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_onehr_discipline_sanction" model="ir.sequence">
+        <field name="name">OneHR Discipline Sanction</field>
+        <field name="code">onehr.discipline.sanction</field>
+        <field name="prefix">SAN/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

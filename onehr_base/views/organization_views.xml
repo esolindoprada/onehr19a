@@ -1,0 +1,94 @@
+<odoo>
+    <!-- Job Family -->
+    <record id="view_job_family_list" model="ir.ui.view">
+        <field name="name">onehr.job.family.list.enterprise</field><field name="model">onehr.job.family</field>
+        <field name="arch" type="xml"><list multi_edit="1" decoration-muted="not active">
+            <field name="code"/><field name="name"/><field name="company_id" groups="base.group_multi_company"/>
+            <field name="position_count" string="Positions"/><field name="valid_from"/><field name="valid_to" optional="show"/><field name="active" optional="hide"/>
+        </list></field>
+    </record>
+    <record id="view_job_family_form" model="ir.ui.view">
+        <field name="name">onehr.job.family.form.enterprise</field><field name="model">onehr.job.family</field>
+        <field name="arch" type="xml"><form string="Job Family"><sheet>
+            <div class="oe_button_box" name="button_box"><button class="oe_stat_button" name="action_open_positions" type="object" icon="fa-briefcase"><field name="position_count" widget="statinfo" string="Positions"/></button></div>
+            <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/><field name="active" invisible="1"/>
+            <div class="oe_title"><label for="name"/><h1><field name="name" placeholder="e.g. Engineering"/></h1></div>
+            <group><group string="Identity"><field name="code"/><field name="company_id" groups="base.group_multi_company"/></group><group string="Business Validity"><field name="valid_from"/><field name="valid_to"/></group></group>
+            <notebook><page string="Description"><field name="description" placeholder="Purpose and scope of this job family..."/></page></notebook>
+        </sheet><chatter/></form></field>
+    </record>
+    <record id="view_job_family_search" model="ir.ui.view">
+        <field name="name">onehr.job.family.search.enterprise</field><field name="model">onehr.job.family</field>
+        <field name="arch" type="xml"><search><field name="code"/><field name="name"/><field name="company_id"/>
+            <filter name="active_only" string="Active" domain="[('active', '=', True)]"/><filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            <group><filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/></group>
+        </search></field>
+    </record>
+    <record id="action_job_families" model="ir.actions.act_window"><field name="name">Job Families</field><field name="res_model">onehr.job.family</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_job_family_search"/></record>
+
+    <!-- Grade -->
+    <record id="view_grade_list" model="ir.ui.view">
+        <field name="name">onehr.grade.list.enterprise</field><field name="model">onehr.grade</field>
+        <field name="arch" type="xml"><list multi_edit="1" decoration-muted="not active">
+            <field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="company_id" groups="base.group_multi_company"/>
+            <field name="step_count" string="Steps"/><field name="position_count" string="Positions"/><field name="valid_from"/><field name="valid_to" optional="show"/><field name="active" optional="hide"/>
+        </list></field>
+    </record>
+    <record id="view_grade_form" model="ir.ui.view">
+        <field name="name">onehr.grade.form.enterprise</field><field name="model">onehr.grade</field>
+        <field name="arch" type="xml"><form string="Grade"><sheet>
+            <div class="oe_button_box" name="button_box">
+                <button class="oe_stat_button" name="action_open_steps" type="object" icon="fa-list-ol"><field name="step_count" widget="statinfo" string="Steps"/></button>
+                <button class="oe_stat_button" name="action_open_positions" type="object" icon="fa-briefcase"><field name="position_count" widget="statinfo" string="Positions"/></button>
+            </div>
+            <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/><field name="active" invisible="1"/>
+            <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+            <group><group string="Identity"><field name="code"/><field name="sequence"/><field name="company_id" groups="base.group_multi_company"/></group><group string="Business Validity"><field name="valid_from"/><field name="valid_to"/></group></group>
+            <notebook><page string="Progression Steps"><field name="step_ids"><list editable="bottom" decoration-muted="not active"><field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="valid_from"/><field name="valid_to"/><field name="active"/></list></field></page><page string="Description"><field name="description"/></page></notebook>
+        </sheet><chatter/></form></field>
+    </record>
+    <record id="view_grade_search" model="ir.ui.view">
+        <field name="name">onehr.grade.search.enterprise</field><field name="model">onehr.grade</field>
+        <field name="arch" type="xml"><search><field name="code"/><field name="name"/><field name="company_id"/>
+            <filter name="active_only" string="Active" domain="[('active', '=', True)]"/><filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            <group><filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/></group>
+        </search></field>
+    </record>
+    <record id="action_grades" model="ir.actions.act_window"><field name="name">Grades</field><field name="res_model">onehr.grade</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_grade_search"/></record>
+
+    <!-- Grade Step: full independent UI because this is an approved persistent model. -->
+    <record id="view_grade_step_list" model="ir.ui.view"><field name="name">onehr.grade.step.list.enterprise</field><field name="model">onehr.grade.step</field><field name="arch" type="xml"><list decoration-muted="not active"><field name="grade_id"/><field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="company_id" groups="base.group_multi_company"/><field name="valid_from"/><field name="valid_to"/><field name="active"/></list></field></record>
+    <record id="view_grade_step_form" model="ir.ui.view"><field name="name">onehr.grade.step.form.enterprise</field><field name="model">onehr.grade.step</field><field name="arch" type="xml"><form string="Grade Step"><sheet>
+        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/><field name="active" invisible="1"/><div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+        <group><group string="Identity"><field name="grade_id"/><field name="code"/><field name="sequence"/><field name="company_id" groups="base.group_multi_company" readonly="1"/></group><group string="Business Validity"><field name="valid_from"/><field name="valid_to"/></group></group>
+    </sheet><chatter/></form></field></record>
+    <record id="view_grade_step_search" model="ir.ui.view"><field name="name">onehr.grade.step.search.enterprise</field><field name="model">onehr.grade.step</field><field name="arch" type="xml"><search><field name="grade_id"/><field name="code"/><field name="name"/><field name="company_id"/><filter name="active_only" string="Active" domain="[('active', '=', True)]"/><filter name="archived" string="Archived" domain="[('active', '=', False)]"/><group><filter name="group_grade" string="Grade" context="{'group_by': 'grade_id'}"/><filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/></group></search></field></record>
+    <record id="action_grade_steps" model="ir.actions.act_window"><field name="name">Grade Steps</field><field name="res_model">onehr.grade.step</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_grade_step_search"/></record>
+
+    <!-- Position -->
+    <record id="view_position_list" model="ir.ui.view">
+        <field name="name">onehr.position.list.enterprise</field><field name="model">onehr.position</field>
+        <field name="arch" type="xml"><list decoration-info="status == 'planned'" decoration-success="status == 'open'" decoration-warning="status == 'frozen'" decoration-muted="status == 'closed' or not active">
+            <field name="code"/><field name="name"/><field name="job_id"/><field name="department_id"/><field name="grade_id" optional="show"/><field name="work_location_id" optional="show"/><field name="company_id" groups="base.group_multi_company"/>
+            <field name="authorized_fte"/><field name="authorized_headcount"/><field name="status" widget="badge"/><field name="valid_from"/><field name="valid_to" optional="show"/><field name="hierarchy_node_count" optional="hide"/>
+        </list></field>
+    </record>
+    <record id="view_position_form" model="ir.ui.view">
+        <field name="name">onehr.position.form.enterprise</field><field name="model">onehr.position</field>
+        <field name="arch" type="xml"><form string="Enterprise Position"><header><field name="status" widget="statusbar" statusbar_visible="planned,open,filled,frozen,closed"/></header><sheet>
+            <div class="oe_button_box" name="button_box"><button class="oe_stat_button" name="action_open_hierarchy_nodes" type="object" icon="fa-sitemap"><field name="hierarchy_node_count" widget="statinfo" string="Hierarchy Nodes"/></button></div>
+            <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/><field name="active" invisible="1"/>
+            <div class="oe_title"><label for="name"/><h1><field name="name" placeholder="e.g. Senior Engineer — Seat 01"/></h1></div>
+            <group><group string="Position Identity"><field name="code"/><field name="company_id" groups="base.group_multi_company"/><field name="job_id"/><field name="department_id"/></group><group string="Classification"><field name="grade_id"/><field name="work_location_id"/></group></group>
+            <notebook><page string="Authorized Capacity"><group><field name="authorized_fte"/><field name="authorized_headcount"/></group><div class="text-muted">Occupancy is intentionally owned by the later OneHR Assignment domain. These values represent authorized capacity only.</div></page><page string="Business Validity"><group><field name="valid_from"/><field name="valid_to"/></group></page></notebook>
+        </sheet><chatter/></form></field>
+    </record>
+    <record id="view_position_search" model="ir.ui.view">
+        <field name="name">onehr.position.search.enterprise</field><field name="model">onehr.position</field>
+        <field name="arch" type="xml"><search><field name="code"/><field name="name"/><field name="job_id"/><field name="department_id" operator="child_of"/><field name="grade_id"/><field name="work_location_id"/><field name="company_id"/>
+            <filter name="planned" string="Planned" domain="[('status', '=', 'planned')]"/><filter name="open" string="Open" domain="[('status', '=', 'open')]"/><filter name="filled" string="Filled" domain="[('status', '=', 'filled')]"/><filter name="frozen" string="Frozen" domain="[('status', '=', 'frozen')]"/><filter name="closed" string="Closed" domain="[('status', '=', 'closed')]"/><filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            <group><filter name="group_department" string="Department" context="{'group_by': 'department_id'}"/><filter name="group_job" string="Job" context="{'group_by': 'job_id'}"/><filter name="group_grade" string="Grade" context="{'group_by': 'grade_id'}"/><filter name="group_status" string="Status" context="{'group_by': 'status'}"/><filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/></group>
+        </search></field>
+    </record>
+    <record id="action_positions" model="ir.actions.act_window"><field name="name">Positions</field><field name="res_model">onehr.position</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_position_search"/></record>
+</odoo>

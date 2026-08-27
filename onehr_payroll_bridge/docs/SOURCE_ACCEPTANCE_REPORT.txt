@@ -1,0 +1,68 @@
+PASS: HARD_GATE_0 exact project/addon identity
+PASS: Odoo 19 manifest version
+PASS: hard dependencies exactly Core HR + Security
+PASS: all manifest data files exist
+PASS: all Python sources compile
+PASS: all XML files parse
+PASS: XML external ids unique (29)
+PASS: Odoo 19 search <group> elements have no attributes
+PASS: Odoo 19 date-filter default_period values are valid
+PASS: HARD_GATE_4 exact three Payroll Bridge persistent models
+PASS: exact six role/model ACL rows
+PASS: no broad base.group_user custom-model ACL
+PASS: no sudo() call in Payroll Bridge business model source
+PASS: Odoo 19 res.groups user accessors are compatible
+PASS: no unlink override
+PASS: uninstall-safe deletion guards present (3)
+PASS: no legacy _sql_constraints pattern
+PASS: no API/password/private-key credential ownership
+PASS: generic tutorial scaffold removed
+PASS: no public API/controller ownership
+PASS: HARD_GATE_8 List/Form/Search coverage for all three custom models
+PASS: enterprise UI marker: statusbar
+PASS: enterprise UI marker: smart buttons
+PASS: enterprise UI marker: body form action
+PASS: enterprise UI marker: One2many/list row action
+PASS: enterprise UI marker: chatter
+PASS: enterprise UI marker: calendar
+PASS: enterprise UI marker: pivot
+PASS: enterprise UI marker: graph
+PASS: enterprise date-search filter present
+PASS: Pivot/Graph KPI is stored: reconciliation_accuracy
+PASS: Pivot/Graph KPI is stored: time_to_close_hours
+PASS: ir.actions.report avoids groups_id compatibility defect
+PASS: report access uses group_ids
+PASS: runtime test source inventory exactly 34 methods
+PASS: all mandatory Guardrail/completeness documentation present
+PASS: all user-defined Hard Gates present; Gate 11 intentionally undefined
+PASS: business contract marker: Draft → Posted → Reconciled
+PASS: business contract marker: frozen source SHA-256
+PASS: business contract marker: CSV export
+PASS: business contract marker: vendor CSV import
+PASS: business contract marker: vendor file SHA-256 evidence
+PASS: business contract marker: frozen reconciliation policy
+PASS: business contract marker: reconciliation coverage KPI
+PASS: business contract marker: department costing payload
+PASS: business contract marker: import correction revision
+PASS: business contract marker: native work-entry soft integration
+PASS: business contract marker: attendance soft integration
+PASS: business contract marker: overtime soft integration
+PASS: business contract marker: Time Off soft integration
+PASS: business contract marker: Assignment costing soft integration
+PASS: business contract marker: integration export service
+PASS: business contract marker: integration import service
+PASS: business contract marker: monthly Draft scheduler
+PASS: business contract marker: no automatic non-CSV transport
+
+SOURCE_FILES_PYTHON: 15
+SOURCE_FILES_XML: 9
+CUSTOM_PERSISTENT_MODELS: 3
+ACL_ROWS: 6
+XML_EXTERNAL_IDS: 29
+RUNTIME_TEST_METHODS: 34
+SOURCE_ACCEPTANCE_PASS_COUNT: 55
+SOURCE_ACCEPTANCE_FAIL_COUNT: 0
+ONEHR_PAYROLL_BRIDGE_DIRECT_FULL_SOURCE_ACCEPTANCE: PASS
+REGISTRY_ED_CLASSIFICATION: PENDING_EXACT_REGISTRY_ROW_VERIFICATION
+WINDOWS_RUNTIME_ACCEPTANCE: PENDING
+ONEHR_PAYROLL_BRIDGE_MOVE_FORWARD_READY: NO

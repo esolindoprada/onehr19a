@@ -1,0 +1,9 @@
+<odoo noupdate="1">
+    <record id="seq_onehr_document" model="ir.sequence">
+        <field name="name">OneHR Document Number</field>
+        <field name="code">onehr.document</field>
+        <field name="prefix">HRDOC/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

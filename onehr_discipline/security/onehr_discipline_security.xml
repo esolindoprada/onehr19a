@@ -1,0 +1,70 @@
+<odoo>
+    <record id="module_category_onehr_discipline" model="ir.module.category">
+        <field name="name">OneHR Employee Relations — Discipline</field>
+        <field name="description">Highly restricted discipline case, investigation, sanction and appeal authority.</field>
+        <field name="sequence">56</field>
+    </record>
+
+    <record id="privilege_onehr_discipline" model="res.groups.privilege">
+        <field name="name">OneHR Discipline</field>
+        <field name="description">Confidential employee-relations investigation and decision authority.</field>
+        <field name="category_id" ref="module_category_onehr_discipline"/>
+        <field name="sequence">56</field>
+    </record>
+
+    <record id="group_onehr_discipline_investigator" model="res.groups">
+        <field name="name">Discipline Investigator</field>
+        <field name="privilege_id" ref="privilege_onehr_discipline"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_security.group_onehr_security_user')),
+            Command.link(ref('hr.group_hr_user'))
+        ]"/>
+        <field name="comment">
+            Assigned investigator/owner access only. May maintain investigation/hearing evidence on assigned cases.
+            Does not gain company-wide discipline cases or sanction approval authority.
+        </field>
+    </record>
+
+    <record id="group_onehr_discipline_hrbp" model="res.groups">
+        <field name="name">Discipline HRBP / Employee Relations</field>
+        <field name="privilege_id" ref="privilege_onehr_discipline"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_discipline.group_onehr_discipline_investigator')),
+            Command.link(ref('onehr_workflow_approval.group_onehr_approval_user'))
+        ]"/>
+        <field name="comment">
+            HRBP/Employee Relations authority on cases assigned to them. May progress cases,
+            create sanctions and submit sanction approval. Workflow routing still decides approvers.
+        </field>
+    </record>
+
+    <record id="group_onehr_discipline_manager" model="res.groups">
+        <field name="name">Discipline Manager</field>
+        <field name="privilege_id" ref="privilege_onehr_discipline"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_discipline.group_onehr_discipline_hrbp')),
+            Command.link(ref('onehr_workflow_approval.group_onehr_approver'))
+        ]"/>
+        <field name="comment">
+            Company-scoped Discipline manager authority, including closure.
+            Approval decisions are accepted only when the Workflow engine resolves the user as eligible.
+        </field>
+    </record>
+
+    <record id="group_onehr_discipline_legal" model="res.groups">
+        <field name="name">Discipline Legal / Industrial Relations</field>
+        <field name="privilege_id" ref="privilege_onehr_discipline"/>
+        <field name="sequence">40</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_discipline.group_onehr_discipline_manager'))
+        ]"/>
+        <field name="comment">
+            Highest Discipline-domain authority for legal/IR review, appeal decisions,
+            approved sanction execution and controlled historical deletion where server guards allow.
+            It does not imply Workflow Manager, Security Admin, Payroll authority or Document authority.
+        </field>
+    </record>
+</odoo>

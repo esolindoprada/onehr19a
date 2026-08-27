@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="ir_cron_onehr_assignment_effective_dates" model="ir.cron">
+        <field name="name">OneHR Assignment — Apply Effective Dates</field>
+        <field name="model_id" ref="model_onehr_assignment"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_apply_effective_assignments()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

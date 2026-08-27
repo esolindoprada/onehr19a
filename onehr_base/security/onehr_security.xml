@@ -1,0 +1,70 @@
+<odoo>
+    <!-- Master/configuration records are isolated to allowed companies. -->
+    <record id="rule_job_family_company" model="ir.rule">
+        <field name="name">OneHR Job Family — allowed companies</field>
+        <field name="model_id" ref="model_onehr_job_family"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_position_company" model="ir.rule">
+        <field name="name">OneHR Position — allowed companies</field>
+        <field name="model_id" ref="model_onehr_position"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_hierarchy_company" model="ir.rule">
+        <field name="name">OneHR Hierarchy — allowed companies</field>
+        <field name="model_id" ref="model_onehr_position_hierarchy"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_hierarchy_version_company" model="ir.rule">
+        <field name="name">OneHR Hierarchy Version — allowed companies</field>
+        <field name="model_id" ref="model_onehr_position_hierarchy_version"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_hierarchy_node_company" model="ir.rule">
+        <field name="name">OneHR Hierarchy Node — allowed companies</field>
+        <field name="model_id" ref="model_onehr_position_hierarchy_node"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_grade_company" model="ir.rule">
+        <field name="name">OneHR Grade — allowed companies</field>
+        <field name="model_id" ref="model_onehr_grade"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_grade_step_company" model="ir.rule">
+        <field name="name">OneHR Grade Step — allowed companies</field>
+        <field name="model_id" ref="model_onehr_grade_step"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_sequence_company" model="ir.rule">
+        <field name="name">OneHR Sequence Rule — allowed companies</field>
+        <field name="model_id" ref="model_onehr_sequence_rule"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_eligibility_company" model="ir.rule">
+        <field name="name">OneHR Eligibility — allowed companies</field>
+        <field name="model_id" ref="model_onehr_eligibility_profile"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_checklist_template_company" model="ir.rule">
+        <field name="name">OneHR Checklist Template — allowed companies</field>
+        <field name="model_id" ref="model_onehr_checklist_template"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_task_template_company" model="ir.rule">
+        <field name="name">OneHR Checklist Task Template — allowed companies</field>
+        <field name="model_id" ref="model_onehr_checklist_task_template"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Operational lifecycle records stay inside the user's allowed companies. -->
+    <record id="rule_checklist_instance_company" model="ir.rule">
+        <field name="name">OneHR Checklist Instance — allowed companies</field>
+        <field name="model_id" ref="model_onehr_checklist_instance"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_checklist_task_company" model="ir.rule">
+        <field name="name">OneHR Checklist Task — allowed companies</field>
+        <field name="model_id" ref="model_onehr_checklist_task"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

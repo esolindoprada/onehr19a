@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_onehr_leave_type_user,onehr.leave.type user,model_onehr_leave_type,onehr_timeoff.group_onehr_timeoff_user,1,0,0,0
+access_onehr_leave_type_manager,onehr.leave.type manager,model_onehr_leave_type,onehr_timeoff.group_onehr_timeoff_manager,1,0,0,0
+access_onehr_leave_type_hr,onehr.leave.type hr,model_onehr_leave_type,onehr_timeoff.group_onehr_timeoff_hr,1,1,1,1
+access_onehr_leave_request_user,onehr.leave.request user,model_onehr_leave_request,onehr_timeoff.group_onehr_timeoff_user,1,1,1,0
+access_onehr_leave_request_manager,onehr.leave.request manager,model_onehr_leave_request,onehr_timeoff.group_onehr_timeoff_manager,1,1,1,0
+access_onehr_leave_request_hr,onehr.leave.request hr,model_onehr_leave_request,onehr_timeoff.group_onehr_timeoff_hr,1,1,1,1
+access_onehr_leave_allocation_user,onehr.leave.allocation user,model_onehr_leave_allocation,onehr_timeoff.group_onehr_timeoff_user,1,0,0,0
+access_onehr_leave_allocation_manager,onehr.leave.allocation manager,model_onehr_leave_allocation,onehr_timeoff.group_onehr_timeoff_manager,1,0,0,0
+access_onehr_leave_allocation_hr,onehr.leave.allocation hr,model_onehr_leave_allocation,onehr_timeoff.group_onehr_timeoff_hr,1,1,1,1

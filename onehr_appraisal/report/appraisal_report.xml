@@ -1,0 +1,140 @@
+<odoo>
+    <record id="action_report_onehr_appraisal" model="ir.actions.report">
+        <field name="name">Employee Appraisal</field>
+        <field name="model">onehr.appraisal.form</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_appraisal.report_appraisal_document</field>
+        <field name="report_file">onehr_appraisal.report_appraisal_document</field>
+        <field name="binding_model_id" ref="model_onehr_appraisal_form"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Appraisal - %s' % (object.name)</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_appraisal.group_onehr_appraisal_participant')),
+            Command.link(ref('onehr_appraisal.group_onehr_appraisal_manager')),
+            Command.link(ref('onehr_appraisal.group_onehr_appraisal_hr'))
+        ]"/>
+    </record>
+
+    <template id="report_appraisal_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Employee Appraisal</h2>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Reference:</strong> <span t-field="doc.name"/><br/>
+                                <strong>Cycle:</strong> <span t-field="doc.cycle_id"/><br/>
+                                <strong>Employee:</strong> <span t-field="doc.employee_name"/><br/>
+                                <strong>Grade:</strong> <span t-field="doc.grade_name"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Department:</strong> <span t-field="doc.department_name"/><br/>
+                                <strong>Job:</strong> <span t-field="doc.job_name"/><br/>
+                                <strong>Manager:</strong> <span t-field="doc.manager_name"/><br/>
+                                <strong>Status:</strong> <span t-field="doc.state"/>
+                            </div>
+                        </div>
+
+                        <h4>Performance Summary</h4>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Self</th>
+                                    <th>Manager</th>
+                                    <th>Peer</th>
+                                    <th>Overall</th>
+                                    <th>Final</th>
+                                    <th>Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span t-field="doc.self_score"/></td>
+                                    <td><span t-field="doc.manager_score"/></td>
+                                    <td><span t-field="doc.peer_score"/></td>
+                                    <td><span t-field="doc.overall_score"/></td>
+                                    <td><span t-field="doc.final_score"/></td>
+                                    <td><span t-field="doc.final_rating_label"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Objectives / KPIs</h4>
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Objective / KPI</th>
+                                    <th>Weight</th>
+                                    <th>Target</th>
+                                    <th>Actual</th>
+                                    <th>Achievement</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.objective_ids" t-as="line">
+                                    <tr>
+                                        <td><span t-field="line.item_code"/></td>
+                                        <td><span t-field="line.title"/></td>
+                                        <td><span t-field="line.weight"/></td>
+                                        <td><span t-field="line.target_value"/></td>
+                                        <td><span t-field="line.actual_value"/></td>
+                                        <td><span t-field="line.achievement_percent"/>%</td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <h4>Consolidated Feedback</h4>
+                        <div>
+                            <strong>Strengths</strong>
+                            <div t-field="doc.strengths"/>
+                        </div>
+                        <div class="mt-2">
+                            <strong>Improvement Areas</strong>
+                            <div t-field="doc.improvement_areas"/>
+                        </div>
+                        <div class="mt-2">
+                            <strong>Final Comments</strong>
+                            <div t-field="doc.final_comments"/>
+                        </div>
+
+                        <h4 class="mt-3">Individual Development Plan</h4>
+                        <div t-field="doc.development_plan"/>
+                        <table class="table table-sm table-bordered mt-2">
+                            <thead>
+                                <tr>
+                                    <th>Action</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                    <th>Learning Reference</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.development_action_ids" t-as="dev">
+                                    <tr>
+                                        <td><span t-field="dev.title"/></td>
+                                        <td><span t-field="dev.development_due_date"/></td>
+                                        <td><span t-field="dev.development_state"/></td>
+                                        <td><span t-field="dev.learning_reference"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <div class="mt-4">
+                            <strong>Employee Acknowledged:</strong>
+                            <span t-if="doc.employee_acknowledged">Yes</span>
+                            <span t-else="">No</span>
+                            <t t-if="doc.acknowledged_at">
+                                · <span t-field="doc.acknowledged_at"/>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

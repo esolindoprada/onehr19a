@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_onehr_branch_user,OneHR Branch User,model_onehr_branch,onehr_multicompany_branch.group_onehr_branch_user,1,0,0,0
+access_onehr_branch_manager,OneHR Branch Manager,model_onehr_branch,onehr_multicompany_branch.group_onehr_branch_manager,1,0,0,0
+access_onehr_branch_admin,OneHR Branch Admin,model_onehr_branch,onehr_multicompany_branch.group_onehr_branch_admin,1,1,1,0
+access_onehr_branch_central,OneHR Branch Central Office,model_onehr_branch,onehr_multicompany_branch.group_onehr_central_office,1,0,0,0
+access_res_users_onehr_branch_admin,Users OneHR Branch Admin,base.model_res_users,onehr_multicompany_branch.group_onehr_branch_admin,1,1,0,0
+access_onehr_user_role_branch_admin,OneHR User Role Branch Admin,onehr_security.model_onehr_user_role,onehr_multicompany_branch.group_onehr_branch_admin,1,0,0,0
+access_onehr_user_role_central,OneHR User Role Central Office,onehr_security.model_onehr_user_role,onehr_multicompany_branch.group_onehr_central_office,1,0,0,0

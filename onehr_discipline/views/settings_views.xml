@@ -1,0 +1,48 @@
+<odoo>
+    <record id="res_config_settings_view_form_onehr_discipline" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.onehr.discipline</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="OneHR Discipline"
+                     name="onehr_discipline"
+                     groups="onehr_discipline.group_onehr_discipline_legal">
+                    <block title="Discipline SLA Defaults"
+                           help="Default working deadlines for newly progressed confidential cases.">
+                        <setting string="Investigation SLA">
+                            <field name="onehr_discipline_default_investigation_sla_days"/>
+                        </setting>
+                        <setting string="Hearing SLA">
+                            <field name="onehr_discipline_default_hearing_sla_days"/>
+                        </setting>
+                        <setting string="Decision SLA">
+                            <field name="onehr_discipline_default_decision_sla_days"/>
+                        </setting>
+                        <setting string="Appeal SLA">
+                            <field name="onehr_discipline_default_appeal_sla_days"/>
+                        </setting>
+                        <setting string="Case Retention">
+                            <field name="onehr_discipline_default_retention_years"/>
+                        </setting>
+                    </block>
+                    <block title="Violation Classification Weights"
+                           help="Governance defaults only; weights do not determine guilt or sanction automatically.">
+                        <setting string="Minor Weight">
+                            <field name="onehr_discipline_weight_minor"/>
+                        </setting>
+                        <setting string="Moderate Weight">
+                            <field name="onehr_discipline_weight_moderate"/>
+                        </setting>
+                        <setting string="Serious Weight">
+                            <field name="onehr_discipline_weight_serious"/>
+                        </setting>
+                        <setting string="Critical Weight">
+                            <field name="onehr_discipline_weight_critical"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

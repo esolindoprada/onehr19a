@@ -1,0 +1,11 @@
+<odoo noupdate="1">
+    <record id="ir_cron_onehr_sop_governance" model="ir.cron">
+        <field name="name">OneHR SOP — Review &amp; Acknowledgement Governance</field>
+        <field name="model_id" ref="model_onehr_sop"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sop_governance()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

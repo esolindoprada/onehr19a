@@ -1,0 +1,73 @@
+<odoo>
+    <!-- Global company boundaries always AND with role-specific rules. -->
+    <record id="rule_appraisal_cycle_company" model="ir.rule">
+        <field name="name">Appraisal Cycle — company boundary</field>
+        <field name="model_id" ref="model_onehr_appraisal_cycle"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_appraisal_form_company" model="ir.rule">
+        <field name="name">Appraisal Form — company boundary</field>
+        <field name="model_id" ref="model_onehr_appraisal_form"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_appraisal_score_company" model="ir.rule">
+        <field name="name">Appraisal Score — company boundary</field>
+        <field name="model_id" ref="model_onehr_appraisal_score"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_appraisal_form_participant_scope" model="ir.rule">
+        <field name="name">Appraisal Form — participant / peer scope</field>
+        <field name="model_id" ref="model_onehr_appraisal_form"/>
+        <field name="groups" eval="[Command.link(ref('onehr_appraisal.group_onehr_appraisal_participant'))]"/>
+        <field name="domain_force">[('employee_user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_appraisal_score_participant_scope" model="ir.rule">
+        <field name="name">Appraisal Score — participant / peer scope</field>
+        <field name="model_id" ref="model_onehr_appraisal_score"/>
+        <field name="groups" eval="[Command.link(ref('onehr_appraisal.group_onehr_appraisal_participant'))]"/>
+        <field name="domain_force">['|', ('employee_user_id', '=', user.id), ('reviewer_user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_appraisal_form_manager_scope" model="ir.rule">
+        <field name="name">Appraisal Form — assigned manager scope</field>
+        <field name="model_id" ref="model_onehr_appraisal_form"/>
+        <field name="groups" eval="[Command.link(ref('onehr_appraisal.group_onehr_appraisal_manager'))]"/>
+        <field name="domain_force">[('manager_user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_appraisal_score_manager_scope" model="ir.rule">
+        <field name="name">Appraisal Score — assigned manager scope</field>
+        <field name="model_id" ref="model_onehr_appraisal_score"/>
+        <field name="groups" eval="[Command.link(ref('onehr_appraisal.group_onehr_appraisal_manager'))]"/>
+        <field name="domain_force">[('manager_user_id', '=', user.id)]</field>
+    </record>
+
+    <!-- Role-overlap protection: HR retains company-wide Appraisal authority. -->
+    <record id="rule_appraisal_cycle_hr_scope" model="ir.rule">
+        <field name="name">Appraisal Cycle — HR company scope</field>
+        <field name="model_id" ref="model_onehr_appraisal_cycle"/>
+        <field name="groups" eval="[Command.link(ref('onehr_appraisal.group_onehr_appraisal_hr'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_appraisal_form_hr_scope" model="ir.rule">
+        <field name="name">Appraisal Form — HR company scope</field>
+        <field name="model_id" ref="model_onehr_appraisal_form"/>
+        <field name="groups" eval="[Command.link(ref('onehr_appraisal.group_onehr_appraisal_hr'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_appraisal_score_hr_scope" model="ir.rule">
+        <field name="name">Appraisal Score — HR company scope</field>
+        <field name="model_id" ref="model_onehr_appraisal_score"/>
+        <field name="groups" eval="[Command.link(ref('onehr_appraisal.group_onehr_appraisal_hr'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_payroll_bridge_config_company" model="ir.rule">
+        <field name="name">Payroll Bridge Configuration — allowed companies</field>
+        <field name="model_id" ref="model_onehr_payroll_bridge_config"/>
+        <field name="groups" eval="[
+            Command.link(ref('onehr_payroll_bridge.group_onehr_payroll_officer')),
+            Command.link(ref('onehr_payroll_bridge.group_onehr_payroll_manager'))
+        ]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_payroll_export_company" model="ir.rule">
+        <field name="name">Payroll Export — allowed companies</field>
+        <field name="model_id" ref="model_onehr_payroll_export"/>
+        <field name="groups" eval="[
+            Command.link(ref('onehr_payroll_bridge.group_onehr_payroll_officer')),
+            Command.link(ref('onehr_payroll_bridge.group_onehr_payroll_manager'))
+        ]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_payroll_import_company" model="ir.rule">
+        <field name="name">Payroll Import — allowed companies</field>
+        <field name="model_id" ref="model_onehr_payroll_import"/>
+        <field name="groups" eval="[
+            Command.link(ref('onehr_payroll_bridge.group_onehr_payroll_officer')),
+            Command.link(ref('onehr_payroll_bridge.group_onehr_payroll_manager'))
+        ]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

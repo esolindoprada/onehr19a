@@ -1,0 +1,67 @@
+PASS: PROJECT/ADDON identity = OneHR Document
+PASS: manifest targets Odoo 19
+PASS: hard dependencies exactly onehr_corehr, onehr_security, mail
+PASS: all manifest data files exist
+PASS: obsolete generic controller/demo scaffold removed
+PASS: all Python sources compile (18 files)
+PASS: all XML files parse (11 files)
+PASS: Master Model Registry source inventory exactly 8 approved rows
+PASS: no duplicate/unapproved employee-document or tag master introduced
+PASS: res.config.settings ownership not invented
+PASS: branch addon remains soft/downstream; no circular hard dependency
+PASS: business source contains no sudo() authorization bypass
+PASS: generic source record references enforce ORM read access
+PASS: high-risk document/e-sign events integrate with OneHR audit ledger
+ACL_ROW_COUNT: 23
+PASS: least-privilege ACL inventory = 23 reviewed rows
+PASS: no direct base.group_user ACL on OneHR Document models
+PASS: persistent governed records have no ACL-level unlink permission
+PASS: global legal-company security boundary declared
+PASS: document role + explicit sensitive/restricted gates are wired
+PASS: e-sign transaction stores correlation/status evidence, not external credentials
+PASS: document binary payload delegates to Odoo attachment storage
+PASS: issued document/e-sign evidence uses uninstall-safe deletion protection
+PASS: no uninstall-blocking business unlink() override
+PASS: template rendering uses an explicit bounded variable contract
+PASS: no eval/safe_eval/exec template execution path
+PASS: e-sign provider integration remains a soft adapter hook with no network call
+PASS: enterprise list coverage for every persistent OneHR Document model
+PASS: professional form coverage for every persistent OneHR Document model
+PASS: mandatory search view coverage for every persistent OneHR Document model
+PASS: statusbar workflow widgets
+PASS: smart buttons
+PASS: body-form operational action
+PASS: One2many/list-row operational action
+PASS: chatter integration
+PASS: enterprise analytical navigation
+PASS: form help text uses Odoo-safe markup rather than invalid standalone labels
+PASS: search views avoid domains on non-stored dynamic expiry computations
+PASS: Odoo 19 direct view-expression style used
+PASS: expiry grace period is an explicit category policy, not conflated with reminder lead time
+PASS: expiry/reminder cron has an explicit Odoo scheduler user for governed cross-company processing
+PASS: Document User can navigate to employee-visible document operations
+PASS: signature-request workflow is Manager-gated in both UI and server action
+PASS: category metadata is protected by the same sensitivity tiers as document content
+PASS: source/template metadata has field-level Officer/Compliance protection
+PASS: controlled QWeb PDF report action present
+PASS: PDF snapshot path uses the Odoo 19 report service contract
+PASS: expiry/reminder scheduler is implemented
+PASS: governed document numbering delegates to ir.sequence
+PASS: Core HR + Security hard integration contract present
+TEST_METHOD_COUNT: 19
+PASS: enterprise runtime-test inventory exactly 19 methods
+PASS: all runtime test classes/files use post_install onehr_document tag
+PASS: all addon-specific Guardrail/completeness evidence documents present
+PASS: all 15 user-defined Hard Gates preserved; Gate 11 remains intentionally undefined
+
+SOURCE_ACCEPTANCE_FAIL_COUNT: 0
+MASTER_MODEL_REGISTRY_TARGET_ROWS: 8
+PERSISTENT_MODELS: 6
+TRANSIENT_MODELS: 2
+ACL_ROWS: 23
+RUNTIME_TEST_METHODS: 19
+CODEX_EXECUTED: NO
+DATABASE_COMMANDS_EXECUTED: NO
+ONEHR_DOCUMENT_DIRECT_FULL_SOURCE_ACCEPTANCE: PASS
+WINDOWS_RUNTIME_ACCEPTANCE: PENDING
+ONEHR_DOCUMENT_MOVE_FORWARD_READY: NO

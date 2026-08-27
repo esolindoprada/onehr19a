@@ -1,0 +1,17 @@
+<odoo noupdate="1">
+    <record id="seq_onehr_talent_pool" model="ir.sequence">
+        <field name="name">OneHR Talent Pool</field>
+        <field name="code">onehr.talent.pool</field>
+        <field name="prefix">TAL/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_onehr_succession_plan" model="ir.sequence">
+        <field name="name">OneHR Succession Plan</field>
+        <field name="code">onehr.succession.plan</field>
+        <field name="prefix">SUC/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

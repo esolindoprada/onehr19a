@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_onehr_kiosk_device_operator,Kiosk Device Operator,model_onehr_kiosk_device,onehr_mobile_kiosk.group_onehr_kiosk_operator,1,0,0,0
+access_onehr_kiosk_device_admin,Kiosk Device Administrator,model_onehr_kiosk_device,onehr_mobile_kiosk.group_onehr_kiosk_admin,1,1,1,1
+access_onehr_kiosk_log_operator,Kiosk Log Operator,model_onehr_kiosk_log,onehr_mobile_kiosk.group_onehr_kiosk_operator,1,1,1,0
+access_onehr_kiosk_log_admin,Kiosk Log Administrator,model_onehr_kiosk_log,onehr_mobile_kiosk.group_onehr_kiosk_admin,1,1,1,1

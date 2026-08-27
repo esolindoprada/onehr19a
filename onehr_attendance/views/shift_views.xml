@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================ -->
+    <!-- SHIFT: operational master + effective policy                     -->
+    <!-- ================================================================ -->
+    <record id="view_onehr_shift_list" model="ir.ui.view">
+        <field name="name">onehr.shift.list</field>
+        <field name="model">onehr.shift</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'" decoration-muted="state == 'retired'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="work_location_id" optional="show"/>
+                <field name="position_id" optional="hide"/>
+                <field name="resource_calendar_id" optional="show"/>
+                <field name="start_hour" widget="float_time"/>
+                <field name="end_hour" widget="float_time"/>
+                <field name="spans_next_day" optional="hide"/>
+                <field name="late_grace_minutes" optional="hide"/>
+                <field name="attendance_count" optional="show"/>
+                <field name="valid_from" optional="show"/>
+                <field name="valid_to" optional="show"/>
+                <field name="state" widget="badge"/>
+                <button name="action_preview_today" type="object" string="Preview" icon="fa-clock-o"/>
+                <button name="action_open_attendances" type="object" string="Attendance" icon="fa-list"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_shift_form" model="ir.ui.view">
+        <field name="name">onehr.shift.form</field>
+        <field name="model">onehr.shift</field>
+        <field name="arch" type="xml">
+            <form string="Shift">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <button name="action_retire" type="object" string="Retire" invisible="state != 'active'" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,retired"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Retired" bg_color="text-bg-secondary" invisible="state != 'retired'"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_attendances" type="object" class="oe_stat_button" icon="fa-clock-o">
+                            <field name="attendance_count" widget="statinfo" string="Attendance"/>
+                        </button>
+                        <button name="action_open_schedules" type="object" class="oe_stat_button" icon="fa-calendar">
+                            <field name="schedule_count" widget="statinfo" string="Schedules"/>
+                        </button>
+                        <button name="action_open_calendar" type="object" class="oe_stat_button" icon="fa-calendar-check-o">
+                            <div class="o_stat_info"><span class="o_stat_text">Work Calendar</span></div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Day Shift"/></h1>
+                        <div><field name="code" placeholder="DAY" class="oe_inline"/></div>
+                    </div>
+                    <group>
+                        <group string="Enterprise Scope">
+                            <field name="company_id" groups="base.group_multi_company" readonly="state == 'retired'"/>
+                            <field name="resource_calendar_id" readonly="state == 'retired'"/>
+                            <field name="work_location_id" readonly="state == 'retired'"/>
+                            <field name="position_id" readonly="state == 'retired'"/>
+                            <field name="branch_ref" readonly="state == 'retired'"/>
+                            <field name="priority"/>
+                        </group>
+                        <group string="Effective Period">
+                            <field name="valid_from" readonly="state == 'retired'"/>
+                            <field name="valid_to" readonly="state == 'retired'"/>
+                            <field name="timezone" readonly="state == 'retired'"/>
+                        </group>
+                    </group>
+                    <button name="action_preview_today" type="object" string="Preview Today's Planned Interval" class="btn-secondary" icon="fa-clock-o"/>
+                    <notebook>
+                        <page string="Work Boundaries">
+                            <group>
+                                <group string="Planned Time">
+                                    <field name="start_hour" widget="float_time" readonly="state == 'retired'"/>
+                                    <field name="end_hour" widget="float_time" readonly="state == 'retired'"/>
+                                    <field name="spans_next_day" readonly="state == 'retired'"/>
+                                </group>
+                                <group string="Tolerance &amp; Geofence">
+                                    <field name="late_grace_minutes"/>
+                                    <field name="early_leave_grace_minutes"/>
+                                    <field name="rounding_minutes"/>
+                                    <field name="geofence_radius_m"/>
+                                </group>
+                            </group>
+                            <group string="Working Days" col="7">
+                                <field name="monday"/><field name="tuesday"/><field name="wednesday"/><field name="thursday"/><field name="friday"/><field name="saturday"/><field name="sunday"/>
+                            </group>
+                        </page>
+                        <page string="Direct Schedules">
+                            <field name="schedule_ids" readonly="state == 'retired'">
+                                <list>
+                                    <field name="employee_id"/>
+                                    <field name="valid_from"/>
+                                    <field name="valid_to"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_employee" type="object" string="Employee" icon="fa-user"/>
+                                    <button name="action_preview_today" type="object" string="Preview" icon="fa-clock-o"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Attendance History">
+                            <field name="attendance_ids" readonly="1">
+                                <list>
+                                    <field name="employee_id"/>
+                                    <field name="check_in"/>
+                                    <field name="check_out"/>
+                                    <field name="worked_hours"/>
+                                    <field name="onehr_exception_state" widget="badge"/>
+                                    <field name="onehr_processing_state" widget="badge"/>
+                                    <button name="action_onehr_open_employee" type="object" string="Employee" icon="fa-user"/>
+                                    <button name="action_onehr_open_exceptions" type="object" string="Exceptions" icon="fa-exclamation-triangle"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_shift_search" model="ir.ui.view">
+        <field name="name">onehr.shift.search</field>
+        <field name="model">onehr.shift</field>
+        <field name="arch" type="xml">
+            <search string="Shifts">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="work_location_id"/>
+                <field name="position_id"/>
+                <field name="resource_calendar_id"/>
+                <filter name="active_state" string="Active" domain="[('state','=','active')]"/>
+                <filter name="draft_state" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="retired_state" string="Retired" domain="[('state','=','retired')]"/>
+                <separator/>
+                <filter name="effective_today" string="Effective Today" domain="[('valid_from','&lt;=',context_today()),'|',('valid_to','=',False),('valid_to','&gt;=',context_today())]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                    <filter name="group_location" string="Work Location" context="{'group_by':'work_location_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- SHIFT PATTERN                                                     -->
+    <!-- ================================================================ -->
+    <record id="view_onehr_shift_pattern_list" model="ir.ui.view">
+        <field name="name">onehr.shift.pattern.list</field>
+        <field name="model">onehr.shift.pattern</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'" decoration-muted="state == 'retired'">
+                <field name="code"/><field name="name"/><field name="version"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="cycle_length_days"/><field name="cycle_codes"/>
+                <field name="valid_from"/><field name="valid_to"/><field name="schedule_count"/>
+                <field name="state" widget="badge"/>
+                <button name="action_validate_cycle" type="object" string="Validate" icon="fa-check"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_shift_pattern_form" model="ir.ui.view">
+        <field name="name">onehr.shift.pattern.form</field>
+        <field name="model">onehr.shift.pattern</field>
+        <field name="arch" type="xml">
+            <form string="Shift Rotation Pattern">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <button name="action_retire" type="object" string="Retire" invisible="state != 'active'" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <button name="action_create_new_version" type="object" string="Create New Version" invisible="state == 'draft'" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,retired"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Retired" bg_color="text-bg-secondary" invisible="state != 'retired'"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_schedules" type="object" class="oe_stat_button" icon="fa-calendar"><field name="schedule_count" widget="statinfo" string="Schedules"/></button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name"/></h1><div><field name="code" class="oe_inline"/> <span>v</span><field name="version" class="oe_inline"/></div></div>
+                    <group>
+                        <group><field name="company_id" groups="base.group_multi_company"/><field name="anchor_date"/><field name="valid_from"/><field name="valid_to"/></group>
+                        <group><field name="cycle_length_days" readonly="1"/><field name="shift_ids" widget="many2many_tags"/><field name="cycle_codes" placeholder="DAY,DAY,OFF,OFF,NIGHT,NIGHT,OFF"/></group>
+                    </group>
+                    <button name="action_validate_cycle" type="object" string="Validate Pattern Cycle" class="btn-secondary" icon="fa-check-circle"/>
+                    <notebook>
+                        <page string="Scheduled Employees">
+                            <field name="schedule_ids" readonly="state == 'retired'">
+                                <list><field name="employee_id"/><field name="valid_from"/><field name="valid_to"/><field name="state" widget="badge"/><button name="action_preview_today" type="object" string="Preview" icon="fa-clock-o"/></list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_shift_pattern_search" model="ir.ui.view">
+        <field name="name">onehr.shift.pattern.search</field><field name="model">onehr.shift.pattern</field>
+        <field name="arch" type="xml">
+            <search string="Shift Patterns">
+                <field name="code"/><field name="name"/><field name="shift_ids"/>
+                <filter name="active_state" string="Active" domain="[('state','=','active')]"/>
+                <filter name="draft_state" string="Draft" domain="[('state','=','draft')]"/>
+                <group><filter name="group_code" string="Pattern" context="{'group_by':'code'}"/><filter name="group_state" string="Status" context="{'group_by':'state'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/></group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- SHIFT ASSIGNMENT                                                  -->
+    <!-- ================================================================ -->
+    <record id="view_onehr_shift_assignment_list" model="ir.ui.view">
+        <field name="name">onehr.shift.assignment.list</field><field name="model">onehr.shift.assignment</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'" decoration-muted="state in ('ended','cancelled')">
+                <field name="employee_id"/><field name="shift_id"/><field name="pattern_id"/><field name="current_shift_id" optional="show"/>
+                <field name="valid_from"/><field name="valid_to"/><field name="attendance_count"/><field name="exception_count"/>
+                <field name="state" widget="badge"/>
+                <button name="action_preview_today" type="object" string="Preview" icon="fa-clock-o"/>
+                <button name="action_open_exceptions" type="object" string="Exceptions" icon="fa-exclamation-triangle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_shift_assignment_form" model="ir.ui.view">
+        <field name="name">onehr.shift.assignment.form</field><field name="model">onehr.shift.assignment</field>
+        <field name="arch" type="xml">
+            <form string="Employee Shift Schedule">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'planned'" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <button name="action_end" type="object" string="End" invisible="state != 'active'" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state != 'planned'" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="planned,active,ended,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-user"><div class="o_stat_info"><span class="o_stat_text">Employee</span></div></button>
+                        <button name="action_open_current_shift" type="object" class="oe_stat_button" icon="fa-clock-o"><div class="o_stat_info"><span class="o_stat_text">Today's Shift</span></div></button>
+                        <button name="action_open_attendances" type="object" class="oe_stat_button" icon="fa-list"><field name="attendance_count" widget="statinfo" string="Attendance"/></button>
+                        <button name="action_open_exceptions" type="object" class="oe_stat_button" icon="fa-exclamation-triangle"><field name="exception_count" widget="statinfo" string="Exceptions"/></button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Employee &amp; Scope"><field name="company_id" groups="base.group_multi_company"/><field name="employee_id"/><field name="assignment_ref"/></group>
+                        <group string="Schedule Source"><field name="shift_id"/><field name="pattern_id"/><field name="cycle_offset" invisible="not pattern_id"/><field name="current_shift_id" readonly="1"/></group>
+                    </group>
+                    <group string="Effective Period"><field name="valid_from"/><field name="valid_to"/></group>
+                    <button name="action_preview_today" type="object" string="Preview Today's Resolved Shift" class="btn-secondary" icon="fa-calendar-check-o"/>
+                    <button name="action_detect_missing_previous_day" type="object" string="Check Yesterday Missing Punch" class="btn-secondary" icon="fa-search" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <notebook>
+                        <page string="Exceptions">
+                            <field name="exception_ids" readonly="1">
+                                <list decoration-danger="severity == 'critical'" decoration-warning="state in ('open','under_review')">
+                                    <field name="attendance_date"/><field name="exception_type" widget="badge"/><field name="severity" widget="badge"/><field name="variance_minutes"/><field name="state" widget="badge"/>
+                                    <button name="action_open_attendance" type="object" string="Attendance" icon="fa-external-link" invisible="not attendance_id"/>
+                                    <button name="action_start_review" type="object" string="Review" icon="fa-search" invisible="state != 'open'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Attendance"><field name="attendance_ids" readonly="1"><list><field name="date"/><field name="check_in"/><field name="check_out"/><field name="worked_hours"/><field name="onehr_exception_state" widget="badge"/><field name="onehr_processing_state" widget="badge"/><button name="action_onehr_open_exceptions" type="object" string="Exceptions" icon="fa-exclamation-triangle"/></list></field></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_shift_assignment_search" model="ir.ui.view">
+        <field name="name">onehr.shift.assignment.search</field><field name="model">onehr.shift.assignment</field>
+        <field name="arch" type="xml">
+            <search string="Shift Schedules"><field name="employee_id"/><field name="shift_id"/><field name="pattern_id"/><field name="assignment_ref"/>
+                <filter name="active_state" string="Active" domain="[('state','=','active')]"/><filter name="planned_state" string="Planned" domain="[('state','=','planned')]"/><filter name="effective_today" string="Effective Today" domain="[('valid_from','&lt;=',context_today()),'|',('valid_to','=',False),('valid_to','&gt;=',context_today())]"/>
+                <group><filter name="group_employee" string="Employee" context="{'group_by':'employee_id'}"/><filter name="group_shift" string="Direct Shift" context="{'group_by':'shift_id'}"/><filter name="group_pattern" string="Pattern" context="{'group_by':'pattern_id'}"/><filter name="group_state" string="Status" context="{'group_by':'state'}"/></group>
+            </search>
+        </field>
+    </record>
+</odoo>

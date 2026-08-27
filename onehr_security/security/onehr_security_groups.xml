@@ -1,0 +1,63 @@
+<odoo>
+    <record id="module_category_onehr_security" model="ir.module.category">
+        <field name="name">OneHR Security</field>
+        <field name="description">OneHR security administration, compliance and access governance.</field>
+        <field name="sequence">35</field>
+    </record>
+
+    <!-- Odoo 19 uses res.groups.privilege to classify access groups. -->
+    <record id="privilege_onehr_security" model="res.groups.privilege">
+        <field name="name">OneHR Security</field>
+        <field name="description">OneHR role administration, SoD and audit privileges.</field>
+        <field name="category_id" ref="module_category_onehr_security"/>
+        <field name="sequence">35</field>
+    </record>
+
+    <record id="group_onehr_sensitive_data_reader" model="res.groups">
+        <field name="name">Sensitive Data Reader</field>
+        <field name="privilege_id" ref="privilege_onehr_security"/>
+        <field name="sequence">50</field>
+        <field name="implied_ids" eval="[Command.link(ref('base.group_user'))]"/>
+        <field name="comment">Explicit gate for future sensitive HR fields/models. Not implied by Security Admin.</field>
+    </record>
+
+    <record id="group_onehr_restricted_data_reader" model="res.groups">
+        <field name="name">Restricted Data Reader</field>
+        <field name="privilege_id" ref="privilege_onehr_security"/>
+        <field name="sequence">60</field>
+        <field name="implied_ids" eval="[Command.link(ref('base.group_user'))]"/>
+        <field name="comment">Explicit highest-sensitivity access gate. Must be granted intentionally.</field>
+    </record>
+
+    <record id="group_onehr_security_user" model="res.groups">
+        <field name="name">Security User</field>
+        <field name="privilege_id" ref="privilege_onehr_security"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[Command.link(ref('base.group_user'))]"/>
+        <field name="comment">Read own OneHR role assignment and own SoD evidence; no security administration.</field>
+    </record>
+
+    <record id="group_onehr_security_manager" model="res.groups">
+        <field name="name">Security Manager</field>
+        <field name="privilege_id" ref="privilege_onehr_security"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[Command.link(ref('onehr_security.group_onehr_security_user'))]"/>
+        <field name="comment">Provision OneHR roles, manage role catalog and review company-scoped security evidence.</field>
+    </record>
+
+    <record id="group_onehr_security_admin" model="res.groups">
+        <field name="name">Security Admin</field>
+        <field name="privilege_id" ref="privilege_onehr_security"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[Command.link(ref('onehr_security.group_onehr_security_manager'))]"/>
+        <field name="comment">OneHR security configuration administrator. Does not automatically imply future medical/discipline secret groups.</field>
+    </record>
+
+    <record id="group_onehr_compliance_officer" model="res.groups">
+        <field name="name">Compliance Officer</field>
+        <field name="privilege_id" ref="privilege_onehr_security"/>
+        <field name="sequence">40</field>
+        <field name="implied_ids" eval="[Command.link(ref('onehr_security.group_onehr_security_user'))]"/>
+        <field name="comment">Read security evidence and record controlled SoD/audit retention decisions.</field>
+    </record>
+</odoo>

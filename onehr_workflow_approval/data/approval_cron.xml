@@ -1,0 +1,23 @@
+<odoo noupdate="1">
+    <record id="ir_cron_onehr_approval_sla" model="ir.cron">
+        <field name="name">OneHR Approval — SLA Escalation</field>
+        <field name="model_id" ref="model_onehr_approval_request"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_process_sla()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="ir_cron_onehr_approval_kpi_daily" model="ir.cron">
+        <field name="name">OneHR Approval — Daily KPI Snapshot</field>
+        <field name="model_id" ref="model_onehr_approval_kpi_daily"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_build_daily_kpi()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

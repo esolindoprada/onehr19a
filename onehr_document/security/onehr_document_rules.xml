@@ -1,0 +1,141 @@
+<odoo>
+    <!--
+      HARD GATE 10:
+      Global company rules are the non-negotiable legal partition. Group rules
+      below may narrow/expand inside allowed companies, but can never cross it.
+    -->
+    <record id="rule_document_category_company_global" model="ir.rule">
+        <field name="name">OneHR Document Category — allowed companies</field>
+        <field name="model_id" ref="model_onehr_document_category"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_document_company_global" model="ir.rule">
+        <field name="name">OneHR Document — allowed companies</field>
+        <field name="model_id" ref="model_onehr_document"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_document_version_company_global" model="ir.rule">
+        <field name="name">OneHR Document Version — allowed companies</field>
+        <field name="model_id" ref="model_onehr_document_version"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_document_template_company_global" model="ir.rule">
+        <field name="name">OneHR Document Template — allowed companies</field>
+        <field name="model_id" ref="model_onehr_document_template"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_document_template_version_company_global" model="ir.rule">
+        <field name="name">OneHR Document Template Version — allowed companies</field>
+        <field name="model_id" ref="model_onehr_document_template_version"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_esign_company_global" model="ir.rule">
+        <field name="name">OneHR E-Sign Transaction — allowed companies</field>
+        <field name="model_id" ref="model_onehr_esign_transaction"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Category metadata follows the same sensitivity boundary as documents. -->
+    <record id="rule_document_category_user_visible_internal" model="ir.rule">
+        <field name="name">OneHR Document Category — employee-visible internal scope</field>
+        <field name="model_id" ref="model_onehr_document_category"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_user'))]"/>
+        <field name="domain_force">[('sensitivity', '=', 'internal'), ('employee_visible', '=', True)]</field>
+    </record>
+    <record id="rule_document_category_officer_nonrestricted" model="ir.rule">
+        <field name="name">OneHR Document Category — Officer non-restricted scope</field>
+        <field name="model_id" ref="model_onehr_document_category"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_officer'))]"/>
+        <field name="domain_force">[('sensitivity', 'in', ['internal', 'confidential'])]</field>
+    </record>
+    <record id="rule_document_category_compliance_all_sensitivity" model="ir.rule">
+        <field name="name">OneHR Document Category — Compliance all sensitivity</field>
+        <field name="model_id" ref="model_onehr_document_category"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_compliance'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Employee self-service read scope. No portal dependency is introduced. -->
+    <record id="rule_document_user_own_visible" model="ir.rule">
+        <field name="name">OneHR Document — employee-visible own internal documents</field>
+        <field name="model_id" ref="model_onehr_document"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_user'))]"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id), ('category_id.employee_visible', '=', True), ('category_id.sensitivity', '=', 'internal')]</field>
+    </record>
+    <record id="rule_document_version_user_own_visible" model="ir.rule">
+        <field name="name">OneHR Document Version — employee-visible own internal versions</field>
+        <field name="model_id" ref="model_onehr_document_version"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_user'))]"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id), ('category_id.employee_visible', '=', True), ('category_id.sensitivity', '=', 'internal')]</field>
+    </record>
+
+    <!-- Officers/managers can operate internal/confidential, never restricted. -->
+    <record id="rule_document_officer_nonrestricted" model="ir.rule">
+        <field name="name">OneHR Document — Officer non-restricted scope</field>
+        <field name="model_id" ref="model_onehr_document"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_officer'))]"/>
+        <field name="domain_force">[('category_id.sensitivity', 'in', ['internal', 'confidential'])]</field>
+    </record>
+    <record id="rule_document_version_officer_nonrestricted" model="ir.rule">
+        <field name="name">OneHR Document Version — Officer non-restricted scope</field>
+        <field name="model_id" ref="model_onehr_document_version"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_officer'))]"/>
+        <field name="domain_force">[('category_id.sensitivity', 'in', ['internal', 'confidential'])]</field>
+    </record>
+    <record id="rule_document_template_officer_nonrestricted" model="ir.rule">
+        <field name="name">OneHR Document Template — Officer non-restricted scope</field>
+        <field name="model_id" ref="model_onehr_document_template"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_officer'))]"/>
+        <field name="domain_force">[('category_id.sensitivity', 'in', ['internal', 'confidential'])]</field>
+    </record>
+    <record id="rule_document_template_version_officer_nonrestricted" model="ir.rule">
+        <field name="name">OneHR Document Template Version — Officer non-restricted scope</field>
+        <field name="model_id" ref="model_onehr_document_template_version"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_officer'))]"/>
+        <field name="domain_force">[('category_id.sensitivity', 'in', ['internal', 'confidential'])]</field>
+    </record>
+    <record id="rule_esign_officer_nonrestricted" model="ir.rule">
+        <field name="name">OneHR E-Sign Transaction — Officer non-restricted scope</field>
+        <field name="model_id" ref="model_onehr_esign_transaction"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_officer'))]"/>
+        <field name="domain_force">[('category_id.sensitivity', 'in', ['internal', 'confidential'])]</field>
+    </record>
+
+    <!-- Compliance receives read-only restricted visibility through ACL + rule. -->
+    <record id="rule_document_compliance_all_sensitivity" model="ir.rule">
+        <field name="name">OneHR Document — Compliance all sensitivity</field>
+        <field name="model_id" ref="model_onehr_document"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_compliance'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_document_version_compliance_all_sensitivity" model="ir.rule">
+        <field name="name">OneHR Document Version — Compliance all sensitivity</field>
+        <field name="model_id" ref="model_onehr_document_version"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_compliance'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_document_template_compliance_all_sensitivity" model="ir.rule">
+        <field name="name">OneHR Document Template — Compliance all sensitivity</field>
+        <field name="model_id" ref="model_onehr_document_template"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_compliance'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_document_template_version_compliance_all_sensitivity" model="ir.rule">
+        <field name="name">OneHR Document Template Version — Compliance all sensitivity</field>
+        <field name="model_id" ref="model_onehr_document_template_version"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_compliance'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_esign_compliance_all_sensitivity" model="ir.rule">
+        <field name="name">OneHR E-Sign Transaction — Compliance all sensitivity</field>
+        <field name="model_id" ref="model_onehr_esign_transaction"/>
+        <field name="groups" eval="[Command.link(ref('onehr_document.group_onehr_document_compliance'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

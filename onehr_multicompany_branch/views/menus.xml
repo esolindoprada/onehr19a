@@ -1,0 +1,28 @@
+<odoo>
+    <menuitem
+        id="menu_onehr_my_branches"
+        name="My Branches"
+        parent="onehr_base.menu_onehr_organization"
+        action="action_onehr_my_branches"
+        sequence="5"
+        groups="onehr_multicompany_branch.group_onehr_branch_user"
+    />
+
+    <menuitem
+        id="menu_onehr_branches"
+        name="Branches"
+        parent="onehr_base.menu_onehr_organization"
+        action="action_onehr_branches"
+        sequence="15"
+        groups="onehr_multicompany_branch.group_onehr_branch_admin"
+    />
+
+    <menuitem
+        id="menu_onehr_branch_role_coverage"
+        name="Branch Role Coverage"
+        parent="onehr_base.menu_onehr_organization"
+        action="action_onehr_branch_role_coverage"
+        sequence="90"
+        groups="onehr_multicompany_branch.group_onehr_central_office,onehr_multicompany_branch.group_onehr_branch_admin,onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin"
+    />
+</odoo>

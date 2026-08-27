@@ -1,0 +1,93 @@
+PASS: Odoo 19 manifest version
+PASS: hard dependency exactly onehr_attendance
+PASS: application addon flag
+PASS: installable addon flag
+PASS: all manifest data files exist
+PASS: all Python sources compile
+PASS: all XML files parse
+PASS: Odoo 19 search <group> elements have no attributes
+PASS: XML external ids unique
+PASS: exact two product-approved kiosk persistent models
+PASS: legacy tutorial model not created
+PASS: canonical hr.attendance narrow extension
+PASS: no parallel OneHR attendance model
+PASS: no legacy _sql_constraints pattern
+PASS: Odoo 19 models.Constraint pattern present
+PASS: no business sudo() bypass
+PASS: no SUPERUSER_ID business bypass
+PASS: device token persisted as digest contract
+PASS: constant-time device token comparison
+PASS: cryptographic token generation
+PASS: accepted Attendance ingestion contract used
+PASS: Time Off soft dependency checked dynamically
+PASS: quick Time Off runs under employee user authority
+PASS: kiosk controllers require authenticated user
+PASS: no public kiosk attendance route
+PASS: least-privilege kiosk ACL inventory exactly four rows
+PASS: no broad base.group_user kiosk ACL
+PASS: global allowed-company record rules
+PASS: assigned-device operator scope
+PASS: operator/admin separation
+PASS: operator reuses accepted Attendance officer authority
+PASS: onehr.kiosk.device explicit List view
+PASS: onehr.kiosk.device explicit Form view
+PASS: onehr.kiosk.device explicit Search view
+PASS: onehr.kiosk.log explicit List view
+PASS: onehr.kiosk.log explicit Form view
+PASS: onehr.kiosk.log explicit Search view
+PASS: statusbar widgets present
+PASS: smart buttons present
+PASS: body/header action buttons present
+PASS: One2many row actions present
+PASS: chatter present
+PASS: Calendar/Pivot/Graph analytics present
+PASS: browser offline queue
+PASS: encrypted WebCrypto offline queue
+PASS: QR/barcode browser capability
+PASS: Web NFC capability
+PASS: browser geolocation capability
+PASS: QWeb report action present
+PASS: Odoo 19 ir.actions.report uses group_ids
+PASS: legacy ir.actions.report groups_id absent
+PASS: raw credential persistence prohibition documented in code
+PASS: durable dead-letter lifecycle
+PASS: bounded retry/backoff evidence
+PASS: device geofence policy
+PASS: face-ready capability without biometric model
+PASS: today schedule/leave balance kiosk summary
+PASS: quick Time Off kiosk service
+PASS: online/offline sync service
+PASS: runtime test source inventory exactly 24 methods
+PASS: mandatory enterprise documentation present
+PASS: HARD GATE 0
+PASS: HARD GATE 1
+PASS: HARD GATE 2
+PASS: HARD GATE 3
+PASS: HARD GATE 4
+PASS: HARD GATE 5
+PASS: HARD GATE 6
+PASS: HARD GATE 7
+PASS: HARD GATE 8
+PASS: HARD GATE 9
+PASS: HARD GATE 10
+PASS: HARD GATE 12
+PASS: HARD GATE 13
+PASS: HARD GATE 14
+PASS: HARD GATE 15
+PASS: Gate 11 intentionally undefined; not invented
+PASS: Codex maximum two attempts
+PASS: same root cause repeat limit one
+
+SOURCE_FILES_PYTHON: 16
+SOURCE_FILES_XML: 9
+CUSTOM_PERSISTENT_MODELS: 2
+NATIVE_MODELS_EXTENDED: 1
+ACL_ROWS: 4
+XML_EXTERNAL_IDS: 70
+RUNTIME_TEST_METHODS: 24
+SOURCE_ACCEPTANCE_PASS_COUNT: 79
+SOURCE_ACCEPTANCE_FAIL_COUNT: 0
+ONEHR_MOBILE_KIOSK_DIRECT_FULL_SOURCE_ACCEPTANCE: PASS
+WINDOWS_RUNTIME_ACCEPTANCE: PENDING
+REGISTRY_ED_CLASSIFICATION: PENDING_EXACT_REGISTRY_ROW_VERIFICATION
+ONEHR_MOBILE_KIOSK_MOVE_FORWARD_READY: NO

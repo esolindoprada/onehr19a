@@ -1,0 +1,66 @@
+<odoo>
+    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_pnp.group_onehr_pnp_reader'))
+        ]"/>
+    </record>
+
+    <menuitem id="menu_onehr_pnp_root"
+              name="Policies &amp; Procedures"
+              parent="onehr_base.menu_onehr_root"
+              sequence="67"
+              groups="onehr_pnp.group_onehr_pnp_reader"/>
+
+    <menuitem id="menu_onehr_pnp_my_policies"
+              name="My Current Policies"
+              parent="menu_onehr_pnp_root"
+              action="action_onehr_policy_my_current"
+              sequence="10"/>
+
+    <menuitem id="menu_onehr_pnp_my_ack"
+              name="My Acknowledgements"
+              parent="menu_onehr_pnp_root"
+              action="action_onehr_policy_ack_my"
+              sequence="20"/>
+
+    <menuitem id="menu_onehr_pnp_my_evidence"
+              name="My Evidence"
+              parent="menu_onehr_pnp_root"
+              action="action_onehr_policy_evidence_my"
+              sequence="30"/>
+
+    <menuitem id="menu_onehr_pnp_register"
+              name="Policy Register"
+              parent="menu_onehr_pnp_root"
+              action="action_onehr_policy_register"
+              sequence="40"
+              groups="onehr_pnp.group_onehr_pnp_owner"/>
+
+    <menuitem id="menu_onehr_pnp_review_calendar"
+              name="Review Calendar"
+              parent="menu_onehr_pnp_root"
+              action="action_onehr_policy_review_calendar"
+              sequence="50"
+              groups="onehr_pnp.group_onehr_pnp_owner"/>
+
+    <menuitem id="menu_onehr_pnp_ack_register"
+              name="Acknowledgement Register"
+              parent="menu_onehr_pnp_root"
+              action="action_onehr_policy_ack_register"
+              sequence="60"
+              groups="onehr_pnp.group_onehr_pnp_compliance"/>
+
+    <menuitem id="menu_onehr_pnp_evidence_register"
+              name="Evidence Register"
+              parent="menu_onehr_pnp_root"
+              action="action_onehr_policy_evidence_register"
+              sequence="70"
+              groups="onehr_pnp.group_onehr_pnp_compliance"/>
+
+    <menuitem id="menu_onehr_pnp_analytics"
+              name="Compliance Analytics"
+              parent="menu_onehr_pnp_root"
+              action="action_onehr_policy_analytics"
+              sequence="80"
+              groups="onehr_pnp.group_onehr_pnp_compliance"/>
+</odoo>

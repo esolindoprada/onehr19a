@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Odoo 19 actual model: hr.attendance.overtime.line -->
+    <record id="view_hr_attendance_overtime_line_onehr_list" model="ir.ui.view">
+        <field name="name">hr.attendance.overtime.line.onehr.list</field>
+        <field name="model">hr.attendance.overtime.line</field>
+        <field name="arch" type="xml">
+            <list decoration-success="status == 'approved'" decoration-danger="status == 'refused'" decoration-warning="status == 'to_approve'">
+                <field name="employee_id"/><field name="date"/><field name="time_start" optional="show"/><field name="time_stop" optional="show"/>
+                <field name="duration" sum="Extra Hours"/><field name="manual_duration" sum="Validated/Encoded"/><field name="amount_rate"/><field name="status" widget="badge"/>
+                <field name="onehr_policy_reference" optional="show"/><field name="onehr_payroll_code_snapshot" optional="show"/><field name="onehr_export_ready" optional="show"/>
+                <button name="action_approve" type="object" string="Approve" icon="fa-check" invisible="status == 'approved'"/>
+                <button name="action_refuse" type="object" string="Refuse" icon="fa-times" invisible="status == 'refused'"/>
+                <button name="action_onehr_open_attendance" type="object" string="Attendance" icon="fa-clock-o"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_attendance_overtime_line_onehr_form" model="ir.ui.view">
+        <field name="name">hr.attendance.overtime.line.onehr.form</field>
+        <field name="model">hr.attendance.overtime.line</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Overtime">
+                <header>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="status == 'approved'"/>
+                    <button name="action_refuse" type="object" string="Refuse" invisible="status == 'refused'"/>
+                    <field name="status" widget="statusbar" statusbar_visible="to_approve,approved,refused"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_onehr_open_employee" type="object" class="oe_stat_button" icon="fa-user"><div class="o_stat_info"><span class="o_stat_text">Employee</span></div></button>
+                        <button name="action_onehr_open_attendance" type="object" class="oe_stat_button" icon="fa-clock-o"><div class="o_stat_info"><span class="o_stat_text">Attendance</span></div></button>
+                    </div>
+                    <div class="oe_title"><h1><field name="employee_id"/></h1></div>
+                    <group>
+                        <group string="Native Odoo Overtime"><field name="company_id" groups="base.group_multi_company"/><field name="date"/><field name="time_start"/><field name="time_stop"/><field name="duration"/><field name="manual_duration"/><field name="amount_rate"/></group>
+                        <group string="OneHR Payroll Readiness"><field name="onehr_policy_reference" readonly="1"/><field name="onehr_payroll_code_snapshot" readonly="1"/><field name="onehr_export_ready" readonly="1"/></group>
+                    </group>
+                    <field name="rule_ids" widget="many2many_tags"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hr_attendance_overtime_line_onehr_search" model="ir.ui.view">
+        <field name="name">hr.attendance.overtime.line.onehr.search</field><field name="model">hr.attendance.overtime.line</field>
+        <field name="arch" type="xml"><search string="Overtime Lines"><field name="employee_id"/><field name="date"/><field name="rule_ids"/><field name="onehr_policy_reference"/><field name="onehr_payroll_code_snapshot"/><filter name="to_approve" string="To Approve" domain="[('status','=','to_approve')]"/><filter name="approved" string="Approved" domain="[('status','=','approved')]"/><filter name="export_ready" string="Export Ready" domain="[('onehr_export_ready','=',True)]"/><group><filter name="group_employee" string="Employee" context="{'group_by':'employee_id'}"/><filter name="group_date" string="Date" context="{'group_by':'date'}"/><filter name="group_status" string="Status" context="{'group_by':'status'}"/></group></search></field>
+    </record>
+
+    <record id="view_hr_attendance_overtime_line_onehr_pivot" model="ir.ui.view"><field name="name">hr.attendance.overtime.line.onehr.pivot</field><field name="model">hr.attendance.overtime.line</field><field name="arch" type="xml"><pivot string="Overtime Analysis"><field name="employee_id" type="row"/><field name="date" type="col" interval="month"/><field name="duration" type="measure"/><field name="manual_duration" type="measure"/></pivot></field></record>
+    <record id="view_hr_attendance_overtime_line_onehr_graph" model="ir.ui.view"><field name="name">hr.attendance.overtime.line.onehr.graph</field><field name="model">hr.attendance.overtime.line</field><field name="arch" type="xml"><graph string="Overtime Trend"><field name="date" interval="month"/><field name="duration" type="measure"/></graph></field></record>
+
+    <!-- Native Odoo overtime rule + OneHR policy metadata -->
+    <record id="view_hr_attendance_overtime_rule_onehr_list" model="ir.ui.view">
+        <field name="name">hr.attendance.overtime.rule.onehr.list</field><field name="model">hr.attendance.overtime.rule</field>
+        <field name="arch" type="xml"><list><field name="sequence" widget="handle"/><field name="name"/><field name="ruleset_id"/><field name="base_off"/><field name="quantity_period" optional="show"/><field name="timing_type" optional="hide"/><field name="paid"/><field name="amount_rate"/><field name="onehr_policy_code"/><field name="onehr_payroll_code" optional="show"/><button name="action_onehr_open_ruleset" type="object" string="Ruleset" icon="fa-external-link"/></list></field>
+    </record>
+
+    <record id="view_hr_attendance_overtime_rule_onehr_form" model="ir.ui.view">
+        <field name="name">hr.attendance.overtime.rule.onehr.form</field><field name="model">hr.attendance.overtime.rule</field>
+        <field name="arch" type="xml"><form string="Overtime Rule"><sheet><div class="oe_button_box" name="button_box"><button name="action_onehr_open_ruleset" type="object" class="oe_stat_button" icon="fa-sitemap"><div class="o_stat_info"><span class="o_stat_text">Ruleset</span></div></button></div><div class="oe_title"><h1><field name="name"/></h1></div><group><group string="Native Calculation"><field name="ruleset_id"/><field name="base_off"/><field name="quantity_period" invisible="base_off != 'quantity'"/><field name="expected_hours_from_contract" invisible="base_off != 'quantity'"/><field name="expected_hours" invisible="base_off != 'quantity' or expected_hours_from_contract"/><field name="timing_type" invisible="base_off != 'timing'"/><field name="timing_start" widget="float_time" invisible="base_off != 'timing'"/><field name="timing_stop" widget="float_time" invisible="base_off != 'timing'"/><field name="resource_calendar_id" invisible="base_off != 'timing' or timing_type != 'schedule'"/></group><group string="Rate &amp; Tolerance"><field name="paid"/><field name="amount_rate"/><field name="employee_tolerance"/><field name="employer_tolerance"/></group></group><group string="OneHR Policy Metadata"><field name="onehr_policy_code"/><field name="onehr_payroll_code"/><field name="onehr_policy_note"/></group><field name="description"/></sheet></form></field>
+    </record>
+
+    <record id="view_hr_attendance_overtime_rule_onehr_search" model="ir.ui.view"><field name="name">hr.attendance.overtime.rule.onehr.search</field><field name="model">hr.attendance.overtime.rule</field><field name="arch" type="xml"><search string="Overtime Rules"><field name="name"/><field name="ruleset_id"/><field name="onehr_policy_code"/><field name="onehr_payroll_code"/><filter name="paid" string="Paid" domain="[('paid','=',True)]"/><group><filter name="group_ruleset" string="Ruleset" context="{'group_by':'ruleset_id'}"/><filter name="group_base" string="Based Off" context="{'group_by':'base_off'}"/></group></search></field></record>
+
+    <!-- Native Odoo ruleset + effective OneHR policy reference -->
+    <record id="view_hr_attendance_overtime_ruleset_onehr_list" model="ir.ui.view">
+        <field name="name">hr.attendance.overtime.ruleset.onehr.list</field><field name="model">hr.attendance.overtime.ruleset</field>
+        <field name="arch" type="xml"><list decoration-muted="not active"><field name="name"/><field name="company_id" groups="base.group_multi_company"/><field name="country_id" optional="show"/><field name="rate_combination_mode"/><field name="rules_count"/><field name="onehr_policy_reference"/><field name="onehr_valid_from"/><field name="onehr_valid_to"/><field name="active"/><button name="action_regenerate_overtimes" type="object" string="Regenerate" icon="fa-refresh"/></list></field>
+    </record>
+
+    <record id="view_hr_attendance_overtime_ruleset_onehr_form" model="ir.ui.view">
+        <field name="name">hr.attendance.overtime.ruleset.onehr.form</field><field name="model">hr.attendance.overtime.ruleset</field>
+        <field name="arch" type="xml"><form string="Overtime Ruleset"><sheet><div class="oe_title"><h1><field name="name"/></h1></div><group><group string="Native Odoo Ruleset"><field name="company_id" groups="base.group_multi_company"/><field name="country_id"/><field name="rate_combination_mode"/><field name="active"/></group><group string="OneHR Policy Governance"><field name="onehr_policy_reference"/><field name="onehr_valid_from"/><field name="onehr_valid_to"/></group></group><button name="action_regenerate_overtimes" type="object" string="Regenerate Overtime from Attendance" class="btn-secondary" icon="fa-refresh"/><notebook><page string="Rules"><field name="rule_ids"><list editable="bottom"><field name="sequence" widget="handle"/><field name="name"/><field name="base_off"/><field name="paid"/><field name="amount_rate"/><field name="onehr_policy_code"/><field name="onehr_payroll_code"/><button name="action_onehr_open_ruleset" type="object" string="Ruleset" icon="fa-external-link"/></list></field></page><page string="Description"><field name="description"/></page></notebook></sheet></form></field>
+    </record>
+
+    <record id="view_hr_attendance_overtime_ruleset_onehr_search" model="ir.ui.view"><field name="name">hr.attendance.overtime.ruleset.onehr.search</field><field name="model">hr.attendance.overtime.ruleset</field><field name="arch" type="xml"><search string="Overtime Rulesets"><field name="name"/><field name="onehr_policy_reference"/><filter name="active" string="Active" domain="[('active','=',True)]"/><filter name="effective_today" string="Policy Effective Today" domain="[('onehr_valid_from','&lt;=',context_today()),'|',('onehr_valid_to','=',False),('onehr_valid_to','&gt;=',context_today())]"/><group><filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/><filter name="group_country" string="Country" context="{'group_by':'country_id'}"/></group></search></field></record>
+</odoo>

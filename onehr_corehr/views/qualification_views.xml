@@ -1,0 +1,198 @@
+<odoo>
+    <!-- Education -->
+    <record id="view_onehr_education_list" model="ir.ui.view">
+        <field name="name">onehr.employee.education.list.enterprise</field>
+        <field name="model">onehr.employee.education</field>
+        <field name="arch" type="xml">
+            <list decoration-success="completed and active" decoration-muted="not active">
+                <field name="employee_id"/>
+                <field name="institution_name"/>
+                <field name="qualification_level" widget="badge"/>
+                <field name="qualification_name"/>
+                <field name="field_of_study" optional="show"/>
+                <field name="award_date" optional="show"/>
+                <field name="completed"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="valid_from" optional="hide"/>
+                <field name="valid_to" optional="hide"/>
+                <field name="active" optional="hide"/>
+                <button name="action_mark_completed" type="object" string="Complete" icon="fa-check" invisible="completed"/>
+                <button name="action_expire_qualification" type="object" string="Expire" icon="fa-ban" invisible="not active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_education_form" model="ir.ui.view">
+        <field name="name">onehr.employee.education.form.enterprise</field>
+        <field name="model">onehr.employee.education</field>
+        <field name="arch" type="xml">
+            <form string="Employee Education">
+                <header>
+                    <button name="action_mark_completed" type="object" string="Mark Completed"
+                            class="btn-primary" invisible="completed"/>
+                    <button name="action_expire_qualification" type="object" string="Expire Qualification"
+                            invisible="not active"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Employee</span></div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Completed" bg_color="text-bg-success" invisible="not completed"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title"><h1><field name="institution_name"/></h1></div>
+                    <group>
+                        <group string="Qualification">
+                            <field name="employee_id"/>
+                            <field name="qualification_level"/>
+                            <field name="qualification_name"/>
+                            <field name="field_of_study"/>
+                            <field name="country_id"/>
+                        </group>
+                        <group string="Study &amp; Award">
+                            <field name="study_start_date"/>
+                            <field name="study_end_date"/>
+                            <field name="completed"/>
+                            <field name="award_date"/>
+                            <field name="credential_reference"/>
+                        </group>
+                    </group>
+                    <group string="Qualification Validity">
+                        <field name="valid_from"/>
+                        <field name="valid_to"/>
+                        <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                    </group>
+                    <notebook><page string="Notes"><field name="notes"/></page></notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_education_search" model="ir.ui.view">
+        <field name="name">onehr.employee.education.search.enterprise</field>
+        <field name="model">onehr.employee.education</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="institution_name"/>
+                <field name="qualification_level"/>
+                <field name="qualification_name"/>
+                <field name="field_of_study"/>
+                <field name="company_id"/>
+                <filter name="completed" string="Completed" domain="[('completed', '=', True)]"/>
+                <filter name="active" string="Active Qualification" domain="[('active', '=', True)]"/>
+                <group>
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_level" string="Level" context="{'group_by': 'qualification_level'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_education" model="ir.actions.act_window">
+        <field name="name">Education</field>
+        <field name="res_model">onehr.employee.education</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_education_search"/>
+    </record>
+
+    <!-- External Employment History -->
+    <record id="view_onehr_employment_history_list" model="ir.ui.view">
+        <field name="name">onehr.employee.employment.history.list.enterprise</field>
+        <field name="model">onehr.employee.employment.history</field>
+        <field name="arch" type="xml">
+            <list decoration-success="verified and active" decoration-muted="not active">
+                <field name="employee_id"/>
+                <field name="employer_name"/>
+                <field name="job_title"/>
+                <field name="country_id" optional="show"/>
+                <field name="valid_from" string="From"/>
+                <field name="valid_to" string="To"/>
+                <field name="verified"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active" optional="hide"/>
+                <button name="action_verify" type="object" string="Verify" icon="fa-check" invisible="verified"/>
+                <button name="action_close_history" type="object" string="Close" icon="fa-ban" invisible="not active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_employment_history_form" model="ir.ui.view">
+        <field name="name">onehr.employee.employment.history.form.enterprise</field>
+        <field name="model">onehr.employee.employment.history</field>
+        <field name="arch" type="xml">
+            <form string="Prior External Employment">
+                <header>
+                    <button name="action_verify" type="object" string="Verify" class="btn-primary" invisible="verified"/>
+                    <button name="action_close_history" type="object" string="Close History" invisible="not active"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Employee</span></div>
+                        </button>
+                    </div>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title"><h1><field name="employer_name"/></h1></div>
+                    <group>
+                        <group string="External Employment">
+                            <field name="employee_id"/>
+                            <field name="job_title"/>
+                            <field name="department_name"/>
+                            <field name="work_location"/>
+                            <field name="country_id"/>
+                        </group>
+                        <group string="Period &amp; Verification">
+                            <field name="valid_from" string="Employment From"/>
+                            <field name="valid_to" string="Employment To"/>
+                            <field name="verified"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Reference">
+                            <group>
+                                <field name="reference_name"/>
+                                <field name="reference_contact"/>
+                                <field name="reason_for_leaving"/>
+                            </group>
+                        </page>
+                        <page string="Notes"><field name="notes"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_employment_history_search" model="ir.ui.view">
+        <field name="name">onehr.employee.employment.history.search.enterprise</field>
+        <field name="model">onehr.employee.employment.history</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="employer_name"/>
+                <field name="job_title"/>
+                <field name="country_id"/>
+                <field name="company_id"/>
+                <filter name="verified" string="Verified" domain="[('verified', '=', True)]"/>
+                <filter name="active" string="Open / Active" domain="[('active', '=', True)]"/>
+                <group>
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_employment_history" model="ir.actions.act_window">
+        <field name="name">Prior External Employment</field>
+        <field name="res_model">onehr.employee.employment.history</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_employment_history_search"/>
+    </record>
+</odoo>

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <!-- Add line-manager visibility to the existing OneHR root without editing onehr_base source. -->
+  <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
+    <field name="group_ids" eval="[Command.link(ref('onehr_employment_contract.group_onehr_contract_line_manager'))]"/>
+  </record>
+  <menuitem id="menu_onehr_employment_root" name="Employment" parent="onehr_base.menu_onehr_root" sequence="18" groups="onehr_employment_contract.group_onehr_contract_line_manager,onehr_employment_contract.group_onehr_contract_officer"/>
+  <menuitem id="menu_onehr_contracts" name="Employment Contracts" parent="menu_onehr_employment_root" action="action_onehr_contract" sequence="10"/>
+  <menuitem id="menu_onehr_contract_reporting" name="Contract Reporting" parent="menu_onehr_employment_root" sequence="30" groups="onehr_employment_contract.group_onehr_contract_officer"/>
+  <menuitem id="menu_onehr_contract_active" name="Active Contracts" parent="menu_onehr_contract_reporting" action="action_onehr_contract_active" sequence="10"/>
+  <menuitem id="menu_onehr_contract_expiry" name="Expiry Watch" parent="menu_onehr_contract_reporting" action="action_onehr_contract_expiry" sequence="20"/>
+  <menuitem id="menu_onehr_contract_termination" name="Termination Reviews" parent="menu_onehr_contract_reporting" action="action_onehr_contract_termination" sequence="30"/>
+  <menuitem id="menu_onehr_contract_configuration" name="Configuration" parent="menu_onehr_employment_root" sequence="90" groups="onehr_employment_contract.group_onehr_contract_manager"/>
+  <menuitem id="menu_onehr_contract_templates" name="Contract Templates" parent="menu_onehr_contract_configuration" action="action_onehr_contract_template" sequence="10"/>
+</odoo>

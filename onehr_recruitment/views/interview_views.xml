@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- Interview Template                                           -->
+    <!-- ============================================================ -->
+    <record id="view_onehr_interview_template_list" model="ir.ui.view">
+        <field name="name">onehr.interview.template.list</field>
+        <field name="model">onehr.interview.template</field>
+        <field name="arch" type="xml">
+            <list string="Interview Templates" decoration-success="state == 'active'" decoration-muted="state == 'retired'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="version"/>
+                <field name="interview_type" widget="badge"/>
+                <field name="job_id" optional="show"/>
+                <field name="duration_minutes" optional="show"/>
+                <field name="minimum_overall_score" optional="show"/>
+                <field name="valid_from"/>
+                <field name="valid_to"/>
+                <field name="session_count" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <button name="action_open_sessions" type="object" icon="fa-calendar" title="Interview Sessions"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_interview_template_form" model="ir.ui.view">
+        <field name="name">onehr.interview.template.form</field>
+        <field name="model">onehr.interview.template</field>
+        <field name="arch" type="xml">
+            <form string="Interview Template">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary" groups="onehr_recruitment.group_onehr_recruitment_manager" invisible="state != 'draft'"/>
+                    <button name="action_retire" type="object" string="Retire" groups="onehr_recruitment.group_onehr_recruitment_manager" invisible="state != 'active'"/>
+                    <button name="action_create_new_version" type="object" string="Create New Version" groups="onehr_recruitment.group_onehr_recruitment_manager" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,retired"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_sessions" type="object" class="oe_stat_button" icon="fa-calendar">
+                            <field name="session_count" widget="statinfo" string="Sessions"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Retired" bg_color="text-bg-secondary" invisible="state != 'retired'"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div class="d-flex gap-2">
+                            <field name="code" placeholder="e.g. TECH-SWE"/>
+                            <span>v</span><field name="version" readonly="1" class="oe_inline"/>
+                        </div>
+                    </div>
+                    <group>
+                        <group string="Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="job_id"/>
+                            <field name="interview_type"/>
+                            <field name="duration_minutes"/>
+                            <field name="minimum_overall_score"/>
+                        </group>
+                        <group string="Effective Dating">
+                            <field name="valid_from"/>
+                            <field name="valid_to"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Scorecard Criteria" name="scorecard">
+                            <p class="text-muted">Define structured evaluation properties. No executable Python expressions are stored.</p>
+                            <field name="scorecard_definition"/>
+                        </page>
+                        <page string="Interviewer Guidance" name="guidance">
+                            <field name="interviewer_guidance" widget="html" placeholder="Interview structure, behavioral anchors, prohibited questions, evidence expectations..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_interview_template_search" model="ir.ui.view">
+        <field name="name">onehr.interview.template.search</field>
+        <field name="model">onehr.interview.template</field>
+        <field name="arch" type="xml">
+            <search string="Search Interview Templates">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="job_id"/>
+                <filter name="active_templates" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="global_job" string="All Jobs" domain="[('job_id', '=', False)]"/>
+                <filter name="effective_today" string="Effective Today" domain="[('valid_from', '&lt;=', context_today()), '|', ('valid_to', '=', False), ('valid_to', '&gt;=', context_today())]"/>
+                <group>
+                    <filter name="group_type" string="Type" context="{'group_by': 'interview_type'}"/>
+                    <filter name="group_job" string="Job" context="{'group_by': 'job_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_interview_template" model="ir.actions.act_window">
+        <field name="name">Interview Templates</field>
+        <field name="res_model">onehr.interview.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_interview_template_search"/>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Interview Session                                            -->
+    <!-- ============================================================ -->
+    <record id="view_onehr_interview_session_list" model="ir.ui.view">
+        <field name="name">onehr.interview.session.list</field>
+        <field name="model">onehr.interview.session</field>
+        <field name="arch" type="xml">
+            <list string="Interview Sessions" decoration-success="state == 'completed'" decoration-danger="state in ('cancelled','no_show')" decoration-warning="state == 'confirmed'">
+                <field name="scheduled_start"/>
+                <field name="name"/>
+                <field name="applicant_id"/>
+                <field name="requisition_id" optional="show"/>
+                <field name="template_id"/>
+                <field name="lead_interviewer_user_id" widget="many2one_avatar_user"/>
+                <field name="interviewer_user_ids" widget="many2many_avatar_user" optional="hide"/>
+                <field name="average_overall_score" optional="show"/>
+                <field name="outcome" widget="badge" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <button name="action_open_applicant" type="object" icon="fa-user" title="Open Applicant"/>
+                <button name="action_create_my_scorecard" type="object" icon="fa-star" title="My Scorecard" groups="onehr_recruitment.group_onehr_hiring_manager" invisible="state not in ('confirmed','completed')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_interview_session_calendar" model="ir.ui.view">
+        <field name="name">onehr.interview.session.calendar</field>
+        <field name="model">onehr.interview.session</field>
+        <field name="arch" type="xml">
+            <calendar string="Interview Calendar" date_start="scheduled_start" date_stop="scheduled_end" color="lead_interviewer_user_id" event_open_popup="true">
+                <field name="name"/>
+                <field name="applicant_id"/>
+                <field name="lead_interviewer_user_id"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_onehr_interview_session_form" model="ir.ui.view">
+        <field name="name">onehr.interview.session.form</field>
+        <field name="model">onehr.interview.session</field>
+        <field name="arch" type="xml">
+            <form string="Interview Session">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" class="btn-primary" groups="onehr_recruitment.group_onehr_recruiter" invisible="state != 'planned'"/>
+                    <button name="action_schedule_calendar_event" type="object" string="Schedule Calendar" groups="onehr_recruitment.group_onehr_recruiter" invisible="state not in ('planned','confirmed')"/>
+                    <button name="action_create_my_scorecard" type="object" string="My Scorecard" class="btn-primary" groups="onehr_recruitment.group_onehr_hiring_manager" invisible="state not in ('confirmed','completed')"/>
+                    <button name="action_complete" type="object" string="Complete" class="btn-primary" groups="onehr_recruitment.group_onehr_recruiter" invisible="state != 'confirmed'"/>
+                    <button name="action_mark_no_show" type="object" string="No Show" groups="onehr_recruitment.group_onehr_recruiter" invisible="state not in ('planned','confirmed')"/>
+                    <button name="action_cancel" type="object" string="Cancel" groups="onehr_recruitment.group_onehr_recruiter" invisible="state not in ('planned','confirmed')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="planned,confirmed,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_applicant" type="object" class="oe_stat_button" icon="fa-user"><span class="o_stat_text">Applicant</span></button>
+                        <button name="action_open_scores" type="object" class="oe_stat_button" icon="fa-star">
+                            <field name="score_count" widget="statinfo" string="Scorecards"/>
+                        </button>
+                        <button name="action_open_calendar_event" type="object" class="oe_stat_button" icon="fa-calendar" invisible="not calendar_event_id"><span class="o_stat_text">Calendar Event</span></button>
+                    </div>
+                    <widget name="web_ribbon" title="No Show" bg_color="text-bg-danger" invisible="state != 'no_show'"/>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-secondary" invisible="state != 'cancelled'"/>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Candidate &amp; Governance">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="applicant_id"/>
+                            <field name="requisition_id"/>
+                            <field name="template_id"/>
+                            <field name="template_code_snapshot" readonly="1"/>
+                            <field name="template_name_snapshot" readonly="1"/>
+                            <field name="template_version_snapshot" readonly="1"/>
+                        </group>
+                        <group string="Schedule">
+                            <field name="scheduled_start"/>
+                            <field name="scheduled_end"/>
+                            <field name="interviewer_user_ids" widget="many2many_avatar_user"/>
+                            <field name="lead_interviewer_user_id" widget="many2one_avatar_user"/>
+                            <field name="location"/>
+                            <field name="meeting_url" widget="url"/>
+                            <field name="calendar_event_id" readonly="1" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Decision Evidence">
+                        <field name="average_overall_score" readonly="1"/>
+                        <field name="finalized_score_count" readonly="1"/>
+                        <field name="outcome"/>
+                        <field name="completed_at" readonly="1"/>
+                        <field name="cancellation_reason" placeholder="Required before cancellation" invisible="state not in ('planned','confirmed','cancelled')"/>
+                    </group>
+                    <notebook>
+                        <page string="Scorecards" name="scorecards">
+                            <field name="score_ids" context="{'default_session_id': id}">
+                                <list create="0" delete="0" decoration-success="state == 'final'" decoration-muted="state == 'superseded'">
+                                    <field name="rater_user_id" widget="many2one_avatar_user"/>
+                                    <field name="overall_score"/>
+                                    <field name="recommendation" widget="badge"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="finalized_at"/>
+                                    <button name="action_finalize" type="object" string="Finalize" groups="onehr_recruitment.group_onehr_hiring_manager" invisible="state != 'draft'"/>
+                                    <button name="action_open_self" type="object" icon="fa-external-link" title="Open Scorecard"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Frozen Template Facts" name="frozen_template">
+                            <p class="text-muted">The scorecard definition itself is frozen in backend JSON when the session is created; identity fields below remain visible for audit.</p>
+                            <field name="template_code_snapshot" readonly="1"/>
+                            <field name="template_name_snapshot" readonly="1"/>
+                            <field name="template_version_snapshot" readonly="1"/>
+                        </page>
+                    </notebook>
+                    <div class="d-flex gap-2 mt16">
+                        <button name="action_create_my_scorecard" type="object" string="Open / Create My Scorecard" class="btn-primary" groups="onehr_recruitment.group_onehr_hiring_manager" invisible="state not in ('confirmed','completed')"/>
+                        <button name="action_schedule_calendar_event" type="object" string="Open / Create Calendar Event" groups="onehr_recruitment.group_onehr_recruiter" invisible="state not in ('planned','confirmed')"/>
+                    </div>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_interview_session_search" model="ir.ui.view">
+        <field name="name">onehr.interview.session.search</field>
+        <field name="model">onehr.interview.session</field>
+        <field name="arch" type="xml">
+            <search string="Search Interview Sessions">
+                <field name="name"/>
+                <field name="applicant_id"/>
+                <field name="requisition_id"/>
+                <field name="template_id"/>
+                <field name="lead_interviewer_user_id"/>
+                <filter name="my_interviews" string="My Interviews" domain="[('interviewer_user_ids', 'in', uid)]"/>
+                <filter name="upcoming" string="Upcoming" domain="[('scheduled_start', '&gt;=', context_today()), ('state', 'in', ('planned','confirmed'))]"/>
+                <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]"/>
+                <filter name="schedule_date" string="Interview Date" date="scheduled_start"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_template" string="Template" context="{'group_by': 'template_id'}"/>
+                    <filter name="group_interviewer" string="Lead Interviewer" context="{'group_by': 'lead_interviewer_user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_interview_session" model="ir.actions.act_window">
+        <field name="name">Interviews</field>
+        <field name="res_model">onehr.interview.session</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="search_view_id" ref="view_onehr_interview_session_search"/>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Interview Score                                              -->
+    <!-- ============================================================ -->
+    <record id="view_onehr_interview_score_list" model="ir.ui.view">
+        <field name="name">onehr.interview.score.list</field>
+        <field name="model">onehr.interview.score</field>
+        <field name="arch" type="xml">
+            <list string="Interview Scorecards" decoration-success="state == 'final'" decoration-muted="state == 'superseded'">
+                <field name="name"/>
+                <field name="applicant_id"/>
+                <field name="session_id"/>
+                <field name="rater_user_id" widget="many2one_avatar_user"/>
+                <field name="overall_score"/>
+                <field name="recommendation" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="finalized_at"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <button name="action_open_session" type="object" icon="fa-comments-o" title="Open Interview"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_interview_score_form" model="ir.ui.view">
+        <field name="name">onehr.interview.score.form</field>
+        <field name="model">onehr.interview.score</field>
+        <field name="arch" type="xml">
+            <form string="Interview Scorecard">
+                <header>
+                    <button name="action_finalize" type="object" string="Finalize Scorecard" class="btn-primary" groups="onehr_recruitment.group_onehr_hiring_manager" invisible="state != 'draft'"/>
+                    <button name="action_create_correction" type="object" string="Create Correction" groups="onehr_recruitment.group_onehr_recruitment_manager" invisible="state != 'final'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,final,superseded"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_session" type="object" class="oe_stat_button" icon="fa-comments-o"><span class="o_stat_text">Interview Session</span></button>
+                    </div>
+                    <widget name="web_ribbon" title="Superseded" bg_color="text-bg-secondary" invisible="state != 'superseded'"/>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Evidence Identity">
+                            <field name="session_id"/>
+                            <field name="applicant_id" readonly="1"/>
+                            <field name="template_id" readonly="1"/>
+                            <field name="rater_user_id" widget="many2one_avatar_user"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                        <group string="Decision">
+                            <field name="overall_score"/>
+                            <field name="recommendation"/>
+                            <field name="finalized_at" readonly="1"/>
+                            <field name="supersedes_id" readonly="1" invisible="not supersedes_id"/>
+                            <field name="superseded_by_id" readonly="1" invisible="not superseded_by_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Structured Scorecard" name="structured_scorecard">
+                            <field name="scorecard_values"/>
+                        </page>
+                        <page string="Narrative Evidence" name="narrative">
+                            <group>
+                                <field name="strengths" placeholder="Evidence-backed strengths..."/>
+                                <field name="concerns" placeholder="Risks, gaps and evidence..."/>
+                                <field name="comments" placeholder="Additional interview notes..."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_interview_score_search" model="ir.ui.view">
+        <field name="name">onehr.interview.score.search</field>
+        <field name="model">onehr.interview.score</field>
+        <field name="arch" type="xml">
+            <search string="Search Interview Scorecards">
+                <field name="applicant_id"/>
+                <field name="session_id"/>
+                <field name="rater_user_id"/>
+                <filter name="my_scores" string="My Scorecards" domain="[('rater_user_id', '=', uid)]"/>
+                <filter name="draft_scores" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="final_scores" string="Final" domain="[('state', '=', 'final')]"/>
+                <group>
+                    <filter name="group_rater" string="Rater" context="{'group_by': 'rater_user_id'}"/>
+                    <filter name="group_recommendation" string="Recommendation" context="{'group_by': 'recommendation'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_interview_score" model="ir.actions.act_window">
+        <field name="name">Interview Scorecards</field>
+        <field name="res_model">onehr.interview.score</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_interview_score_search"/>
+    </record>
+</odoo>

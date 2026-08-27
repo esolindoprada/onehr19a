@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_onehr_dependent_officer,OneHR Dependent Core HR Officer,model_onehr_employee_dependent,onehr_corehr.group_onehr_corehr_officer,1,1,1,0
+access_onehr_emergency_officer,OneHR Emergency Core HR Officer,model_onehr_employee_emergency_contact,onehr_corehr.group_onehr_corehr_officer,1,1,1,0
+access_onehr_education_officer,OneHR Education Core HR Officer,model_onehr_employee_education,onehr_corehr.group_onehr_corehr_officer,1,1,1,0
+access_onehr_employment_history_officer,OneHR External Employment Core HR Officer,model_onehr_employee_employment_history,onehr_corehr.group_onehr_corehr_officer,1,1,1,0
+access_onehr_engagement_officer,OneHR Engagement Type Core HR Officer,model_onehr_engagement_type,onehr_corehr.group_onehr_corehr_officer,1,0,0,0
+access_onehr_engagement_manager,OneHR Engagement Type Core HR Manager,model_onehr_engagement_type,onehr_corehr.group_onehr_corehr_manager,1,1,1,0
+access_onehr_identifier_steward,OneHR Identifier Steward,model_onehr_employee_identifier,onehr_corehr.group_onehr_identifier_steward,1,1,1,0
+access_onehr_work_incident_oh,OneHR Work Incident OH Officer,model_onehr_work_incident,onehr_corehr.group_onehr_occupational_health_officer,1,1,1,0
+access_onehr_medical_assessment_oh,OneHR Medical Assessment OH Officer,model_onehr_medical_assessment,onehr_corehr.group_onehr_occupational_health_officer,1,1,1,0
+access_onehr_disability_record_oh,OneHR Accommodation OH Officer,model_onehr_disability_record,onehr_corehr.group_onehr_occupational_health_officer,1,1,1,0

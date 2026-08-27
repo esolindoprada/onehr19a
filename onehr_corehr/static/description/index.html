@@ -1,0 +1,53 @@
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h1 class="oe_slogan">OneHR — Core HR</h1>
+      <h2 class="oe_slogan">Native Employee Master • Effective History • Restricted Occupational Health</h2>
+      <p>
+        Enterprise Core HR foundation for Odoo 19 Community Edition. OneHR extends
+        canonical <b>hr.employee</b>, <b>hr.employee.public</b> and <b>hr.version</b>
+        instead of creating a parallel employee master.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Core HR Profile</h3>
+      <ul>
+        <li>Enterprise employee number and profile completeness.</li>
+        <li>Dependents and emergency contacts.</li>
+        <li>Restricted effective-dated identifier portfolio with masking.</li>
+        <li>Education and prior external employment history.</li>
+        <li>Enterprise engagement classification mapped to native employee_type.</li>
+        <li>Grade and primary-position fields stored on canonical hr.version.</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Restricted Occupational Health</h3>
+      <ul>
+        <li>Work incidents with controlled workflow.</li>
+        <li>Medical assessments with immutable finalization and superseding correction.</li>
+        <li>Minimum-necessary disability/accommodation records.</li>
+        <li>Dedicated Occupational Health group; normal HR/Security Admin do not inherit it.</li>
+        <li>Sensitive reads and changes create structured security-audit evidence.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Architecture Boundaries</h3>
+      <p>
+        Personal document storage, versions, expiry reminders and e-sign belong to
+        <b>onehr_document</b>. Internal employee placement/movement belongs to
+        <b>onehr_assignment</b>. Core HR keeps prior <i>external</i> employment history only.
+        Odoo's native Data Import is used instead of inventing an unregistered import wizard.
+      </p>
+    </div>
+  </div>
+</section>

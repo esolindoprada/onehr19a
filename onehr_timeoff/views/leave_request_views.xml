@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_leave_request_list" model="ir.ui.view">
+        <field name="name">onehr.leave.request.list.enterprise</field>
+        <field name="model">onehr.leave.request</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'pending'" decoration-success="state == 'approved'"
+                  decoration-danger="state == 'rejected'" decoration-muted="state in ['done','cancelled']">
+                <field name="name"/>
+                <field name="employee_name" string="Employee"/>
+                <field name="employee_number" optional="hide"
+                       groups="onehr_timeoff.group_onehr_timeoff_manager,onehr_timeoff.group_onehr_timeoff_hr"/>
+                <field name="department_name" string="Department" optional="show"/>
+                <field name="leave_type_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="half_day" optional="hide"/>
+                <field name="requested_days" sum="Total Days"/>
+                <field name="current_balance" optional="show"/>
+                <field name="team_conflict_count" optional="show"/>
+                <field name="approval_lead_hours" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" optional="show" groups="base.group_multi_company"/>
+                <button name="action_open_team_calendar" type="object" string="Team" icon="fa-calendar"
+                        groups="onehr_timeoff.group_onehr_timeoff_manager,onehr_timeoff.group_onehr_timeoff_hr"/>
+                <button name="action_print_leave_request" type="object" string="Print" icon="fa-print" invisible="state not in ['approved','done']"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_leave_request_form" model="ir.ui.view">
+        <field name="name">onehr.leave.request.form.enterprise</field>
+        <field name="model">onehr.leave.request</field>
+        <field name="arch" type="xml">
+            <form string="Leave Request">
+                <header>
+                    <button name="action_submit_for_approval" type="object" string="Submit for Approval" class="btn-primary"
+                            groups="onehr_timeoff.group_onehr_timeoff_user" invisible="state != 'draft'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" class="btn-secondary"
+                            groups="onehr_timeoff.group_onehr_timeoff_user" invisible="state != 'rejected'"/>
+                    <button name="action_mark_done" type="object" string="Mark Done" class="btn-primary"
+                            groups="onehr_timeoff.group_onehr_timeoff_hr" invisible="state != 'approved'"/>
+                    <button name="action_cancel" type="object" string="Cancel" class="btn-secondary"
+                            groups="onehr_timeoff.group_onehr_timeoff_user" invisible="state not in ['draft','rejected','approved']"/>
+                    <button name="action_print_leave_request" type="object" string="Print" class="btn-secondary" icon="fa-print"
+                            invisible="state not in ['approved','done']"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,pending,approved,rejected,done,cancelled"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-secondary" invisible="state != 'cancelled'"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_approval_requests" type="object" class="oe_stat_button" icon="fa-check-square-o"
+                                invisible="onehr_approval_request_count == 0">
+                            <field name="onehr_approval_request_count" widget="statinfo" string="Approvals"/>
+                        </button>
+                        <button name="action_open_reserved_allocations" type="object" class="oe_stat_button" icon="fa-balance-scale"
+                                invisible="not allocation_usage_json">
+                            <div class="o_stat_info"><span class="o_stat_text">Reserved</span><span class="o_stat_text">Entitlement</span></div>
+                        </button>
+                        <button name="action_open_team_calendar" type="object" class="oe_stat_button" icon="fa-calendar"
+                                groups="onehr_timeoff.group_onehr_timeoff_manager,onehr_timeoff.group_onehr_timeoff_hr">
+                            <field name="team_conflict_count" widget="statinfo" string="Team Overlap"/>
+                        </button>
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-user"
+                                groups="onehr_timeoff.group_onehr_timeoff_hr">
+                            <div class="o_stat_info"><span class="o_stat_text">Employee</span><span class="o_stat_text">Profile</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2><field name="employee_name" readonly="1"/></h2>
+                    </div>
+
+                    <group>
+                        <group string="Employee &amp; Leave">
+                            <field name="employee_id" readonly="state != 'draft'" groups="onehr_timeoff.group_onehr_timeoff_hr"/>
+                            <field name="employee_number" readonly="1" groups="onehr_timeoff.group_onehr_timeoff_manager,onehr_timeoff.group_onehr_timeoff_hr"/>
+                            <field name="department_name" readonly="1"/>
+                            <field name="manager_name" readonly="1"/>
+                            <field name="leave_type_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Requested Period">
+                            <field name="date_from" readonly="state != 'draft'"/>
+                            <field name="date_to" readonly="state != 'draft'"/>
+                            <field name="half_day" readonly="state != 'draft'"/>
+                            <field name="requested_days" readonly="1"/>
+                            <field name="current_balance" readonly="1"/>
+                            <field name="onehr_latest_approval_state" widget="badge" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_schedule_manager_activity" type="object" string="Schedule Manager Review"
+                                class="btn-secondary" icon="fa-calendar-check-o" invisible="state not in ['draft','pending']"/>
+                        <button name="action_open_team_calendar" type="object" string="Review Team Calendar"
+                                class="btn-secondary" icon="fa-calendar"
+                                groups="onehr_timeoff.group_onehr_timeoff_manager,onehr_timeoff.group_onehr_timeoff_hr"/>
+                        <button name="action_open_reserved_allocations" type="object" string="Review Reserved Entitlement"
+                                class="btn-secondary" icon="fa-balance-scale" invisible="not allocation_usage_json"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Request Details" name="details">
+                            <field name="reason" readonly="state != 'draft'" placeholder="Explain the business/personal reason required by policy..."/>
+                            <group string="Supporting Document">
+                                <field name="supporting_document" filename="supporting_document_filename" readonly="state != 'draft'"/>
+                                <field name="supporting_document_filename" invisible="1"/>
+                            </group>
+                        </page>
+                        <page string="Balance &amp; Reservation" name="balance">
+                            <group>
+                                <group string="Balance Evidence">
+                                    <field name="current_balance" readonly="1"/>
+                                    <field name="balance_before" readonly="1"/>
+                                    <field name="balance_after" readonly="1"/>
+                                </group>
+                                <group string="Reservation">
+                                    <field name="reservation_summary" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Team Calendar Control" name="team_control">
+                            <group>
+                                <field name="team_conflict_count" readonly="1"/>
+                                <field name="team_conflict_message" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Approval &amp; Execution Evidence" name="evidence">
+                            <group>
+                                <group string="Submission / Approval">
+                                    <field name="submitted_at" readonly="1"/>
+                                    <field name="submitted_by_id" readonly="1"/>
+                                    <field name="approved_at" readonly="1"/>
+                                    <field name="approved_by_id" readonly="1"/>
+                                    <field name="approval_lead_hours" readonly="1"/>
+                                </group>
+                                <group string="Completion / Cancellation">
+                                    <field name="completed_at" readonly="1"/>
+                                    <field name="completed_by_id" readonly="1"/>
+                                    <field name="cancelled_at" readonly="1"/>
+                                    <field name="cancelled_by_id" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_leave_request_search" model="ir.ui.view">
+        <field name="name">onehr.leave.request.search.enterprise</field>
+        <field name="model">onehr.leave.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_name" string="Employee"/>
+                <field name="department_name" string="Department"/>
+                <field name="leave_type_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="state"/>
+                <field name="company_id"/>
+                <filter name="pending" string="Awaiting Approval" domain="[('state','=','pending')]"/>
+                <filter name="approved" string="Approved" domain="[('state','=','approved')]"/>
+                <filter name="done" string="Done" domain="[('state','=','done')]"/>
+                <filter name="rejected" string="Rejected" domain="[('state','=','rejected')]"/>
+                <filter name="current" string="Current Today"
+                        domain="[('state','=','approved'),('date_from','&lt;=',context_today()),('date_to','&gt;=',context_today())]"/>
+                <filter name="future" string="Future Approved" domain="[('state','=','approved'),('date_from','&gt;',context_today())]"/>
+                <separator/>
+                <group>
+                    <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+                    <filter name="group_type" string="Leave Type" context="{'group_by':'leave_type_id'}"/>
+                    <filter name="group_department" string="Department" context="{'group_by':'department_name'}"/>
+                    <filter name="group_start_month" string="Start Month" context="{'group_by':'date_from:month'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_leave_request_calendar" model="ir.ui.view">
+        <field name="name">onehr.leave.request.calendar.enterprise</field>
+        <field name="model">onehr.leave.request</field>
+        <field name="arch" type="xml">
+            <calendar string="Team Time Off" date_start="date_from" date_stop="date_to" color="leave_type_id" mode="month">
+                <field name="employee_name"/>
+                <field name="leave_type_id"/>
+                <field name="requested_days"/>
+                <field name="state"/>
+                <field name="department_name"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_onehr_leave_request_pivot" model="ir.ui.view">
+        <field name="name">onehr.leave.request.pivot.enterprise</field>
+        <field name="model">onehr.leave.request</field>
+        <field name="arch" type="xml">
+            <pivot string="Leave Utilization Analysis">
+                <field name="department_id" type="row"/>
+                <field name="leave_type_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="requested_days" type="measure"/>
+                <field name="approval_lead_hours" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_leave_request_graph" model="ir.ui.view">
+        <field name="name">onehr.leave.request.graph.enterprise</field>
+        <field name="model">onehr.leave.request</field>
+        <field name="arch" type="xml">
+            <graph string="Leave Days by Type" type="bar">
+                <field name="leave_type_id"/>
+                <field name="requested_days" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_leave_request" model="ir.actions.act_window">
+        <field name="name">Leave Requests</field>
+        <field name="res_model">onehr.leave.request</field>
+        <field name="view_mode">list,calendar,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_leave_request_search"/>
+    </record>
+
+    <record id="action_onehr_my_leave_request" model="ir.actions.act_window">
+        <field name="name">My Leave Requests</field>
+        <field name="res_model">onehr.leave.request</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="search_view_id" ref="view_onehr_leave_request_search"/>
+        <field name="domain">[('employee_user_id', '=', uid)]</field>
+        <field name="context">{'default_employee_id': False}</field>
+    </record>
+
+    <record id="action_onehr_team_leave_calendar" model="ir.actions.act_window">
+        <field name="name">Team Time Off Calendar</field>
+        <field name="res_model">onehr.leave.request</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="search_view_id" ref="view_onehr_leave_request_search"/>
+        <field name="domain">['|', ('employee_user_id', '=', uid), ('manager_user_id', '=', uid)]</field>
+    </record>
+
+    <record id="action_onehr_leave_usage_analytics" model="ir.actions.act_window">
+        <field name="name">Leave Usage Analytics</field>
+        <field name="res_model">onehr.leave.request</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_onehr_leave_request_search"/>
+        <field name="domain">[('state', 'in', ['approved','done'])]</field>
+    </record>
+</odoo>

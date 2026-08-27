@@ -1,0 +1,52 @@
+<odoo>
+    <record id="module_category_onehr_document" model="ir.module.category">
+        <field name="name">OneHR Document</field>
+        <field name="description">Enterprise HR document governance, templates, retention and e-sign evidence.</field>
+        <field name="sequence">42</field>
+    </record>
+
+    <record id="privilege_onehr_document" model="res.groups.privilege">
+        <field name="name">OneHR Document</field>
+        <field name="description">Document access, document operations, management and compliance review.</field>
+        <field name="category_id" ref="module_category_onehr_document"/>
+        <field name="sequence">42</field>
+    </record>
+
+    <record id="group_onehr_document_user" model="res.groups">
+        <field name="name">Document User</field>
+        <field name="privilege_id" ref="privilege_onehr_document"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[Command.link(ref('base.group_user'))]"/>
+        <field name="comment">Read employee-visible internal documents owned by the user's employee record.</field>
+    </record>
+
+    <record id="group_onehr_document_officer" model="res.groups">
+        <field name="name">Document Officer</field>
+        <field name="privilege_id" ref="privilege_onehr_document"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_document.group_onehr_document_user')),
+            Command.link(ref('onehr_security.group_onehr_sensitive_data_reader'))
+        ]"/>
+        <field name="comment">Create and maintain company-scoped internal/confidential document operations; restricted documents remain separately gated.</field>
+    </record>
+
+    <record id="group_onehr_document_manager" model="res.groups">
+        <field name="name">Document Manager</field>
+        <field name="privilege_id" ref="privilege_onehr_document"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[Command.link(ref('onehr_document.group_onehr_document_officer'))]"/>
+        <field name="comment">Administer document categories/templates, publish versions and operate e-sign requests. Restricted content still needs explicit restricted access.</field>
+    </record>
+
+    <record id="group_onehr_document_compliance" model="res.groups">
+        <field name="name">Document Compliance</field>
+        <field name="privilege_id" ref="privilege_onehr_document"/>
+        <field name="sequence">40</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_document.group_onehr_document_user')),
+            Command.link(ref('onehr_security.group_onehr_restricted_data_reader'))
+        ]"/>
+        <field name="comment">Read all company-scoped document evidence, including restricted categories, without receiving document-management write authority.</field>
+    </record>
+</odoo>

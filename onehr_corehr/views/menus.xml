@@ -1,0 +1,71 @@
+<odoo>
+    <menuitem
+        id="menu_onehr_corehr_root"
+        name="People &amp; Core HR"
+        parent="onehr_base.menu_onehr_root"
+        sequence="15"
+        groups="onehr_corehr.group_onehr_corehr_officer,onehr_corehr.group_onehr_identifier_steward,onehr_corehr.group_onehr_occupational_health_officer"
+    />
+
+    <menuitem
+        id="menu_onehr_corehr_employees"
+        name="Employees"
+        parent="menu_onehr_corehr_root"
+        action="action_onehr_corehr_employees"
+        sequence="10"
+        groups="onehr_corehr.group_onehr_corehr_officer"
+    />
+
+    <menuitem
+        id="menu_onehr_corehr_engagement"
+        name="Engagement Types"
+        parent="menu_onehr_corehr_root"
+        action="action_onehr_engagement_types"
+        sequence="20"
+        groups="onehr_corehr.group_onehr_corehr_officer"
+    />
+
+    <menuitem
+        id="menu_onehr_corehr_profile_history"
+        name="Profile History"
+        parent="menu_onehr_corehr_root"
+        sequence="30"
+        groups="onehr_corehr.group_onehr_corehr_officer"
+    />
+
+    <menuitem id="menu_onehr_dependents" name="Dependents"
+              parent="menu_onehr_corehr_profile_history" action="action_onehr_dependents" sequence="10"/>
+    <menuitem id="menu_onehr_emergency_contacts" name="Emergency Contacts"
+              parent="menu_onehr_corehr_profile_history" action="action_onehr_emergency_contacts" sequence="20"/>
+    <menuitem id="menu_onehr_education" name="Education"
+              parent="menu_onehr_corehr_profile_history" action="action_onehr_education" sequence="30"/>
+    <menuitem id="menu_onehr_employment_history" name="Prior External Employment"
+              parent="menu_onehr_corehr_profile_history" action="action_onehr_employment_history" sequence="40"/>
+
+    <menuitem
+        id="menu_onehr_identifiers"
+        name="Restricted Identifiers"
+        parent="menu_onehr_corehr_root"
+        action="action_onehr_identifiers"
+        sequence="40"
+        groups="onehr_corehr.group_onehr_identifier_steward"
+    />
+
+    <menuitem
+        id="menu_onehr_occupational_health"
+        name="Occupational Health — Restricted"
+        parent="menu_onehr_corehr_root"
+        sequence="50"
+        groups="onehr_corehr.group_onehr_occupational_health_officer"
+    />
+
+    <menuitem id="menu_onehr_work_incidents" name="Work Incidents"
+              parent="menu_onehr_occupational_health" action="action_onehr_work_incidents" sequence="10"
+              groups="onehr_corehr.group_onehr_occupational_health_officer"/>
+    <menuitem id="menu_onehr_medical_assessments" name="Medical Assessments"
+              parent="menu_onehr_occupational_health" action="action_onehr_medical_assessments" sequence="20"
+              groups="onehr_corehr.group_onehr_occupational_health_officer"/>
+    <menuitem id="menu_onehr_disability_records" name="Accommodation Records"
+              parent="menu_onehr_occupational_health" action="action_onehr_disability_records" sequence="30"
+              groups="onehr_corehr.group_onehr_occupational_health_officer"/>
+</odoo>

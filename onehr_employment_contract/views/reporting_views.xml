@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <record id="view_onehr_contract_calendar" model="ir.ui.view">
+    <field name="name">onehr.contract.calendar.enterprise</field>
+    <field name="model">onehr.contract</field>
+    <field name="arch" type="xml">
+      <calendar string="Contract Timeline" date_start="native_contract_start" date_stop="native_contract_end" color="employee_id">
+        <field name="name"/>
+        <field name="employee_id"/>
+        <field name="state"/>
+      </calendar>
+    </field>
+  </record>
+  <record id="view_onehr_contract_pivot" model="ir.ui.view">
+    <field name="name">onehr.contract.pivot.enterprise</field>
+    <field name="model">onehr.contract</field>
+    <field name="arch" type="xml">
+      <pivot string="Contract Portfolio">
+        <field name="company_id" type="row"/>
+        <field name="state" type="row"/>
+        <field name="contract_kind" type="col"/>
+      </pivot>
+    </field>
+  </record>
+  <record id="view_onehr_contract_graph" model="ir.ui.view">
+    <field name="name">onehr.contract.graph.enterprise</field>
+    <field name="model">onehr.contract</field>
+    <field name="arch" type="xml">
+      <graph string="Contract Portfolio" type="bar">
+        <field name="state"/>
+      </graph>
+    </field>
+  </record>
+  <record id="action_onehr_contract_active" model="ir.actions.act_window">
+    <field name="name">Active Contracts</field>
+    <field name="res_model">onehr.contract</field>
+    <field name="view_mode">list,form,calendar,pivot,graph</field>
+    <field name="domain">[('state','=','active')]</field>
+    <field name="search_view_id" ref="view_onehr_contract_search"/>
+  </record>
+  <record id="action_onehr_contract_expiry" model="ir.actions.act_window">
+    <field name="name">Fixed-End Contracts</field>
+    <field name="res_model">onehr.contract</field>
+    <field name="view_mode">list,calendar,form,pivot,graph</field>
+    <field name="domain">[('state','in',('approved','active')),('hr_version_id.contract_date_end','!=',False)]</field>
+    <field name="search_view_id" ref="view_onehr_contract_search"/>
+  </record>
+  <record id="action_onehr_contract_termination" model="ir.actions.act_window">
+    <field name="name">Termination Reviews</field>
+    <field name="res_model">onehr.contract</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[('termination_review_state','in',('pending','approved','rejected'))]</field>
+    <field name="search_view_id" ref="view_onehr_contract_search"/>
+  </record>
+</odoo>

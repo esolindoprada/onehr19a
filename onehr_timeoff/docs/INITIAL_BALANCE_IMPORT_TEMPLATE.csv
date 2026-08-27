@@ -1,0 +1,2 @@
+name,company_id/id,allocation_scope,employee_id/id,leave_type_id/id,source,period_start,period_end,expires_on,allocated_days,state,note
+,base.main_company,single,hr.employee_demo,onehr_timeoff.example_leave_type_external_id,opening,2026-01-01,2026-12-31,,12,draft,Opening leave balance - review and confirm in Time Off

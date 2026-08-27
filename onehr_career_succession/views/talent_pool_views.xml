@@ -1,0 +1,301 @@
+<odoo>
+    <record id="view_onehr_talent_pool_list" model="ir.ui.view">
+        <field name="name">onehr.talent.pool.list</field>
+        <field name="model">onehr.talent.pool</field>
+        <field name="arch" type="xml">
+            <list string="Talent Pool"
+                  decoration-success="state == 'active' and readiness_level == 'ready_now'"
+                  decoration-info="state in ('approved', 'active') and high_potential"
+                  decoration-warning="retention_risk in ('high', 'critical')"
+                  decoration-muted="state in ('inactive', 'rejected')">
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="pool_code"/>
+                <field name="target_position_name"/>
+                <field name="department_name"/>
+                <field name="high_potential"/>
+                <field name="performance_score"/>
+                <field name="potential_score"/>
+                <field name="competency_score"/>
+                <field name="readiness_score"/>
+                <field name="readiness_level" widget="badge"/>
+                <field name="retention_risk" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_succession_plans" type="object"
+                        string="Plans" icon="fa-sitemap"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_talent_pool_kanban" model="ir.ui.view">
+        <field name="name">onehr.talent.pool.kanban</field>
+        <field name="model">onehr.talent.pool</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="readiness_level">
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="pool_code"/>
+                <field name="target_position_name"/>
+                <field name="readiness_score"/>
+                <field name="readiness_level"/>
+                <field name="high_potential"/>
+                <field name="retention_risk"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong><field name="employee_name"/></strong>
+                            <field name="state" widget="badge"/>
+                        </div>
+                        <div class="text-muted">
+                            <field name="pool_code"/> · <field name="target_position_name"/>
+                        </div>
+                        <div class="mt-2">
+                            <strong>Readiness: </strong>
+                            <field name="readiness_score"/>%
+                        </div>
+                        <div>
+                            <field name="readiness_level" widget="badge"/>
+                            <field name="retention_risk" widget="badge"/>
+                        </div>
+                        <div class="mt-1" t-if="record.high_potential.raw_value">
+                            <span class="badge text-bg-info">High Potential</span>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_onehr_talent_pool_form" model="ir.ui.view">
+        <field name="name">onehr.talent.pool.form</field>
+        <field name="model">onehr.talent.pool</field>
+        <field name="arch" type="xml">
+            <form string="Talent Pool">
+                <header>
+                    <button name="action_propose" type="object"
+                            string="Propose" class="btn-primary"
+                            invisible="state != 'draft'"
+                            groups="onehr_career_succession.group_onehr_career_hrbp"/>
+                    <button name="action_approve" type="object"
+                            string="Approve" class="btn-primary"
+                            invisible="state != 'proposed'"
+                            groups="onehr_career_succession.group_onehr_talent_manager"/>
+                    <button name="action_activate" type="object"
+                            string="Activate" class="btn-primary"
+                            invisible="state != 'approved'"
+                            groups="onehr_career_succession.group_onehr_talent_manager"/>
+                    <button name="action_deactivate" type="object"
+                            string="Deactivate"
+                            invisible="state != 'active'"
+                            groups="onehr_career_succession.group_onehr_talent_manager"/>
+                    <button name="action_reject" type="object"
+                            string="Reject"
+                            invisible="state not in ('draft', 'proposed')"
+                            groups="onehr_career_succession.group_onehr_talent_manager"/>
+                    <button name="action_reset_draft" type="object"
+                            string="Reset to Draft"
+                            invisible="state not in ('rejected', 'inactive')"
+                            groups="onehr_career_succession.group_onehr_talent_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,proposed,approved,active,inactive"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_succession_plans" type="object"
+                                class="oe_stat_button" icon="fa-sitemap">
+                            <field name="succession_plan_count" widget="statinfo"
+                                   string="Succession Plans"/>
+                        </button>
+                        <button name="action_open_target_requirements" type="object"
+                                class="oe_stat_button" icon="fa-bullseye"
+                                invisible="not target_position_id">
+                            <field name="required_competency_count" widget="statinfo"
+                                   string="Requirements"/>
+                        </button>
+                        <button name="action_print_gap_report" type="object"
+                                class="oe_stat_button" icon="fa-file-pdf-o">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Gap Report</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Ready Now"
+                            bg_color="text-bg-success"
+                            invisible="readiness_level != 'ready_now'"/>
+                    <widget name="web_ribbon" title="High Potential"
+                            bg_color="text-bg-info"
+                            invisible="not high_potential or readiness_level == 'ready_now'"/>
+
+                    <div class="oe_title">
+                        <label for="employee_name"/>
+                        <h1><field name="employee_name" readonly="1"/></h1>
+                        <div class="text-muted">
+                            <field name="name"/> · <field name="pool_code"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Talent Identity">
+                            <field name="employee_id"
+                                   groups="onehr_career_succession.group_onehr_career_hrbp"
+                                   readonly="state == 'active'"/>
+                            <field name="employee_number" readonly="1"
+                                   groups="onehr_career_succession.group_onehr_career_hrbp"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="state == 'active'"/>
+                            <field name="nomination_date"/>
+                            <field name="review_date"/>
+                        </group>
+                        <group string="Career Direction">
+                            <field name="current_position_name" readonly="1"/>
+                            <field name="target_position_id"/>
+                            <field name="high_potential"/>
+                            <field name="retention_risk"/>
+                            <field name="loss_impact"/>
+                        </group>
+                    </group>
+
+                    <group string="Readiness Dashboard">
+                        <group>
+                            <field name="performance_score"/>
+                            <field name="potential_score"/>
+                            <field name="competency_score"/>
+                            <field name="learning_score"/>
+                        </group>
+                        <group>
+                            <field name="readiness_score" readonly="1"/>
+                            <field name="readiness_level" widget="badge" readonly="1"/>
+                            <field name="gap_score" readonly="1"/>
+                            <field name="nine_box_position" widget="badge" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 mb-2"
+                         groups="onehr_career_succession.group_onehr_career_hrbp">
+                        <button name="action_refresh_external_scores" type="object"
+                                string="Refresh Appraisal / Learning Evidence"
+                                class="btn-secondary"/>
+                        <button name="action_open_target_requirements" type="object"
+                                string="Review Target Competency Matrix"
+                                class="btn-secondary"
+                                invisible="not target_position_id"/>
+                        <button name="action_print_gap_report" type="object"
+                                string="Print Gap Analysis"
+                                class="btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Career &amp; Development">
+                            <field name="career_aspiration"
+                                   placeholder="Career aspiration and preferred progression..."/>
+                            <field name="mobility_preference"/>
+                            <field name="strengths"/>
+                            <field name="development_needs"/>
+                        </page>
+
+                        <page string="Assessment Evidence">
+                            <field name="assessment_notes"/>
+                            <field name="evidence_attachment_ids"
+                                   widget="many2many_binary"/>
+                        </page>
+
+                        <page string="Source Evidence">
+                            <group>
+                                <field name="appraisal_reference" readonly="1"/>
+                                <field name="appraisal_cycle_code" readonly="1"/>
+                                <field name="learning_evidence_reference" readonly="1"/>
+                                <field name="source_refreshed_at" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Governance">
+                            <group>
+                                <group>
+                                    <field name="proposed_by_id" readonly="1"/>
+                                    <field name="proposed_at" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="approved_by_id" readonly="1"/>
+                                    <field name="approved_at" readonly="1"/>
+                                    <field name="activated_at" readonly="1"/>
+                                    <field name="deactivated_at" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_talent_pool_search" model="ir.ui.view">
+        <field name="name">onehr.talent.pool.search</field>
+        <field name="model">onehr.talent.pool</field>
+        <field name="arch" type="xml">
+            <search string="Search Talent">
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="pool_code"/>
+                <field name="target_position_id"/>
+                <field name="department_id"/>
+                <field name="readiness_level"/>
+                <filter name="active_talent" string="Active"
+                        domain="[('state', '=', 'active')]"/>
+                <filter name="high_potential" string="High Potential"
+                        domain="[('high_potential', '=', True)]"/>
+                <filter name="ready_now" string="Ready Now"
+                        domain="[('readiness_level', '=', 'ready_now')]"/>
+                <filter name="high_risk" string="High Retention Risk"
+                        domain="[('retention_risk', 'in', ('high', 'critical'))]"/>
+                <separator/>
+                <filter name="group_pool" string="Talent Pool"
+                        context="{'group_by': 'pool_code'}"/>
+                <filter name="group_readiness" string="Readiness"
+                        context="{'group_by': 'readiness_level'}"/>
+                <filter name="group_department" string="Department"
+                        context="{'group_by': 'department_id'}"/>
+                <filter name="group_target_position" string="Target Position"
+                        context="{'group_by': 'target_position_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_talent_pool_pivot" model="ir.ui.view">
+        <field name="name">onehr.talent.pool.pivot</field>
+        <field name="model">onehr.talent.pool</field>
+        <field name="arch" type="xml">
+            <pivot string="Talent Readiness Matrix">
+                <field name="target_position_id" type="row"/>
+                <field name="readiness_level" type="col"/>
+                <field name="readiness_score" type="measure"/>
+                <field name="performance_score" type="measure"/>
+                <field name="potential_score" type="measure"/>
+                <field name="competency_score" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_talent_pool_graph" model="ir.ui.view">
+        <field name="name">onehr.talent.pool.graph</field>
+        <field name="model">onehr.talent.pool</field>
+        <field name="arch" type="xml">
+            <graph string="Talent Readiness Analysis" type="bar">
+                <field name="readiness_level"/>
+                <field name="readiness_score" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_talent_pool" model="ir.actions.act_window">
+        <field name="name">Talent Pool</field>
+        <field name="res_model">onehr.talent.pool</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_onehr_talent_pool_search"/>
+    </record>
+</odoo>

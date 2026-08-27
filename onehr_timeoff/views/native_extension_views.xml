@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_employee_form_onehr_timeoff" model="ir.ui.view">
+        <field name="name">hr.employee.form.onehr.timeoff.enterprise</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="onehr_corehr.view_employee_form_onehr_corehr"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_onehr_leave_requests" type="object" class="oe_stat_button" icon="fa-calendar-check-o"
+                        groups="onehr_timeoff.group_onehr_timeoff_hr">
+                    <field name="onehr_leave_request_count" widget="statinfo" string="Leave Requests"/>
+                </button>
+                <button name="action_open_onehr_leave_allocations" type="object" class="oe_stat_button" icon="fa-balance-scale"
+                        groups="onehr_timeoff.group_onehr_timeoff_hr">
+                    <field name="onehr_leave_allocation_count" widget="statinfo" string="Leave Allocations"/>
+                </button>
+                <button name="action_open_onehr_leave_requests" type="object" class="oe_stat_button" icon="fa-plane"
+                        groups="onehr_timeoff.group_onehr_timeoff_hr" invisible="onehr_current_leave_count == 0">
+                    <field name="onehr_current_leave_count" widget="statinfo" string="Current Leave"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

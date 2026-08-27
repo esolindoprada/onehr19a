@@ -1,0 +1,23 @@
+<odoo noupdate="1">
+    <record id="lifecycle_event_hire" model="onehr.lifecycle.event.type">
+        <field name="code">HIRE</field><field name="name">Hire</field><field name="sequence">10</field>
+    </record>
+    <record id="lifecycle_event_transfer" model="onehr.lifecycle.event.type">
+        <field name="code">TRANSFER</field><field name="name">Transfer</field><field name="sequence">20</field>
+    </record>
+    <record id="lifecycle_event_promotion" model="onehr.lifecycle.event.type">
+        <field name="code">PROMOTION</field><field name="name">Promotion</field><field name="sequence">30</field>
+    </record>
+    <record id="lifecycle_event_relocation" model="onehr.lifecycle.event.type">
+        <field name="code">RELOCATION</field><field name="name">Relocation</field><field name="sequence">40</field>
+    </record>
+    <record id="lifecycle_event_return" model="onehr.lifecycle.event.type">
+        <field name="code">RETURN</field><field name="name">Return</field><field name="sequence">50</field>
+    </record>
+    <record id="lifecycle_event_termination" model="onehr.lifecycle.event.type">
+        <field name="code">TERMINATION</field><field name="name">Termination</field><field name="sequence">60</field>
+    </record>
+    <record id="lifecycle_event_retirement" model="onehr.lifecycle.event.type">
+        <field name="code">RETIREMENT</field><field name="name">Retirement</field><field name="sequence">70</field>
+    </record>
+</odoo>

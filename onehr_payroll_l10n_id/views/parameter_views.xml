@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_payroll_l10n_param_list" model="ir.ui.view">
+        <field name="name">onehr.payroll.l10n.param.list.enterprise</field>
+        <field name="model">onehr.payroll.l10n.param</field>
+        <field name="arch" type="xml">
+            <list decoration-success="period_status == 'current'"
+                  decoration-info="period_status == 'future'"
+                  decoration-muted="period_status in ['historical', 'inactive']">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="revision"/>
+                <field name="valid_from"/>
+                <field name="valid_to"/>
+                <field name="period_status" widget="badge"/>
+                <field name="default_tax_method" widget="badge"/>
+                <field name="bpjs_health_enabled" optional="show"/>
+                <field name="bpjs_tk_enabled" optional="show"/>
+                <field name="thr_enabled" optional="show"/>
+                <field name="bpjs_jp_wage_ceiling" optional="show"/>
+                <field name="regulatory_reviewed_on" optional="show"/>
+                <field name="next_regulatory_review_date" optional="show"/>
+                <field name="parameter_sha256" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="active" optional="show"/>
+                <button name="action_validate_parameters" type="object"
+                        string="Validate" icon="fa-check-circle"
+                        groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                <button name="action_open_history" type="object"
+                        string="History" icon="fa-history"
+                        groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_payroll_l10n_param_form" model="ir.ui.view">
+        <field name="name">onehr.payroll.l10n.param.form.enterprise</field>
+        <field name="model">onehr.payroll.l10n.param</field>
+        <field name="arch" type="xml">
+            <form string="Indonesia Payroll Localization Parameters">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_history" type="object"
+                                class="oe_stat_button" icon="fa-history"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_manager">
+                            <field name="history_count" widget="statinfo" string="History"/>
+                        </button>
+                        <button name="action_open_payroll_exports" type="object"
+                                class="oe_stat_button" icon="fa-upload"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_manager">
+                            <field name="payroll_export_count" widget="statinfo" string="Payroll Exports"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Effective Today" bg_color="text-bg-success"
+                            invisible="period_status != 'current'"/>
+                    <widget name="web_ribbon" title="Future Version" bg_color="text-bg-info"
+                            invisible="period_status != 'future'"/>
+                    <widget name="web_ribbon" title="Historical" bg_color="text-bg-secondary"
+                            invisible="period_status != 'historical'"/>
+                    <widget name="web_ribbon" title="Superseded / Inactive" bg_color="text-bg-secondary"
+                            invisible="period_status != 'inactive'"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div class="text-muted">
+                            <field name="code"/>
+                            <span> · Revision </span>
+                            <field name="revision" readonly="1"/>
+                            <span> · </span>
+                            <field name="period_status" widget="badge" readonly="1"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Effective-Dated Identity">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" readonly="1"/>
+                            <field name="valid_from"/>
+                            <field name="valid_to"/>
+                            <field name="active"/>
+                            <field name="predecessor_id" readonly="1"/>
+                        </group>
+                        <group string="Regulatory Review Evidence">
+                            <field name="regulatory_reviewed_on" readonly="1"/>
+                            <field name="regulatory_reviewed_by_id" readonly="1"/>
+                            <field name="next_regulatory_review_date" readonly="1"/>
+                            <field name="parameter_sha256" readonly="1"/>
+                            <field name="is_effective_today" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info" role="alert">
+                        This addon is a governed parameter provider, not a payslip/tax calculation engine.
+                        The product contract has no lifecycle workflow; therefore no artificial statusbar is introduced.
+                    </div>
+
+                    <group string="Governed Actions">
+                        <button name="action_validate_parameters" type="object"
+                                string="Validate Parameter Structure"
+                                class="oe_highlight" icon="fa-check-circle"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                        <button name="action_mark_regulatory_reviewed" type="object"
+                                string="Mark Regulatory Review Complete"
+                                icon="fa-gavel"
+                                invisible="payroll_export_count != 0"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_manager"
+                                confirm="Confirm that the current statutory references, rates, ceilings, PTKP, TER, BPJS and THR parameters have been reviewed for this effective period?"/>
+                        <button name="action_download_json" type="object"
+                                string="Export Parameters JSON" icon="fa-download"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                        <button name="action_download_csv" type="object"
+                                string="Export Parameters CSV" icon="fa-file-text-o"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                    </group>
+
+                    <notebook>
+                        <page string="PPh21 &amp; PTKP" name="pph21">
+                            <group>
+                                <group string="General PPh21">
+                                    <field name="default_tax_method"/>
+                                    <field name="ptkp_spouse_combined_addition"/>
+                                    <field name="job_expense_rate_percent"/>
+                                    <field name="job_expense_monthly_ceiling"/>
+                                    <field name="job_expense_annual_ceiling"/>
+                                </group>
+                                <group string="TER Daily">
+                                    <field name="ter_daily_zero_ceiling"/>
+                                    <field name="ter_daily_half_percent_ceiling"/>
+                                    <field name="ter_daily_rate_percent"/>
+                                </group>
+                            </group>
+                            <group string="PTKP Mapping">
+                                <field name="ptkp_map_json" nolabel="1"/>
+                            </group>
+                            <group string="Temporary / Special PPh21 Policy Payload">
+                                <field name="pph21_special_policy_json" nolabel="1"/>
+                                <div class="text-muted">
+                                    Optional hand-off for temporary statutory incentives. This addon does not
+                                    determine employee/sector eligibility or replace the external payroll/tax engine.
+                                </div>
+                            </group>
+                            <group string="Article 17 Progressive Brackets">
+                                <field name="article17_brackets_json" nolabel="1"/>
+                            </group>
+                        </page>
+
+                        <page string="TER Monthly" name="ter_monthly">
+                            <group string="PTKP → TER Category Mapping">
+                                <field name="ter_category_map_json" nolabel="1"/>
+                            </group>
+                            <group string="TER Lookup Preview">
+                                <field name="ter_preview_category"/>
+                                <field name="ter_preview_monthly_gross"/>
+                                <field name="ter_preview_rate_percent" readonly="1"/>
+                                <button name="action_preview_ter_rate" type="object"
+                                        string="Check TER Rate" icon="fa-calculator"
+                                        groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                            </group>
+                            <notebook>
+                                <page string="TER A"><field name="ter_a_json" nolabel="1"/></page>
+                                <page string="TER B"><field name="ter_b_json" nolabel="1"/></page>
+                                <page string="TER C"><field name="ter_c_json" nolabel="1"/></page>
+                            </notebook>
+                        </page>
+
+                        <page string="BPJS Kesehatan" name="bpjs_health">
+                            <group>
+                                <group string="PPU Contribution">
+                                    <field name="bpjs_health_enabled"/>
+                                    <field name="bpjs_health_employer_rate_percent"
+                                           invisible="not bpjs_health_enabled"/>
+                                    <field name="bpjs_health_employee_rate_percent"
+                                           invisible="not bpjs_health_enabled"/>
+                                    <field name="bpjs_health_wage_ceiling"
+                                           invisible="not bpjs_health_enabled"/>
+                                </group>
+                                <group string="Wage Floor">
+                                    <field name="bpjs_health_wage_floor_mode"
+                                           invisible="not bpjs_health_enabled"/>
+                                    <field name="bpjs_health_manual_wage_floor"
+                                           invisible="not bpjs_health_enabled or bpjs_health_wage_floor_mode != 'manual'"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="BPJS Ketenagakerjaan" name="bpjs_tk">
+                            <group>
+                                <field name="bpjs_tk_enabled"/>
+                            </group>
+                            <group invisible="not bpjs_tk_enabled">
+                                <group string="JHT / JKM">
+                                    <field name="bpjs_jht_employer_rate_percent"/>
+                                    <field name="bpjs_jht_employee_rate_percent"/>
+                                    <field name="bpjs_jkm_employer_rate_percent"/>
+                                </group>
+                                <group string="Jaminan Pensiun">
+                                    <field name="bpjs_jp_employer_rate_percent"/>
+                                    <field name="bpjs_jp_employee_rate_percent"/>
+                                    <field name="bpjs_jp_wage_ceiling"/>
+                                    <field name="bpjs_jp_ceiling_effective_from"/>
+                                </group>
+                            </group>
+                            <group string="JKK Risk Rates" invisible="not bpjs_tk_enabled">
+                                <group>
+                                    <field name="bpjs_jkk_default_risk"/>
+                                    <field name="bpjs_jkk_very_low_rate_percent"/>
+                                    <field name="bpjs_jkk_low_rate_percent"/>
+                                </group>
+                                <group>
+                                    <field name="bpjs_jkk_medium_rate_percent"/>
+                                    <field name="bpjs_jkk_high_rate_percent"/>
+                                    <field name="bpjs_jkk_very_high_rate_percent"/>
+                                </group>
+                            </group>
+                            <group string="JKP Funding Composition" invisible="not bpjs_tk_enabled">
+                                <group>
+                                    <field name="bpjs_jkp_total_rate_percent"/>
+                                    <field name="bpjs_jkp_government_rate_percent"/>
+                                </group>
+                                <group>
+                                    <field name="bpjs_jkp_recompose_jkk_rate_percent"/>
+                                    <field name="bpjs_jkp_recompose_jkm_rate_percent"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="THR" name="thr">
+                            <group>
+                                <group string="Entitlement Parameters">
+                                    <field name="thr_enabled"/>
+                                    <field name="thr_min_service_months" invisible="not thr_enabled"/>
+                                    <field name="thr_full_service_months" invisible="not thr_enabled"/>
+                                    <field name="thr_full_month_multiplier" invisible="not thr_enabled"/>
+                                    <field name="thr_prorata_enabled" invisible="not thr_enabled"/>
+                                </group>
+                                <group string="Payment &amp; Wage Basis">
+                                    <field name="thr_payment_deadline_days_before_holiday"
+                                           invisible="not thr_enabled"/>
+                                    <field name="thr_wage_basis" invisible="not thr_enabled"/>
+                                    <field name="thr_leave_impact_mode" invisible="not thr_enabled"/>
+                                    <field name="thr_leave_impact_notes"
+                                           invisible="not thr_enabled or thr_leave_impact_mode != 'external_engine'"/>
+                                </group>
+                            </group>
+                            <group string="THR Company Calendar" invisible="not thr_enabled">
+                                <field name="thr_holiday_calendar_json" nolabel="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Legal References" name="legal">
+                            <group>
+                                <field name="pph21_legal_reference"/>
+                                <field name="bpjs_health_legal_reference"/>
+                                <field name="bpjs_tk_legal_reference"/>
+                                <field name="thr_legal_reference"/>
+                                <field name="regulatory_notes"/>
+                            </group>
+                        </page>
+
+                        <page string="Versioning &amp; Import" name="versioning">
+                            <group>
+                                <group string="Create New Effective Version">
+                                    <field name="next_version_effective_from"/>
+                                    <button name="action_create_new_version" type="object"
+                                            string="Create New Version" icon="fa-code-fork"
+                                            groups="onehr_payroll_bridge.group_onehr_payroll_manager"
+                                            confirm="Close this version the day before the new effective date and create an unreviewed successor?"/>
+                                </group>
+                                <group string="Governed Correction">
+                                    <field name="correction_reason"/>
+                                    <button name="action_create_correction" type="object"
+                                            string="Create Correction Revision" icon="fa-history"
+                                            groups="onehr_payroll_bridge.group_onehr_payroll_manager"
+                                            confirm="Supersede this active version and create an unreviewed correction with the same effective period?"/>
+                                </group>
+                            </group>
+                            <group string="Import JSON / CSV as New Version">
+                                <field name="import_file" filename="import_filename"/>
+                                <field name="import_filename" invisible="1"/>
+                                <field name="import_effective_from"/>
+                                <button name="action_import_as_new_version" type="object"
+                                        string="Import as New Version" class="oe_highlight"
+                                        icon="fa-upload"
+                                        groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                            </group>
+                            <group string="Generated Download">
+                                <field name="download_filename" readonly="1"/>
+                                <field name="download_file" filename="download_filename" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <page string="History" name="history">
+                            <field name="successor_ids" readonly="1">
+                                <list create="0" edit="0" delete="0"
+                                      decoration-success="period_status == 'current'"
+                                      decoration-info="period_status == 'future'"
+                                      decoration-muted="period_status in ['historical', 'inactive']">
+                                    <field name="revision"/>
+                                    <field name="valid_from"/>
+                                    <field name="valid_to"/>
+                                    <field name="period_status" widget="badge"/>
+                                    <field name="regulatory_reviewed_on"/>
+                                    <field name="parameter_sha256" optional="hide"/>
+                                    <button name="action_open_record" type="object"
+                                            string="Open" icon="fa-external-link"
+                                            groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_payroll_l10n_param_search" model="ir.ui.view">
+        <field name="name">onehr.payroll.l10n.param.search.enterprise</field>
+        <field name="model">onehr.payroll.l10n.param</field>
+        <field name="arch" type="xml">
+            <search string="Indonesia Payroll Parameters">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="regulatory_reviewed_by_id"/>
+                <separator/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="effective_today" string="Effective Today"
+                        domain="[('active', '=', True), ('valid_from', '&lt;=', context_today()), '|', ('valid_to', '=', False), ('valid_to', '&gt;=', context_today())]"/>
+                <filter name="future" string="Future"
+                        domain="[('active', '=', True), ('valid_from', '&gt;', context_today())]"/>
+                <filter name="historical" string="Historical"
+                        domain="[('valid_to', '&lt;', context_today())]"/>
+                <filter name="unreviewed" string="Regulatory Review Required"
+                        domain="[('regulatory_reviewed_on', '=', False)]"/>
+                <filter name="review_due" string="Review Due"
+                        domain="[('next_regulatory_review_date', '!=', False), ('next_regulatory_review_date', '&lt;=', context_today())]"/>
+                <separator/>
+                <filter name="valid_from_date" string="Valid From" date="valid_from"/>
+                <filter name="valid_to_date" string="Valid To" date="valid_to"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                    <filter name="group_code" string="Parameter Code" context="{'group_by': 'code'}"/>
+                    <filter name="group_tax_method" string="Tax Method" context="{'group_by': 'default_tax_method'}"/>
+                    <filter name="group_valid_from" string="Valid From" context="{'group_by': 'valid_from:year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_payroll_l10n_param_calendar" model="ir.ui.view">
+        <field name="name">onehr.payroll.l10n.param.calendar.enterprise</field>
+        <field name="model">onehr.payroll.l10n.param</field>
+        <field name="arch" type="xml">
+            <calendar string="Indonesia Payroll Parameter Effective Periods"
+                      date_start="valid_from" date_stop="valid_to" color="company_id">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="revision"/>
+                <field name="regulatory_reviewed_on"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_onehr_payroll_l10n_params" model="ir.actions.act_window">
+        <field name="name">Localization (Indonesia)</field>
+        <field name="res_model">onehr.payroll.l10n.param</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="search_view_id" ref="view_onehr_payroll_l10n_param_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+</odoo>

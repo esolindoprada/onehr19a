@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Global legal-company partitions always intersect group-specific operational scope. -->
+    <record id="rule_onehr_kiosk_device_company" model="ir.rule">
+        <field name="name">OneHR Kiosk Device — allowed companies</field>
+        <field name="model_id" ref="model_onehr_kiosk_device"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_kiosk_log_company" model="ir.rule">
+        <field name="name">OneHR Kiosk Log — allowed companies</field>
+        <field name="model_id" ref="model_onehr_kiosk_log"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_kiosk_device_operator" model="ir.rule">
+        <field name="name">OneHR Kiosk Device — operator assigned device</field>
+        <field name="model_id" ref="model_onehr_kiosk_device"/>
+        <field name="groups" eval="[Command.link(ref('onehr_mobile_kiosk.group_onehr_kiosk_operator'))]"/>
+        <field name="domain_force">[('service_user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_onehr_kiosk_device_admin" model="ir.rule">
+        <field name="name">OneHR Kiosk Device — administrator company scope</field>
+        <field name="model_id" ref="model_onehr_kiosk_device"/>
+        <field name="groups" eval="[Command.link(ref('onehr_mobile_kiosk.group_onehr_kiosk_admin'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_kiosk_log_operator" model="ir.rule">
+        <field name="name">OneHR Kiosk Log — operator assigned device</field>
+        <field name="model_id" ref="model_onehr_kiosk_log"/>
+        <field name="groups" eval="[Command.link(ref('onehr_mobile_kiosk.group_onehr_kiosk_operator'))]"/>
+        <field name="domain_force">[('device_id.service_user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_onehr_kiosk_log_admin" model="ir.rule">
+        <field name="name">OneHR Kiosk Log — administrator company scope</field>
+        <field name="model_id" ref="model_onehr_kiosk_log"/>
+        <field name="groups" eval="[Command.link(ref('onehr_mobile_kiosk.group_onehr_kiosk_admin'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

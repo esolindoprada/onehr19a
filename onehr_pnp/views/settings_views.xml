@@ -1,0 +1,38 @@
+<odoo>
+    <record id="res_config_settings_view_form_onehr_pnp" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.onehr.pnp</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="OneHR Policies &amp; Procedures"
+                     name="onehr_pnp"
+                     groups="onehr_pnp.group_onehr_pnp_admin">
+                    <block title="Policy Governance Defaults"
+                           help="Defaults for newly created OneHR policy/procedure versions.">
+                        <setting string="Default Policy Owner"
+                                 help="Default OneHR Policy Owner for newly created policy versions.">
+                            <field name="onehr_pnp_default_owner_user_id"/>
+                        </setting>
+                        <setting string="Default Review Interval"
+                                 help="Months between periodic policy reviews.">
+                            <field name="onehr_pnp_default_review_months"/>
+                        </setting>
+                        <setting string="Default Acknowledgement Reminder"
+                                 help="Days between acknowledgement reminders.">
+                            <field name="onehr_pnp_default_ack_reminder_days"/>
+                        </setting>
+                        <setting string="Default Retention"
+                                 help="Years policy history is retained.">
+                            <field name="onehr_pnp_default_retention_years"/>
+                        </setting>
+                        <setting string="Default Document Archive Category"
+                                 help="OneHR Document category used by new policies unless overridden.">
+                            <field name="onehr_pnp_default_document_category_id"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

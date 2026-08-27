@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_learning_cost_line_list" model="ir.ui.view">
+        <field name="name">onehr.learning.cost.line.list.enterprise</field>
+        <field name="model">onehr.learning.cost.line</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'committed'"
+                  decoration-success="state == 'actual'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="cost_date"/>
+                <field name="description"/>
+                <field name="cost_type" widget="badge"/>
+                <field name="session_id"/>
+                <field name="employee_name" optional="show"/>
+                <field name="vendor_id" optional="show"/>
+                <field name="budget_id" optional="show"/>
+                <field name="amount"/>
+                <field name="state" widget="badge"/>
+                <field name="reimbursable" optional="show"/>
+                <field name="payroll_bridge_eligible" optional="show"/>
+                <field name="source_reference" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <button name="action_commit" type="object" string="Commit"
+                        icon="fa-lock" invisible="state != 'planned'"
+                        groups="onehr_learning.group_onehr_learning_officer"/>
+                <button name="action_mark_actual" type="object" string="Actual"
+                        icon="fa-check" invisible="state != 'committed'"
+                        groups="onehr_learning.group_onehr_learning_officer"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_cost_line_form" model="ir.ui.view">
+        <field name="name">onehr.learning.cost.line.form.enterprise</field>
+        <field name="model">onehr.learning.cost.line</field>
+        <field name="arch" type="xml">
+            <form string="Learning Cost">
+                <header>
+                    <button name="action_commit" type="object" string="Commit Cost"
+                            class="oe_highlight" invisible="state != 'planned'"
+                            groups="onehr_learning.group_onehr_learning_officer"/>
+                    <button name="action_mark_actual" type="object" string="Mark Actual"
+                            class="oe_highlight" invisible="state != 'committed'"
+                            groups="onehr_learning.group_onehr_learning_officer"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state not in ['planned','committed']"
+                            groups="onehr_learning.group_onehr_learning_manager_approver"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="planned,committed,actual,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="description"/>
+                        <h1><field name="description"/></h1>
+                    </div>
+                    <group>
+                        <group string="Cost Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="cost_date"/>
+                            <field name="budget_id"/>
+                            <field name="session_id"/>
+                            <field name="enrollment_id"/>
+                            <field name="employee_name" readonly="1"/>
+                            <field name="vendor_id"/>
+                        </group>
+                        <group string="Financial Evidence">
+                            <field name="cost_type"/>
+                            <field name="amount"/>
+                            <field name="reimbursable"/>
+                            <field name="payroll_bridge_eligible"/>
+                            <field name="source_reference"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_cost_line_search" model="ir.ui.view">
+        <field name="name">onehr.learning.cost.line.search.enterprise</field>
+        <field name="model">onehr.learning.cost.line</field>
+        <field name="arch" type="xml">
+            <search string="Learning Costs">
+                <field name="description"/>
+                <field name="session_id"/>
+                <field name="budget_id"/>
+                <field name="employee_name"/>
+                <field name="vendor_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter name="planned" string="Planned" domain="[('state', '=', 'planned')]"/>
+                <filter name="committed" string="Committed" domain="[('state', '=', 'committed')]"/>
+                <filter name="actual" string="Actual" domain="[('state', '=', 'actual')]"/>
+                <filter name="reimbursable" string="Reimbursable" domain="[('reimbursable', '=', True)]"/>
+                <filter name="payroll" string="Payroll Hand-off"
+                        domain="[('reimbursable', '=', True), ('payroll_bridge_eligible', '=', True)]"/>
+                <filter name="cost_date_filter" string="Cost Date" date="cost_date"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_type" string="Cost Type" context="{'group_by': 'cost_type'}"/>
+                    <filter name="group_session" string="Session" context="{'group_by': 'session_id'}"/>
+                    <filter name="group_budget" string="Budget" context="{'group_by': 'budget_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_cost_line_pivot" model="ir.ui.view">
+        <field name="name">onehr.learning.cost.line.pivot.enterprise</field>
+        <field name="model">onehr.learning.cost.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Learning Cost Analysis">
+                <field name="cost_type" type="row"/>
+                <field name="state" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_cost_line_graph" model="ir.ui.view">
+        <field name="name">onehr.learning.cost.line.graph.enterprise</field>
+        <field name="model">onehr.learning.cost.line</field>
+        <field name="arch" type="xml">
+            <graph string="Learning Cost Analysis">
+                <field name="cost_type"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_learning_cost_lines" model="ir.actions.act_window">
+        <field name="name">Training Costs</field>
+        <field name="res_model">onehr.learning.cost.line</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_learning_cost_line_search"/>
+    </record>
+</odoo>

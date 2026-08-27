@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Leave policy is visible only in the user's allowed companies. -->
+    <record id="rule_leave_type_company" model="ir.rule">
+        <field name="name">Time Off Leave Type — allowed companies</field>
+        <field name="model_id" ref="model_onehr_leave_type"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Employee self-service: own requests only. -->
+    <record id="rule_leave_request_user_own" model="ir.rule">
+        <field name="name">Time Off Request — employee own</field>
+        <field name="model_id" ref="model_onehr_leave_request"/>
+        <field name="groups" eval="[Command.link(ref('onehr_timeoff.group_onehr_timeoff_user'))]"/>
+        <field name="domain_force">[('employee_user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_leave_request_manager_team" model="ir.rule">
+        <field name="name">Time Off Request — manager direct reports</field>
+        <field name="model_id" ref="model_onehr_leave_request"/>
+        <field name="groups" eval="[Command.link(ref('onehr_timeoff.group_onehr_timeoff_manager'))]"/>
+        <field name="domain_force">['|', ('employee_user_id', '=', user.id), ('manager_user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_leave_request_hr_company" model="ir.rule">
+        <field name="name">Time Off Request — HR allowed companies</field>
+        <field name="model_id" ref="model_onehr_leave_request"/>
+        <field name="groups" eval="[Command.link(ref('onehr_timeoff.group_onehr_timeoff_hr'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Entitlements follow the same own/team/company visibility model. Mass batches are HR-only. -->
+    <record id="rule_leave_allocation_user_own" model="ir.rule">
+        <field name="name">Time Off Allocation — employee own</field>
+        <field name="model_id" ref="model_onehr_leave_allocation"/>
+        <field name="groups" eval="[Command.link(ref('onehr_timeoff.group_onehr_timeoff_user'))]"/>
+        <field name="domain_force">[('allocation_scope', '=', 'single'), ('employee_user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_leave_allocation_manager_team" model="ir.rule">
+        <field name="name">Time Off Allocation — manager direct reports</field>
+        <field name="model_id" ref="model_onehr_leave_allocation"/>
+        <field name="groups" eval="[Command.link(ref('onehr_timeoff.group_onehr_timeoff_manager'))]"/>
+        <field name="domain_force">[('allocation_scope', '=', 'single'), '|', ('employee_user_id', '=', user.id), ('manager_user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_leave_allocation_hr_company" model="ir.rule">
+        <field name="name">Time Off Allocation — HR allowed companies</field>
+        <field name="model_id" ref="model_onehr_leave_allocation"/>
+        <field name="groups" eval="[Command.link(ref('onehr_timeoff.group_onehr_timeoff_hr'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

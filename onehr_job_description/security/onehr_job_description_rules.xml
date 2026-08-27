@@ -1,0 +1,46 @@
+<odoo>
+    <!-- Global legal-company partition is authoritative for every JD role. -->
+    <record id="rule_onehr_jd_company" model="ir.rule">
+        <field name="name">Job Description — company boundary</field>
+        <field name="model_id" ref="model_onehr_jd"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_jd_version_company" model="ir.rule">
+        <field name="name">JD Version — company boundary</field>
+        <field name="model_id" ref="model_onehr_jd_version"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Reader sees only published/current evidence. Editors imply Reader, so the
+         broader Editor rule below ORs with this rule while the company boundary remains global. -->
+    <record id="rule_onehr_jd_reader_published" model="ir.rule">
+        <field name="name">JD Reader — current published masters</field>
+        <field name="model_id" ref="model_onehr_jd"/>
+        <field name="groups" eval="[Command.link(ref('onehr_job_description.group_onehr_jd_reader'))]"/>
+        <field name="domain_force">[('active', '=', True), ('current_version_id', '!=', False)]</field>
+    </record>
+
+    <record id="rule_onehr_jd_version_reader_published" model="ir.rule">
+        <field name="name">JD Reader — current published versions</field>
+        <field name="model_id" ref="model_onehr_jd_version"/>
+        <field name="groups" eval="[Command.link(ref('onehr_job_description.group_onehr_jd_reader'))]"/>
+        <field name="domain_force">[('state', '=', 'published'), ('is_current', '=', True)]</field>
+    </record>
+
+    <record id="rule_onehr_jd_editor_company_scope" model="ir.rule">
+        <field name="name">JD Editor — company working set</field>
+        <field name="model_id" ref="model_onehr_jd"/>
+        <field name="groups" eval="[Command.link(ref('onehr_job_description.group_onehr_jd_editor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_jd_version_editor_company_scope" model="ir.rule">
+        <field name="name">JD Version Editor — company working set</field>
+        <field name="model_id" ref="model_onehr_jd_version"/>
+        <field name="groups" eval="[Command.link(ref('onehr_job_description.group_onehr_jd_editor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

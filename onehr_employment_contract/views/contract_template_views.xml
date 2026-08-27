@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <record id="view_onehr_contract_template_list" model="ir.ui.view">
+    <field name="name">onehr.contract.template.list.enterprise</field>
+    <field name="model">onehr.contract.template</field>
+    <field name="arch" type="xml">
+      <list decoration-success="state == 'active'" decoration-muted="state == 'retired'">
+        <field name="code"/>
+        <field name="name"/>
+        <field name="version"/>
+        <field name="company_id" groups="base.group_multi_company"/>
+        <field name="default_contract_kind" widget="badge"/>
+        <field name="expiry_reminder_lead_days"/>
+        <field name="approval_sla_hours"/>
+        <field name="valid_from"/>
+        <field name="valid_to"/>
+        <field name="contract_count"/>
+        <field name="state" widget="badge"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_onehr_contract_template_form" model="ir.ui.view">
+    <field name="name">onehr.contract.template.form.enterprise</field>
+    <field name="model">onehr.contract.template</field>
+    <field name="arch" type="xml">
+      <form string="Employment Contract Template">
+        <header>
+          <button name="action_activate" type="object" string="Activate" class="btn-primary" groups="onehr_employment_contract.group_onehr_contract_manager" invisible="state != 'draft'"/>
+          <button name="action_retire" type="object" string="Retire" groups="onehr_employment_contract.group_onehr_contract_manager" invisible="state != 'active'"/>
+          <button name="action_create_new_version" type="object" string="Create New Version" groups="onehr_employment_contract.group_onehr_contract_manager" invisible="state == 'draft'"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,active,retired"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button class="oe_stat_button" name="action_open_contracts" type="object" icon="fa-file-text-o">
+              <field name="contract_count" widget="statinfo" string="Contracts"/>
+            </button>
+          </div>
+          <div class="oe_title">
+            <label for="name"/>
+            <h1>
+              <field name="name"/>
+            </h1>
+          </div>
+          <group>
+            <group string="Template Identity">
+              <field name="code"/>
+              <field name="version"/>
+              <field name="company_id" groups="base.group_multi_company"/>
+              <field name="default_contract_kind"/>
+            </group>
+            <group string="Validity &amp; Governance">
+              <field name="valid_from"/>
+              <field name="valid_to"/>
+              <field name="approval_sla_hours"/>
+              <field name="document_template_code"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Applicability">
+              <group>
+                <field name="engagement_type_ids" widget="many2many_tags"/>
+                <field name="grade_ids" widget="many2many_tags"/>
+                <field name="position_ids" widget="many2many_tags"/>
+                <field name="job_ids" widget="many2many_tags"/>
+              </group>
+            </page>
+            <page string="Contract Policy">
+              <group>
+                <field name="default_probation_days"/>
+                <field name="notice_period_days"/>
+                <field name="expiry_reminder_lead_days"/>
+              </group>
+            </page>
+            <page string="Notes">
+              <field name="notes"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="view_onehr_contract_template_search" model="ir.ui.view">
+    <field name="name">onehr.contract.template.search.enterprise</field>
+    <field name="model">onehr.contract.template</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="code"/>
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="default_contract_kind"/>
+        <field name="state"/>
+        <filter name="active" string="Active" domain="[('state','=','active')]"/>
+        <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+        <filter name="retired" string="Retired" domain="[('state','=','retired')]"/>
+        <group>
+          <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+          <filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+          <filter name="group_kind" string="Default Kind" context="{'group_by':'default_contract_kind'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="action_onehr_contract_template" model="ir.actions.act_window">
+    <field name="name">Contract Templates</field>
+    <field name="res_model">onehr.contract.template</field>
+    <field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="view_onehr_contract_template_search"/>
+  </record>
+</odoo>

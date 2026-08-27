@@ -1,0 +1,377 @@
+<odoo>
+    <record id="view_onehr_discipline_sanction_list" model="ir.ui.view">
+        <field name="name">onehr.discipline.sanction.list.enterprise</field>
+        <field name="model">onehr.discipline.sanction</field>
+        <field name="arch" type="xml">
+            <list string="Discipline Sanctions / Decisions"
+                  decoration-info="state == 'approval'"
+                  decoration-success="state == 'executed'"
+                  decoration-danger="state == 'rejected'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="reference"/>
+                <field name="case_reference"/>
+                <field name="employee_number"
+                       groups="onehr_discipline.group_onehr_discipline_hrbp,onehr_discipline.group_onehr_discipline_manager,onehr_discipline.group_onehr_discipline_legal"/>
+                <field name="employee_name"/>
+                <field name="department_name"/>
+                <field name="sanction_type" widget="badge"/>
+                <field name="severity" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="decision_date"/>
+                <field name="effective_start_date"/>
+                <field name="effective_end_date"/>
+                <field name="payroll_deduction_amount"
+                       invisible="sanction_type != 'payroll_deduction'"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="payroll_execution_state" widget="badge"
+                       invisible="sanction_type != 'payroll_deduction'"/>
+                <field name="served_at" optional="hide"/>
+                <field name="appeal_state" widget="badge" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_case" type="object"
+                        string="Case" icon="fa-folder-open"/>
+                <button name="action_print_sanction_letter" type="object"
+                        string="Letter" icon="fa-file-pdf-o"
+                        invisible="state not in ('approved', 'executed')"/>
+                <button name="action_execute" type="object"
+                        string="Execute" icon="fa-check"
+                        invisible="state != 'approved'"
+                        groups="onehr_discipline.group_onehr_discipline_legal"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_discipline_sanction_form" model="ir.ui.view">
+        <field name="name">onehr.discipline.sanction.form.enterprise</field>
+        <field name="model">onehr.discipline.sanction</field>
+        <field name="arch" type="xml">
+            <form string="Discipline Sanction / Decision">
+                <header>
+                    <button name="action_submit_for_sanction_approval" type="object"
+                            string="Submit for Approval"
+                            class="btn-primary"
+                            invisible="state not in ('draft', 'rejected')"
+                            groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                    <button name="action_return_to_draft" type="object"
+                            string="Return to Draft"
+                            invisible="state != 'rejected'"
+                            groups="onehr_discipline.group_onehr_discipline_legal"/>
+                    <button name="action_execute" type="object"
+                            string="Execute / Issue"
+                            class="btn-primary"
+                            invisible="state != 'approved'"
+                            groups="onehr_discipline.group_onehr_discipline_legal"/>
+                    <button name="action_cancel" type="object"
+                            string="Cancel"
+                            invisible="state not in ('draft', 'rejected')"
+                            groups="onehr_discipline.group_onehr_discipline_legal"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,approval,approved,executed,rejected,cancelled"/>
+                </header>
+
+                <sheet>
+                    <field name="onehr_approval_request_count" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_case" type="object"
+                                class="oe_stat_button" icon="fa-folder-open">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Case</span>
+                            </div>
+                        </button>
+                        <button name="action_open_approval_requests" type="object"
+                                class="oe_stat_button" icon="fa-check-square-o">
+                            <field name="onehr_approval_request_count"
+                                   widget="statinfo" string="Approvals"/>
+                        </button>
+                        <button name="action_print_sanction_letter" type="object"
+                                class="oe_stat_button" icon="fa-file-pdf-o"
+                                invisible="state not in ('approved', 'executed')">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Sanction Letter</span>
+                            </div>
+                        </button>
+                        <button name="action_print_decision_record" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Decision Record</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="APPROVED"
+                            bg_color="text-bg-info"
+                            invisible="state != 'approved'"/>
+                    <widget name="web_ribbon" title="EXECUTED"
+                            bg_color="text-bg-success"
+                            invisible="state != 'executed'"/>
+                    <widget name="web_ribbon" title="REJECTED"
+                            bg_color="text-bg-danger"
+                            invisible="state != 'rejected'"/>
+                    <widget name="web_ribbon" title="CANCELLED"
+                            bg_color="text-bg-secondary"
+                            invisible="state != 'cancelled'"/>
+
+                    <div class="oe_title">
+                        <label for="reference"/>
+                        <h1>
+                            <field name="reference" readonly="1"/>
+                        </h1>
+                        <div class="text-muted">
+                            Case <field name="case_reference" readonly="1"/> ·
+                            <field name="sanction_type" widget="badge"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Case &amp; Employee">
+                            <field name="case_id" readonly="1"/>
+                            <field name="employee_id" readonly="1"
+                                   groups="onehr_discipline.group_onehr_discipline_hrbp,onehr_discipline.group_onehr_discipline_manager,onehr_discipline.group_onehr_discipline_legal"/>
+                            <field name="employee_number" readonly="1"
+                                   groups="onehr_discipline.group_onehr_discipline_hrbp,onehr_discipline.group_onehr_discipline_manager,onehr_discipline.group_onehr_discipline_legal"/>
+                            <field name="employee_name" readonly="1"/>
+                            <field name="department_name" readonly="1"/>
+                            <field name="company_id" readonly="1"
+                                   groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Decision">
+                            <field name="sanction_type"
+                                   readonly="state not in ('draft', 'rejected')"/>
+                            <field name="severity" readonly="1"/>
+                            <field name="decision_date"
+                                   readonly="state not in ('draft', 'rejected')"/>
+                            <field name="effective_start_date"
+                                   readonly="state not in ('draft', 'rejected')"/>
+                            <field name="effective_end_date"
+                                   readonly="state not in ('draft', 'rejected')"/>
+                            <field name="warning_expiry_date"
+                                   readonly="state not in ('draft', 'rejected')"/>
+                            <field name="followup_review_date"
+                                   readonly="state not in ('draft', 'rejected')"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 flex-wrap mb-3">
+                        <button name="action_submit_for_sanction_approval" type="object"
+                                string="Submit for Approval"
+                                class="btn-primary"
+                                invisible="state not in ('draft', 'rejected')"
+                                groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                        <button name="action_execute" type="object"
+                                string="Execute / Issue Approved Decision"
+                                class="btn-primary"
+                                invisible="state != 'approved'"
+                                groups="onehr_discipline.group_onehr_discipline_legal"/>
+                        <button name="action_mark_served" type="object"
+                                string="Record Employee Service / Receipt"
+                                class="btn-secondary"
+                                invisible="state != 'executed' or employee_receipt_acknowledged"
+                                groups="onehr_discipline.group_onehr_discipline_hrbp"/>
+                        <button name="action_queue_decision_notice" type="object"
+                                string="Queue Decision Notice"
+                                class="btn-secondary"
+                                invisible="state != 'executed'"
+                                groups="onehr_discipline.group_onehr_discipline_legal"/>
+                        <button name="action_print_sanction_letter" type="object"
+                                string="Print Sanction Letter"
+                                class="btn-secondary"
+                                invisible="state not in ('approved', 'executed')"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Decision Basis">
+                            <label for="decision_basis"/>
+                            <field name="decision_basis"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   placeholder="Fact-based reason and disciplinary decision..."/>
+                            <label for="legal_basis"/>
+                            <field name="legal_basis"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   placeholder="Applicable policy/legal/IR basis and review notes..."/>
+                            <label for="sanction_terms"/>
+                            <field name="sanction_terms"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   placeholder="Terms, expectations, duration and consequences..."/>
+                            <label for="manager_expectations"/>
+                            <field name="manager_expectations"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   placeholder="Follow-up expectations for manager and employee..."/>
+                            <field name="decision_attachment_ids"
+                                   widget="many2many_binary"
+                                   readonly="state not in ('draft', 'rejected')"/>
+                        </page>
+
+                        <page string="Probation / Last Chance"
+                              invisible="sanction_type not in ('probation', 'last_chance')">
+                            <group>
+                                <field name="probation_start_date"
+                                       readonly="state not in ('draft', 'rejected')"/>
+                                <field name="probation_end_date"
+                                       readonly="state not in ('draft', 'rejected')"/>
+                            </group>
+                            <field name="probation_conditions"
+                                   readonly="state not in ('draft', 'rejected')"
+                                   placeholder="Measurable conduct/performance conditions and review checkpoints..."/>
+                        </page>
+
+                        <page string="Payroll / Contract Handoff">
+                            <group>
+                                <group string="Payroll Deduction Request"
+                                       invisible="sanction_type != 'payroll_deduction'">
+                                    <field name="payroll_deduction_amount"
+                                           readonly="state not in ('draft', 'rejected')"/>
+                                    <field name="payroll_period_date"
+                                           readonly="state not in ('draft', 'rejected')"/>
+                                    <field name="payroll_execution_state" readonly="1"/>
+                                    <field name="payroll_execution_reference" readonly="1"/>
+                                </group>
+                                <group string="Employment Contract Review">
+                                    <field name="contract_action"
+                                           readonly="state not in ('draft', 'rejected')"/>
+                                    <field name="contract_reference"
+                                           readonly="state not in ('draft', 'rejected')"/>
+                                    <field name="document_archive_reference" readonly="1"/>
+                                </group>
+                            </group>
+                            <p class="text-muted">
+                                Discipline records the approved business decision only.
+                                Payroll, contract and document execution remain owned by their respective OneHR modules.
+                            </p>
+                        </page>
+
+                        <page string="Approval Evidence">
+                            <group>
+                                <group>
+                                    <field name="onehr_latest_approval_state" readonly="1"/>
+                                    <field name="approval_request_id" readonly="1"/>
+                                    <field name="approval_finalized_at" readonly="1"/>
+                                    <field name="approved_at" readonly="1"/>
+                                    <field name="approved_by_name" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="rejected_at" readonly="1"/>
+                                    <field name="rejected_by_name" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Execution &amp; Employee Service">
+                            <group>
+                                <group string="Execution">
+                                    <field name="executed_at" readonly="1"/>
+                                    <field name="executed_by_name" readonly="1"/>
+                                    <field name="execution_note"
+                                           readonly="state != 'executed'"/>
+                                </group>
+                                <group string="Employee Service / Receipt">
+                                    <field name="served_at" readonly="1"/>
+                                    <field name="served_by_name" readonly="1"/>
+                                    <field name="employee_receipt_acknowledged" readonly="1"/>
+                                    <field name="employee_receipt_note"
+                                           readonly="state != 'executed'"/>
+                                </group>
+                            </group>
+                            <field name="execution_attachment_ids"
+                                   widget="many2many_binary"
+                                   readonly="state != 'executed'"/>
+                        </page>
+
+                        <page string="Appeal Status">
+                            <field name="appeal_state" readonly="1"/>
+                            <button name="action_open_case" type="object"
+                                    string="Open Case Appeal Record"
+                                    class="btn-secondary"/>
+                        </page>
+                    </notebook>
+
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_discipline_sanction_search" model="ir.ui.view">
+        <field name="name">onehr.discipline.sanction.search.enterprise</field>
+        <field name="model">onehr.discipline.sanction</field>
+        <field name="arch" type="xml">
+            <search string="Search Discipline Sanctions">
+                <field name="reference"/>
+                <field name="case_reference"/>
+                <field name="employee_number"
+                       groups="onehr_discipline.group_onehr_discipline_hrbp,onehr_discipline.group_onehr_discipline_manager,onehr_discipline.group_onehr_discipline_legal"/>
+                <field name="employee_name"/>
+                <field name="department_name"/>
+                <filter name="draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="approval" string="Approval"
+                        domain="[('state', '=', 'approval')]"/>
+                <filter name="approved" string="Approved"
+                        domain="[('state', '=', 'approved')]"/>
+                <filter name="executed" string="Executed"
+                        domain="[('state', '=', 'executed')]"/>
+                <filter name="rejected" string="Rejected"
+                        domain="[('state', '=', 'rejected')]"/>
+                <filter name="payroll" string="Payroll Deduction"
+                        domain="[('sanction_type', '=', 'payroll_deduction')]"/>
+                <filter name="probation" string="Probation / Last Chance"
+                        domain="[('sanction_type', 'in', ['probation', 'last_chance'])]"/>
+                <filter name="termination" string="Termination Recommendation"
+                        domain="[('sanction_type', '=', 'termination')]"/>
+                <group>
+                    <filter name="group_state" string="State"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_type" string="Sanction Type"
+                            context="{'group_by': 'sanction_type'}"/>
+                    <filter name="group_severity" string="Severity"
+                            context="{'group_by': 'severity'}"/>
+                    <filter name="group_department" string="Department"
+                            context="{'group_by': 'department_name'}"/>
+                    <filter name="group_decision_date" string="Decision Date"
+                            context="{'group_by': 'decision_date'}"/>
+                    <filter name="group_company" string="Company"
+                            context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_discipline_sanction_pivot" model="ir.ui.view">
+        <field name="name">onehr.discipline.sanction.pivot.enterprise</field>
+        <field name="model">onehr.discipline.sanction</field>
+        <field name="arch" type="xml">
+            <pivot string="Discipline Sanction Analytics">
+                <field name="sanction_type" type="row"/>
+                <field name="severity" type="row"/>
+                <field name="state" type="col"/>
+                <field name="payroll_deduction_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_discipline_sanction_graph" model="ir.ui.view">
+        <field name="name">onehr.discipline.sanction.graph.enterprise</field>
+        <field name="model">onehr.discipline.sanction</field>
+        <field name="arch" type="xml">
+            <graph string="Discipline Sanctions by Type" type="bar">
+                <field name="sanction_type"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_discipline_sanctions" model="ir.actions.act_window">
+        <field name="name">Sanctions / Decisions</field>
+        <field name="res_model">onehr.discipline.sanction</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_discipline_sanction_search"/>
+    </record>
+
+    <record id="action_onehr_discipline_sanction_analytics" model="ir.actions.act_window">
+        <field name="name">Sanction Analytics</field>
+        <field name="res_model">onehr.discipline.sanction</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_onehr_discipline_sanction_search"/>
+    </record>
+</odoo>

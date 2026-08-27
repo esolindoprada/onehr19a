@@ -1,0 +1,264 @@
+<odoo>
+    <record id="view_onehr_appraisal_score_list" model="ir.ui.view">
+        <field name="name">onehr.appraisal.score.list</field>
+        <field name="model">onehr.appraisal.score</field>
+        <field name="arch" type="xml">
+            <list string="Appraisal Scores"
+                  decoration-success="rating_state == 'submitted' or development_state == 'done'"
+                  decoration-warning="line_type == 'development' and development_state == 'in_progress'"
+                  decoration-muted="development_state == 'cancelled'">
+                <field name="sequence" widget="handle"/>
+                <field name="form_reference" optional="show"/>
+                <field name="employee_name" optional="show"/>
+                <field name="cycle_id" optional="show"/>
+                <field name="item_code"/>
+                <field name="line_type" widget="badge"/>
+                <field name="title"/>
+                <field name="rater_type" widget="badge"/>
+                <field name="reviewer_name" optional="show"/>
+                <field name="weight" optional="show"/>
+                <field name="target_value" optional="hide"/>
+                <field name="actual_value" optional="hide"/>
+                <field name="rating" optional="show"/>
+                <field name="normalized_score" optional="show"/>
+                <field name="rating_state" widget="badge" optional="show"/>
+                <field name="development_state" widget="badge" optional="hide"/>
+                <button name="action_submit_rating" type="object"
+                        string="Submit" icon="fa-check"
+                        invisible="rater_type == 'target' or line_type == 'development' or rating_state == 'submitted'"/>
+                <button name="action_open_parent_feedback" type="object"
+                        string="Feedback" icon="fa-comments"
+                        invisible="rater_type != 'target'"/>
+                <button name="action_push_to_learning" type="object"
+                        string="Learning" icon="fa-graduation-cap"
+                        invisible="line_type != 'development' or not learning_session_reference"
+                        groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_appraisal_score_form" model="ir.ui.view">
+        <field name="name">onehr.appraisal.score.form</field>
+        <field name="model">onehr.appraisal.score</field>
+        <field name="arch" type="xml">
+            <form string="Appraisal Score / Objective / Development">
+                <header>
+                    <button name="action_submit_rating" type="object"
+                            string="Submit Rating" class="btn-primary"
+                            invisible="rater_type == 'target' or line_type == 'development' or rating_state == 'submitted'"/>
+                    <button name="action_mark_development_planned" type="object"
+                            string="Plan"
+                            invisible="line_type != 'development' or development_state != 'draft'"/>
+                    <button name="action_start_development" type="object"
+                            string="Start"
+                            invisible="line_type != 'development' or development_state not in ('draft', 'planned')"/>
+                    <button name="action_complete_development" type="object"
+                            string="Complete" class="btn-primary"
+                            invisible="line_type != 'development' or development_state != 'in_progress'"/>
+                    <button name="action_cancel_development" type="object"
+                            string="Cancel Development"
+                            invisible="line_type != 'development' or development_state in ('done', 'cancelled')"
+                            groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+                    <button name="action_push_to_learning" type="object"
+                            string="Push to Learning" class="btn-secondary"
+                            invisible="line_type != 'development' or not learning_session_reference"
+                        groups="onehr_appraisal.group_onehr_appraisal_hr"/>
+                    <field name="rating_state" widget="statusbar"
+                           statusbar_visible="draft,submitted"
+                           invisible="line_type == 'development'"/>
+                    <field name="development_state" widget="statusbar"
+                           statusbar_visible="draft,planned,in_progress,done"
+                           invisible="line_type != 'development'"/>
+                </header>
+
+                <sheet>
+                    <widget name="web_ribbon" title="Template" bg_color="text-bg-info"
+                            invisible="not is_template"/>
+                    <div class="oe_title">
+                        <label for="title"/>
+                        <h1><field name="title"/></h1>
+                        <div class="text-muted"><field name="item_code"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Ownership">
+                            <field name="cycle_id" readonly="rating_state == 'submitted'"/>
+                            <field name="form_reference" readonly="1" invisible="is_template"/>
+                            <field name="form_id" invisible="is_template"
+                                   groups="onehr_appraisal.group_onehr_appraisal_manager"/>
+                            <field name="employee_name" readonly="1" invisible="is_template"/>
+                            <field name="is_template" readonly="1"/>
+                            <field name="parent_item_code" readonly="1"
+                                   invisible="not parent_title"/>
+                            <field name="parent_title" readonly="1"
+                                   invisible="not parent_title"/>
+                            <field name="parent_score_id" invisible="is_template"
+                                   groups="onehr_appraisal.group_onehr_appraisal_manager"/>
+                            <field name="line_type"/>
+                            <field name="rater_type"/>
+                            <field name="reviewer_name" readonly="1"
+                                   invisible="rater_type == 'target'"/>
+                            <field name="reviewer_employee_id"
+                                   groups="onehr_appraisal.group_onehr_appraisal_hr"
+                                   invisible="rater_type == 'target'"/>
+                        </group>
+                        <group string="Measurement">
+                            <field name="weight"/>
+                            <field name="target_value"
+                                   invisible="rater_type != 'target' or line_type == 'development'"/>
+                            <field name="actual_value"
+                                   invisible="rater_type != 'target' or line_type == 'development'"/>
+                            <field name="achievement_percent" readonly="1"
+                                   invisible="rater_type != 'target' or line_type == 'development'"/>
+                            <field name="rating"
+                                   invisible="rater_type == 'target' or line_type == 'development'"/>
+                            <field name="normalized_score" readonly="1"
+                                   invisible="rater_type == 'target' or line_type == 'development'"/>
+                            <field name="weighted_score" readonly="1"
+                                   invisible="rater_type == 'target' or line_type == 'development'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Description &amp; Feedback" name="feedback">
+                            <field name="description"/>
+                            <field name="comments"/>
+                        </page>
+
+                        <page string="Multi-rater Evidence" name="multi_rater"
+                              invisible="not rating_line_ids or parent_score_id">
+                            <div class="mb-2">
+                                <button name="action_open_parent_feedback" type="object"
+                                        string="Open Feedback Workspace"
+                                        class="btn-secondary"/>
+                            </div>
+                            <field name="rating_line_ids" readonly="1">
+                                <list>
+                                    <field name="rater_type" widget="badge"/>
+                                    <field name="reviewer_name"/>
+                                    <field name="rating"/>
+                                    <field name="normalized_score"/>
+                                    <field name="rating_state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Development" name="development"
+                              invisible="line_type != 'development'">
+                            <group>
+                                <field name="development_due_date"/>
+                                <field name="learning_session_reference"/>
+                                <field name="learning_reference" readonly="1"/>
+                            </group>
+                            <field name="development_note"/>
+                        </page>
+
+                        <page string="Evidence" name="evidence">
+                            <field name="evidence_attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_appraisal_score_search" model="ir.ui.view">
+        <field name="name">onehr.appraisal.score.search</field>
+        <field name="model">onehr.appraisal.score</field>
+        <field name="arch" type="xml">
+            <search string="Appraisal Scores">
+                <field name="title"/>
+                <field name="item_code"/>
+                <field name="employee_name"/>
+                <field name="form_reference"/>
+                <field name="cycle_id"/>
+                <field name="reviewer_name"/>
+                <filter name="templates" string="Templates"
+                        domain="[('is_template', '=', True)]"/>
+                <filter name="operational" string="Operational"
+                        domain="[('is_template', '=', False)]"/>
+                <separator/>
+                <filter name="objectives" string="Objectives / OKR"
+                        domain="[('line_type', '=', 'objective')]"/>
+                <filter name="kpi" string="KPI" domain="[('line_type', '=', 'kpi')]"/>
+                <filter name="competency" string="Competency Evidence"
+                        domain="[('line_type', '=', 'competency')]"/>
+                <filter name="development" string="Development"
+                        domain="[('line_type', '=', 'development')]"/>
+                <filter name="draft_rating" string="Rating Pending"
+                        domain="[('rater_type', '!=', 'target'), ('rating_state', '=', 'draft')]"/>
+                <filter name="submitted" string="Submitted Ratings"
+                        domain="[('rating_state', '=', 'submitted')]"/>
+                <group>
+                    <filter name="group_cycle" string="Cycle"
+                            context="{'group_by': 'cycle_id'}"/>
+                    <filter name="group_employee" string="Employee"
+                            context="{'group_by': 'employee_name'}"/>
+                    <filter name="group_grade" string="Grade"
+                            context="{'group_by': 'grade_name'}"/>
+                    <filter name="group_type" string="Line Type"
+                            context="{'group_by': 'line_type'}"/>
+                    <filter name="group_rater" string="Rater Type"
+                            context="{'group_by': 'rater_type'}"/>
+                    <filter name="group_state" string="Rating State"
+                            context="{'group_by': 'rating_state'}"/>
+                    <filter name="group_company" string="Company"
+                            context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_appraisal_score_pivot" model="ir.ui.view">
+        <field name="name">onehr.appraisal.score.pivot</field>
+        <field name="model">onehr.appraisal.score</field>
+        <field name="arch" type="xml">
+            <pivot string="Appraisal Score Analysis">
+                <field name="cycle_id" type="row"/>
+                <field name="line_type" type="row"/>
+                <field name="rater_type" type="col"/>
+                <field name="normalized_score" type="measure"/>
+                <field name="achievement_percent" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_appraisal_score_graph" model="ir.ui.view">
+        <field name="name">onehr.appraisal.score.graph</field>
+        <field name="model">onehr.appraisal.score</field>
+        <field name="arch" type="xml">
+            <graph string="Appraisal Score Analysis" type="bar">
+                <field name="rater_type"/>
+                <field name="normalized_score" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_appraisal_scores" model="ir.actions.act_window">
+        <field name="name">Score &amp; Objective Analysis</field>
+        <field name="res_model">onehr.appraisal.score</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_onehr_appraisal_score_search"/>
+        <field name="domain">[('is_template', '=', False)]</field>
+    </record>
+
+    <record id="action_onehr_appraisal_templates" model="ir.actions.act_window">
+        <field name="name">Objective / KPI Templates</field>
+        <field name="res_model">onehr.appraisal.score</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_appraisal_score_search"/>
+        <field name="domain">[('is_template', '=', True)]</field>
+        <field name="context">{'default_is_template': True, 'default_rater_type': 'target'}</field>
+    </record>
+
+    <record id="action_onehr_appraisal_my_peer_reviews" model="ir.actions.act_window">
+        <field name="name">My Peer Reviews</field>
+        <field name="res_model">onehr.appraisal.score</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_appraisal_score_search"/>
+        <field name="domain">[('rater_type', '=', 'peer'), ('reviewer_user_id', '=', uid)]</field>
+        <field name="context">{'search_default_draft_rating': 1}</field>
+    </record>
+
+</odoo>

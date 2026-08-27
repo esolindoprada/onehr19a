@@ -1,0 +1,300 @@
+<odoo>
+    <record id="view_onehr_succession_plan_list" model="ir.ui.view">
+        <field name="name">onehr.succession.plan.list</field>
+        <field name="model">onehr.succession.plan</field>
+        <field name="arch" type="xml">
+            <list string="Succession Plans"
+                  decoration-danger="state == 'active' and risk_index &gt;= 75"
+                  decoration-warning="state == 'active' and risk_index &gt;= 50 and risk_index &lt; 75"
+                  decoration-success="state == 'active' and coverage_percent &gt;= 100 and risk_index &lt; 50"
+                  decoration-muted="state in ('closed', 'cancelled')">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="position_name"/>
+                <field name="incumbent_name"/>
+                <field name="criticality" widget="badge"/>
+                <field name="successor_count"/>
+                <field name="ready_now_count"/>
+                <field name="coverage_percent"/>
+                <field name="bench_strength"/>
+                <field name="average_readiness"/>
+                <field name="risk_index"/>
+                <field name="review_date"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_candidates" type="object"
+                        string="Candidates" icon="fa-users"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_succession_plan_kanban" model="ir.ui.view">
+        <field name="name">onehr.succession.plan.kanban</field>
+        <field name="model">onehr.succession.plan</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="position_name"/>
+                <field name="criticality"/>
+                <field name="coverage_percent"/>
+                <field name="bench_strength"/>
+                <field name="risk_index"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong><field name="title"/></strong>
+                            <field name="state" widget="badge"/>
+                        </div>
+                        <div class="text-muted">
+                            <field name="position_name"/> · <field name="criticality" widget="badge"/>
+                        </div>
+                        <div class="mt-2">
+                            <strong>Coverage: </strong><field name="coverage_percent"/>%
+                        </div>
+                        <div>
+                            <strong>Bench: </strong><field name="bench_strength"/>%
+                        </div>
+                        <div>
+                            <strong>Risk: </strong><field name="risk_index"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_onehr_succession_plan_form" model="ir.ui.view">
+        <field name="name">onehr.succession.plan.form</field>
+        <field name="model">onehr.succession.plan</field>
+        <field name="arch" type="xml">
+            <form string="Succession Plan">
+                <header>
+                    <button name="action_propose" type="object"
+                            string="Propose" class="btn-primary"
+                            invisible="state != 'draft'"
+                            groups="onehr_career_succession.group_onehr_career_hrbp"/>
+                    <button name="action_approve" type="object"
+                            string="Approve" class="btn-primary"
+                            invisible="state != 'proposed'"
+                            groups="onehr_career_succession.group_onehr_talent_manager"/>
+                    <button name="action_activate" type="object"
+                            string="Activate" class="btn-primary"
+                            invisible="state != 'approved'"
+                            groups="onehr_career_succession.group_onehr_talent_manager"/>
+                    <button name="action_close" type="object"
+                            string="Close" class="btn-primary"
+                            invisible="state != 'active'"
+                            groups="onehr_career_succession.group_onehr_talent_manager"/>
+                    <button name="action_cancel" type="object"
+                            string="Cancel"
+                            invisible="state in ('closed', 'cancelled')"
+                            groups="onehr_career_succession.group_onehr_talent_manager"/>
+                    <button name="action_reset_draft" type="object"
+                            string="Reset to Draft"
+                            invisible="state != 'cancelled'"
+                            groups="onehr_career_succession.group_onehr_talent_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,proposed,approved,active,closed"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_candidates" type="object"
+                                class="oe_stat_button" icon="fa-users">
+                            <field name="successor_count" widget="statinfo"
+                                   string="Candidates"/>
+                        </button>
+                        <button name="action_open_position_requirements" type="object"
+                                class="oe_stat_button" icon="fa-bullseye">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Competency Matrix</span>
+                            </div>
+                        </button>
+                        <button name="action_print_succession_plan" type="object"
+                                class="oe_stat_button" icon="fa-file-pdf-o">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Print Plan</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="High Risk"
+                            bg_color="text-bg-danger"
+                            invisible="state != 'active' or risk_index &lt; 75"/>
+                    <widget name="web_ribbon" title="Covered"
+                            bg_color="text-bg-success"
+                            invisible="state != 'active' or coverage_percent &lt; 100 or risk_index &gt;= 75"/>
+
+                    <div class="oe_title">
+                        <label for="title"/>
+                        <h1><field name="title" placeholder="Country Finance Director Succession"/></h1>
+                        <div class="text-muted"><field name="name"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Critical Position">
+                            <field name="position_id" readonly="state == 'active'"/>
+                            <field name="position_code" readonly="1"/>
+                            <field name="incumbent_employee_id"
+                                   groups="onehr_career_succession.group_onehr_career_hrbp"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="state == 'active'"/>
+                            <field name="review_date"/>
+                        </group>
+                        <group string="Risk Profile">
+                            <field name="criticality"/>
+                            <field name="vacancy_risk"/>
+                            <field name="retirement_risk"/>
+                            <field name="business_impact"/>
+                            <field name="risk_index" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Succession Coverage">
+                        <group>
+                            <field name="target_coverage"/>
+                            <field name="successor_count" readonly="1"/>
+                            <field name="ready_now_count" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="coverage_percent" readonly="1"/>
+                            <field name="bench_strength" readonly="1"/>
+                            <field name="average_readiness" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 mb-2">
+                        <button name="action_open_candidates" type="object"
+                                string="Open Candidate Workspace"
+                                class="btn-secondary"/>
+                        <button name="action_open_position_requirements" type="object"
+                                string="Review Position Competencies"
+                                class="btn-secondary"/>
+                        <button name="action_print_succession_plan" type="object"
+                                string="Print Succession Plan"
+                                class="btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Successor Candidates">
+                            <field name="candidate_talent_ids"
+                                   widget="many2many_tags"/>
+                            <field name="primary_successor_id"/>
+                            <field name="candidate_talent_ids"
+                                   context="{'default_target_position_id': position_id}">
+                                <list>
+                                    <field name="employee_name"/>
+                                    <field name="pool_code"/>
+                                    <field name="high_potential"/>
+                                    <field name="performance_score"/>
+                                    <field name="potential_score"/>
+                                    <field name="competency_score"/>
+                                    <field name="readiness_score"/>
+                                    <field name="readiness_level" widget="badge"/>
+                                    <field name="retention_risk" widget="badge"/>
+                                    <button name="action_open_target_requirements"
+                                            type="object"
+                                            string="Gap" icon="fa-bullseye"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Strategy &amp; Mitigation">
+                            <field name="succession_strategy"/>
+                            <field name="development_actions"/>
+                            <field name="risk_mitigation"/>
+                            <field name="contingency_notes"/>
+                        </page>
+
+                        <page string="Evidence">
+                            <field name="evidence_attachment_ids"
+                                   widget="many2many_binary"/>
+                        </page>
+
+                        <page string="Governance">
+                            <group>
+                                <group>
+                                    <field name="proposed_by_id" readonly="1"/>
+                                    <field name="proposed_at" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="approved_by_id" readonly="1"/>
+                                    <field name="approved_at" readonly="1"/>
+                                    <field name="activated_at" readonly="1"/>
+                                    <field name="closed_at" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_succession_plan_search" model="ir.ui.view">
+        <field name="name">onehr.succession.plan.search</field>
+        <field name="model">onehr.succession.plan</field>
+        <field name="arch" type="xml">
+            <search string="Search Succession Plans">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="position_id"/>
+                <field name="incumbent_name"/>
+                <field name="department_id"/>
+                <filter name="active" string="Active"
+                        domain="[('state', '=', 'active')]"/>
+                <filter name="critical" string="Critical Positions"
+                        domain="[('criticality', '=', 'critical')]"/>
+                <filter name="high_risk" string="High Risk"
+                        domain="[('risk_index', '&gt;=', 75)]"/>
+                <filter name="undercovered" string="Under-covered"
+                        domain="[('coverage_percent', '&lt;', 100)]"/>
+                <separator/>
+                <filter name="group_state" string="Status"
+                        context="{'group_by': 'state'}"/>
+                <filter name="group_department" string="Department"
+                        context="{'group_by': 'department_id'}"/>
+                <filter name="group_criticality" string="Criticality"
+                        context="{'group_by': 'criticality'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_succession_plan_pivot" model="ir.ui.view">
+        <field name="name">onehr.succession.plan.pivot</field>
+        <field name="model">onehr.succession.plan</field>
+        <field name="arch" type="xml">
+            <pivot string="Succession Coverage Matrix">
+                <field name="department_id" type="row"/>
+                <field name="criticality" type="col"/>
+                <field name="coverage_percent" type="measure"/>
+                <field name="bench_strength" type="measure"/>
+                <field name="average_readiness" type="measure"/>
+                <field name="risk_index" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_succession_plan_graph" model="ir.ui.view">
+        <field name="name">onehr.succession.plan.graph</field>
+        <field name="model">onehr.succession.plan</field>
+        <field name="arch" type="xml">
+            <graph string="Succession Risk Analysis" type="bar">
+                <field name="department_id"/>
+                <field name="risk_index" type="measure"/>
+                <field name="coverage_percent" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_succession_plan" model="ir.actions.act_window">
+        <field name="name">Succession Plans</field>
+        <field name="res_model">onehr.succession.plan</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_onehr_succession_plan_search"/>
+    </record>
+</odoo>

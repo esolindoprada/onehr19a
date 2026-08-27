@@ -1,0 +1,56 @@
+<odoo>
+    <record id="module_category_onehr_job_description" model="ir.module.category">
+        <field name="name">OneHR Job Description</field>
+        <field name="description">Job Description governance, versioning and publication.</field>
+        <field name="sequence">52</field>
+    </record>
+
+    <record id="privilege_onehr_job_description" model="res.groups.privilege">
+        <field name="name">OneHR Job Description</field>
+        <field name="description">Job Description reader, editor and approval authority.</field>
+        <field name="category_id" ref="module_category_onehr_job_description"/>
+        <field name="sequence">52</field>
+    </record>
+
+    <record id="group_onehr_jd_reader" model="res.groups">
+        <field name="name">JD Reader</field>
+        <field name="privilege_id" ref="privilege_onehr_job_description"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_security.group_onehr_security_user'))
+        ]"/>
+        <field name="comment">Reads only current published Job Descriptions inside allowed companies.</field>
+    </record>
+
+    <record id="group_onehr_jd_editor" model="res.groups">
+        <field name="name">JD HRBP / Comp&amp;Ben Editor</field>
+        <field name="privilege_id" ref="privilege_onehr_job_description"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_job_description.group_onehr_jd_reader')),
+            Command.link(ref('hr.group_hr_user'))
+        ]"/>
+        <field name="comment">Creates and maintains JD masters/templates and Draft content inside allowed companies.</field>
+    </record>
+
+    <record id="group_onehr_jd_approver" model="res.groups">
+        <field name="name">JD Approver</field>
+        <field name="privilege_id" ref="privilege_onehr_job_description"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_job_description.group_onehr_jd_editor')),
+            Command.link(ref('hr.group_hr_manager'))
+        ]"/>
+        <field name="comment">Approves, publishes and governs current JD evidence under the configured approval matrix.</field>
+    </record>
+
+    <record id="group_onehr_jd_admin" model="res.groups">
+        <field name="name">JD Administrator</field>
+        <field name="privilege_id" ref="privilege_onehr_job_description"/>
+        <field name="sequence">40</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_job_description.group_onehr_jd_approver'))
+        ]"/>
+        <field name="comment">Administrative JD authority including controlled archival and deletion of unapproved drafts.</field>
+    </record>
+</odoo>

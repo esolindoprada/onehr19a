@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_recruitment_source_metric_list" model="ir.ui.view">
+        <field name="name">onehr.recruitment.source.metric.list</field>
+        <field name="model">onehr.recruitment.source.metric</field>
+        <field name="arch" type="xml">
+            <list string="Recruitment Source Metrics" create="0" edit="0" delete="0">
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="job_id"/>
+                <field name="source_id"/>
+                <field name="application_count" sum="Applications"/>
+                <field name="interviewed_count" sum="Interviewed"/>
+                <field name="offered_count" sum="Offered"/>
+                <field name="accepted_offer_count" sum="Accepted"/>
+                <field name="hired_count" sum="Hired"/>
+                <field name="offer_acceptance_rate" widget="percentage"/>
+                <field name="hire_conversion_rate" widget="percentage"/>
+                <field name="average_time_to_hire_days"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_recruitment_source_metric_form" model="ir.ui.view">
+        <field name="name">onehr.recruitment.source.metric.form</field>
+        <field name="model">onehr.recruitment.source.metric</field>
+        <field name="arch" type="xml">
+            <form string="Recruitment Source Metric" create="0" edit="0" delete="0">
+                <sheet>
+                    <widget name="web_ribbon" title="Immutable Snapshot" bg_color="text-bg-info"/>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Snapshot Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                            <field name="job_id"/>
+                            <field name="source_id"/>
+                        </group>
+                        <group string="Funnel">
+                            <field name="application_count"/>
+                            <field name="interviewed_count"/>
+                            <field name="offered_count"/>
+                            <field name="accepted_offer_count"/>
+                            <field name="hired_count"/>
+                        </group>
+                    </group>
+                    <group string="Efficiency">
+                        <field name="offer_acceptance_rate" widget="percentage"/>
+                        <field name="hire_conversion_rate" widget="percentage"/>
+                        <field name="average_time_to_hire_days"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_recruitment_source_metric_search" model="ir.ui.view">
+        <field name="name">onehr.recruitment.source.metric.search</field>
+        <field name="model">onehr.recruitment.source.metric</field>
+        <field name="arch" type="xml">
+            <search string="Search Recruitment Source Metrics">
+                <field name="job_id"/>
+                <field name="source_id"/>
+                <filter name="period" string="Period End" date="period_end"/>
+                <group>
+                    <filter name="group_job" string="Job" context="{'group_by': 'job_id'}"/>
+                    <filter name="group_source" string="Source" context="{'group_by': 'source_id'}"/>
+                    <filter name="group_period" string="Period End" context="{'group_by': 'period_end:month'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_recruitment_source_metric_pivot" model="ir.ui.view">
+        <field name="name">onehr.recruitment.source.metric.pivot</field>
+        <field name="model">onehr.recruitment.source.metric</field>
+        <field name="arch" type="xml">
+            <pivot string="Recruitment Funnel by Source">
+                <field name="source_id" type="row"/>
+                <field name="job_id" type="col"/>
+                <field name="application_count" type="measure"/>
+                <field name="hired_count" type="measure"/>
+                <field name="average_time_to_hire_days" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_recruitment_source_metric_graph" model="ir.ui.view">
+        <field name="name">onehr.recruitment.source.metric.graph</field>
+        <field name="model">onehr.recruitment.source.metric</field>
+        <field name="arch" type="xml">
+            <graph string="Recruitment Source Effectiveness" type="bar">
+                <field name="source_id"/>
+                <field name="application_count" type="measure"/>
+                <field name="hired_count" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_recruitment_source_metric" model="ir.actions.act_window">
+        <field name="name">Recruitment Source Metrics</field>
+        <field name="res_model">onehr.recruitment.source.metric</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_recruitment_source_metric_search"/>
+        <field name="help" type="html"><p>Use the <b>Build 30-Day Source Snapshot</b> button on an Odoo Job Position to create an idempotent ED4 snapshot.</p></field>
+    </record>
+</odoo>

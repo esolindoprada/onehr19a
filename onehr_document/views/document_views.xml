@@ -1,0 +1,408 @@
+<odoo>
+    <!-- Logical Document -->
+    <record id="view_document_list" model="ir.ui.view">
+        <field name="name">onehr.document.list.enterprise</field>
+        <field name="model">onehr.document</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                  decoration-success="state == 'active'"
+                  decoration-muted="state == 'archived'">
+                <field name="document_number"/>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="employee_number" optional="show"/>
+                <field name="category_id"/>
+                <field name="responsible_user_id" optional="show"/>
+                <field name="source_display_name" optional="hide" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="version_count"/>
+                <field name="signed_version_count" optional="show"/>
+                <field name="expiring_version_count" optional="show"/>
+                <field name="valid_from" optional="hide"/>
+                <field name="valid_to" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <button name="action_open_current_version" type="object" string="Current" icon="fa-external-link" invisible="version_count == 0"/>
+                <button name="action_new_version" type="object" string="New Version" icon="fa-plus" groups="onehr_document.group_onehr_document_officer" invisible="state == 'archived'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_document_form" model="ir.ui.view">
+        <field name="name">onehr.document.form.enterprise</field>
+        <field name="model">onehr.document</field>
+        <field name="arch" type="xml">
+            <form string="HR Document">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            groups="onehr_document.group_onehr_document_officer"
+                            invisible="state != 'draft'"/>
+                    <button name="action_new_version" type="object" string="New Version" class="btn-primary"
+                            groups="onehr_document.group_onehr_document_officer"
+                            invisible="state == 'archived'"/>
+                    <button name="action_generate_from_template" type="object" string="Generate from Template"
+                            groups="onehr_document.group_onehr_document_officer"
+                            invisible="state == 'archived'"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="onehr_document.group_onehr_document_manager"
+                            invisible="state == 'archived'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_open_versions" type="object" icon="fa-copy">
+                            <field name="version_count" widget="statinfo" string="Versions"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_open_current_version" type="object" icon="fa-file-pdf-o" invisible="not current_version_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Current Version</span></div>
+                        </button>
+                        <button class="oe_stat_button" name="action_open_employee" type="object" icon="fa-user" invisible="not employee_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Employee</span></div>
+                        </button>
+                        <button class="oe_stat_button" name="action_open_source" type="object" icon="fa-link" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance" invisible="not source_model_id or not source_res_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Source Record</span></div>
+                        </button>
+                        <button class="oe_stat_button" name="action_open_esign_transactions" type="object" icon="fa-pencil-square-o" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance">
+                            <field name="esign_transaction_count" widget="statinfo" string="E-Sign"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-secondary" invisible="state != 'archived'"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="document_number" class="oe_inline" readonly="1"/></div>
+                    </div>
+                    <group>
+                        <group string="Document Ownership">
+                            <field name="company_id" groups="base.group_multi_company" readonly="version_count &gt; 0"/>
+                            <field name="employee_id" readonly="version_count &gt; 0"/>
+                            <field name="employee_number" readonly="1" invisible="not employee_id"/>
+                            <field name="category_id" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]" readonly="version_count &gt; 0"/>
+                            <field name="responsible_user_id"/>
+                        </group>
+                        <group string="Business Validity">
+                            <field name="valid_from" readonly="version_count &gt; 0"/>
+                            <field name="valid_to"/>
+                            <field name="template_id" readonly="1" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance"/>
+                            <field name="keywords" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3" invisible="state == 'archived'">
+                        <button name="action_new_version" type="object" string="Create Document Version"
+                                class="btn-secondary" icon="fa-copy"
+                                groups="onehr_document.group_onehr_document_officer"/>
+                        <button name="action_generate_from_template" type="object" string="Generate Controlled Output"
+                                class="btn-secondary" icon="fa-magic"
+                                groups="onehr_document.group_onehr_document_officer"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Versions">
+                            <field name="version_ids" readonly="state == 'archived'">
+                                <list decoration-info="state == 'draft'"
+                                      decoration-warning="state in ('issued', 'signature_pending')"
+                                      decoration-success="state == 'signed'"
+                                      decoration-danger="state == 'expired'"
+                                      decoration-muted="state in ('archived', 'superseded')">
+                                    <field name="version"/>
+                                    <field name="effective_from"/>
+                                    <field name="effective_to" optional="hide"/>
+                                    <field name="issue_date"/>
+                                    <field name="expiry_date"/>
+                                    <field name="expiry_status" widget="badge"/>
+                                    <field name="template_version_id" optional="show" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance"/>
+                                    <field name="file_name" optional="show"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_document" type="object" string="Document" icon="fa-external-link"/>
+                                    <button name="action_print_pdf" type="object" string="Print" icon="fa-print" invisible="not rendered_content_html and not file_data"/>
+                                    <button name="action_request_signature" type="object" string="Sign" icon="fa-pencil" groups="onehr_document.group_onehr_document_manager" invisible="state not in ('issued', 'signature_pending')"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Source &amp; Integration" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance">
+                            <group>
+                                <field name="source_model_id" readonly="version_count &gt; 0"/>
+                                <field name="source_res_id" readonly="version_count &gt; 0"/>
+                                <field name="source_display_name" readonly="1"/>
+                            </group>
+                            <p class="text-muted">
+                                The source link is metadata only. Opening it re-checks normal ORM read access; OneHR Document never bypasses source-model security.
+                            </p>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_document_search" model="ir.ui.view">
+        <field name="name">onehr.document.search.enterprise</field>
+        <field name="model">onehr.document</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="document_number"/>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="employee_number"/>
+                <field name="category_id"/>
+                <field name="responsible_user_id"/>
+                <field name="source_display_name" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance"/>
+                <field name="keywords" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance"/>
+                <field name="company_id"/>
+                <field name="state"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="archived" string="Archived" domain="[('state', '=', 'archived')]"/>
+                <filter name="employee_owned" string="Employee Owned" domain="[('employee_id', '!=', False)]"/>
+                <filter name="business_linked" string="Business Linked" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance" domain="[('source_model_id', '!=', False), ('source_res_id', '!=', False)]"/>
+                <group>
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_responsible" string="Responsible" context="{'group_by': 'responsible_user_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_documents" model="ir.actions.act_window">
+        <field name="name">HR Documents</field>
+        <field name="res_model">onehr.document</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_document_search"/>
+    </record>
+
+    <!-- Document Version -->
+    <record id="view_document_version_list" model="ir.ui.view">
+        <field name="name">onehr.document.version.list.enterprise</field>
+        <field name="model">onehr.document.version</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                  decoration-warning="state in ('issued', 'signature_pending')"
+                  decoration-success="state == 'signed'"
+                  decoration-danger="state == 'expired'"
+                  decoration-muted="state in ('archived', 'superseded')">
+                <field name="document_id"/>
+                <field name="version"/>
+                <field name="employee_id"/>
+                <field name="category_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="effective_from"/>
+                <field name="issue_date"/>
+                <field name="expiry_date"/>
+                <field name="days_to_expiry" optional="show"/>
+                <field name="expiry_status" widget="badge"/>
+                <field name="file_name" optional="show"/>
+                <field name="esign_transaction_count" optional="show" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance"/>
+                <field name="state" widget="badge"/>
+                <button name="action_print_pdf" type="object" string="Print" icon="fa-print" invisible="not rendered_content_html and not file_data"/>
+                <button name="action_request_signature" type="object" string="Sign" icon="fa-pencil" groups="onehr_document.group_onehr_document_manager" invisible="state not in ('issued', 'signature_pending')"/>
+                <button name="action_open_document" type="object" string="Document" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_document_version_form" model="ir.ui.view">
+        <field name="name">onehr.document.version.form.enterprise</field>
+        <field name="model">onehr.document.version</field>
+        <field name="arch" type="xml">
+            <form string="Document Version">
+                <header>
+                    <button name="action_issue" type="object" string="Issue" class="btn-primary"
+                            groups="onehr_document.group_onehr_document_officer"
+                            invisible="state != 'draft'"/>
+                    <button name="action_store_pdf_snapshot" type="object" string="Store PDF Snapshot"
+                            groups="onehr_document.group_onehr_document_officer"
+                            invisible="state != 'draft' or not rendered_content_html"/>
+                    <button name="action_request_signature" type="object" string="Request Signature" class="btn-primary"
+                            groups="onehr_document.group_onehr_document_manager"
+                            invisible="state not in ('issued', 'signature_pending')"/>
+                    <button name="action_mark_signed" type="object" string="Mark Signed"
+                            groups="onehr_document.group_onehr_document_manager"
+                            invisible="state not in ('issued', 'signature_pending')"/>
+                    <button name="action_create_successor" type="object" string="Create Successor"
+                            groups="onehr_document.group_onehr_document_officer"
+                            invisible="state == 'draft'"/>
+                    <button name="action_expire" type="object" string="Expire"
+                            groups="onehr_document.group_onehr_document_officer"
+                            invisible="state in ('draft', 'expired', 'archived', 'superseded')"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="onehr_document.group_onehr_document_manager"
+                            invisible="state in ('draft', 'archived')"/>
+                    <button name="action_print_pdf" type="object" string="Print PDF"
+                            invisible="not rendered_content_html and not file_data"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,issued,signature_pending,signed,expired,archived,superseded"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_open_document" type="object" icon="fa-folder-open">
+                            <div class="o_stat_info"><span class="o_stat_text">Document</span></div>
+                        </button>
+                        <button class="oe_stat_button" name="action_open_esign_transactions" type="object" icon="fa-pencil-square-o" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance">
+                            <field name="esign_transaction_count" widget="statinfo" string="E-Sign"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Expired" bg_color="text-bg-danger" invisible="state != 'expired'"/>
+                    <widget name="web_ribbon" title="Signed" bg_color="text-bg-success" invisible="state != 'signed'"/>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <div>Version <field name="version" class="oe_inline" readonly="state != 'draft'"/></div>
+                    </div>
+                    <group>
+                        <group string="Document Identity">
+                            <field name="document_id" readonly="state != 'draft'"/>
+                            <field name="employee_id" readonly="1"/>
+                            <field name="category_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="responsible_user_id" readonly="1"/>
+                            <field name="template_version_id" readonly="1" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance"/>
+                        </group>
+                        <group string="Effective / Expiry">
+                            <field name="effective_from" readonly="state != 'draft'"/>
+                            <field name="effective_to" readonly="state != 'draft'"/>
+                            <field name="issue_date" readonly="state != 'draft'"/>
+                            <field name="expiry_date" readonly="state != 'draft'"/>
+                            <field name="reminder_date" readonly="1"/>
+                            <field name="grace_end_date" readonly="1"/>
+                            <field name="retention_due_date" readonly="1"/>
+                            <field name="expiry_status" widget="badge" readonly="1"/>
+                            <field name="days_to_expiry" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3" invisible="not expiry_date or state in ('expired', 'archived', 'superseded')">
+                        <button name="action_schedule_expiry_reminder" type="object"
+                                string="Schedule Expiry Reminder"
+                                class="btn-secondary" icon="fa-clock-o"
+                                groups="onehr_document.group_onehr_document_officer"
+                                invisible="reminder_activity_id"/>
+                        <button name="action_print_pdf" type="object"
+                                string="Preview / Print Controlled PDF"
+                                class="btn-secondary" icon="fa-print"
+                                invisible="not rendered_content_html and not file_data"/>
+                    </div>
+
+                    <notebook>
+                        <page string="File">
+                            <group>
+                                <field name="file_data" filename="file_name" readonly="state != 'draft'"/>
+                                <field name="file_name" readonly="state != 'draft'"/>
+                                <field name="mimetype" readonly="state != 'draft'"/>
+                                <field name="file_checksum" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Generated Content" invisible="not rendered_content_html">
+                            <group>
+                                <field name="rendered_subject" readonly="1"/>
+                            </group>
+                            <field name="rendered_content_html" readonly="1"/>
+                        </page>
+                        <page string="Issue &amp; Signature Evidence" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance">
+                            <group>
+                                <group>
+                                    <field name="issued_at" readonly="1"/>
+                                    <field name="issued_by_id" readonly="1"/>
+                                    <field name="signed_at" readonly="1"/>
+                                    <field name="signed_by_id" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="last_reminder_at" readonly="1"/>
+                                    <field name="reminder_activity_id" readonly="1"/>
+                                    <field name="expiry_reason" readonly="1"/>
+                                </group>
+                            </group>
+                            <field name="esign_transaction_ids" readonly="1">
+                                <list decoration-success="state == 'signed'"
+                                      decoration-danger="state in ('rejected', 'error')"
+                                      decoration-muted="state == 'cancelled'">
+                                    <field name="correlation_id"/>
+                                    <field name="provider_key"/>
+                                    <field name="provider_reference"/>
+                                    <field name="signer_name"/>
+                                    <field name="signer_email"/>
+                                    <field name="requested_at"/>
+                                    <field name="completed_at"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_document_version" type="object" string="Version" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_document_version_search" model="ir.ui.view">
+        <field name="name">onehr.document.version.search.enterprise</field>
+        <field name="model">onehr.document.version</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="document_id"/>
+                <field name="employee_id"/>
+                <field name="category_id"/>
+                <field name="template_version_id" groups="onehr_document.group_onehr_document_officer,onehr_document.group_onehr_document_compliance"/>
+                <field name="company_id"/>
+                <field name="issue_date"/>
+                <field name="expiry_date"/>
+                <field name="state"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="issued" string="Issued" domain="[('state', '=', 'issued')]"/>
+                <filter name="signature_pending" string="Signature Pending" domain="[('state', '=', 'signature_pending')]"/>
+                <filter name="signed" string="Signed" domain="[('state', '=', 'signed')]"/>
+                <filter name="expired" string="Expired" domain="[('state', '=', 'expired')]"/>
+                <group>
+                    <filter name="group_document" string="Document" context="{'group_by': 'document_id'}"/>
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_expiry_month" string="Expiry Month" context="{'group_by': 'expiry_date:month'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_document_versions" model="ir.actions.act_window">
+        <field name="name">Document Versions</field>
+        <field name="res_model">onehr.document.version</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_document_version_search"/>
+    </record>
+
+    <record id="view_document_version_pivot" model="ir.ui.view">
+        <field name="name">onehr.document.version.pivot.enterprise</field>
+        <field name="model">onehr.document.version</field>
+        <field name="arch" type="xml">
+            <pivot string="Document Validity Analysis">
+                <field name="category_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="company_id" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_document_version_graph" model="ir.ui.view">
+        <field name="name">onehr.document.version.graph.enterprise</field>
+        <field name="model">onehr.document.version</field>
+        <field name="arch" type="xml">
+            <graph string="Document Version Status" type="bar">
+                <field name="category_id"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_document_expiry_dashboard" model="ir.actions.act_window">
+        <field name="name">Expiry &amp; Retention Dashboard</field>
+        <field name="res_model">onehr.document.version</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="domain">[('expiry_date', '!=', False), ('state', 'not in', ['archived', 'superseded'])]</field>
+        <field name="search_view_id" ref="view_document_version_search"/>
+        <field name="context">{'search_default_group_expiry_month': 1}</field>
+    </record>
+</odoo>

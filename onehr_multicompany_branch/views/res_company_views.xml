@@ -1,0 +1,89 @@
+<odoo>
+    <record id="view_company_form_onehr_branch" model="ir.ui.view">
+        <field name="name">res.company.form.onehr.branch.enterprise</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_onehr_branches"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-sitemap"
+                    groups="base.group_system"
+                    invisible="not id"
+                >
+                    <field name="onehr_branch_count" widget="statinfo" string="Branches"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//sheet/notebook" position="inside">
+                    <page
+                        string="OneHR Branch"
+                        name="onehr_branch_configuration"
+                        groups="base.group_system"
+                    >
+                        <group>
+                            <group string="Branch Policy">
+                                <field name="onehr_branch_enabled"/>
+                                <field
+                                    name="onehr_default_branch_id"
+                                    domain="[('company_id', '=', id), ('active', '=', True)]"
+                                    invisible="not onehr_branch_enabled"
+                                />
+                            </group>
+                            <group string="Operational Coverage">
+                                <field name="onehr_branch_count" readonly="1"/>
+                                <field name="onehr_effective_branch_count" readonly="1"/>
+                            </group>
+                        </group>
+                        <div class="d-flex gap-2 my-3">
+                            <button
+                                name="action_open_onehr_branches"
+                                type="object"
+                                string="Open Branch Master"
+                                class="btn-primary"
+                                icon="fa-sitemap"
+                                invisible="not id"
+                            />
+                        </div>
+                    </page>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_company_tree_onehr_branch" model="ir.ui.view">
+        <field name="name">res.company.list.onehr.branch.enterprise</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="onehr_branch_enabled" string="OneHR Branch" optional="show"/>
+                <field name="onehr_default_branch_id" string="Default Branch" optional="show"/>
+                <field name="onehr_effective_branch_count" string="Effective Branches" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_company_search_onehr_branch" model="ir.ui.view">
+        <field name="name">res.company.search.onehr.branch.enterprise</field>
+        <field name="model">res.company</field>
+        <field name="arch" type="xml">
+            <search string="Companies">
+                <field name="name"/>
+                <field name="onehr_default_branch_id" string="Default Branch"/>
+                <filter name="onehr_branch_enabled" string="Branch Scope Enabled" domain="[('onehr_branch_enabled', '=', True)]"/>
+                <filter name="onehr_branch_disabled" string="Branch Scope Disabled" domain="[('onehr_branch_enabled', '=', False)]"/>
+                <group>
+                    <filter name="group_onehr_default_branch" string="Default Branch" context="{'group_by': 'onehr_default_branch_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="base.action_res_company_form" model="ir.actions.act_window">
+        <field name="search_view_id" ref="view_company_search_onehr_branch"/>
+    </record>
+
+</odoo>

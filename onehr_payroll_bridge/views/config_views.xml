@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_payroll_bridge_config_list" model="ir.ui.view">
+        <field name="name">onehr.payroll.bridge.config.list.enterprise</field>
+        <field name="model">onehr.payroll.bridge.config</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="external_system_code"/>
+                <field name="provider_mode" widget="badge"/>
+                <field name="currency_id"/>
+                <field name="include_attendance" optional="show"/>
+                <field name="include_overtime" optional="show"/>
+                <field name="include_timeoff" optional="show"/>
+                <field name="include_assignment_costing" optional="hide"/>
+                <field name="require_full_reconciliation" optional="show"/>
+                <field name="export_schedule_enabled" optional="show"/>
+                <field name="export_schedule_day" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="active" widget="boolean"/>
+                <button name="action_validate_configuration" type="object" string="Validate" icon="fa-check-circle"
+                        groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                <button name="action_open_latest_export" type="object" string="Latest Export" icon="fa-external-link"
+                        groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_payroll_bridge_config_form" model="ir.ui.view">
+        <field name="name">onehr.payroll.bridge.config.form.enterprise</field>
+        <field name="model">onehr.payroll.bridge.config</field>
+        <field name="arch" type="xml">
+            <form string="Payroll Bridge Configuration">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_exports" type="object" class="oe_stat_button" icon="fa-upload"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager">
+                            <field name="export_count" widget="statinfo" string="Exports"/>
+                        </button>
+                        <button name="action_open_imports" type="object" class="oe_stat_button" icon="fa-download"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager">
+                            <field name="import_count" widget="statinfo" string="Imports"/>
+                        </button>
+                        <button name="action_open_latest_export" type="object" class="oe_stat_button" icon="fa-clock-o"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Latest Export</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-secondary" invisible="active"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Monthly Payroll Exchange"/></h1>
+                        <div class="text-muted">
+                            <field name="code" placeholder="PAYROLL-ID"/>
+                            <span> · </span>
+                            <field name="external_system_code"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Bridge Identity">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="provider_mode"/>
+                            <field name="external_system_code"/>
+                            <field name="external_endpoint_reference"
+                                   invisible="provider_mode == 'csv_manual'"/>
+                            <field name="currency_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Operational Policy">
+                            <field name="include_work_entries"/>
+                            <field name="include_attendance"/>
+                            <field name="require_posted_attendance" invisible="not include_attendance"/>
+                            <field name="include_overtime"/>
+                            <field name="include_timeoff"/>
+                            <field name="include_assignment_costing"/>
+                            <field name="require_full_reconciliation"/>
+                            <field name="validate_net_equation"/>
+                            <field name="net_reconciliation_tolerance" invisible="not validate_net_equation"/>
+                        </group>
+                    </group>
+
+                    <group string="Operational Actions">
+                        <button name="action_validate_configuration" type="object"
+                                string="Validate Mapping &amp; Policy" class="oe_highlight"
+                                icon="fa-check-circle"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                        <button name="action_prepare_previous_month_export" type="object"
+                                string="Prepare Previous Month Export"
+                                icon="fa-calendar-plus-o"
+                                groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                    </group>
+
+                    <notebook>
+                        <page string="CSV Exchange" name="csv_exchange">
+                            <group>
+                                <group string="CSV Format">
+                                    <field name="csv_delimiter"/>
+                                    <field name="csv_encoding"/>
+                                    <field name="decimal_separator"/>
+                                </group>
+                                <group string="Monthly Draft Scheduler">
+                                    <field name="export_schedule_enabled"/>
+                                    <field name="export_schedule_day" invisible="not export_schedule_enabled"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Field Mapping" name="field_mapping">
+                            <group>
+                                <field name="export_field_mapping" placeholder='{"employee_number": "employee_no", "worked_hours": "worked_hours"}'/>
+                                <field name="import_field_mapping" placeholder='{"employee_number": "employee_no", "external_reference": "payroll_ref", "net_amount": "net"}'/>
+                            </group>
+                        </page>
+
+                        <page string="Salary Structure Mapping" name="salary_structure_mapping">
+                            <group>
+                                <field name="grade_structure_mapping" placeholder='{"G7": "MONTHLY-MGR"}'/>
+                                <field name="position_structure_mapping" placeholder='{"POS-001": "EXECUTIVE"}'/>
+                            </group>
+                            <div class="alert alert-info" role="alert">
+                                Position mapping takes precedence over grade mapping. These are external payroll structure codes only;
+                                OneHR Payroll Bridge does not own salary rules or payroll calculations.
+                            </div>
+                        </page>
+
+                        <page string="Recent Exports" name="recent_exports">
+                            <field name="export_ids">
+                                <list create="0" edit="0" delete="0"
+                                      decoration-info="state == 'draft'"
+                                      decoration-warning="state == 'posted'"
+                                      decoration-success="state == 'reconciled'"
+                                      decoration-muted="state == 'cancelled'">
+                                    <field name="name"/>
+                                    <field name="period_start"/>
+                                    <field name="period_end"/>
+                                    <field name="employee_count"/>
+                                    <field name="worked_hours" sum="Worked Hours"/>
+                                    <field name="overtime_hours" sum="Overtime Hours"/>
+                                    <field name="reconciliation_accuracy" widget="percentage"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_download_export" type="object" string="CSV" icon="fa-download"
+                                            invisible="not generated"/>
+                                    <button name="action_open_imports" type="object" string="Results" icon="fa-external-link"
+                                            invisible="state == 'draft'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_payroll_bridge_config_search" model="ir.ui.view">
+        <field name="name">onehr.payroll.bridge.config.search.enterprise</field>
+        <field name="model">onehr.payroll.bridge.config</field>
+        <field name="arch" type="xml">
+            <search string="Payroll Bridge Configurations">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="external_system_code"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <separator/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="scheduled" string="Scheduled" domain="[('export_schedule_enabled', '=', True)]"/>
+                <filter name="manual_csv" string="CSV / Manual" domain="[('provider_mode', '=', 'csv_manual')]"/>
+                <separator/>
+                <group>
+                    <filter name="group_provider" string="Provider Mode" context="{'group_by': 'provider_mode'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_payroll_bridge_configs" model="ir.actions.act_window">
+        <field name="name">Payroll Bridge Configurations</field>
+        <field name="res_model">onehr.payroll.bridge.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_payroll_bridge_config_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+</odoo>

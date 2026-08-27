@@ -1,0 +1,45 @@
+PASS: HARD_GATE_0 PROJECT/ADDON identity
+PASS: Odoo 19 manifest version
+PASS: hard dependencies exactly match OneHR Time Off product baseline
+PASS: all manifest data files exist
+PASS: all Python sources compile
+PASS: all XML files parse
+PASS: XML external ids unique (53)
+PASS: HARD_GATE_4 exact three Time Off product-baseline persistent models
+PASS: no legacy _sql_constraints pattern
+PASS: no business sudo() bypass in Time Off model source
+PASS: Odoo 19 models.Constraint pattern present
+PASS: no invented leave balance/accrual/carry-over/wizard business model
+PASS: HARD_GATE_8 List/Form/Search coverage for all three custom models
+PASS: enterprise UI marker: statusbar
+PASS: enterprise UI marker: smart buttons
+PASS: enterprise UI marker: body form actions
+PASS: enterprise UI marker: One2many row actions
+PASS: enterprise UI marker: chatter
+PASS: enterprise UI marker: calendar
+PASS: enterprise UI marker: pivot
+PASS: enterprise UI marker: graph
+PASS: least-privilege ACL: 9 rows, no base.group_user custom CRUD
+PASS: own/team/company record-rule partition present
+PASS: business contract marker: accrual scheduler
+PASS: business contract marker: carry-over scheduler
+PASS: business contract marker: idempotency source key
+PASS: business contract marker: workflow approval hook
+PASS: business contract marker: frozen entitlement reservation
+PASS: business contract marker: team conflict governance
+PASS: business contract marker: attendance soft hook
+PASS: business contract marker: payroll soft payload
+PASS: business contract marker: mass allocation persistent batch
+PASS: business contract marker: grade/tenure eligibility
+PASS: ir.actions.report Odoo 19 field contract uses group_ids
+PASS: runtime test source inventory exactly 20 methods
+PASS: all mandatory Guardrail/completeness documentation present
+
+CUSTOM_PERSISTENT_MODELS: 3
+ACL_ROWS: 9
+XML_EXTERNAL_IDS: 53
+RUNTIME_TEST_METHODS: 20
+SOURCE_ACCEPTANCE_FAIL_COUNT: 0
+ONEHR_TIMEOFF_DIRECT_FULL_SOURCE_ACCEPTANCE: PASS
+WINDOWS_RUNTIME_ACCEPTANCE: PENDING
+ONEHR_TIMEOFF_MOVE_FORWARD_READY: NO

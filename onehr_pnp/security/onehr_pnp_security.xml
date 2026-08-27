@@ -1,0 +1,59 @@
+<odoo>
+    <record id="module_category_onehr_pnp" model="ir.module.category">
+        <field name="name">OneHR Policies &amp; Procedures</field>
+        <field name="description">Enterprise policy governance, publication, acknowledgement and compliance evidence.</field>
+        <field name="sequence">54</field>
+    </record>
+
+    <record id="privilege_onehr_pnp" model="res.groups.privilege">
+        <field name="name">OneHR Policies &amp; Procedures</field>
+        <field name="description">Policy reader, owner, compliance and administration authority.</field>
+        <field name="category_id" ref="module_category_onehr_pnp"/>
+        <field name="sequence">54</field>
+    </record>
+
+    <record id="group_onehr_pnp_reader" model="res.groups">
+        <field name="name">Policy Reader</field>
+        <field name="privilege_id" ref="privilege_onehr_pnp"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_security.group_onehr_security_user'))
+        ]"/>
+        <field name="comment">Reads assigned Published/Review policies, acknowledges own assignments and submits own compliance evidence.</field>
+    </record>
+
+    <record id="group_onehr_pnp_owner" model="res.groups">
+        <field name="name">Policy Owner</field>
+        <field name="privilege_id" ref="privilege_onehr_pnp"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_pnp.group_onehr_pnp_reader')),
+            Command.link(ref('onehr_workflow_approval.group_onehr_approval_user')),
+            Command.link(ref('onehr_document.group_onehr_document_user'))
+        ]"/>
+        <field name="comment">Creates and maintains own Draft policy versions and submits them to OneHR Workflow Approval. Does not gain company-wide employee/evidence access.</field>
+    </record>
+
+    <record id="group_onehr_pnp_compliance" model="res.groups">
+        <field name="name">Compliance Officer</field>
+        <field name="privilege_id" ref="privilege_onehr_pnp"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_pnp.group_onehr_pnp_owner')),
+            Command.link(ref('onehr_workflow_approval.group_onehr_approver')),
+            Command.link(ref('onehr_document.group_onehr_document_manager')),
+            Command.link(ref('hr.group_hr_user'))
+        ]"/>
+        <field name="comment">Company-scoped policy compliance authority: publication, audience resolution, acknowledgement/evidence oversight and Document archive issuance. Workflow route eligibility is still controlled by OneHR Workflow Approval rules.</field>
+    </record>
+
+    <record id="group_onehr_pnp_admin" model="res.groups">
+        <field name="name">PnP Administrator</field>
+        <field name="privilege_id" ref="privilege_onehr_pnp"/>
+        <field name="sequence">40</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_pnp.group_onehr_pnp_compliance'))
+        ]"/>
+        <field name="comment">Highest PnP source-domain authority. It does not automatically gain Workflow Manager, Security Admin or restricted Document Compliance authority.</field>
+    </record>
+</odoo>

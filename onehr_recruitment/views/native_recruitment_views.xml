@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Odoo-native Applicant: canonical pipeline enhanced, never duplicated. -->
+    <record id="view_hr_applicant_form_onehr_recruitment" model="ir.ui.view">
+        <field name="name">hr.applicant.form.onehr.recruitment</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_form"/>
+        <field name="priority">80</field>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_onehr_interviews" type="object" class="oe_stat_button" icon="fa-comments-o" groups="onehr_recruitment.group_onehr_hiring_manager,onehr_recruitment.group_onehr_recruiter">
+                    <field name="onehr_interview_count" widget="statinfo" string="Interviews"/>
+                </button>
+                <button name="action_open_onehr_offers" type="object" class="oe_stat_button" icon="fa-file-text-o" groups="onehr_recruitment.group_onehr_recruiter">
+                    <field name="onehr_offer_count" widget="statinfo" string="Offers"/>
+                </button>
+                <button name="action_open_onehr_preboarding" type="object" class="oe_stat_button" icon="fa-rocket" groups="onehr_recruitment.group_onehr_recruiter" invisible="not onehr_preboarding_count">
+                    <field name="onehr_preboarding_count" widget="statinfo" string="Preboarding"/>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='job_id']" position="after">
+                <field name="onehr_requisition_id" groups="onehr_recruitment.group_onehr_hiring_manager,onehr_recruitment.group_onehr_recruiter"/>
+                <field name="onehr_latest_offer_state" widget="badge" readonly="1" groups="onehr_recruitment.group_onehr_recruiter"/>
+            </xpath>
+            <xpath expr="//page[@name='application_details']" position="after">
+                <page string="OneHR Hiring Governance" name="onehr_hiring_governance" groups="onehr_recruitment.group_onehr_hiring_manager,onehr_recruitment.group_onehr_recruiter">
+                    <group>
+                        <group string="Governed Demand">
+                            <field name="onehr_requisition_id"/>
+                            <field name="onehr_latest_offer_state" widget="badge" readonly="1" groups="onehr_recruitment.group_onehr_recruiter"/>
+                        </group>
+                        <group string="Evidence Counts">
+                            <field name="onehr_interview_count" readonly="1"/>
+                            <field name="onehr_offer_count" readonly="1" groups="onehr_recruitment.group_onehr_recruiter"/>
+                            <field name="onehr_preboarding_count" readonly="1" groups="onehr_recruitment.group_onehr_recruiter"/>
+                        </group>
+                    </group>
+                    <div class="d-flex gap-2 mt16">
+                        <button name="action_open_onehr_interviews" type="object" string="Review Interviews" groups="onehr_recruitment.group_onehr_hiring_manager,onehr_recruitment.group_onehr_recruiter"/>
+                        <button name="action_open_onehr_offers" type="object" string="Review Offers" groups="onehr_recruitment.group_onehr_recruiter"/>
+                        <button name="action_prepare_onehr_preboarding" type="object" string="Prepare Preboarding" class="btn-primary" groups="onehr_recruitment.group_onehr_recruiter" invisible="application_status != 'hired' and onehr_latest_offer_state != 'accepted'"/>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_applicant_list_onehr_recruitment" model="ir.ui.view">
+        <field name="name">hr.applicant.list.onehr.recruitment</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.crm_case_tree_view_job"/>
+        <field name="arch" type="xml">
+            <field name="job_id" position="after">
+                <field name="onehr_requisition_id" optional="show" groups="onehr_recruitment.group_onehr_hiring_manager,onehr_recruitment.group_onehr_recruiter"/>
+                <field name="onehr_interview_count" optional="hide" groups="onehr_recruitment.group_onehr_hiring_manager,onehr_recruitment.group_onehr_recruiter"/>
+                <field name="onehr_latest_offer_state" widget="badge" optional="hide" groups="onehr_recruitment.group_onehr_recruiter"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_hr_applicant_search_onehr_recruitment" model="ir.ui.view">
+        <field name="name">hr.applicant.search.onehr.recruitment</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_search_bis"/>
+        <field name="arch" type="xml">
+            <field name="job_id" position="after">
+                <field name="onehr_requisition_id" groups="onehr_recruitment.group_onehr_hiring_manager,onehr_recruitment.group_onehr_recruiter"/>
+            </field>
+            <filter name="hired" position="after">
+                <filter name="onehr_accepted_offer" string="Offer Accepted" domain="[('onehr_latest_offer_state', '=', 'accepted')]" groups="onehr_recruitment.group_onehr_recruiter"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- Odoo-native Stage: OneHR phase/SLA semantics. -->
+    <record id="view_hr_recruitment_stage_form_onehr" model="ir.ui.view">
+        <field name="name">hr.recruitment.stage.form.onehr</field>
+        <field name="model">hr.recruitment.stage</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_recruitment_stage_form"/>
+        <field name="arch" type="xml">
+            <group name="stage_details" position="inside">
+                <separator string="OneHR Governance"/>
+                <field name="onehr_phase"/>
+                <field name="onehr_sla_days"/>
+                <field name="onehr_requires_interview"/>
+                <field name="onehr_requires_approved_offer"/>
+            </group>
+        </field>
+    </record>
+
+    <record id="view_hr_recruitment_stage_list_onehr" model="ir.ui.view">
+        <field name="name">hr.recruitment.stage.list.onehr</field>
+        <field name="model">hr.recruitment.stage</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_recruitment_stage_tree"/>
+        <field name="arch" type="xml">
+            <field name="hired_stage" position="after">
+                <field name="onehr_phase" widget="badge" optional="show"/>
+                <field name="onehr_sla_days" optional="show"/>
+                <field name="onehr_requires_interview" optional="hide"/>
+                <field name="onehr_requires_approved_offer" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Odoo-native Job: requisition/headcount drill-down and source snapshot action. -->
+    <record id="view_hr_job_form_onehr_recruitment" model="ir.ui.view">
+        <field name="name">hr.job.form.onehr.recruitment</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_job_survey"/>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_open_onehr_requisitions" type="object" class="oe_stat_button" icon="fa-briefcase" groups="onehr_recruitment.group_onehr_recruiter">
+                    <field name="onehr_requisition_count" widget="statinfo" string="Requisitions"/>
+                </button>
+            </div>
+            <group name="hiring_process" position="inside">
+                <separator string="OneHR Demand Control"/>
+                <field name="onehr_open_requisition_count" readonly="1" groups="onehr_recruitment.group_onehr_recruiter"/>
+                <button name="action_open_onehr_requisitions" type="object" string="Open Requisitions" groups="onehr_recruitment.group_onehr_recruiter"/>
+                <button name="action_build_onehr_source_snapshot" type="object" string="Build 30-Day Source Snapshot" class="btn-secondary" groups="onehr_recruitment.group_onehr_recruitment_manager"/>
+            </group>
+        </field>
+    </record>
+
+    <record id="view_hr_job_list_onehr_recruitment" model="ir.ui.view">
+        <field name="name">hr.job.list.onehr.recruitment</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_job_view_tree_inherit"/>
+        <field name="arch" type="xml">
+            <field name="no_of_recruitment" position="after">
+                <field name="onehr_open_requisition_count" string="Open OneHR Requisitions" optional="show" groups="onehr_recruitment.group_onehr_recruiter"/>
+                <field name="onehr_requisition_count" string="All OneHR Requisitions" optional="hide" groups="onehr_recruitment.group_onehr_recruiter"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_hr_job_search_onehr_recruitment" model="ir.ui.view">
+        <field name="name">hr.job.search.onehr.recruitment</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_job_search_view"/>
+        <field name="arch" type="xml">
+            <filter name="my_positions" position="after">
+                <filter name="onehr_open_requisitions" string="Open OneHR Requisitions" domain="[('onehr_open_requisition_count', '&gt;', 0)]" groups="onehr_recruitment.group_onehr_recruiter"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- Odoo-native Talent Pool: target/review governance only. -->
+    <record id="view_hr_talent_pool_form_onehr_recruitment" model="ir.ui.view">
+        <field name="name">hr.talent.pool.form.onehr.recruitment</field>
+        <field name="model">hr.talent.pool</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_talent_pool_view_form"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="onehr_target_job_id"/>
+                <field name="onehr_review_date"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_hr_talent_pool_list_onehr_recruitment" model="ir.ui.view">
+        <field name="name">hr.talent.pool.list.onehr.recruitment</field>
+        <field name="model">hr.talent.pool</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_talent_pool_view_list"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="onehr_target_job_id" optional="show"/>
+                <field name="onehr_review_date" optional="show"/>
+            </field>
+        </field>
+    </record>
+</odoo>

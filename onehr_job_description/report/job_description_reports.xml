@@ -1,0 +1,279 @@
+<odoo>
+    <record id="action_report_jd_document" model="ir.actions.report">
+        <field name="name">Job Description</field>
+        <field name="model">onehr.jd.version</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_job_description.report_jd_document</field>
+        <field name="report_file">onehr_job_description.report_jd_document</field>
+        <field name="binding_model_id" ref="model_onehr_jd_version"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'JD - %s - V%s' % (object.jd_id.code, object.version_no)</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_job_description.group_onehr_jd_reader'))
+        ]"/>
+    </record>
+
+    <record id="action_report_jd_comparison" model="ir.actions.report">
+        <field name="name">JD Version Comparison</field>
+        <field name="model">onehr.jd.version</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_job_description.report_jd_comparison</field>
+        <field name="report_file">onehr_job_description.report_jd_comparison</field>
+        <field name="print_report_name">'JD Comparison - %s - V%s' % (object.jd_id.code, object.version_no)</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_job_description.group_onehr_jd_editor'))
+        ]"/>
+    </record>
+
+    <record id="action_report_jd_register" model="ir.actions.report">
+        <field name="name">Job Description Register</field>
+        <field name="model">onehr.jd</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_job_description.report_jd_register</field>
+        <field name="report_file">onehr_job_description.report_jd_register</field>
+        <field name="binding_model_id" ref="model_onehr_jd"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Job Description Register'</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_job_description.group_onehr_jd_editor'))
+        ]"/>
+    </record>
+
+    <template id="report_jd_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Job Description</h2>
+
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th style="width:25%">JD Reference</th>
+                                    <td><span t-field="doc.jd_id.code"/></td>
+                                    <th style="width:25%">Version</th>
+                                    <td><span t-field="doc.version_no"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Title</th>
+                                    <td><span t-field="doc.jd_id.name"/></td>
+                                    <th>Status</th>
+                                    <td><span t-field="doc.state"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Position</th>
+                                    <td><span t-field="doc.position_name"/></td>
+                                    <th>Position Code</th>
+                                    <td><span t-field="doc.position_code"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Job Family</th>
+                                    <td><span t-field="doc.job_family_name"/></td>
+                                    <th>Department</th>
+                                    <td><span t-field="doc.department_name"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Effective From</th>
+                                    <td><span t-field="doc.effective_from"/></td>
+                                    <th>Review Due</th>
+                                    <td><span t-field="doc.review_due_date"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Position Purpose</h4>
+                        <div t-field="doc.purpose"/>
+
+                        <h4 class="mt-3">Key Responsibilities</h4>
+                        <div t-field="doc.key_responsibilities"/>
+
+                        <h4 class="mt-3">Accountabilities</h4>
+                        <div t-field="doc.accountability"/>
+
+                        <h4 class="mt-3">Authority / Decision Rights</h4>
+                        <div t-field="doc.authority_scope"/>
+
+                        <h4 class="mt-3">KPI / Performance Expectations</h4>
+                        <div t-if="doc.kpi_codes">
+                            <strong>KPI References:</strong>
+                            <span t-field="doc.kpi_codes"/>
+                        </div>
+                        <div t-field="doc.kpi_expectations"/>
+
+                        <h4 class="mt-3">Competency Requirements</h4>
+                        <div t-if="doc.competency_codes">
+                            <strong>Competency References:</strong>
+                            <span t-field="doc.competency_codes"/>
+                        </div>
+                        <div t-field="doc.competency_requirements"/>
+
+                        <h4 class="mt-3">Qualifications</h4>
+                        <div t-field="doc.qualification_requirements"/>
+                        <div t-field="doc.education_requirements"/>
+                        <div t-field="doc.experience_requirements"/>
+                        <div t-field="doc.skills_requirements"/>
+
+                        <h4 class="mt-3">Reporting / Stakeholder Relationships</h4>
+                        <div t-field="doc.reporting_relationships"/>
+
+                        <h4 class="mt-3">Working Conditions &amp; HSE / K3</h4>
+                        <p>
+                            <strong>Risk Level:</strong>
+                            <span t-field="doc.hse_risk_level"/>
+                        </p>
+                        <div t-field="doc.working_conditions"/>
+                        <div t-field="doc.hse_risks"/>
+                        <div t-field="doc.hse_controls"/>
+                        <div t-field="doc.ppe_requirements"/>
+
+                        <div class="mt-4 border-top pt-2">
+                            <small>
+                                <strong>Approved:</strong>
+                                <span t-field="doc.approved_at"/>
+                                &#160; | &#160;
+                                <strong>Published:</strong>
+                                <span t-field="doc.published_at"/>
+                                <br/>
+                                <strong>Evidence Fingerprint:</strong>
+                                <span t-field="doc.content_fingerprint"/>
+                            </small>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_jd_comparison">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="previous" t-value="doc.previous_version_id"/>
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Job Description Version Comparison</h2>
+                        <p>
+                            <strong><span t-field="doc.jd_id.code"/></strong>
+                            — <span t-field="doc.jd_id.name"/>
+                        </p>
+
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width:20%">Section</th>
+                                    <th style="width:40%">
+                                        Previous V<span t-field="previous.version_no"/>
+                                    </th>
+                                    <th style="width:40%">
+                                        Current V<span t-field="doc.version_no"/>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Purpose</th>
+                                    <td><div t-field="previous.purpose"/></td>
+                                    <td><div t-field="doc.purpose"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Responsibilities</th>
+                                    <td><div t-field="previous.key_responsibilities"/></td>
+                                    <td><div t-field="doc.key_responsibilities"/></td>
+                                </tr>
+                                <tr>
+                                    <th>KPI</th>
+                                    <td><div t-field="previous.kpi_expectations"/></td>
+                                    <td><div t-field="doc.kpi_expectations"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Competencies</th>
+                                    <td><div t-field="previous.competency_requirements"/></td>
+                                    <td><div t-field="doc.competency_requirements"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Qualifications</th>
+                                    <td><div t-field="previous.qualification_requirements"/></td>
+                                    <td><div t-field="doc.qualification_requirements"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Authority</th>
+                                    <td><div t-field="previous.authority_scope"/></td>
+                                    <td><div t-field="doc.authority_scope"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Working Conditions</th>
+                                    <td><div t-field="previous.working_conditions"/></td>
+                                    <td><div t-field="doc.working_conditions"/></td>
+                                </tr>
+                                <tr>
+                                    <th>HSE / K3</th>
+                                    <td>
+                                        <span t-field="previous.hse_risk_level"/>
+                                        <div t-field="previous.hse_risks"/>
+                                        <div t-field="previous.hse_controls"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.hse_risk_level"/>
+                                        <div t-field="doc.hse_risks"/>
+                                        <div t-field="doc.hse_controls"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Change Summary</h4>
+                        <p t-field="doc.change_summary"/>
+                        <h4>Change Reason</h4>
+                        <p t-field="doc.change_reason"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_jd_register">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Job Description Register</h2>
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>JD</th>
+                                <th>Position</th>
+                                <th>Job Family</th>
+                                <th>Department</th>
+                                <th>Coverage</th>
+                                <th>Current Version</th>
+                                <th>Published</th>
+                                <th>Review Due</th>
+                                <th>Age (Days)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="doc">
+                                <tr>
+                                    <td>
+                                        <span t-field="doc.code"/>
+                                        <br/>
+                                        <small t-field="doc.name"/>
+                                    </td>
+                                    <td><span t-field="doc.position_name"/></td>
+                                    <td><span t-field="doc.job_family_name"/></td>
+                                    <td><span t-field="doc.department_name"/></td>
+                                    <td><span t-field="doc.coverage_state"/></td>
+                                    <td>
+                                        <span t-if="doc.current_version_id"
+                                              t-field="doc.current_version_id.version_no"/>
+                                    </td>
+                                    <td><span t-field="doc.published_at"/></td>
+                                    <td><span t-field="doc.review_due_date"/></td>
+                                    <td><span t-field="doc.version_age_days"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

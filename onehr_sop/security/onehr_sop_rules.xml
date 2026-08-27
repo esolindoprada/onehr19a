@@ -1,0 +1,76 @@
+<odoo>
+    <!-- HARD GATE 10: company is the non-negotiable legal partition. -->
+    <record id="rule_sop_company_global" model="ir.rule">
+        <field name="name">OneHR SOP — allowed companies</field>
+        <field name="model_id" ref="model_onehr_sop"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_sop_version_company_global" model="ir.rule">
+        <field name="name">OneHR SOP Version — allowed companies</field>
+        <field name="model_id" ref="model_onehr_sop_version"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_sop_ack_company_global" model="ir.rule">
+        <field name="name">OneHR SOP Acknowledgement — allowed companies</field>
+        <field name="model_id" ref="model_onehr_sop_ack"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Reader visibility is publication evidence, not merely UI filtering. -->
+    <record id="rule_sop_reader_current_audience" model="ir.rule">
+        <field name="name">SOP Reader — assigned current publication</field>
+        <field name="model_id" ref="model_onehr_sop"/>
+        <field name="groups" eval="[Command.link(ref('onehr_sop.group_onehr_sop_reader'))]"/>
+        <field name="domain_force">[
+            ('active', '=', True),
+            ('current_version_id.state', '=', 'published'),
+            ('current_version_id.is_current', '=', True),
+            ('current_version_id.ack_ids.employee_user_id', '=', user.id)
+        ]</field>
+    </record>
+
+    <record id="rule_sop_version_reader_current_audience" model="ir.rule">
+        <field name="name">SOP Version Reader — assigned current publication</field>
+        <field name="model_id" ref="model_onehr_sop_version"/>
+        <field name="groups" eval="[Command.link(ref('onehr_sop.group_onehr_sop_reader'))]"/>
+        <field name="domain_force">[
+            ('state', 'in', ['published', 'obsolete']),
+            ('ack_ids.employee_user_id', '=', user.id)
+        ]</field>
+    </record>
+
+    <record id="rule_sop_ack_reader_own" model="ir.rule">
+        <field name="name">SOP Acknowledgement Reader — own assignment</field>
+        <field name="model_id" ref="model_onehr_sop_ack"/>
+        <field name="groups" eval="[Command.link(ref('onehr_sop.group_onehr_sop_reader'))]"/>
+        <field name="domain_force">[('employee_user_id', '=', user.id)]</field>
+    </record>
+
+    <!-- Editors and above operate the complete company working set. These group
+         rules OR with Reader rules while the global company rule remains mandatory. -->
+    <record id="rule_sop_editor_company" model="ir.rule">
+        <field name="name">SOP Editor — company working set</field>
+        <field name="model_id" ref="model_onehr_sop"/>
+        <field name="groups" eval="[Command.link(ref('onehr_sop.group_onehr_sop_editor'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_sop_version_editor_company" model="ir.rule">
+        <field name="name">SOP Version Editor — company working set</field>
+        <field name="model_id" ref="model_onehr_sop_version"/>
+        <field name="groups" eval="[Command.link(ref('onehr_sop.group_onehr_sop_editor'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_sop_ack_editor_company" model="ir.rule">
+        <field name="name">SOP Acknowledgement Editor — company working set</field>
+        <field name="model_id" ref="model_onehr_sop_ack"/>
+        <field name="groups" eval="[Command.link(ref('onehr_sop.group_onehr_sop_editor'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

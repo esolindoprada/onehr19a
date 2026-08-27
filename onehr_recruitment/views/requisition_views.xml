@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_recruitment_requisition_list" model="ir.ui.view">
+        <field name="name">onehr.recruitment.requisition.list</field>
+        <field name="model">onehr.recruitment.requisition</field>
+        <field name="arch" type="xml">
+            <list string="Recruitment Requisitions" decoration-success="state == 'filled'" decoration-danger="state in ('rejected','cancelled')" decoration-warning="state == 'pending_approval'" multi_edit="1">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="job_id"/>
+                <field name="position_id" optional="show"/>
+                <field name="department_id" optional="show"/>
+                <field name="requester_user_id" widget="many2one_avatar_user" optional="hide"/>
+                <field name="recruiter_user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="hiring_manager_user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="request_date" optional="show"/>
+                <field name="target_fill_date" optional="show"/>
+                <field name="requested_headcount"/>
+                <field name="approved_headcount"/>
+                <field name="applicant_count"/>
+                <field name="hired_count"/>
+                <field name="urgency" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <button name="action_open_applicants" type="object" icon="fa-users" title="Open Applicants"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_recruitment_requisition_form" model="ir.ui.view">
+        <field name="name">onehr.recruitment.requisition.form</field>
+        <field name="model">onehr.recruitment.requisition</field>
+        <field name="arch" type="xml">
+            <form string="Recruitment Requisition">
+                <header>
+                    <button name="action_submit_for_approval" type="object" string="Submit for Approval" class="btn-primary" groups="onehr_recruitment.group_onehr_recruiter" invisible="state != 'draft'"/>
+                    <button name="action_start_recruiting" type="object" string="Start Recruiting" class="btn-primary" groups="onehr_recruitment.group_onehr_recruiter" invisible="state != 'approved'"/>
+                    <button name="action_mark_filled" type="object" string="Mark Filled" class="btn-primary" groups="onehr_recruitment.group_onehr_recruitment_manager" invisible="state != 'recruiting'"/>
+                    <button name="action_cancel" type="object" string="Cancel" groups="onehr_recruitment.group_onehr_recruitment_manager" invisible="state in ('filled','cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,pending_approval,approved,recruiting,filled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_approval_requests" type="object" class="oe_stat_button" icon="fa-check-square-o">
+                            <field name="onehr_approval_request_count" widget="statinfo" string="Approvals"/>
+                        </button>
+                        <button name="action_open_applicants" type="object" class="oe_stat_button" icon="fa-users">
+                            <field name="applicant_count" widget="statinfo" string="Applicants"/>
+                        </button>
+                        <button name="action_open_interviews" type="object" class="oe_stat_button" icon="fa-comments-o">
+                            <field name="interview_count" widget="statinfo" string="Interviews"/>
+                        </button>
+                        <button name="action_open_offers" type="object" class="oe_stat_button" icon="fa-file-text-o" groups="onehr_recruitment.group_onehr_recruiter">
+                            <field name="offer_count" widget="statinfo" string="Offers"/>
+                        </button>
+                        <button name="action_open_position" type="object" class="oe_stat_button" icon="fa-sitemap" invisible="not position_id">
+                            <span class="o_stat_text">Position</span>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-secondary" invisible="state != 'cancelled'"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2><field name="title" placeholder="e.g. Senior Software Engineer — Replacement"/></h2>
+                    </div>
+                    <group>
+                        <group string="Demand">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="job_id"/>
+                            <field name="position_id"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="employment_basis"/>
+                            <field name="urgency" widget="badge"/>
+                        </group>
+                        <group string="Ownership &amp; Timeline">
+                            <field name="requester_user_id" widget="many2one_avatar_user"/>
+                            <field name="recruiter_user_id" widget="many2one_avatar_user"/>
+                            <field name="hiring_manager_user_id" widget="many2one_avatar_user"/>
+                            <field name="request_date"/>
+                            <field name="target_fill_date"/>
+                            <field name="target_start_date"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Headcount Control">
+                            <field name="requested_headcount"/>
+                            <field name="approved_headcount" readonly="1"/>
+                            <field name="hired_count" readonly="1"/>
+                            <field name="onehr_latest_approval_state" widget="badge" readonly="1"/>
+                        </group>
+                        <group string="Audit Milestones">
+                            <field name="submitted_at" readonly="1"/>
+                            <field name="approved_at" readonly="1"/>
+                            <field name="recruiting_started_at" readonly="1"/>
+                            <field name="filled_at" readonly="1"/>
+                            <field name="cancelled_at" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Business Justification" name="justification">
+                            <field name="reason" placeholder="Explain the business need, replacement/growth rationale and hiring context..."/>
+                            <field name="cancellation_reason" placeholder="Required before cancellation" invisible="state not in ('approved','recruiting','cancelled')"/>
+                        </page>
+                        <page string="Applicants" name="applicants">
+                            <button name="action_create_applicant" type="object" string="Add Applicant" class="btn-primary" groups="onehr_recruitment.group_onehr_recruiter" invisible="state != 'recruiting'"/>
+                            <field name="applicant_ids" context="{'default_onehr_requisition_id': id, 'default_job_id': job_id, 'default_company_id': company_id}">
+                                <list create="0" delete="0" decoration-success="application_status == 'hired'" decoration-danger="application_status == 'refused'">
+                                    <field name="partner_name" string="Applicant"/>
+                                    <field name="stage_id" widget="badge_rotting"/>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                    <field name="source_id"/>
+                                    <field name="create_date"/>
+                                    <field name="application_status" widget="badge"/>
+                                    <button name="action_open_onehr_interviews" type="object" icon="fa-comments-o" title="Interviews"/>
+                                    <button name="action_open_onehr_offers" type="object" icon="fa-file-text-o" title="Offers" groups="onehr_recruitment.group_onehr_recruiter"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <div class="d-flex gap-2 mt16" groups="onehr_recruitment.group_onehr_recruiter">
+                        <button name="action_create_applicant" type="object" string="Create Applicant from Requisition" class="btn-primary" invisible="state != 'recruiting'"/>
+                        <button name="action_open_interviews" type="object" string="Review Interview Schedule"/>
+                    </div>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_recruitment_requisition_search" model="ir.ui.view">
+        <field name="name">onehr.recruitment.requisition.search</field>
+        <field name="model">onehr.recruitment.requisition</field>
+        <field name="arch" type="xml">
+            <search string="Search Recruitment Requisitions">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="job_id"/>
+                <field name="position_id"/>
+                <field name="department_id" operator="child_of"/>
+                <field name="recruiter_user_id"/>
+                <field name="hiring_manager_user_id"/>
+                <filter name="my_requisitions" string="My Requisitions" domain="['|', ('recruiter_user_id', '=', uid), ('hiring_manager_user_id', '=', uid)]"/>
+                <filter name="awaiting_approval" string="Awaiting Approval" domain="[('state', '=', 'pending_approval')]"/>
+                <filter name="actively_recruiting" string="Recruiting" domain="[('state', '=', 'recruiting')]"/>
+                <filter name="critical" string="Critical" domain="[('urgency', '=', 'critical')]"/>
+                <filter name="request_date" string="Request Date" date="request_date"/>
+                <group>
+                    <filter name="group_job" string="Job" context="{'group_by': 'job_id'}"/>
+                    <filter name="group_department" string="Department" context="{'group_by': 'department_id'}"/>
+                    <filter name="group_recruiter" string="Recruiter" context="{'group_by': 'recruiter_user_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_recruitment_requisition" model="ir.actions.act_window">
+        <field name="name">Recruitment Requisitions</field>
+        <field name="res_model">onehr.recruitment.requisition</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_recruitment_requisition_search"/>
+        <field name="context">{'search_default_actively_recruiting': 1}</field>
+    </record>
+</odoo>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_attendance_exception_list" model="ir.ui.view">
+        <field name="name">onehr.attendance.exception.list</field>
+        <field name="model">onehr.attendance.exception</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0" decoration-danger="severity == 'critical' and state in ('open','under_review')" decoration-warning="severity == 'warning' and state in ('open','under_review')" decoration-muted="state in ('resolved','waived')">
+                <field name="attendance_date"/>
+                <field name="employee_id"/>
+                <field name="exception_type" widget="badge"/>
+                <field name="severity" widget="badge"/>
+                <field name="variance_minutes" optional="show"/>
+                <field name="shift_id" optional="show"/>
+                <field name="attendance_id" optional="show"/>
+                <field name="detected_at" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <button name="action_start_review" type="object" string="Review" icon="fa-search" invisible="state != 'open'"/>
+                <button name="action_open_attendance" type="object" string="Attendance" icon="fa-external-link" invisible="not attendance_id"/>
+                <button name="action_open_employee" type="object" string="Employee" icon="fa-user"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_attendance_exception_form" model="ir.ui.view">
+        <field name="name">onehr.attendance.exception.form</field>
+        <field name="model">onehr.attendance.exception</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Exception" create="0" delete="0">
+                <header>
+                    <button name="action_start_review" type="object" string="Start Review" class="btn-primary" invisible="state != 'open'" groups="onehr_attendance.group_onehr_attendance_officer"/>
+                    <button name="action_resolve" type="object" string="Resolve" class="btn-primary" invisible="state not in ('open','under_review')" groups="onehr_attendance.group_onehr_attendance_officer"/>
+                    <button name="action_waive" type="object" string="Waive" invisible="state not in ('open','under_review')" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="open,under_review,resolved,waived"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Critical" bg_color="text-bg-danger" invisible="severity != 'critical' or state not in ('open','under_review')"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-user"><div class="o_stat_info"><span class="o_stat_text">Employee</span></div></button>
+                        <button name="action_open_attendance" type="object" class="oe_stat_button" icon="fa-clock-o" invisible="not attendance_id"><div class="o_stat_info"><span class="o_stat_text">Attendance</span></div></button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Detected Fact">
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                            <field name="employee_id" readonly="1"/>
+                            <field name="attendance_date" readonly="1"/>
+                            <field name="exception_type" widget="badge" readonly="1"/>
+                            <field name="severity" widget="badge" readonly="1"/>
+                            <field name="variance_minutes" readonly="1"/>
+                            <field name="detected_at" readonly="1"/>
+                        </group>
+                        <group string="Source Links">
+                            <field name="attendance_id" readonly="1"/>
+                            <field name="shift_assignment_id" readonly="1"/>
+                            <field name="shift_id" readonly="1"/>
+                            <field name="reconciliation_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Detection Evidence"><field name="detection_note" readonly="1" nolabel="1"/></group>
+                    <group string="Disposition">
+                        <field name="resolution_reason" readonly="state in ('resolved','waived')" placeholder="Required before Resolve/Waive..."/>
+                        <field name="resolved_at" readonly="1"/>
+                        <field name="resolved_by_id" readonly="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_attendance_exception_search" model="ir.ui.view">
+        <field name="name">onehr.attendance.exception.search</field>
+        <field name="model">onehr.attendance.exception</field>
+        <field name="arch" type="xml">
+            <search string="Attendance Exceptions">
+                <field name="employee_id"/>
+                <field name="attendance_date"/>
+                <field name="exception_type"/>
+                <field name="shift_id"/>
+                <filter name="open" string="Open" domain="[('state','=','open')]"/>
+                <filter name="under_review" string="Under Review" domain="[('state','=','under_review')]"/>
+                <filter name="critical" string="Critical" domain="[('severity','=','critical')]"/>
+                <filter name="late" string="Late" domain="[('exception_type','=','late')]"/>
+                <filter name="missing" string="Missing Punch" domain="[('exception_type','in',['missing_in','missing_out'])]"/>
+                <filter name="today" string="Today" domain="[('attendance_date','=',context_today())]"/>
+                <group>
+                    <filter name="group_employee" string="Employee" context="{'group_by':'employee_id'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by':'exception_type'}"/>
+                    <filter name="group_severity" string="Severity" context="{'group_by':'severity'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by':'attendance_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_attendance_exception_pivot" model="ir.ui.view">
+        <field name="name">onehr.attendance.exception.pivot</field>
+        <field name="model">onehr.attendance.exception</field>
+        <field name="arch" type="xml"><pivot string="Exception Analysis"><field name="exception_type" type="row"/><field name="attendance_date" type="col" interval="month"/><field name="variance_minutes" type="measure"/></pivot></field>
+    </record>
+
+    <record id="view_onehr_attendance_exception_graph" model="ir.ui.view">
+        <field name="name">onehr.attendance.exception.graph</field>
+        <field name="model">onehr.attendance.exception</field>
+        <field name="arch" type="xml"><graph string="Attendance Exceptions" type="bar"><field name="attendance_date" interval="month"/><field name="exception_type"/></graph></field>
+    </record>
+</odoo>

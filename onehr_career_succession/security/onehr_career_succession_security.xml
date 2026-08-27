@@ -1,0 +1,33 @@
+<odoo>
+    <record id="module_category_onehr_career_succession" model="ir.module.category">
+        <field name="name">OneHR Career &amp; Succession</field>
+        <field name="description">Competency, talent pool and succession planning.</field>
+        <field name="sequence">50</field>
+    </record>
+
+    <record id="privilege_onehr_career_succession" model="res.groups.privilege">
+        <field name="name">OneHR Career &amp; Succession</field>
+        <field name="description">Talent and succession planning privileges.</field>
+        <field name="category_id" ref="module_category_onehr_career_succession"/>
+        <field name="sequence">50</field>
+    </record>
+
+    <record id="group_onehr_career_hrbp" model="res.groups">
+        <field name="name">Career HRBP</field>
+        <field name="privilege_id" ref="privilege_onehr_career_succession"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[Command.link(ref('hr.group_hr_user'))]"/>
+        <field name="comment">Company-scoped competency, talent nomination and succession preparation.</field>
+    </record>
+
+    <record id="group_onehr_talent_manager" model="res.groups">
+        <field name="name">Talent Manager</field>
+        <field name="privilege_id" ref="privilege_onehr_career_succession"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_career_succession.group_onehr_career_hrbp')),
+            Command.link(ref('hr.group_hr_manager'))
+        ]"/>
+        <field name="comment">Approval, activation and governance authority for talent and succession.</field>
+    </record>
+</odoo>

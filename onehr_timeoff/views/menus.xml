@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Time Off User intentionally does not receive broad hr.group_hr_user. Surface only the OneHR menu. -->
+    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[Command.link(ref('onehr_timeoff.group_onehr_timeoff_user'))]"/>
+    </record>
+
+    <menuitem id="menu_onehr_time_labor_timeoff_root" name="Time &amp; Labor" parent="onehr_base.menu_onehr_root"
+              sequence="21" groups="onehr_timeoff.group_onehr_timeoff_user"/>
+
+    <menuitem id="menu_onehr_timeoff_my_requests" name="My Leave Requests" parent="menu_onehr_time_labor_timeoff_root"
+              action="action_onehr_my_leave_request" sequence="10"/>
+    <menuitem id="menu_onehr_timeoff_my_balances" name="My Leave Balances" parent="menu_onehr_time_labor_timeoff_root"
+              action="action_onehr_my_leave_balance" sequence="20"/>
+    <menuitem id="menu_onehr_timeoff_team_calendar" name="Team Time Off Calendar" parent="menu_onehr_time_labor_timeoff_root"
+              action="action_onehr_team_leave_calendar" sequence="30"
+              groups="onehr_timeoff.group_onehr_timeoff_manager,onehr_timeoff.group_onehr_timeoff_hr"/>
+    <menuitem id="menu_onehr_timeoff_requests" name="Leave Requests" parent="menu_onehr_time_labor_timeoff_root"
+              action="action_onehr_leave_request" sequence="40"
+              groups="onehr_timeoff.group_onehr_timeoff_manager,onehr_timeoff.group_onehr_timeoff_hr"/>
+
+    <menuitem id="menu_onehr_timeoff_hr" name="Time Off Administration" parent="menu_onehr_time_labor_timeoff_root"
+              sequence="60" groups="onehr_timeoff.group_onehr_timeoff_hr"/>
+    <menuitem id="menu_onehr_timeoff_allocations" name="Leave Allocations" parent="menu_onehr_timeoff_hr"
+              action="action_onehr_leave_allocation" sequence="10"/>
+    <menuitem id="menu_onehr_timeoff_mass_allocation" name="Mass Leave Allocation" parent="menu_onehr_timeoff_hr"
+              action="action_onehr_mass_leave_allocation" sequence="20"/>
+    <menuitem id="menu_onehr_timeoff_types" name="Leave Types &amp; Policies" parent="menu_onehr_timeoff_hr"
+              action="action_onehr_leave_type" sequence="30"/>
+
+    <menuitem id="menu_onehr_timeoff_reporting" name="Time Off Reporting" parent="menu_onehr_time_labor_timeoff_root"
+              sequence="70" groups="onehr_timeoff.group_onehr_timeoff_manager,onehr_timeoff.group_onehr_timeoff_hr"/>
+    <menuitem id="menu_onehr_timeoff_usage_analytics" name="Leave Usage Analytics" parent="menu_onehr_timeoff_reporting"
+              action="action_onehr_leave_usage_analytics" sequence="10"/>
+    <menuitem id="menu_onehr_timeoff_balance_analytics" name="Leave Balance Analytics" parent="menu_onehr_timeoff_reporting"
+              action="action_onehr_leave_balance_analytics" sequence="20"/>
+</odoo>

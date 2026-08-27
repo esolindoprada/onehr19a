@@ -1,0 +1,164 @@
+<odoo>
+    <record id="view_onehr_user_role_list" model="ir.ui.view">
+        <field name="name">onehr.user.role.list.enterprise</field>
+        <field name="model">onehr.user.role</field>
+        <field name="arch" type="xml">
+            <list
+                string="Effective Role Assignments"
+                decoration-success="effective_status == 'effective'"
+                decoration-info="effective_status == 'scheduled'"
+                decoration-danger="effective_status == 'blocked'"
+                decoration-muted="effective_status in ('expired', 'revoked')"
+            >
+                <field name="user_id"/>
+                <field name="role_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="valid_from"/>
+                <field name="valid_to"/>
+                <field name="effective_status" widget="badge"/>
+                <field name="conflict_count" string="Conflicts" optional="show"/>
+                <field name="activated_at" optional="hide"/>
+                <field name="revoked_at" optional="hide"/>
+                <button
+                    name="action_activate"
+                    type="object"
+                    string="Activate"
+                    icon="fa-check"
+                    groups="onehr_security.group_onehr_security_manager"
+                    invisible="state not in ('draft', 'blocked')"
+                />
+                <button
+                    name="action_revoke"
+                    type="object"
+                    string="Revoke"
+                    icon="fa-ban"
+                    groups="onehr_security.group_onehr_security_manager"
+                    invisible="state == 'revoked'"
+                />
+                <button name="action_open_user" type="object" string="User" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_user_role_form" model="ir.ui.view">
+        <field name="name">onehr.user.role.form.enterprise</field>
+        <field name="model">onehr.user.role</field>
+        <field name="arch" type="xml">
+            <form string="Effective OneHR Role Assignment">
+                <header>
+                    <button
+                        name="action_activate"
+                        type="object"
+                        string="Activate"
+                        class="btn-primary"
+                        groups="onehr_security.group_onehr_security_manager"
+                        invisible="state not in ('draft', 'blocked')"
+                    />
+                    <button
+                        name="action_revoke"
+                        type="object"
+                        string="Revoke"
+                        groups="onehr_security.group_onehr_security_manager"
+                        invisible="state == 'revoked'"
+                    />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,blocked,revoked"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_user" type="object" class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Open User</span></div>
+                        </button>
+                        <button name="action_open_role" type="object" class="oe_stat_button" icon="fa-id-badge">
+                            <div class="o_stat_info"><span class="o_stat_text">Open Role</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="user_id" class="oe_inline"/>
+                            <span class="mx-2">/</span>
+                            <field name="role_id" class="oe_inline"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Security Scope">
+                            <field name="user_id" readonly="state != 'draft'"/>
+                            <field name="role_id" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Effective Period">
+                            <field name="valid_from" readonly="state != 'draft'"/>
+                            <field name="valid_to" readonly="state == 'revoked'"/>
+                            <field name="effective_status" widget="badge" readonly="1"/>
+                            <field name="conflict_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3" groups="onehr_security.group_onehr_security_manager">
+                        <button
+                            name="action_recheck_sod"
+                            type="object"
+                            string="Recheck SoD"
+                            class="btn-secondary"
+                            icon="fa-random"
+                            invisible="not id"
+                        />
+                    </div>
+
+                    <notebook>
+                        <page string="Business Reason" name="reason">
+                            <field name="assignment_reason" readonly="state == 'revoked'"/>
+                        </page>
+                        <page string="Lifecycle Evidence" name="lifecycle">
+                            <group>
+                                <group>
+                                    <field name="activated_at" readonly="1"/>
+                                    <field name="activated_by_id" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="revoked_at" readonly="1"/>
+                                    <field name="revoked_by_id" readonly="1"/>
+                                    <field name="revocation_reason" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_user_role_search" model="ir.ui.view">
+        <field name="name">onehr.user.role.search.enterprise</field>
+        <field name="model">onehr.user.role</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <field name="role_id"/>
+                <field name="company_id"/>
+                <field name="state"/>
+                <field name="valid_from"/>
+                <field name="valid_to"/>
+                <filter name="active_state" string="Activated" domain="[('state', '=', 'active')]"/>
+                <filter name="blocked" string="Blocked by SoD" domain="[('state', '=', 'blocked')]"/>
+                <filter name="revoked" string="Revoked" domain="[('state', '=', 'revoked')]"/>
+                <group>
+                    <filter name="group_user" string="User" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_role" string="Role" context="{'group_by': 'role_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_user_roles" model="ir.actions.act_window">
+        <field name="name">Role Assignments</field>
+        <field name="res_model">onehr.user.role</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_user_role_search"/>
+    </record>
+</odoo>

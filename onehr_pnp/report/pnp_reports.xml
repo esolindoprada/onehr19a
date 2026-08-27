@@ -1,0 +1,294 @@
+<odoo>
+    <record id="action_report_onehr_policy" model="ir.actions.report">
+        <field name="name">Policy / Procedure</field>
+        <field name="model">onehr.policy</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_pnp.report_onehr_policy_document</field>
+        <field name="report_file">onehr_pnp.report_onehr_policy_document</field>
+        <field name="binding_model_id" ref="model_onehr_policy"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Policy - %s - V%s' % (object.policy_code, object.version_no)</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_pnp.group_onehr_pnp_reader'))
+        ]"/>
+    </record>
+
+    <record id="action_report_onehr_policy_compliance" model="ir.actions.report">
+        <field name="name">Policy Compliance Summary</field>
+        <field name="model">onehr.policy</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_pnp.report_onehr_policy_compliance</field>
+        <field name="report_file">onehr_pnp.report_onehr_policy_compliance</field>
+        <field name="print_report_name">'Policy Compliance - %s - V%s' % (object.policy_code, object.version_no)</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_pnp.group_onehr_pnp_compliance'))
+        ]"/>
+    </record>
+
+    <record id="action_report_onehr_policy_review_register" model="ir.actions.report">
+        <field name="name">Policy Review / Expiry Register</field>
+        <field name="model">onehr.policy</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_pnp.report_onehr_policy_review_register</field>
+        <field name="report_file">onehr_pnp.report_onehr_policy_review_register</field>
+        <field name="binding_model_id" ref="model_onehr_policy"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Policy Review Register'</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_pnp.group_onehr_pnp_compliance'))
+        ]"/>
+    </record>
+
+    <record id="action_report_onehr_policy_evidence_register" model="ir.actions.report">
+        <field name="name">Evidence Coverage Register</field>
+        <field name="model">onehr.policy.evidence</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_pnp.report_onehr_policy_evidence_register</field>
+        <field name="report_file">onehr_pnp.report_onehr_policy_evidence_register</field>
+        <field name="binding_model_id" ref="model_onehr_policy_evidence"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Policy Evidence Coverage'</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_pnp.group_onehr_pnp_compliance'))
+        ]"/>
+    </record>
+
+    <template id="report_onehr_policy_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Policy / Procedure</h2>
+
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th style="width:20%">Reference</th>
+                                    <td><span t-field="doc.policy_code"/></td>
+                                    <th style="width:20%">Version</th>
+                                    <td><span t-field="doc.version_no"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Title</th>
+                                    <td><span t-field="doc.name"/></td>
+                                    <th>Type</th>
+                                    <td><span t-field="doc.policy_type"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Effective From</th>
+                                    <td><span t-field="doc.effective_from"/></td>
+                                    <th>Review Due</th>
+                                    <td><span t-field="doc.review_due_date"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td><span t-field="doc.state"/></td>
+                                    <th>Current</th>
+                                    <td><span t-field="doc.is_current"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Purpose</h4>
+                        <div t-field="doc.purpose"/>
+
+                        <h4 class="mt-3">Scope</h4>
+                        <div t-field="doc.scope"/>
+
+                        <h4 class="mt-3">Policy / Procedure</h4>
+                        <div t-field="doc.policy_statement"/>
+
+                        <h4 class="mt-3">Responsibilities</h4>
+                        <div t-field="doc.responsibilities"/>
+
+                        <h4 class="mt-3">Controls / Compliance Requirements</h4>
+                        <div t-field="doc.controls"/>
+
+                        <h4 class="mt-3">Exceptions / Escalation</h4>
+                        <div t-field="doc.exceptions"/>
+
+                        <h4 class="mt-3">References / Related Documents</h4>
+                        <div t-field="doc.references"/>
+
+                        <div class="mt-4 border-top pt-2"
+                             t-if="doc.published_at">
+                            <small>
+                                <strong>Published:</strong>
+                                <span t-field="doc.published_at"/>
+                            </small>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_onehr_policy_compliance">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Policy Compliance Summary</h2>
+                        <p>
+                            <strong><span t-field="doc.policy_code"/></strong>
+                            — <span t-field="doc.name"/>
+                            — Version <span t-field="doc.version_no"/>
+                        </p>
+
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Audience</th>
+                                    <td><span t-field="doc.audience_count"/></td>
+                                    <th>Acknowledged</th>
+                                    <td><span t-field="doc.acknowledged_count"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Pending Ack</th>
+                                    <td><span t-field="doc.pending_ack_count"/></td>
+                                    <th>Acknowledgement %</th>
+                                    <td><span t-field="doc.acknowledgement_rate"/>%</td>
+                                </tr>
+                                <tr>
+                                    <th>Verified Evidence</th>
+                                    <td><span t-field="doc.verified_evidence_count"/></td>
+                                    <th>Evidence Coverage %</th>
+                                    <td><span t-field="doc.evidence_coverage_rate"/>%</td>
+                                </tr>
+                                <tr>
+                                    <th>Review Due</th>
+                                    <td><span t-field="doc.review_due_date"/></td>
+                                    <th>Review Overdue</th>
+                                    <td><span t-field="doc.review_overdue"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Employee Acknowledgement Register</h4>
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Department</th>
+                                    <th>Job / Role</th>
+                                    <th>Status</th>
+                                    <th>Due</th>
+                                    <th>Acknowledged At</th>
+                                    <th>Verified Evidence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.ack_ids" t-as="ack">
+                                    <tr>
+                                        <td>
+                                            <span t-field="ack.employee_name"/>
+                                            <br/>
+                                            <small t-field="ack.employee_number"/>
+                                        </td>
+                                        <td><span t-field="ack.department_name"/></td>
+                                        <td><span t-field="ack.job_name"/></td>
+                                        <td><span t-field="ack.state"/></td>
+                                        <td><span t-field="ack.due_date"/></td>
+                                        <td><span t-field="ack.acknowledged_at"/></td>
+                                        <td><span t-field="ack.verified_evidence_count"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_onehr_policy_review_register">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Policy Review / Expiry Register</h2>
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Policy</th>
+                                <th>Type</th>
+                                <th>Owner</th>
+                                <th>State</th>
+                                <th>Effective</th>
+                                <th>Review Due</th>
+                                <th>Overdue</th>
+                                <th>Ack %</th>
+                                <th>Evidence %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="doc">
+                                <tr>
+                                    <td>
+                                        <span t-field="doc.policy_code"/>
+                                        <br/>
+                                        <small t-field="doc.name"/>
+                                        <span> · V</span><span t-field="doc.version_no"/>
+                                    </td>
+                                    <td><span t-field="doc.policy_type"/></td>
+                                    <td><span t-field="doc.owner_name"/></td>
+                                    <td><span t-field="doc.state"/></td>
+                                    <td><span t-field="doc.effective_from"/></td>
+                                    <td><span t-field="doc.review_due_date"/></td>
+                                    <td><span t-field="doc.review_overdue"/></td>
+                                    <td><span t-field="doc.acknowledgement_rate"/>%</td>
+                                    <td><span t-field="doc.evidence_coverage_rate"/>%</td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_onehr_policy_evidence_register">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Policy Evidence Coverage Register</h2>
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Policy</th>
+                                <th>Employee</th>
+                                <th>Department</th>
+                                <th>Evidence</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Due</th>
+                                <th>Submitted</th>
+                                <th>Verified</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="doc">
+                                <tr>
+                                    <td>
+                                        <span t-field="doc.policy_code"/>
+                                        <br/><small t-field="doc.policy_title"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.employee_name"/>
+                                        <br/><small t-field="doc.employee_number"/>
+                                    </td>
+                                    <td><span t-field="doc.department_name"/></td>
+                                    <td><span t-field="doc.title"/></td>
+                                    <td><span t-field="doc.evidence_type"/></td>
+                                    <td><span t-field="doc.state"/></td>
+                                    <td><span t-field="doc.due_date"/></td>
+                                    <td><span t-field="doc.submitted_at"/></td>
+                                    <td><span t-field="doc.verified_at"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,9 @@
+<odoo noupdate="1">
+    <record id="sequence_onehr_approval_request" model="ir.sequence">
+        <field name="name">OneHR Approval Request</field>
+        <field name="code">onehr.approval.request</field>
+        <field name="prefix">APR/</field>
+        <field name="padding">7</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

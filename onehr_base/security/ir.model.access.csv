@@ -1,0 +1,29 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_job_family_officer,Job Family Officer,model_onehr_job_family,hr.group_hr_user,1,0,0,0
+access_job_family_manager,Job Family Manager,model_onehr_job_family,hr.group_hr_manager,1,1,1,1
+access_position_officer,Position Officer,model_onehr_position,hr.group_hr_user,1,0,0,0
+access_position_manager,Position Manager,model_onehr_position,hr.group_hr_manager,1,1,1,1
+access_hierarchy_officer,Hierarchy Officer,model_onehr_position_hierarchy,hr.group_hr_user,1,0,0,0
+access_hierarchy_manager,Hierarchy Manager,model_onehr_position_hierarchy,hr.group_hr_manager,1,1,1,1
+access_hierarchy_version_officer,Hierarchy Version Officer,model_onehr_position_hierarchy_version,hr.group_hr_user,1,0,0,0
+access_hierarchy_version_manager,Hierarchy Version Manager,model_onehr_position_hierarchy_version,hr.group_hr_manager,1,1,1,1
+access_hierarchy_node_officer,Hierarchy Node Officer,model_onehr_position_hierarchy_node,hr.group_hr_user,1,0,0,0
+access_hierarchy_node_manager,Hierarchy Node Manager,model_onehr_position_hierarchy_node,hr.group_hr_manager,1,1,1,1
+access_grade_officer,Grade Officer,model_onehr_grade,hr.group_hr_user,1,0,0,0
+access_grade_manager,Grade Manager,model_onehr_grade,hr.group_hr_manager,1,1,1,1
+access_grade_step_officer,Grade Step Officer,model_onehr_grade_step,hr.group_hr_user,1,0,0,0
+access_grade_step_manager,Grade Step Manager,model_onehr_grade_step,hr.group_hr_manager,1,1,1,1
+access_sequence_rule_officer,Sequence Rule Officer,model_onehr_sequence_rule,hr.group_hr_user,1,0,0,0
+access_sequence_rule_manager,Sequence Rule Manager,model_onehr_sequence_rule,hr.group_hr_manager,1,1,1,1
+access_eligibility_officer,Eligibility Officer,model_onehr_eligibility_profile,hr.group_hr_user,1,0,0,0
+access_eligibility_manager,Eligibility Manager,model_onehr_eligibility_profile,hr.group_hr_manager,1,1,1,1
+access_lifecycle_type_officer,Lifecycle Type Officer,model_onehr_lifecycle_event_type,hr.group_hr_user,1,0,0,0
+access_lifecycle_type_manager,Lifecycle Type Manager,model_onehr_lifecycle_event_type,hr.group_hr_manager,1,1,1,1
+access_checklist_template_officer,Checklist Template Officer,model_onehr_checklist_template,hr.group_hr_user,1,0,0,0
+access_checklist_template_manager,Checklist Template Manager,model_onehr_checklist_template,hr.group_hr_manager,1,1,1,1
+access_task_template_officer,Task Template Officer,model_onehr_checklist_task_template,hr.group_hr_user,1,0,0,0
+access_task_template_manager,Task Template Manager,model_onehr_checklist_task_template,hr.group_hr_manager,1,1,1,1
+access_checklist_instance_officer,Checklist Instance Officer,model_onehr_checklist_instance,hr.group_hr_user,1,1,1,0
+access_checklist_instance_manager,Checklist Instance Manager,model_onehr_checklist_instance,hr.group_hr_manager,1,1,1,1
+access_checklist_task_officer,Checklist Task Officer,model_onehr_checklist_task,hr.group_hr_user,1,1,1,0
+access_checklist_task_manager,Checklist Task Manager,model_onehr_checklist_task,hr.group_hr_manager,1,1,1,1

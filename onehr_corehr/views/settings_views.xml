@@ -1,0 +1,37 @@
+<odoo>
+    <record id="res_config_settings_view_form_onehr_corehr" model="ir.ui.view">
+        <field name="name">res.config.settings.form.onehr.corehr</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="OneHR Core HR" name="onehr_corehr"
+                     groups="onehr_corehr.group_onehr_corehr_manager,onehr_corehr.group_onehr_occupational_health_officer">
+                    <block title="Core HR Data Governance" name="onehr_corehr_governance"
+                           groups="onehr_corehr.group_onehr_corehr_manager">
+                        <setting string="Identifier Masking"
+                                 help="Controls routine display masking. Raw values remain ACL/field-group restricted.">
+                            <field name="onehr_identifier_mask_visible_chars"/>
+                        </setting>
+                        <setting string="Profile Review Lead Days"
+                                 help="Company policy pointer for future profile-review scheduling. 0 disables the lead-day policy.">
+                            <field name="onehr_profile_review_activity_days"/>
+                        </setting>
+                    </block>
+
+                    <block title="Occupational Health Governance" name="onehr_corehr_occupational_governance"
+                           groups="onehr_corehr.group_onehr_occupational_health_officer">
+                        <setting string="Operationally Enabled"
+                                 help="Governance flag only; restricted ACLs are always authoritative.">
+                            <field name="onehr_occ_health_enabled"/>
+                        </setting>
+                        <setting string="Medical Retention Days"
+                                 help="Set according to applicable company policy and law. 0 means not configured here.">
+                            <field name="onehr_medical_retention_days"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_learning_certificate_list" model="ir.ui.view">
+        <field name="name">onehr.learning.certificate.list.enterprise</field>
+        <field name="model">onehr.learning.certificate</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'valid'"
+                  decoration-warning="expiry_status == 'due'"
+                  decoration-danger="state in ['expired','revoked']">
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="course_id"/>
+                <field name="issue_date"/>
+                <field name="valid_to"/>
+                <field name="state" widget="badge"/>
+                <field name="expiry_status" widget="badge"/>
+                <field name="days_to_expiry" optional="show"/>
+                <field name="document_target_label" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <button name="action_print_certificate" type="object" string="Print"
+                        icon="fa-print" invisible="state not in ['valid','expired']"
+                        groups="onehr_learning.group_onehr_learning_officer"/>
+                <button name="action_push_to_document" type="object" string="Document"
+                        icon="fa-folder-open"
+                        invisible="state not in ['valid','expired'] or document_target_res_id != 0"
+                        groups="onehr_learning.group_onehr_learning_officer"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_certificate_form" model="ir.ui.view">
+        <field name="name">onehr.learning.certificate.form.enterprise</field>
+        <field name="model">onehr.learning.certificate</field>
+        <field name="arch" type="xml">
+            <form string="Learning Certificate">
+                <header>
+                    <button name="action_issue" type="object" string="Issue"
+                            class="oe_highlight" invisible="state != 'draft'"
+                            groups="onehr_learning.group_onehr_learning_officer"/>
+                    <button name="action_print_certificate" type="object" string="Print Certificate"
+                            invisible="state not in ['valid','expired']"
+                            groups="onehr_learning.group_onehr_learning_officer"/>
+                    <button name="action_push_to_document" type="object" string="Send to Document"
+                            invisible="state not in ['valid','expired'] or document_target_res_id != 0"
+                            groups="onehr_learning.group_onehr_learning_officer"/>
+                    <button name="action_open_document" type="object" string="Open Document"
+                            invisible="document_target_res_id == 0"
+                            groups="onehr_learning.group_onehr_learning_officer"/>
+                    <button name="action_revoke" type="object" string="Revoke"
+                            invisible="state not in ['valid','expired']"
+                            groups="onehr_learning.group_onehr_learning_manager_approver"
+                            confirm="Revoke this certificate? The evidence will remain retained."/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,valid,expired,revoked"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Certificate">
+                            <field name="employee_id" readonly="1"
+                                   groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_manager_approver"/>
+                            <field name="employee_name" readonly="1"/>
+                            <field name="employee_number" readonly="1"
+                                   groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_manager_approver"/>
+                            <field name="course_id" readonly="1"/>
+                            <field name="session_id" readonly="1"/>
+                            <field name="enrollment_id" readonly="1"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Validity">
+                            <field name="issue_date" readonly="1"/>
+                            <field name="valid_from" readonly="1"/>
+                            <field name="valid_to" readonly="1"/>
+                            <field name="reminder_date" readonly="1"/>
+                            <field name="days_to_expiry" readonly="1"/>
+                            <field name="expiry_status" widget="badge" readonly="1"/>
+                            <field name="responsible_user_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Issuance / Revocation Evidence">
+                            <group>
+                                <field name="issued_at" readonly="1"/>
+                                <field name="issued_by_id" readonly="1"/>
+                                <field name="last_reminder_at" readonly="1"/>
+                                <field name="revocation_reason"/>
+                                <field name="revoked_at" readonly="1"/>
+                                <field name="revoked_by_id" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Document Integration"
+                              groups="onehr_learning.group_onehr_learning_officer">
+                            <group>
+                                <field name="document_target_model" readonly="1"/>
+                                <field name="document_target_res_id" readonly="1"/>
+                                <field name="document_target_label" readonly="1"/>
+                                <field name="document_version_res_id" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_certificate_search" model="ir.ui.view">
+        <field name="name">onehr.learning.certificate.search.enterprise</field>
+        <field name="model">onehr.learning.certificate</field>
+        <field name="arch" type="xml">
+            <search string="Learning Certificates">
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="employee_number"
+                       groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_manager_approver"/>
+                <field name="course_id"/>
+                <field name="session_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter name="valid" string="Valid" domain="[('state', '=', 'valid')]"/>
+                <filter name="expired" string="Expired" domain="[('state', '=', 'expired')]"/>
+                <filter name="revoked" string="Revoked" domain="[('state', '=', 'revoked')]"/>
+                <filter name="expiring" string="Expiry Due"
+                        domain="[('state', '=', 'valid'), ('valid_to', '!=', False)]"/>
+                <filter name="issue_date_filter" string="Issue Date" date="issue_date"/>
+                <filter name="expiry_date_filter" string="Expiry Date" date="valid_to"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_course" string="Course" context="{'group_by': 'course_id'}"/>
+                    <filter name="group_expiry" string="Expiry Month" context="{'group_by': 'valid_to:month'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_certificate_calendar" model="ir.ui.view">
+        <field name="name">onehr.learning.certificate.calendar.enterprise</field>
+        <field name="model">onehr.learning.certificate</field>
+        <field name="arch" type="xml">
+            <calendar string="Certificate Expiry" date_start="valid_to" color="course_id">
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="course_id"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_certificate_pivot" model="ir.ui.view">
+        <field name="name">onehr.learning.certificate.pivot.enterprise</field>
+        <field name="model">onehr.learning.certificate</field>
+        <field name="arch" type="xml">
+            <pivot string="Certification Coverage">
+                <field name="course_id" type="row"/>
+                <field name="state" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_certificate_graph" model="ir.ui.view">
+        <field name="name">onehr.learning.certificate.graph.enterprise</field>
+        <field name="model">onehr.learning.certificate</field>
+        <field name="arch" type="xml">
+            <graph string="Certificate Coverage">
+                <field name="course_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_learning_certificates" model="ir.actions.act_window">
+        <field name="name">Certificates</field>
+        <field name="res_model">onehr.learning.certificate</field>
+        <field name="view_mode">list,calendar,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_learning_certificate_search"/>
+    </record>
+</odoo>

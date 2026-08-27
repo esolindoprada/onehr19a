@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Kiosk Operator already implies Attendance Officer, whose accepted addon exposes OneHR root. -->
+    <menuitem id="menu_onehr_mobile_kiosk_root"
+              name="Devices &amp; Kiosk"
+              parent="onehr_base.menu_onehr_root"
+              sequence="38"
+              groups="onehr_mobile_kiosk.group_onehr_kiosk_operator"/>
+
+    <menuitem id="menu_onehr_kiosk_devices"
+              name="Kiosk Devices"
+              parent="menu_onehr_mobile_kiosk_root"
+              action="action_onehr_kiosk_device"
+              sequence="10"/>
+
+    <menuitem id="menu_onehr_kiosk_activity"
+              name="Activity Logs"
+              parent="menu_onehr_mobile_kiosk_root"
+              action="action_onehr_kiosk_log"
+              sequence="20"/>
+
+    <menuitem id="menu_onehr_kiosk_sync_queue"
+              name="Sync Queue"
+              parent="menu_onehr_mobile_kiosk_root"
+              action="action_onehr_kiosk_sync_queue"
+              sequence="30"/>
+
+    <menuitem id="menu_onehr_kiosk_analytics"
+              name="Usage Analytics"
+              parent="menu_onehr_mobile_kiosk_root"
+              action="action_onehr_kiosk_usage_analysis"
+              sequence="40"
+              groups="onehr_mobile_kiosk.group_onehr_kiosk_admin"/>
+</odoo>

@@ -1,0 +1,9 @@
+<odoo noupdate="1">
+    <record id="seq_onehr_jd" model="ir.sequence">
+        <field name="name">OneHR Job Description</field>
+        <field name="code">onehr.jd</field>
+        <field name="prefix">JD/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

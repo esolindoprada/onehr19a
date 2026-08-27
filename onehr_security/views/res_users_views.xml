@@ -1,0 +1,155 @@
+<odoo>
+    <record id="view_users_form_onehr_security" model="ir.ui.view">
+        <field name="name">res.users.form.onehr.security.enterprise</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_onehr_role_assignments"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-id-badge"
+                    groups="onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin"
+                    invisible="not id"
+                >
+                    <field name="onehr_role_assignment_count" widget="statinfo" string="Role Assignments"/>
+                </button>
+                <button
+                    name="action_open_onehr_sod_conflicts"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-exclamation-triangle"
+                    groups="onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin,onehr_security.group_onehr_compliance_officer"
+                    invisible="not id"
+                >
+                    <field name="onehr_sod_conflict_count" widget="statinfo" string="SoD Conflicts"/>
+                </button>
+                <button
+                    name="action_open_onehr_audit_events"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-history"
+                    groups="onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin,onehr_security.group_onehr_compliance_officer"
+                    invisible="not id"
+                >
+                    <field name="onehr_audit_event_count" widget="statinfo" string="Audit Events"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//page[@name='page_security']" position="before">
+                <page
+                    string="OneHR Security"
+                    name="onehr_security"
+                    groups="onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin,onehr_security.group_onehr_compliance_officer"
+                >
+                    <group>
+                        <group string="Effective OneHR Access">
+                            <field name="onehr_effective_role_ids" widget="many2many_tags" readonly="1"/>
+                            <field name="onehr_effective_role_count" readonly="1"/>
+                            <field name="onehr_last_access_reconciled_at" readonly="1"/>
+                        </group>
+                        <group string="Governance">
+                            <field name="onehr_sod_conflict_count" readonly="1"/>
+                            <field name="onehr_audit_event_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div
+                        class="d-flex gap-2 my-3"
+                        groups="onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin"
+                    >
+                        <button
+                            name="action_reconcile_onehr_access"
+                            type="object"
+                            string="Reconcile OneHR Access"
+                            class="btn-primary"
+                            icon="fa-refresh"
+                            invisible="not id"
+                        />
+                    </div>
+
+                    <notebook>
+                        <page string="Role Assignments" name="onehr_role_assignments">
+                            <field name="onehr_role_assignment_ids" context="{'default_user_id': id, 'default_company_id': company_id}">
+                                <list
+                                    decoration-success="effective_status == 'effective'"
+                                    decoration-info="effective_status == 'scheduled'"
+                                    decoration-danger="effective_status == 'blocked'"
+                                    decoration-muted="effective_status in ('expired', 'revoked')"
+                                >
+                                    <field name="role_id"/>
+                                    <field name="company_id" groups="base.group_multi_company"/>
+                                    <field name="valid_from"/>
+                                    <field name="valid_to"/>
+                                    <field name="effective_status" widget="badge"/>
+                                    <field name="conflict_count" optional="show"/>
+                                    <button
+                                        name="action_activate"
+                                        type="object"
+                                        string="Activate"
+                                        icon="fa-check"
+                                        groups="onehr_security.group_onehr_security_manager"
+                                        invisible="state not in ('draft', 'blocked')"
+                                    />
+                                    <button
+                                        name="action_revoke"
+                                        type="object"
+                                        string="Revoke"
+                                        icon="fa-ban"
+                                        groups="onehr_security.group_onehr_security_manager"
+                                        invisible="state == 'revoked'"
+                                    />
+                                    <button name="action_open_role" type="object" string="Role" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Security Administration Note" name="onehr_security_admin_note" groups="onehr_security.group_onehr_security_admin">
+                            <field name="onehr_security_note" placeholder="Administrative security note only — never store passwords, tokens or unrelated sensitive HR content."/>
+                        </page>
+                    </notebook>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_users_tree_onehr_security" model="ir.ui.view">
+        <field name="name">res.users.list.onehr.security.enterprise</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_tree"/>
+        <field name="arch" type="xml">
+            <field name="role" position="after">
+                <field name="company_id" optional="show" groups="base.group_multi_company"/>
+                <field name="onehr_effective_role_count" string="OneHR Roles" optional="show"/>
+                <field name="onehr_sod_conflict_count" string="SoD Conflicts" optional="show"/>
+                <field name="onehr_last_access_reconciled_at" optional="hide" groups="onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_users_search_onehr_security" model="ir.ui.view">
+        <field name="name">res.users.search.onehr.security.enterprise</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_search"/>
+        <field name="arch" type="xml">
+            <field name="share" position="after">
+                <field name="onehr_effective_role_ids" string="OneHR Role"/>
+            </field>
+            <xpath expr="//search" position="inside">
+                <filter name="onehr_has_roles" string="Has OneHR Roles" domain="[('onehr_role_assignment_ids', '!=', False)]"/>
+                <filter name="onehr_has_sod_conflicts" string="Has SoD Conflicts" domain="[('onehr_sod_conflict_count', '&gt;', 0)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_onehr_security_users" model="ir.actions.act_window">
+        <field name="name">Security Users</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="base.view_users_tree"/>
+        <field name="search_view_id" ref="base.view_users_search"/>
+        <field name="domain">[('share', '=', False)]</field>
+        <field name="context">{'search_default_filter_no_share': 1}</field>
+    </record>
+</odoo>

@@ -1,0 +1,113 @@
+PASS: HARD GATE 0 manifest parse
+PASS: HARD GATE 0 project/addon identity
+PASS: Manifest version 19.0.1.0.0
+PASS: Hard dependencies exactly OneHR Base + CoreHR
+PASS: All manifest data files exist
+PASS: Python syntax (15 files)
+PASS: HARD GATE 4 exact four Career/Succession persistent model names
+PASS: Persistent model implemented: onehr.competency
+PASS: Persistent model implemented: onehr.position.competency
+PASS: Persistent model implemented: onehr.succession.plan
+PASS: Persistent model implemented: onehr.talent.pool
+PASS: All four business models use approved OneHR audit mixin
+PASS: No duplicate direct chatter mixin ownership
+PASS: Odoo 19 @api.depends contains no explicit .id dependency
+PASS: Generic tutorial scaffold removed completely
+PASS: No tutorial model/controller residue
+PASS: No legacy _sql_constraints
+PASS: No business sudo() bypass
+PASS: No public unauthenticated Career controller
+PASS: Odoo 19 models.Constraint used
+PASS: XML syntax (10 files)
+PASS: Odoo 19 list syntax uses <list>
+PASS: Odoo 19 direct view modifiers
+PASS: Odoo 19 search <group> elements have no attributes
+PASS: HARD GATE 7/8/9 List/Form/Search views: onehr.competency
+PASS: HARD GATE 7/8/9 List/Form/Search views: onehr.position.competency
+PASS: HARD GATE 7/8/9 List/Form/Search views: onehr.succession.plan
+PASS: HARD GATE 7/8/9 List/Form/Search views: onehr.talent.pool
+PASS: HARD GATE 6 enterprise UI — Statusbar widgets
+PASS: HARD GATE 6 enterprise UI — Smart buttons
+PASS: HARD GATE 6 enterprise UI — Body form action buttons
+PASS: HARD GATE 6 enterprise UI — One2many/Many2many row action buttons
+PASS: HARD GATE 6 enterprise UI — Chatter
+PASS: HARD GATE 6 enterprise UI — Kanban
+PASS: HARD GATE 6 enterprise UI — Pivot
+PASS: HARD GATE 6 enterprise UI — Graph
+PASS: HARD GATE 6 enterprise UI — Badges
+PASS: HARD GATE 6 enterprise UI — Ribbons
+PASS: Object button → Python method cross-reference
+PASS: Unique local XML external IDs
+PASS: ACL CSV parse (8 rows)
+PASS: HARD GATE 10 no broad base.group_user Career/Succession CRUD
+PASS: Security role present: group_onehr_career_hrbp
+PASS: Security role present: group_onehr_talent_manager
+PASS: Odoo 19 res.groups.privilege pattern used
+PASS: Global company isolation rules on all four models
+PASS: Action-controlled lifecycle state guards present
+PASS: Historical evidence deletion guards on all four models
+PASS: HARD GATE 3/15 functional contract — competency behavioural evidence scale
+PASS: HARD GATE 3/15 functional contract — position competency requirement
+PASS: HARD GATE 3/15 functional contract — high-potential talent
+PASS: HARD GATE 3/15 functional contract — talent readiness level
+PASS: HARD GATE 3/15 functional contract — 9-box talent position
+PASS: HARD GATE 3/15 functional contract — gap-analysis requirement source
+PASS: HARD GATE 3/15 functional contract — performance scoring
+PASS: HARD GATE 3/15 functional contract — potential scoring
+PASS: HARD GATE 3/15 functional contract — learning scoring
+PASS: HARD GATE 3/15 functional contract — Appraisal/Learning soft source refresh
+PASS: HARD GATE 3/15 functional contract — multiple successor candidates
+PASS: HARD GATE 3/15 functional contract — primary successor
+PASS: HARD GATE 3/15 functional contract — critical position planning
+PASS: HARD GATE 3/15 functional contract — succession coverage
+PASS: HARD GATE 3/15 functional contract — bench strength
+PASS: HARD GATE 3/15 functional contract — average readiness
+PASS: HARD GATE 3/15 functional contract — position succession risk index
+PASS: HARD GATE 3/15 functional contract — Draft → Proposed workflow
+PASS: HARD GATE 3/15 functional contract — Proposed → Approved workflow
+PASS: HARD GATE 3/15 functional contract — Approved → Active workflow
+PASS: HARD GATE 3/15 functional contract — succession review reminders
+PASS: HARD GATE 3/15 functional contract — Analytics KPI service
+PASS: HARD GATE 3/15 functional contract — Talent BI/API service
+PASS: HARD GATE 3/15 functional contract — Competency BI/API service
+PASS: HARD GATE 3/15 functional contract — Portal/self-service contract
+PASS: HARD GATE 3/15 functional contract — Integration ingestion service
+PASS: Competency gap QWeb PDF
+PASS: Succession plan QWeb PDF
+PASS: Integrated OneHR root navigation without sibling source edit
+PASS: Runtime test inventory exactly 24 methods
+PASS: Runtime test suites are post-install tagged
+PASS: Mandatory Enterprise documentation set
+PASS: Guardrail contains HARD GATE 0
+PASS: Guardrail contains HARD GATE 1
+PASS: Guardrail contains HARD GATE 2
+PASS: Guardrail contains HARD GATE 3
+PASS: Guardrail contains HARD GATE 4
+PASS: Guardrail contains HARD GATE 5
+PASS: Guardrail contains HARD GATE 6
+PASS: Guardrail contains HARD GATE 7
+PASS: Guardrail contains HARD GATE 8
+PASS: Guardrail contains HARD GATE 9
+PASS: Guardrail contains HARD GATE 10
+PASS: Guardrail contains HARD GATE 12
+PASS: Guardrail contains HARD GATE 13
+PASS: Guardrail contains HARD GATE 14
+PASS: Guardrail contains HARD GATE 15
+PASS: Codex role locked to bounded implementation worker
+PASS: Codex retry limit = 2
+WARN: Exact Master Model Registry ED rows remain pending; classifications were not invented
+WARN: Native Gantt intentionally not fabricated on Odoo 19 CE
+
+SOURCE_FILES_PYTHON=15
+SOURCE_FILES_XML=10
+CUSTOM_PERSISTENT_MODELS=4
+ACL_ROWS=8
+RUNTIME_TEST_METHODS=24
+SOURCE_ACCEPTANCE_PASS_COUNT=97
+SOURCE_ACCEPTANCE_WARN_COUNT=2
+SOURCE_ACCEPTANCE_FAIL_COUNT=0
+ONEHR_CAREER_SUCCESSION_DIRECT_FULL_SOURCE_ACCEPTANCE=PASS
+SOURCE_ENTERPRISE_COMPLETENESS=PASS_FOR_RUNTIME
+REGISTRY_ED_CLASSIFICATION=PENDING_EXACT_REGISTRY_ROW_VERIFICATION
+WINDOWS_RUNTIME_ACCEPTANCE=PENDING
+ONEHR_CAREER_SUCCESSION_MOVE_FORWARD_READY=NO

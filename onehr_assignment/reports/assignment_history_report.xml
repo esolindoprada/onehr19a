@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_onehr_assignment_history" model="ir.actions.report">
+        <field name="name">Assignment History Record</field>
+        <field name="model">onehr.assignment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_assignment.report_assignment_history_document</field>
+        <field name="report_file">onehr_assignment.report_assignment_history_document</field>
+        <field name="binding_model_id" ref="model_onehr_assignment"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[Command.link(ref('onehr_assignment.group_onehr_assignment_officer'))]"/>
+        <field name="print_report_name">'Assignment - %s' % object.name</field>
+    </record>
+
+    <template id="report_assignment_history_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>OneHR Assignment Record</h2>
+                        <p><strong>Assignment:</strong> <span t-field="o.name"/></p>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr><th>Employee</th><td><span t-field="o.employee_name"/></td><th>Type</th><td><span t-field="o.assignment_type"/></td></tr>
+                                <tr><th>Position</th><td><span t-field="o.position_id"/></td><th>Movement</th><td><span t-field="o.movement_type"/></td></tr>
+                                <tr><th>Department</th><td><span t-field="o.department_id"/></td><th>Grade</th><td><span t-field="o.grade_id"/></td></tr>
+                                <tr><th>Manager</th><td><span t-field="o.manager_name"/></td><th>FTE</th><td><span t-field="o.fte"/></td></tr>
+                                <tr><th>Effective From</th><td><span t-field="o.effective_from"/></td><th>Effective To</th><td><span t-field="o.effective_to"/></td></tr>
+                                <tr><th>Status</th><td><span t-field="o.state"/></td><th>Company</th><td><span t-field="o.company_id"/></td></tr>
+                            </tbody>
+                        </table>
+                        <h4 t-if="o.costing_required">Effective Cost Allocation Evidence</h4>
+                        <table class="table table-sm" t-if="o.costing_required">
+                            <thead><tr><th>Valid From</th><th>Valid To</th><th>%</th><th>Cost Center</th><th>Project</th></tr></thead>
+                            <tbody><tr t-foreach="o.cost_allocation_ids" t-as="line"><td><span t-field="line.valid_from"/></td><td><span t-field="line.valid_to"/></td><td><span t-field="line.percentage"/></td><td><span t-field="line.cost_center_code"/></td><td><span t-field="line.project_code"/></td></tr></tbody>
+                        </table>
+                        <p class="text-muted">This report reflects OneHR governed placement history. Native employment facts remain versioned in Odoo hr.version.</p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,129 @@
+<odoo>
+    <record id="view_onehr_approval_request_list" model="ir.ui.view">
+        <field name="name">onehr.approval.request.list.enterprise</field>
+        <field name="model">onehr.approval.request</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state in ('approved', 'executed')"
+                  decoration-danger="state == 'rejected'"
+                  decoration-warning="sla_status == 'overdue'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/><field name="source_display_name"/><field name="rule_id"/>
+                <field name="requested_by_id"/><field name="requested_at"/><field name="current_level"/>
+                <field name="deadline_at"/><field name="sla_status" widget="badge"/><field name="aging_bucket" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/><field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_approval_request_form" model="ir.ui.view">
+        <field name="name">onehr.approval.request.form.enterprise</field>
+        <field name="model">onehr.approval.request</field>
+        <field name="arch" type="xml">
+            <form string="Approval Request">
+                <header>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary"
+                            groups="onehr_workflow_approval.group_onehr_approver" invisible="state != 'pending'"/>
+                    <button name="action_reject" type="object" string="Reject" class="btn-secondary"
+                            groups="onehr_workflow_approval.group_onehr_approver" invisible="state != 'pending'"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state not in ('draft', 'submitted', 'pending')"/>
+                    <button name="action_resubmit" type="object" string="Resubmit" invisible="state not in ('rejected', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,pending,approved,rejected,executed,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_open_source" type="object" icon="fa-external-link"><div class="o_stat_info"><span class="o_stat_text">Source Record</span></div></button>
+                        <button class="oe_stat_button" name="action_open_decisions" type="object" icon="fa-gavel"><field name="decision_count" widget="statinfo" string="Decisions"/></button>
+                        <button class="oe_stat_button" name="action_open_escalations" type="object" icon="fa-bell"><field name="escalation_count" widget="statinfo" string="SLA Events"/></button>
+                        <button class="oe_stat_button" name="action_open_resubmissions" type="object" icon="fa-repeat" invisible="resubmission_count == 0"><field name="resubmission_count" widget="statinfo" string="Resubmissions"/></button>
+                    </div>
+                    <widget name="web_ribbon" title="OVERDUE" bg_color="text-bg-danger" invisible="sla_status != 'overdue'"/>
+                    <div class="oe_title"><label for="name"/><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Source Transaction"><field name="source_display_name" readonly="1"/><field name="source_model" readonly="1"/><field name="source_res_id" readonly="1"/><field name="company_id" groups="base.group_multi_company" readonly="1"/></group>
+                        <group string="Approval Governance"><field name="rule_id" readonly="1"/><field name="rule_code" readonly="1"/><field name="rule_version" readonly="1"/><field name="requested_by_id" readonly="1"/><field name="requested_at" readonly="1"/></group>
+                    </group>
+                    <group string="Current SLA"><field name="current_level" readonly="1"/><field name="current_step_ids" widget="many2many_tags" readonly="1"/><field name="current_approver_ids" widget="many2many_tags" readonly="1"/><field name="deadline_at" readonly="1"/><field name="sla_status" widget="badge" readonly="1"/><field name="aging_bucket" widget="badge" readonly="1"/></group>
+
+                    <!-- Body-form operational button. Server ACL/rules/Python guards remain authoritative. -->
+                    <div class="d-flex gap-2 my-3" invisible="state != 'pending'">
+                        <button name="action_send_reminder" type="object" string="Send Reminder" class="btn-secondary" icon="fa-bell"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Decision"><group><field name="decision_comment" placeholder="Optional approval comment; mandatory for rejection." readonly="state != 'pending'"/></group></page>
+                        <page string="Manual Reassign" groups="onehr_workflow_approval.group_onehr_workflow_manager">
+                            <group><field name="reassign_from_user_id" readonly="state != 'pending'"/><field name="reassign_to_user_id" readonly="state != 'pending'"/><field name="reassign_reason" readonly="state != 'pending'"/>
+                            <button name="action_reassign_current_authority" type="object" string="Reassign Current Authority" class="btn-secondary" icon="fa-exchange" invisible="state != 'pending'"/></group>
+                        </page>
+                        <page string="Decision Evidence">
+                            <field name="decision_ids" readonly="1"><list decoration-success="decision == 'approve'" decoration-danger="decision == 'reject'">
+                                <field name="step_id"/><field name="authority_user_id"/><field name="approver_id"/><field name="decision" widget="badge"/><field name="decision_source" widget="badge"/><field name="decided_at"/><field name="rationale" optional="show"/>
+                                <button name="action_open_request" type="object" string="Request" icon="fa-external-link"/>
+                            </list></field>
+                        </page>
+                        <page string="SLA &amp; Escalation Evidence">
+                            <field name="escalation_log_ids" readonly="1"><list decoration-warning="event_type in ('overdue', 'escalation')">
+                                <field name="event_at"/><field name="step_id"/><field name="event_type" widget="badge"/><field name="from_user_id"/><field name="to_user_id"/><field name="due_at"/><field name="automated"/><field name="reason"/>
+                                <button name="action_open_request" type="object" string="Request" icon="fa-external-link"/>
+                            </list></field>
+                        </page>
+                        <page string="Source Snapshot"><group><field name="source_payload_json" readonly="1"/><field name="context_json" readonly="1"/><field name="routing_snapshot_json" readonly="1"/></group></page>
+                        <page string="Request Notes"><field name="request_note" readonly="state in ('approved', 'rejected', 'cancelled', 'executed')"/></page>
+                        <page string="Completion"><group><field name="submitted_at" readonly="1"/><field name="final_decision" readonly="1"/><field name="finalized_at" readonly="1"/><field name="executed_at" readonly="1"/><field name="cycle_hours" readonly="1"/><field name="supersedes_request_id" readonly="1"/></group></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_approval_request_search" model="ir.ui.view">
+        <field name="name">onehr.approval.request.search.enterprise</field><field name="model">onehr.approval.request</field>
+        <field name="arch" type="xml"><search>
+            <field name="name"/><field name="source_display_name"/><field name="rule_id"/><field name="requested_by_id"/><field name="current_approver_ids"/><field name="company_id"/><field name="state"/>
+            <filter name="pending" string="Pending" domain="[('state','=','pending')]"/><filter name="approved" string="Approved" domain="[('state','=','approved')]"/><filter name="rejected" string="Rejected" domain="[('state','=','rejected')]"/><filter name="executed" string="Executed" domain="[('state','=','executed')]"/>
+            <group><filter name="group_state" string="State" context="{'group_by':'state'}"/><filter name="group_rule" string="Rule" context="{'group_by':'rule_id'}"/><filter name="group_requester" string="Requester" context="{'group_by':'requested_by_id'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/></group>
+        </search></field>
+    </record>
+
+    <record id="view_onehr_approval_request_pivot" model="ir.ui.view"><field name="name">onehr.approval.request.pivot.enterprise</field><field name="model">onehr.approval.request</field><field name="arch" type="xml"><pivot string="Approval Backlog Analysis"><field name="company_id" type="row"/><field name="rule_id" type="row"/><field name="state" type="col"/></pivot></field></record>
+    <record id="view_onehr_approval_request_graph" model="ir.ui.view"><field name="name">onehr.approval.request.graph.enterprise</field><field name="model">onehr.approval.request</field><field name="arch" type="xml"><graph string="Approval Request Trend" type="bar"><field name="requested_at" interval="month"/><field name="state"/></graph></field></record>
+
+    <record id="action_onehr_my_approval_requests" model="ir.actions.act_window"><field name="name">My Requests</field><field name="res_model">onehr.approval.request</field><field name="view_mode">list,form</field><field name="domain">[('requested_by_id', '=', uid)]</field><field name="search_view_id" ref="view_onehr_approval_request_search"/></record>
+    <record id="action_onehr_to_approve" model="ir.actions.act_window"><field name="name">To Approve</field><field name="res_model">onehr.approval.request</field><field name="view_mode">list,form</field><field name="domain">[('state', '=', 'pending'), ('current_approver_ids', 'in', uid)]</field><field name="search_view_id" ref="view_onehr_approval_request_search"/></record>
+    <record id="action_onehr_all_approval_requests" model="ir.actions.act_window"><field name="name">All Requests</field><field name="res_model">onehr.approval.request</field><field name="view_mode">list,form,pivot,graph</field><field name="search_view_id" ref="view_onehr_approval_request_search"/></record>
+
+    <record id="view_onehr_approval_decision_list" model="ir.ui.view"><field name="name">onehr.approval.decision.list.enterprise</field><field name="model">onehr.approval.decision</field><field name="arch" type="xml"><list decoration-success="decision == 'approve'" decoration-danger="decision == 'reject'">
+        <field name="request_id"/><field name="step_id"/><field name="authority_user_id"/><field name="approver_id"/><field name="decision" widget="badge"/><field name="decision_source" widget="badge"/><field name="decided_at"/><field name="company_id" groups="base.group_multi_company"/><field name="supersedes_id" optional="show"/>
+        <button name="action_open_request" type="object" string="Request" icon="fa-external-link"/><button name="action_open_source" type="object" string="Source" icon="fa-external-link"/>
+    </list></field></record>
+
+    <record id="view_onehr_approval_decision_form" model="ir.ui.view"><field name="name">onehr.approval.decision.form.enterprise</field><field name="model">onehr.approval.decision</field><field name="arch" type="xml"><form string="Approval Decision" create="false" edit="false" delete="false">
+        <sheet><div class="oe_button_box" name="button_box"><button class="oe_stat_button" name="action_open_request" type="object" icon="fa-check-square-o"><div class="o_stat_info"><span class="o_stat_text">Open Request</span></div></button><button class="oe_stat_button" name="action_open_source" type="object" icon="fa-external-link"><div class="o_stat_info"><span class="o_stat_text">Open Source</span></div></button></div>
+        <div class="oe_title"><h1><field name="decision" widget="badge"/></h1></div><group><group string="Approval Evidence"><field name="request_id"/><field name="step_id"/><field name="authority_user_id"/><field name="approver_id"/><field name="decided_at"/><field name="decision_source"/></group><group string="Delegation / Correction"><field name="delegated_from_user_id"/><field name="delegation_id"/><field name="supersedes_id"/><field name="is_correction"/><field name="correction_reason"/></group></group><notebook><page string="Rationale"><field name="rationale"/></page><page string="Corrections"><field name="correction_ids"/></page></notebook></sheet><chatter/>
+    </form></field></record>
+
+    <record id="view_onehr_approval_decision_search" model="ir.ui.view"><field name="name">onehr.approval.decision.search.enterprise</field><field name="model">onehr.approval.decision</field><field name="arch" type="xml"><search>
+        <field name="request_id"/><field name="step_id"/><field name="approver_id"/><field name="authority_user_id"/><field name="decision"/><field name="decision_source"/><field name="company_id"/>
+        <filter name="approve" string="Approved Decisions" domain="[('decision','=','approve')]"/><filter name="reject" string="Rejected Decisions" domain="[('decision','=','reject')]"/><filter name="corrections" string="Corrections" domain="[('is_correction','=',True)]"/>
+        <group><filter name="group_decision" string="Decision" context="{'group_by':'decision'}"/><filter name="group_source" string="Decision Source" context="{'group_by':'decision_source'}"/><filter name="group_approver" string="Actor" context="{'group_by':'approver_id'}"/></group>
+    </search></field></record>
+    <record id="action_onehr_approval_decisions" model="ir.actions.act_window"><field name="name">Decision Evidence</field><field name="res_model">onehr.approval.decision</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_onehr_approval_decision_search"/></record>
+
+    <record id="view_onehr_approval_escalation_list" model="ir.ui.view"><field name="name">onehr.approval.escalation.log.list.enterprise</field><field name="model">onehr.approval.escalation.log</field><field name="arch" type="xml"><list decoration-warning="event_type in ('overdue', 'escalation')">
+        <field name="event_at"/><field name="request_id"/><field name="step_id"/><field name="event_type" widget="badge"/><field name="from_user_id"/><field name="to_user_id"/><field name="due_at"/><field name="automated"/><field name="company_id" groups="base.group_multi_company"/><button name="action_open_request" type="object" string="Request" icon="fa-external-link"/><button name="action_open_source" type="object" string="Source" icon="fa-external-link"/>
+    </list></field></record>
+
+    <record id="view_onehr_approval_escalation_form" model="ir.ui.view"><field name="name">onehr.approval.escalation.log.form.enterprise</field><field name="model">onehr.approval.escalation.log</field><field name="arch" type="xml"><form string="Approval SLA / Escalation Evidence" create="false" edit="false" delete="false">
+        <sheet><div class="oe_button_box" name="button_box"><button class="oe_stat_button" name="action_open_request" type="object" icon="fa-check-square-o"><div class="o_stat_info"><span class="o_stat_text">Open Request</span></div></button><button class="oe_stat_button" name="action_open_source" type="object" icon="fa-external-link"><div class="o_stat_info"><span class="o_stat_text">Open Source</span></div></button></div>
+        <group><group><field name="request_id"/><field name="step_id"/><field name="event_type"/><field name="event_at"/><field name="due_at"/></group><group><field name="from_user_id"/><field name="to_user_id"/><field name="automated"/><field name="correlation_id"/><field name="company_id" groups="base.group_multi_company"/></group></group><notebook><page string="Reason"><field name="reason"/></page><page string="Structured Payload"><field name="payload_json"/></page></notebook></sheet>
+    </form></field></record>
+
+    <record id="view_onehr_approval_escalation_search" model="ir.ui.view"><field name="name">onehr.approval.escalation.log.search.enterprise</field><field name="model">onehr.approval.escalation.log</field><field name="arch" type="xml"><search>
+        <field name="request_id"/><field name="step_id"/><field name="event_type"/><field name="from_user_id"/><field name="to_user_id"/><field name="company_id"/>
+        <filter name="overdue" string="Overdue" domain="[('event_type','=','overdue')]"/><filter name="escalation" string="Escalations" domain="[('event_type','=','escalation')]"/><filter name="reassign" string="Reassignments" domain="[('event_type','=','reassign')]"/>
+        <group><filter name="group_event" string="Event Type" context="{'group_by':'event_type'}"/><filter name="group_step" string="Step" context="{'group_by':'step_id'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/></group>
+    </search></field></record>
+    <record id="action_onehr_approval_escalations" model="ir.actions.act_window"><field name="name">SLA &amp; Escalation Evidence</field><field name="res_model">onehr.approval.escalation.log</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_onehr_approval_escalation_search"/></record>
+</odoo>

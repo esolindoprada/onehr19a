@@ -1,0 +1,387 @@
+<odoo>
+    <record id="view_onehr_jd_list" model="ir.ui.view">
+        <field name="name">onehr.jd.list.enterprise</field>
+        <field name="model">onehr.jd</field>
+        <field name="arch" type="xml">
+            <list string="Job Descriptions"
+                  decoration-success="coverage_state == 'covered' and not review_overdue"
+                  decoration-warning="review_overdue"
+                  decoration-info="is_template"
+                  decoration-muted="not active">
+                <field name="current_version_id" column_invisible="True"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="position_code"/>
+                <field name="position_name"/>
+                <field name="job_name" optional="show"/>
+                <field name="job_family_name" optional="show"/>
+                <field name="department_name" optional="show"/>
+                <field name="grade_name" optional="hide"/>
+                <field name="is_template"/>
+                <field name="coverage_state" widget="badge"/>
+                <field name="lifecycle_state" widget="badge"
+                       groups="onehr_job_description.group_onehr_jd_editor"/>
+                <field name="version_count"
+                       groups="onehr_job_description.group_onehr_jd_editor"/>
+                <field name="published_version_count" optional="hide"
+                       groups="onehr_job_description.group_onehr_jd_editor"/>
+                <field name="published_at" optional="hide"/>
+                <field name="review_due_date"/>
+                <field name="version_age_days" optional="hide"/>
+                <field name="review_overdue" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active" optional="hide"/>
+                <button name="action_open_current_version" type="object"
+                        string="Current JD" icon="fa-file-text-o"
+                        invisible="not current_version_id"/>
+                <button name="action_create_new_version" type="object"
+                        string="New Version" icon="fa-copy"
+                        groups="onehr_job_description.group_onehr_jd_editor"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_jd_kanban" model="ir.ui.view">
+        <field name="name">onehr.jd.kanban.enterprise</field>
+        <field name="model">onehr.jd</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="coverage_state">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="position_name"/>
+                <field name="job_family_name"/>
+                <field name="department_name"/>
+                <field name="coverage_state"/>
+                <field name="review_due_date"/>
+                <field name="review_overdue"/>
+                <field name="is_template"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong><field name="name"/></strong>
+                            <field name="coverage_state" widget="badge"/>
+                        </div>
+                        <div class="text-muted">
+                            <field name="code"/>
+                        </div>
+                        <div class="mt-2" t-if="record.position_name.raw_value">
+                            <strong>Position: </strong><field name="position_name"/>
+                        </div>
+                        <div t-if="record.job_family_name.raw_value">
+                            <strong>Family: </strong><field name="job_family_name"/>
+                        </div>
+                        <div t-if="record.department_name.raw_value">
+                            <strong>Unit: </strong><field name="department_name"/>
+                        </div>
+                        <div class="mt-2" t-if="record.review_due_date.raw_value">
+                            <strong>Review Due: </strong><field name="review_due_date"/>
+                        </div>
+                        <div class="mt-1" t-if="record.is_template.raw_value">
+                            <span class="badge text-bg-info">Job-Family Template</span>
+                        </div>
+                        <div class="mt-1" t-if="record.review_overdue.raw_value">
+                            <span class="badge text-bg-warning">Review Overdue</span>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_onehr_jd_form" model="ir.ui.view">
+        <field name="name">onehr.jd.form.enterprise</field>
+        <field name="model">onehr.jd</field>
+        <field name="arch" type="xml">
+            <form string="Job Description">
+                <header>
+                    <button name="action_create_new_version" type="object"
+                            string="Create New Version" class="btn-primary"
+                            groups="onehr_job_description.group_onehr_jd_editor"/>
+                    <button name="action_generate_position_jds" type="object"
+                            string="Generate Position JDs" class="btn-secondary"
+                            invisible="not is_template"
+                            groups="onehr_job_description.group_onehr_jd_editor"/>
+                    <button name="action_sync_from_job_family_template" type="object"
+                            string="Sync from Job-Family Template" class="btn-secondary"
+                            invisible="is_template"
+                            groups="onehr_job_description.group_onehr_jd_editor"/>
+                    <button name="action_archive_governed" type="object"
+                            string="Archive"
+                            invisible="not active"
+                            groups="onehr_job_description.group_onehr_jd_admin"/>
+                    <field name="lifecycle_state" widget="statusbar"
+                           statusbar_visible="draft,review,approved,published"
+                           groups="onehr_job_description.group_onehr_jd_editor"/>
+                </header>
+
+                <sheet>
+                    <field name="is_template" invisible="1"/>
+                    <field name="current_version_id" invisible="1"/>
+                    <field name="review_overdue" invisible="1"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_current_version" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not current_version_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Current JD</span>
+                            </div>
+                        </button>
+                        <button name="action_open_versions" type="object"
+                                class="oe_stat_button" icon="fa-history"
+                                groups="onehr_job_description.group_onehr_jd_editor">
+                            <field name="version_count" widget="statinfo" string="Versions"/>
+                        </button>
+                        <button name="action_open_position" type="object"
+                                class="oe_stat_button" icon="fa-sitemap"
+                                invisible="is_template or not position_id"
+                                groups="onehr_job_description.group_onehr_jd_editor">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Position</span>
+                            </div>
+                        </button>
+                        <button name="action_print_current_jd" type="object"
+                                class="oe_stat_button" icon="fa-file-pdf-o"
+                                invisible="not current_version_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Print Current</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Template"
+                            bg_color="text-bg-info"
+                            invisible="not is_template"/>
+                    <widget name="web_ribbon" title="Review Overdue"
+                            bg_color="text-bg-warning"
+                            invisible="not review_overdue"/>
+                    <widget name="web_ribbon" title="Archived"
+                            bg_color="text-bg-secondary"
+                            invisible="active"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Finance Director Job Description"/></h1>
+                        <div class="text-muted">
+                            <field name="code" readonly="1"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Position / Template Identity">
+                            <field name="is_template"
+                                   groups="onehr_job_description.group_onehr_jd_editor"
+                                   readonly="current_version_id"/>
+                            <field name="position_id"
+                                   invisible="is_template"
+                                   readonly="current_version_id"
+                                   groups="onehr_job_description.group_onehr_jd_editor"/>
+                            <field name="position_name" readonly="1"
+                                   invisible="is_template"/>
+                            <field name="position_code" readonly="1"
+                                   invisible="is_template"/>
+                            <field name="job_family_id"
+                                   readonly="current_version_id"
+                                   groups="onehr_job_description.group_onehr_jd_editor"/>
+                            <field name="job_family_name" readonly="1"
+                                   groups="onehr_job_description.group_onehr_jd_reader"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="current_version_id"/>
+                            <field name="active"
+                                   groups="onehr_job_description.group_onehr_jd_editor"/>
+                        </group>
+                        <group string="Organization Context">
+                            <field name="job_name" readonly="1"/>
+                            <field name="department_name" readonly="1"/>
+                            <field name="grade_name" readonly="1"/>
+                            <field name="coverage_state" widget="badge" readonly="1"/>
+                            <field name="review_due_date" readonly="1"/>
+                            <field name="version_age_days" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Publication Governance"
+                           groups="onehr_job_description.group_onehr_jd_editor">
+                        <group>
+                            <field name="reviewer_user_ids" widget="many2many_tags"/>
+                            <field name="approver_user_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="latest_version_id" readonly="1"/>
+                            <field name="current_version_id" readonly="1"/>
+                            <field name="published_at" readonly="1"/>
+                            <field name="review_overdue" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 mb-3">
+                        <button name="action_open_current_version" type="object"
+                                string="Open Published Job Description"
+                                class="btn-secondary"
+                                invisible="not current_version_id"/>
+                        <button name="action_create_new_version" type="object"
+                                string="Start Controlled Revision"
+                                class="btn-secondary"
+                                groups="onehr_job_description.group_onehr_jd_editor"/>
+                        <button name="action_print_current_jd" type="object"
+                                string="Print Current JD"
+                                class="btn-secondary"
+                                invisible="not current_version_id"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Version History"
+                              groups="onehr_job_description.group_onehr_jd_editor">
+                            <field name="version_ids">
+                                <list create="false" delete="false"
+                                      decoration-success="state == 'published' and is_current"
+                                      decoration-info="state == 'review'"
+                                      decoration-warning="state == 'approved'">
+                                    <field name="previous_version_id" column_invisible="True"/>
+                                    <field name="version_no"/>
+                                    <field name="name"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="is_current"/>
+                                    <field name="effective_from"/>
+                                    <field name="effective_to"/>
+                                    <field name="review_due_date"/>
+                                    <field name="completeness_percent"/>
+                                    <field name="approved_at" optional="hide"/>
+                                    <field name="published_at"/>
+                                    <button name="action_open_version" type="object"
+                                            string="Open" icon="fa-external-link"/>
+                                    <button name="action_submit_review" type="object"
+                                            string="Submit" icon="fa-paper-plane"
+                                            invisible="state != 'draft'"/>
+                                    <button name="action_approve" type="object"
+                                            string="Approve" icon="fa-check"
+                                            invisible="state != 'review'"
+                                            groups="onehr_job_description.group_onehr_jd_approver"/>
+                                    <button name="action_publish" type="object"
+                                            string="Publish" icon="fa-bullhorn"
+                                            invisible="state != 'approved'"
+                                            groups="onehr_job_description.group_onehr_jd_approver"/>
+                                    <button name="action_print_comparison" type="object"
+                                            string="Compare" icon="fa-columns"
+                                            invisible="not previous_version_id"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Governance Notes"
+                              groups="onehr_job_description.group_onehr_jd_editor">
+                            <field name="notes"
+                                   placeholder="Approval matrix rationale, governance notes, review cadence..."/>
+                        </page>
+                    </notebook>
+
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_jd_search" model="ir.ui.view">
+        <field name="name">onehr.jd.search.enterprise</field>
+        <field name="model">onehr.jd</field>
+        <field name="arch" type="xml">
+            <search string="Search Job Descriptions">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="position_code"/>
+                <field name="position_name"/>
+                <field name="job_name"/>
+                <field name="job_family_name"/>
+                <field name="department_name"/>
+                <field name="grade_name"/>
+                <filter name="published" string="Published / Covered"
+                        domain="[('coverage_state', '=', 'covered')]"/>
+                <filter name="unpublished" string="Unpublished"
+                        domain="[('coverage_state', '=', 'unpublished')]"/>
+                <filter name="templates" string="Templates"
+                        domain="[('is_template', '=', True)]"/>
+                <filter name="position_jds" string="Position JDs"
+                        domain="[('is_template', '=', False)]"/>
+                <filter name="review_overdue" string="Review Overdue"
+                        domain="[('review_overdue', '=', True)]"/>
+                <filter name="active" string="Active"
+                        domain="[('active', '=', True)]"/>
+                <separator/>
+                <group>
+                    <filter name="group_coverage" string="Coverage"
+                            context="{'group_by': 'coverage_state'}"/>
+                    <filter name="group_state" string="Lifecycle"
+                            context="{'group_by': 'lifecycle_state'}"
+                            groups="onehr_job_description.group_onehr_jd_editor"/>
+                    <filter name="group_department" string="Department"
+                            context="{'group_by': 'department_id'}"
+                            groups="onehr_job_description.group_onehr_jd_editor"/>
+                    <filter name="group_job_family" string="Job Family"
+                            context="{'group_by': 'job_family_id'}"
+                            groups="onehr_job_description.group_onehr_jd_editor"/>
+                    <filter name="group_company" string="Company"
+                            context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_jd_pivot" model="ir.ui.view">
+        <field name="name">onehr.jd.pivot.enterprise</field>
+        <field name="model">onehr.jd</field>
+        <field name="arch" type="xml">
+            <pivot string="JD Coverage &amp; Governance">
+                <field name="department_id" type="row"/>
+                <field name="coverage_state" type="col"/>
+                <field name="coverage_score" type="measure"/>
+                <field name="version_count" type="measure"/>
+                <field name="version_age_days" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_jd_graph" model="ir.ui.view">
+        <field name="name">onehr.jd.graph.enterprise</field>
+        <field name="model">onehr.jd</field>
+        <field name="arch" type="xml">
+            <graph string="JD Coverage Analysis" type="bar">
+                <field name="department_id"/>
+                <field name="coverage_score" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_jd" model="ir.actions.act_window">
+        <field name="name">Job Descriptions</field>
+        <field name="res_model">onehr.jd</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_onehr_jd_search"/>
+        <field name="domain">[('is_template', '=', False)]</field>
+    </record>
+
+    <record id="action_onehr_jd_templates" model="ir.actions.act_window">
+        <field name="name">JD Templates</field>
+        <field name="res_model">onehr.jd</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_onehr_jd_search"/>
+        <field name="domain">[('is_template', '=', True)]</field>
+        <field name="context">{'default_is_template': True}</field>
+    </record>
+
+    <record id="action_onehr_jd_review_watch" model="ir.actions.act_window">
+        <field name="name">JD Review Watch</field>
+        <field name="res_model">onehr.jd</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_jd_search"/>
+        <field name="domain">[('current_version_id', '!=', False)]</field>
+    </record>
+
+    <record id="action_onehr_jd_analytics" model="ir.actions.act_window">
+        <field name="name">JD Coverage Analytics</field>
+        <field name="res_model">onehr.jd</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_onehr_jd_search"/>
+        <field name="domain">[('is_template', '=', False), ('active', '=', True)]</field>
+    </record>
+</odoo>

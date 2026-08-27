@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_kiosk_device_list" model="ir.ui.view">
+        <field name="name">onehr.kiosk.device.list.enterprise</field>
+        <field name="model">onehr.kiosk.device</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'"
+                  decoration-warning="state == 'suspended'"
+                  decoration-muted="state == 'retired'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="device_kind" widget="badge"/>
+                <field name="platform" optional="show"/>
+                <field name="work_location_id" optional="show"/>
+                <field name="service_user_id" optional="show"/>
+                <field name="last_seen_at" optional="show"/>
+                <field name="last_sync_at" optional="show"/>
+                <field name="queued_count" optional="show"/>
+                <field name="error_count" optional="show"/>
+                <field name="average_latency_ms" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <button name="action_open_kiosk" type="object" string="Open Kiosk"
+                        icon="fa-external-link" invisible="state != 'active'"/>
+                <button name="action_sync_pending" type="object" string="Sync Queue"
+                        icon="fa-refresh" groups="onehr_mobile_kiosk.group_onehr_kiosk_admin"
+                        invisible="state != 'active' or queued_count == 0"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_kiosk_device_form" model="ir.ui.view">
+        <field name="name">onehr.kiosk.device.form.enterprise</field>
+        <field name="model">onehr.kiosk.device</field>
+        <field name="arch" type="xml">
+            <form string="Kiosk Device">
+                <header>
+                    <button name="action_activate" type="object" string="Activate"
+                            class="btn-primary" icon="fa-play"
+                            groups="onehr_mobile_kiosk.group_onehr_kiosk_admin"
+                            invisible="state not in ['draft', 'suspended']"/>
+                    <button name="action_suspend" type="object" string="Suspend"
+                            class="btn-secondary" icon="fa-pause"
+                            groups="onehr_mobile_kiosk.group_onehr_kiosk_admin"
+                            invisible="state != 'active'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            groups="onehr_mobile_kiosk.group_onehr_kiosk_admin"
+                            invisible="state != 'suspended'"/>
+                    <button name="action_retire" type="object" string="Retire"
+                            class="btn-secondary" icon="fa-archive"
+                            groups="onehr_mobile_kiosk.group_onehr_kiosk_admin"
+                            invisible="state == 'retired'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,suspended,retired"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_logs" type="object" class="oe_stat_button" icon="fa-list-alt">
+                            <field name="log_count" widget="statinfo" string="Activity"/>
+                        </button>
+                        <button name="action_open_queue" type="object" class="oe_stat_button" icon="fa-refresh">
+                            <field name="queued_count" widget="statinfo" string="Queued"/>
+                        </button>
+                        <button name="action_open_errors" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="error_count" widget="statinfo" string="Errors"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Factory Gate A"/></h1>
+                        <div class="text-muted">
+                            <field name="code" class="oe_inline"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Device Identity">
+                            <field name="code" readonly="state != 'draft'"/>
+                            <field name="device_kind" readonly="state == 'retired'"/>
+                            <field name="platform" readonly="state == 'retired'"/>
+                            <field name="work_location_id" readonly="state == 'retired'"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Operational Security">
+                            <field name="service_user_id" readonly="state == 'retired'"/>
+                            <field name="token_last4" groups="onehr_mobile_kiosk.group_onehr_kiosk_admin"/>
+                            <field name="token_expires_at" groups="onehr_mobile_kiosk.group_onehr_kiosk_admin"/>
+                            <field name="last_seen_at"/>
+                            <field name="last_sync_at"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_kiosk" type="object" string="Open Kiosk Mode"
+                                class="btn btn-primary" icon="fa-desktop"
+                                invisible="state != 'active'"/>
+                        <button name="action_issue_token" type="object" string="Issue / Rotate Token"
+                                class="btn btn-secondary" icon="fa-key"
+                                groups="onehr_mobile_kiosk.group_onehr_kiosk_admin"
+                                invisible="state == 'retired'"/>
+                        <button name="action_sync_pending" type="object" string="Process Sync Queue"
+                                class="btn btn-secondary" icon="fa-refresh"
+                                groups="onehr_mobile_kiosk.group_onehr_kiosk_admin"
+                                invisible="state != 'active'"/>
+                        <button name="action_print_usage_report" type="object" string="Usage Report"
+                                class="btn btn-secondary" icon="fa-print"
+                                groups="onehr_mobile_kiosk.group_onehr_kiosk_admin"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Kiosk Experience">
+                            <group>
+                                <group string="Identification">
+                                    <field name="allow_qr"/>
+                                    <field name="allow_nfc"/>
+                                    <field name="face_ready"/>
+                                    <field name="quick_timeoff_enabled"/>
+                                </group>
+                                <group string="Offline Synchronization">
+                                    <field name="offline_queue_enabled"/>
+                                    <field name="sync_batch_size" invisible="not offline_queue_enabled"/>
+                                    <field name="max_sync_attempts" invisible="not offline_queue_enabled"/>
+                                    <field name="client_version"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-info" role="alert" invisible="not face_ready">
+                                <strong>Face-ready:</strong> this is an integration capability flag only.
+                                OneHR Mobile Kiosk does not store biometric templates, embeddings or face images.
+                            </div>
+                        </page>
+
+                        <page string="Geofence">
+                            <group>
+                                <group>
+                                    <field name="geolocation_required"/>
+                                    <field name="geofence_policy"/>
+                                    <field name="geofence_radius_m"/>
+                                </group>
+                                <group string="Location Master">
+                                    <field name="work_location_id"/>
+                                    <div class="text-muted">Coordinates are sourced from the OneHR Work Location master; this addon does not create a duplicate location master.</div>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Token Governance" groups="onehr_mobile_kiosk.group_onehr_kiosk_admin">
+                            <group>
+                                <group>
+                                    <field name="token_validity_days"/>
+                                    <field name="token_last4"/>
+                                    <field name="token_issued_at"/>
+                                    <field name="token_expires_at"/>
+                                    <field name="token_rotated_by_id"/>
+                                </group>
+                                <group>
+                                    <field name="token_hash" password="True"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-warning" role="alert">
+                                Raw device tokens are displayed once when issued and are never persisted.
+                                Rotate the token immediately if the one-time value is lost or suspected compromised.
+                            </div>
+                        </page>
+
+                        <page string="Operational Metrics">
+                            <group>
+                                <group>
+                                    <field name="log_count"/>
+                                    <field name="queued_count"/>
+                                    <field name="error_count"/>
+                                </group>
+                                <group>
+                                    <field name="average_latency_ms"/>
+                                    <field name="last_seen_at"/>
+                                    <field name="last_sync_at"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Recent Activity">
+                            <field name="log_ids" readonly="1">
+                                <list decoration-success="sync_state == 'synced'"
+                                      decoration-danger="sync_state in ['failed', 'dead_letter']"
+                                      decoration-warning="sync_state == 'blocked'">
+                                    <field name="event_at"/>
+                                    <field name="employee_name"/>
+                                    <field name="event_type" widget="badge"/>
+                                    <field name="punch_mode" optional="show"/>
+                                    <field name="offline_event" optional="show"/>
+                                    <field name="geofence_status" optional="show"/>
+                                    <field name="sync_state" widget="badge"/>
+                                    <field name="attempt_count" optional="show"/>
+                                    <field name="latency_ms" optional="hide"/>
+                                    <button name="action_retry_sync" type="object" string="Retry"
+                                            icon="fa-refresh"
+                                            invisible="sync_state not in ['queued', 'failed', 'dead_letter']"/>
+                                    <button name="action_open_attendance" type="object" string="Attendance"
+                                            icon="fa-clock-o" invisible="not attendance_id"/>
+                                    <button name="action_open_target" type="object" string="Target"
+                                            icon="fa-external-link" invisible="not target_res_id"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Notes">
+                            <field name="note" placeholder="Internal operating instructions, physical placement, support contact, etc."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_kiosk_device_search" model="ir.ui.view">
+        <field name="name">onehr.kiosk.device.search.enterprise</field>
+        <field name="model">onehr.kiosk.device</field>
+        <field name="arch" type="xml">
+            <search string="Kiosk Devices">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="work_location_id"/>
+                <field name="service_user_id"/>
+                <field name="company_id"/>
+                <filter name="active_devices" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="suspended_devices" string="Suspended" domain="[('state', '=', 'suspended')]"/>
+                <filter name="with_queue" string="Has Queue" domain="[('queued_count', '&gt;', 0)]"/>
+                <filter name="with_errors" string="Has Errors" domain="[('error_count', '&gt;', 0)]"/>
+                <separator/>
+                <group>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_kind" string="Device Kind" context="{'group_by': 'device_kind'}"/>
+                    <filter name="group_location" string="Work Location" context="{'group_by': 'work_location_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_kiosk_device" model="ir.actions.act_window">
+        <field name="name">Kiosk Devices</field>
+        <field name="res_model">onehr.kiosk.device</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_kiosk_device_search"/>
+        <field name="context">{'active_test': False, 'search_default_active_devices': 1}</field>
+    </record>
+</odoo>

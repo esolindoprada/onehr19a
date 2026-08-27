@@ -1,0 +1,69 @@
+<odoo>
+    <!-- SOP Reader can be non-HR. Extend only the root menu's group access;
+         no onehr_base source file is modified. -->
+    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_sop.group_onehr_sop_reader'))
+        ]"/>
+    </record>
+
+    <menuitem id="menu_onehr_sop_root"
+              name="SOP"
+              parent="onehr_base.menu_onehr_root"
+              sequence="66"
+              groups="onehr_sop.group_onehr_sop_reader"/>
+
+    <menuitem id="menu_onehr_sop_my_published"
+              name="My Published SOPs"
+              parent="menu_onehr_sop_root"
+              action="action_onehr_sop_my_published"
+              sequence="10"/>
+
+    <menuitem id="menu_onehr_sop_my_ack"
+              name="My Acknowledgements"
+              parent="menu_onehr_sop_root"
+              action="action_onehr_sop_my_ack"
+              sequence="20"/>
+
+    <menuitem id="menu_onehr_sop_register"
+              name="SOP Register"
+              parent="menu_onehr_sop_root"
+              action="action_onehr_sop_all"
+              sequence="30"
+              groups="onehr_sop.group_onehr_sop_editor"/>
+
+    <menuitem id="menu_onehr_sop_versions"
+              name="Version History"
+              parent="menu_onehr_sop_root"
+              action="action_onehr_sop_versions"
+              sequence="40"
+              groups="onehr_sop.group_onehr_sop_editor"/>
+
+    <menuitem id="menu_onehr_sop_review_watch"
+              name="Review Watch"
+              parent="menu_onehr_sop_root"
+              action="action_onehr_sop_review_watch"
+              sequence="50"
+              groups="onehr_sop.group_onehr_sop_editor"/>
+
+    <menuitem id="menu_onehr_sop_ack_register"
+              name="Acknowledgement Register"
+              parent="menu_onehr_sop_root"
+              action="action_onehr_sop_ack_all"
+              sequence="60"
+              groups="onehr_sop.group_onehr_sop_editor"/>
+
+    <menuitem id="menu_onehr_sop_compliance"
+              name="Compliance by Unit"
+              parent="menu_onehr_sop_root"
+              action="action_onehr_sop_ack_compliance"
+              sequence="70"
+              groups="onehr_sop.group_onehr_sop_approver"/>
+
+    <menuitem id="menu_onehr_sop_analytics"
+              name="SOP Analytics"
+              parent="menu_onehr_sop_root"
+              action="action_onehr_sop_analytics"
+              sequence="80"
+              groups="onehr_sop.group_onehr_sop_approver"/>
+</odoo>

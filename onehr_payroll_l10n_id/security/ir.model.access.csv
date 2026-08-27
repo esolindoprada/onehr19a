@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_onehr_payroll_l10n_param_officer,Indonesia Payroll Parameter Officer Read,model_onehr_payroll_l10n_param,onehr_payroll_bridge.group_onehr_payroll_officer,1,0,0,0
+access_onehr_payroll_l10n_param_manager,Indonesia Payroll Parameter Manager,model_onehr_payroll_l10n_param,onehr_payroll_bridge.group_onehr_payroll_manager,1,1,1,1

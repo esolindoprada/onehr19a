@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_onehr_payroll_root"
+              name="Payroll"
+              parent="onehr_base.menu_onehr_root"
+              sequence="55"
+              groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager"/>
+
+    <menuitem id="menu_onehr_payroll_exports"
+              name="Payroll Exports"
+              parent="menu_onehr_payroll_root"
+              action="action_onehr_payroll_exports"
+              sequence="10"/>
+
+    <menuitem id="menu_onehr_payroll_imports"
+              name="Imported Payroll Results"
+              parent="menu_onehr_payroll_root"
+              action="action_onehr_payroll_imports"
+              sequence="20"/>
+
+    <menuitem id="menu_onehr_payroll_reconciliation"
+              name="Reconciliation"
+              parent="menu_onehr_payroll_root"
+              action="action_onehr_payroll_reconciliation"
+              sequence="30"/>
+
+    <menuitem id="menu_onehr_payroll_configuration"
+              name="Configuration"
+              parent="menu_onehr_payroll_root"
+              action="action_onehr_payroll_bridge_configs"
+              sequence="90"
+              groups="onehr_payroll_bridge.group_onehr_payroll_manager"/>
+</odoo>

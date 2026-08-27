@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo noupdate="1">
+  <record id="rule_contract_company" model="ir.rule">
+    <field name="name">OneHR Contract: allowed companies</field>
+    <field name="model_id" ref="model_onehr_contract"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+  </record>
+  <record id="rule_contract_template_company" model="ir.rule">
+    <field name="name">OneHR Contract Template: allowed companies/global</field>
+    <field name="model_id" ref="model_onehr_contract_template"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+  </record>
+  <record id="rule_contract_line_manager" model="ir.rule">
+    <field name="name">Contract Line Manager: direct reports only</field>
+    <field name="model_id" ref="model_onehr_contract"/>
+    <field name="groups" eval="[Command.link(ref('group_onehr_contract_line_manager'))]"/>
+    <field name="domain_force">[('employee_id.parent_id.user_id', '=', user.id)]</field>
+  </record>
+  <record id="rule_contract_officer" model="ir.rule">
+    <field name="name">Contract Officer: company contracts</field>
+    <field name="model_id" ref="model_onehr_contract"/>
+    <field name="groups" eval="[Command.link(ref('group_onehr_contract_officer'))]"/>
+    <field name="domain_force">[(1, '=', 1)]</field>
+  </record>
+</odoo>

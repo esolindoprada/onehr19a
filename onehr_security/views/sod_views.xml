@@ -1,0 +1,259 @@
+<odoo>
+    <record id="view_onehr_sod_matrix_list" model="ir.ui.view">
+        <field name="name">onehr.sod.matrix.list.enterprise</field>
+        <field name="model">onehr.sod.matrix</field>
+        <field name="arch" type="xml">
+            <list
+                decoration-danger="enforcement == 'deny'"
+                decoration-warning="enforcement == 'warn'"
+                decoration-muted="not active"
+            >
+                <field name="code"/>
+                <field name="name"/>
+                <field name="role_a_id"/>
+                <field name="role_b_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="severity" widget="badge"/>
+                <field name="enforcement" widget="badge"/>
+                <field name="conflict_count"/>
+                <field name="valid_from"/>
+                <field name="valid_to" optional="show"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_sod_matrix_form" model="ir.ui.view">
+        <field name="name">onehr.sod.matrix.form.enterprise</field>
+        <field name="model">onehr.sod.matrix</field>
+        <field name="arch" type="xml">
+            <form string="Segregation of Duties Rule">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_conflicts" type="object" class="oe_stat_button" icon="fa-exclamation-triangle" invisible="not id">
+                            <field name="conflict_count" widget="statinfo" string="Conflicts"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Inactive" bg_color="text-bg-secondary" invisible="active"/>
+                    <field name="active" invisible="1"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Requestor vs Final Approver"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Rule Identity">
+                            <field name="code"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="severity"/>
+                            <field name="enforcement"/>
+                        </group>
+                        <group string="Conflicting Roles">
+                            <field name="role_a_id"/>
+                            <field name="role_b_id"/>
+                            <field name="valid_from"/>
+                            <field name="valid_to"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3" groups="onehr_security.group_onehr_security_manager">
+                        <button
+                            name="action_scan_effective_assignments"
+                            type="object"
+                            string="Scan Effective Assignments"
+                            class="btn-secondary"
+                            icon="fa-search"
+                            invisible="not id"
+                        />
+                    </div>
+
+                    <notebook>
+                        <page string="Mitigation Guidance" name="mitigation">
+                            <field name="mitigation_guidance" placeholder="Required compensating control or role redesign guidance..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_sod_matrix_search" model="ir.ui.view">
+        <field name="name">onehr.sod.matrix.search.enterprise</field>
+        <field name="model">onehr.sod.matrix</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="role_a_id"/>
+                <field name="role_b_id"/>
+                <field name="company_id"/>
+                <field name="severity"/>
+                <field name="enforcement"/>
+                <filter name="deny" string="Deny" domain="[('enforcement', '=', 'deny')]"/>
+                <filter name="warn" string="Warn" domain="[('enforcement', '=', 'warn')]"/>
+                <filter name="critical" string="Critical" domain="[('severity', '=', 'critical')]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_enforcement" string="Enforcement" context="{'group_by': 'enforcement'}"/>
+                    <filter name="group_severity" string="Severity" context="{'group_by': 'severity'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_sod_matrix" model="ir.actions.act_window">
+        <field name="name">SoD Matrix</field>
+        <field name="res_model">onehr.sod.matrix</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_sod_matrix_search"/>
+    </record>
+
+    <record id="view_onehr_sod_conflict_list" model="ir.ui.view">
+        <field name="name">onehr.sod.conflict.log.list.enterprise</field>
+        <field name="model">onehr.sod.conflict.log</field>
+        <field name="arch" type="xml">
+            <list
+                create="false"
+                delete="false"
+                decoration-danger="state == 'open' and enforcement == 'deny'"
+                decoration-warning="state == 'open' and enforcement == 'warn'"
+                decoration-success="state in ('mitigated', 'resolved')"
+                decoration-muted="state == 'accepted'"
+            >
+                <field name="detected_at"/>
+                <field name="user_id"/>
+                <field name="matrix_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="severity" widget="badge"/>
+                <field name="enforcement" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="resolved_at" optional="hide"/>
+                <field name="resolved_by_id" optional="hide"/>
+                <button name="action_open_user" type="object" string="User" icon="fa-external-link"/>
+                <button name="action_open_matrix" type="object" string="Rule" icon="fa-shield"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_sod_conflict_form" model="ir.ui.view">
+        <field name="name">onehr.sod.conflict.log.form.enterprise</field>
+        <field name="model">onehr.sod.conflict.log</field>
+        <field name="arch" type="xml">
+            <form string="SoD Conflict Evidence" create="false" delete="false">
+                <header>
+                    <button
+                        name="action_accept_risk"
+                        type="object"
+                        string="Accept Risk"
+                        groups="onehr_security.group_onehr_compliance_officer,onehr_security.group_onehr_security_admin"
+                        invisible="state != 'open'"
+                    />
+                    <button
+                        name="action_mark_mitigated"
+                        type="object"
+                        string="Mark Mitigated"
+                        class="btn-primary"
+                        groups="onehr_security.group_onehr_compliance_officer,onehr_security.group_onehr_security_admin"
+                        invisible="state != 'open'"
+                    />
+                    <button
+                        name="action_resolve"
+                        type="object"
+                        string="Resolve"
+                        groups="onehr_security.group_onehr_compliance_officer,onehr_security.group_onehr_security_admin"
+                        invisible="state != 'open'"
+                    />
+                    <field name="state" widget="statusbar" statusbar_visible="open,accepted,mitigated,resolved"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_user" type="object" class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Open User</span></div>
+                        </button>
+                        <button name="action_open_matrix" type="object" class="oe_stat_button" icon="fa-shield">
+                            <div class="o_stat_info"><span class="o_stat_text">Open SoD Rule</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="user_id" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Detection">
+                            <field name="detected_at" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="matrix_id" readonly="1"/>
+                            <field name="severity" widget="badge" readonly="1"/>
+                            <field name="enforcement" widget="badge" readonly="1"/>
+                        </group>
+                        <group string="Role Evidence">
+                            <field name="user_role_id" readonly="1"/>
+                            <field name="conflicting_user_role_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Conflict Evidence" name="evidence">
+                            <field name="details" readonly="1"/>
+                            <field name="mitigation_guidance" readonly="1"/>
+                        </page>
+                        <page string="Resolution Evidence" name="resolution">
+                            <group>
+                                <field
+                                    name="resolution_comment"
+                                    readonly="state != 'open'"
+                                    placeholder="Explain the mitigation, compensating control, or reason for risk acceptance..."
+                                />
+                                <field name="resolved_at" readonly="1"/>
+                                <field name="resolved_by_id" readonly="1"/>
+                                <field name="resolution_note" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_sod_conflict_search" model="ir.ui.view">
+        <field name="name">onehr.sod.conflict.log.search.enterprise</field>
+        <field name="model">onehr.sod.conflict.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <field name="matrix_id"/>
+                <field name="company_id"/>
+                <field name="severity"/>
+                <field name="enforcement"/>
+                <field name="state"/>
+                <field name="detected_at"/>
+                <filter name="open" string="Open" domain="[('state', '=', 'open')]"/>
+                <filter name="deny" string="Deny Conflicts" domain="[('enforcement', '=', 'deny')]"/>
+                <filter name="critical" string="Critical" domain="[('severity', '=', 'critical')]"/>
+                <group>
+                    <filter name="group_user" string="User" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_rule" string="SoD Rule" context="{'group_by': 'matrix_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_sod_conflicts" model="ir.actions.act_window">
+        <field name="name">SoD Conflicts</field>
+        <field name="res_model">onehr.sod.conflict.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_sod_conflict_search"/>
+        <field name="context">{'create': False, 'delete': False}</field>
+    </record>
+</odoo>

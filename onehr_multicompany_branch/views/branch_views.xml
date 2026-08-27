@@ -1,0 +1,242 @@
+<odoo>
+    <record id="view_onehr_branch_list" model="ir.ui.view">
+        <field name="name">onehr.branch.list.enterprise</field>
+        <field name="model">onehr.branch</field>
+        <field name="arch" type="xml">
+            <list
+                string="Operational Branches"
+                decoration-success="lifecycle_status == 'effective'"
+                decoration-info="lifecycle_status == 'scheduled'"
+                decoration-muted="lifecycle_status in ('expired', 'inactive')"
+            >
+                <field name="code"/>
+                <field name="name"/>
+                <field name="branch_type" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="parent_id" optional="show"/>
+                <field name="manager_user_id" optional="show"/>
+                <field name="valid_from" optional="show"/>
+                <field name="valid_to" optional="show"/>
+                <field name="lifecycle_status" widget="badge"/>
+                <field name="is_my_default" optional="hide"/>
+                <button
+                    name="action_set_as_my_default"
+                    type="object"
+                    string="Use"
+                    icon="fa-check-circle"
+                    groups="onehr_multicompany_branch.group_onehr_branch_user"
+                    invisible="is_my_default or lifecycle_status != 'effective' or not is_allowed_for_me"
+                />
+                <button name="action_open_branch" type="object" string="Open" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_branch_form" model="ir.ui.view">
+        <field name="name">onehr.branch.form.enterprise</field>
+        <field name="model">onehr.branch</field>
+        <field name="arch" type="xml">
+            <form string="Operational Branch">
+                <header>
+                    <button
+                        name="action_activate"
+                        type="object"
+                        string="Activate"
+                        class="btn-primary"
+                        groups="onehr_multicompany_branch.group_onehr_branch_admin"
+                        invisible="active"
+                    />
+                    <button
+                        name="action_archive"
+                        type="object"
+                        string="Archive"
+                        groups="onehr_multicompany_branch.group_onehr_branch_admin"
+                        invisible="not active"
+                    />
+                    <field
+                        name="lifecycle_status"
+                        widget="statusbar"
+                        statusbar_visible="scheduled,effective,expired,inactive"
+                    />
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="action_open_child_branches"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-sitemap"
+                            invisible="not id"
+                        >
+                            <field name="child_count" widget="statinfo" string="Children"/>
+                        </button>
+                        <button
+                            name="action_open_allowed_users"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-users"
+                            groups="onehr_multicompany_branch.group_onehr_branch_admin,onehr_multicompany_branch.group_onehr_central_office"
+                            invisible="not id"
+                        >
+                            <field name="allowed_user_count" widget="statinfo" string="Allowed Users"/>
+                        </button>
+                        <button
+                            name="action_open_default_users"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-star"
+                            groups="onehr_multicompany_branch.group_onehr_branch_admin,onehr_multicompany_branch.group_onehr_central_office"
+                            invisible="not id"
+                        >
+                            <field name="default_user_count" widget="statinfo" string="Defaults"/>
+                        </button>
+                        <button
+                            name="action_open_role_assignments"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-id-badge"
+                            groups="onehr_multicompany_branch.group_onehr_branch_admin,onehr_multicompany_branch.group_onehr_central_office,onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin"
+                            invisible="not id"
+                        >
+                            <field name="role_assignment_count" widget="statinfo" string="Role Scope"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" string="Branch"/>
+                        <h1>
+                            <field name="code" class="oe_inline" placeholder="BR-001"/>
+                            <span class="mx-2">—</span>
+                            <field name="name" class="oe_inline" placeholder="Branch Name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Operational Identity">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_type"/>
+                            <field name="manager_user_id"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Effective Period">
+                            <field name="valid_from"/>
+                            <field name="valid_to"/>
+                            <field name="is_allowed_for_me" readonly="1"/>
+                            <field name="is_my_default" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button
+                            name="action_set_as_my_default"
+                            type="object"
+                            string="Set as My Default Branch"
+                            class="btn-primary"
+                            icon="fa-check-circle"
+                            groups="onehr_multicompany_branch.group_onehr_branch_user"
+                            invisible="not id or is_my_default or not is_allowed_for_me or lifecycle_status != 'effective'"
+                        />
+                        <button
+                            name="action_open_role_assignments"
+                            type="object"
+                            string="Review Branch Role Scope"
+                            class="btn-secondary"
+                            icon="fa-shield"
+                            groups="onehr_multicompany_branch.group_onehr_branch_admin,onehr_multicompany_branch.group_onehr_central_office,onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin"
+                            invisible="not id"
+                        />
+                    </div>
+
+                    <notebook>
+                        <page string="Hierarchy" name="hierarchy">
+                            <group>
+                                <field name="parent_id"/>
+                                <field name="parent_path" invisible="1"/>
+                            </group>
+                            <field name="child_ids" context="{'default_company_id': company_id, 'default_parent_id': id}">
+                                <list
+                                    decoration-success="lifecycle_status == 'effective'"
+                                    decoration-info="lifecycle_status == 'scheduled'"
+                                    decoration-muted="lifecycle_status in ('expired', 'inactive')"
+                                >
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="branch_type" widget="badge"/>
+                                    <field name="manager_user_id" optional="show"/>
+                                    <field name="valid_from" optional="show"/>
+                                    <field name="valid_to" optional="show"/>
+                                    <field name="lifecycle_status" widget="badge"/>
+                                    <button name="action_open_branch" type="object" string="Open" icon="fa-external-link"/>
+                                    <button
+                                        name="action_set_as_my_default"
+                                        type="object"
+                                        string="Use"
+                                        icon="fa-check-circle"
+                                        groups="onehr_multicompany_branch.group_onehr_branch_user"
+                                        invisible="lifecycle_status != 'effective' or not is_allowed_for_me or is_my_default"
+                                    />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Governance Notes" name="governance">
+                            <field
+                                name="notes"
+                                placeholder="Operational branch governance note. Do not store passwords or unrelated sensitive HR data."
+                            />
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_branch_search" model="ir.ui.view">
+        <field name="name">onehr.branch.search.enterprise</field>
+        <field name="model">onehr.branch</field>
+        <field name="arch" type="xml">
+            <search string="Search Branches">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="branch_type"/>
+                <field name="parent_id"/>
+                <field name="manager_user_id"/>
+                <field name="valid_from"/>
+                <field name="valid_to"/>
+                <filter name="effective" string="Effective Today" domain="[('active', '=', True), ('valid_from', '&lt;=', context_today()), '|', ('valid_to', '=', False), ('valid_to', '&gt;=', context_today())]"/>
+                <filter name="scheduled" string="Scheduled" domain="[('active', '=', True), ('valid_from', '&gt;', context_today())]"/>
+                <filter name="expired" string="Expired" domain="[('valid_to', '!=', False), ('valid_to', '&lt;', context_today())]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    <filter name="group_type" string="Branch Type" context="{'group_by': 'branch_type'}"/>
+                    <filter name="group_parent" string="Parent Branch" context="{'group_by': 'parent_id'}"/>
+                    <filter name="group_manager" string="Manager" context="{'group_by': 'manager_user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_branches" model="ir.actions.act_window">
+        <field name="name">Branches</field>
+        <field name="res_model">onehr.branch</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_branch_search"/>
+        <field name="context">{'active_test': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Configure operational branches inside legal Odoo companies.</p>
+            <p>Branch scope narrows operational access; it never replaces or bypasses company security.</p>
+        </field>
+    </record>
+
+    <record id="action_onehr_my_branches" model="ir.actions.act_window">
+        <field name="name">My Branches</field>
+        <field name="res_model">onehr.branch</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_branch_search"/>
+        <field name="domain">[('active', '=', True)]</field>
+        <field name="context">{'search_default_effective': 1}</field>
+    </record>
+</odoo>

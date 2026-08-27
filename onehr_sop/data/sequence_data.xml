@@ -1,0 +1,9 @@
+<odoo noupdate="1">
+    <record id="seq_onehr_sop" model="ir.sequence">
+        <field name="name">OneHR SOP</field>
+        <field name="code">onehr.sop</field>
+        <field name="prefix">SOP/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

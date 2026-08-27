@@ -1,0 +1,111 @@
+<odoo>
+    <record id="view_document_category_list" model="ir.ui.view">
+        <field name="name">onehr.document.category.list.enterprise</field>
+        <field name="model">onehr.document.category</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="sensitivity == 'restricted'"
+                  decoration-warning="sensitivity == 'confidential'"
+                  decoration-muted="not active">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="sensitivity" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="employee_visible"/>
+                <field name="signature_required"/>
+                <field name="default_validity_days" optional="show"/>
+                <field name="default_reminder_days" optional="show"/>
+                <field name="default_grace_days" optional="show"/>
+                <field name="retention_days_after_expiry" optional="hide"/>
+                <field name="valid_from"/>
+                <field name="valid_to"/>
+                <field name="document_count" string="Documents"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_document_category_form" model="ir.ui.view">
+        <field name="name">onehr.document.category.form.enterprise</field>
+        <field name="model">onehr.document.category</field>
+        <field name="arch" type="xml">
+            <form string="Document Category">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_open_documents" type="object" icon="fa-folder-open">
+                            <field name="document_count" widget="statinfo" string="Documents"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_open_templates" type="object" icon="fa-file-text-o">
+                            <field name="template_count" widget="statinfo" string="Templates"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Restricted" bg_color="text-bg-danger" invisible="sensitivity != 'restricted'"/>
+                    <widget name="web_ribbon" title="Inactive" bg_color="text-bg-secondary" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="code" class="oe_inline"/> · <field name="sensitivity" class="oe_inline"/></div>
+                    </div>
+                    <group>
+                        <group string="Classification">
+                            <field name="code"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="sensitivity"/>
+                            <field name="employee_visible"/>
+                            <field name="signature_required"/>
+                        </group>
+                        <group string="Effective Dating">
+                            <field name="valid_from"/>
+                            <field name="valid_to"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Validity &amp; Retention">
+                            <group>
+                                <field name="default_validity_days"/>
+                                <field name="default_reminder_days"/>
+                                <field name="default_grace_days"/>
+                                <field name="retention_days_after_expiry"/>
+                            </group>
+                        </page>
+                        <page string="Description">
+                            <field name="description" placeholder="Business purpose, examples, retention basis and operating notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_document_category_search" model="ir.ui.view">
+        <field name="name">onehr.document.category.search.enterprise</field>
+        <field name="model">onehr.document.category</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="sensitivity"/>
+                <filter name="internal" string="Internal" domain="[('sensitivity', '=', 'internal')]"/>
+                <filter name="confidential" string="Confidential" domain="[('sensitivity', '=', 'confidential')]"/>
+                <filter name="restricted" string="Restricted" domain="[('sensitivity', '=', 'restricted')]"/>
+                <filter name="employee_visible" string="Employee Visible" domain="[('employee_visible', '=', True)]"/>
+                <filter name="signature_required" string="Signature Required" domain="[('signature_required', '=', True)]"/>
+                <filter name="active_only" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Inactive" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_sensitivity" string="Sensitivity" context="{'group_by': 'sensitivity'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_document_categories" model="ir.actions.act_window">
+        <field name="name">Document Categories</field>
+        <field name="res_model">onehr.document.category</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_document_category_search"/>
+    </record>
+</odoo>

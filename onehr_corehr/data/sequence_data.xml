@@ -1,0 +1,41 @@
+<odoo noupdate="1">
+    <record id="seq_onehr_employee" model="ir.sequence">
+        <field name="name">OneHR Employee Number</field>
+        <field name="code">onehr.employee</field>
+        <field name="prefix">EMP/%(y)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_onehr_employee_identifier" model="ir.sequence">
+        <field name="name">OneHR Employee Identifier Reference</field>
+        <field name="code">onehr.employee.identifier</field>
+        <field name="prefix">IDR/%(y)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_onehr_work_incident" model="ir.sequence">
+        <field name="name">OneHR Work Incident</field>
+        <field name="code">onehr.work.incident</field>
+        <field name="prefix">INC/%(y)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_onehr_medical_assessment" model="ir.sequence">
+        <field name="name">OneHR Medical Assessment</field>
+        <field name="code">onehr.medical.assessment</field>
+        <field name="prefix">MED/%(y)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_onehr_disability_record" model="ir.sequence">
+        <field name="name">OneHR Accommodation Record</field>
+        <field name="code">onehr.disability.record</field>
+        <field name="prefix">ACC/%(y)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

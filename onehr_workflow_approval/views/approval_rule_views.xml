@@ -1,0 +1,190 @@
+<odoo>
+    <record id="view_onehr_approval_rule_list" model="ir.ui.view">
+        <field name="name">onehr.approval.rule.list.enterprise</field>
+        <field name="model">onehr.approval.rule</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'" decoration-muted="state == 'retired'">
+                <field name="priority"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="version"/>
+                <field name="source_model"/>
+                <field name="document_type" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="step_count"/>
+                <field name="minimum_distinct_approvers"/>
+                <field name="auto_approve"/>
+                <field name="valid_from"/>
+                <field name="valid_to"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_approval_rule_form" model="ir.ui.view">
+        <field name="name">onehr.approval.rule.form.enterprise</field>
+        <field name="model">onehr.approval.rule</field>
+        <field name="arch" type="xml">
+            <form string="Approval Rule">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            groups="onehr_workflow_approval.group_onehr_workflow_manager"
+                            invisible="state != 'draft'"/>
+                    <button name="action_retire" type="object" string="Retire"
+                            groups="onehr_workflow_approval.group_onehr_workflow_manager"
+                            invisible="state != 'active'"/>
+                    <button name="action_create_new_version" type="object" string="Create New Version"
+                            groups="onehr_workflow_approval.group_onehr_workflow_manager"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,retired"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_open_steps" type="object" icon="fa-sitemap">
+                            <field name="step_count" widget="statinfo" string="Steps"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_open_requests" type="object" icon="fa-check-square-o">
+                            <field name="request_count" widget="statinfo" string="Requests"/>
+                        </button>
+                    </div>
+                    <div class="oe_title"><label for="name"/><h1><field name="name" readonly="state != 'draft'"/></h1></div>
+                    <group>
+                        <group string="Rule Identity">
+                            <field name="code" readonly="state != 'draft'"/>
+                            <field name="version" readonly="state != 'draft'"/>
+                            <field name="priority" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Source Contract">
+                            <field name="model_id" readonly="state != 'draft'"/>
+                            <field name="source_model" readonly="1"/>
+                            <field name="document_type" readonly="state != 'draft'"/>
+                            <field name="branch_scope_key" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Business Validity">
+                        <field name="valid_from" readonly="state != 'draft'"/>
+                        <field name="valid_to" readonly="state != 'draft'"/>
+                    </group>
+                    <notebook>
+                        <page string="Matrix Criteria">
+                            <group>
+                                <group string="Requester &amp; Risk">
+                                    <field name="requester_role_id" readonly="state != 'draft'"/>
+                                    <field name="risk_level" readonly="state != 'draft'"/>
+                                    <field name="minimum_distinct_approvers" readonly="state != 'draft'"/>
+                                    <field name="auto_approve" readonly="state != 'draft'"/>
+                                </group>
+                                <group string="Normalized Amount Threshold">
+                                    <field name="min_amount" readonly="state != 'draft'"/>
+                                    <field name="max_amount" readonly="state != 'draft'"/>
+                                    <field name="currency_id" readonly="state != 'draft'"/>
+                                </group>
+                            </group>
+                            <group string="Safe Structured Extra Match">
+                                <field name="context_match_json" readonly="state != 'draft'"/>
+                            </group>
+                        </page>
+                        <page string="Approval Steps">
+                            <field name="step_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="level"/>
+                                    <field name="sequence"/>
+                                    <field name="name"/>
+                                    <field name="approver_policy"/>
+                                    <field name="decision_mode"/>
+                                    <field name="quorum_count"/>
+                                    <field name="sla_hours"/>
+                                    <field name="block_self_approval"/>
+                                    <button name="action_open_rule" type="object" string="Rule" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_approval_rule_search" model="ir.ui.view">
+        <field name="name">onehr.approval.rule.search.enterprise</field>
+        <field name="model">onehr.approval.rule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/><field name="name"/><field name="source_model"/>
+                <field name="document_type"/><field name="company_id"/><field name="state"/>
+                <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="retired" string="Retired" domain="[('state', '=', 'retired')]"/>
+                <group>
+                    <filter name="group_model" string="Source Model" context="{'group_by': 'source_model'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_onehr_approval_rules" model="ir.actions.act_window">
+        <field name="name">Approval Rules</field><field name="res_model">onehr.approval.rule</field>
+        <field name="view_mode">list,form</field><field name="search_view_id" ref="view_onehr_approval_rule_search"/>
+    </record>
+
+    <record id="view_onehr_approval_step_list" model="ir.ui.view">
+        <field name="name">onehr.approval.step.list.enterprise</field>
+        <field name="model">onehr.approval.step</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="rule_id"/><field name="level"/><field name="sequence"/><field name="name"/>
+                <field name="approver_policy"/><field name="decision_mode"/><field name="quorum_count"/>
+                <field name="sla_hours"/><field name="valid_from"/><field name="valid_to"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_rule" type="object" string="Rule" icon="fa-external-link"/>
+                <button name="action_open_requests" type="object" string="Requests" icon="fa-list"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_approval_step_form" model="ir.ui.view">
+        <field name="name">onehr.approval.step.form.enterprise</field>
+        <field name="model">onehr.approval.step</field>
+        <field name="arch" type="xml">
+            <form string="Approval Step">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_open_rule" type="object" icon="fa-sitemap"><div class="o_stat_info"><span class="o_stat_text">Open Rule</span></div></button>
+                        <button class="oe_stat_button" name="action_open_requests" type="object" icon="fa-check-square-o"><field name="request_count" widget="statinfo" string="Requests"/></button>
+                    </div>
+                    <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Routing Level"><field name="rule_id"/><field name="level"/><field name="sequence"/><field name="company_id" groups="base.group_multi_company" readonly="1"/></group>
+                        <group string="Validity"><field name="valid_from"/><field name="valid_to"/></group>
+                    </group>
+                    <notebook>
+                        <page string="Approver Resolution"><group>
+                            <field name="approver_policy"/>
+                            <field name="specific_user_ids" widget="many2many_tags" invisible="approver_policy != 'specific_users'"/>
+                            <field name="role_id" invisible="approver_policy != 'onehr_role'"/>
+                            <field name="group_id" invisible="approver_policy != 'odoo_group'"/>
+                            <field name="manager_level" invisible="approver_policy != 'requester_manager'"/>
+                            <field name="resolver_key" invisible="approver_policy != 'source_hook'"/>
+                        </group></page>
+                        <page string="Decision Guard"><group><field name="decision_mode"/><field name="quorum_count" invisible="decision_mode != 'quorum'"/><field name="block_self_approval"/><field name="allow_delegation"/></group></page>
+                        <page string="SLA &amp; Escalation"><group><field name="sla_hours"/><field name="reminder_hours"/><field name="escalation_user_ids" widget="many2many_tags"/><field name="escalation_role_id"/></group></page>
+                        <page string="Instructions"><field name="instructions"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_approval_step_search" model="ir.ui.view">
+        <field name="name">onehr.approval.step.search.enterprise</field><field name="model">onehr.approval.step</field>
+        <field name="arch" type="xml"><search>
+            <field name="rule_id"/><field name="name"/><field name="approver_policy"/><field name="decision_mode"/><field name="company_id"/>
+            <group><filter name="group_rule" string="Rule" context="{'group_by':'rule_id'}"/><filter name="group_level" string="Level" context="{'group_by':'level'}"/><filter name="group_policy" string="Approver Policy" context="{'group_by':'approver_policy'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/></group>
+        </search></field>
+    </record>
+    <record id="action_onehr_approval_steps" model="ir.actions.act_window"><field name="name">Approval Steps</field><field name="res_model">onehr.approval.step</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_onehr_approval_step_search"/></record>
+</odoo>

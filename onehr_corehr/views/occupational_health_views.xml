@@ -1,0 +1,375 @@
+<odoo>
+    <!-- Work Incidents -->
+    <record id="view_onehr_work_incident_list" model="ir.ui.view">
+        <field name="name">onehr.work.incident.list.enterprise.restricted</field>
+        <field name="model">onehr.work.incident</field>
+        <field name="arch" type="xml">
+            <list create="true" delete="false"
+                  decoration-danger="severity == 'critical' and state != 'closed'"
+                  decoration-warning="severity == 'serious' and state != 'closed'"
+                  decoration-success="state == 'closed'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="reference"/>
+                <field name="employee_id"/>
+                <field name="incident_at"/>
+                <field name="incident_type" widget="badge"/>
+                <field name="severity" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="lost_time_days" optional="show"/>
+                <field name="medical_assessment_count" string="Assessments" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_start_review" type="object" string="Review" icon="fa-search"
+                        invisible="state != 'reported'"/>
+                <button name="action_open_medical_assessments" type="object" string="Assessments" icon="fa-medkit"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_work_incident_form" model="ir.ui.view">
+        <field name="name">onehr.work.incident.form.enterprise.restricted</field>
+        <field name="model">onehr.work.incident</field>
+        <field name="arch" type="xml">
+            <form string="Restricted Work Incident" create="true" delete="false">
+                <header>
+                    <button name="action_report" type="object" string="Report"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_start_review" type="object" string="Start Review"
+                            class="btn-primary" invisible="state != 'reported'"/>
+                    <button name="action_close" type="object" string="Close Incident"
+                            class="btn-primary" invisible="state not in ('reported', 'under_review')"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,reported,under_review,closed,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_medical_assessments" type="object" class="oe_stat_button" icon="fa-medkit">
+                            <field name="medical_assessment_count" widget="statinfo" string="Assessments"/>
+                        </button>
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Employee</span></div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Restricted" bg_color="text-bg-danger"/>
+                    <div class="oe_title"><h1><field name="reference" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Incident">
+                            <field name="employee_id" readonly="state in ('closed', 'cancelled')"/>
+                            <field name="incident_at" readonly="state in ('closed', 'cancelled')"/>
+                            <field name="incident_type" readonly="state in ('closed', 'cancelled')"/>
+                            <field name="severity" readonly="state in ('closed', 'cancelled')"/>
+                            <field name="lost_time_days" readonly="state in ('closed', 'cancelled')"/>
+                        </group>
+                        <group string="Location &amp; Scope">
+                            <field name="work_location_id" readonly="state in ('closed', 'cancelled')"/>
+                            <field name="location_note" readonly="state in ('closed', 'cancelled')"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_create_medical_assessment" type="object"
+                                string="Create Medical Assessment" class="btn-secondary"
+                                icon="fa-medkit" invisible="state == 'cancelled'"/>
+                    </div>
+                    <notebook>
+                        <page string="Restricted Incident Evidence">
+                            <field name="description" readonly="state in ('closed', 'cancelled')"/>
+                            <field name="immediate_action" readonly="state in ('closed', 'cancelled')"/>
+                        </page>
+                        <page string="Closure">
+                            <field name="closure_summary" readonly="state in ('closed', 'cancelled')"
+                                   placeholder="Required before closing. Record factual closure/mitigation evidence only."/>
+                            <group>
+                                <field name="reported_at" readonly="1"/>
+                                <field name="reported_by_id" readonly="1"/>
+                                <field name="closed_at" readonly="1"/>
+                                <field name="closed_by_id" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Medical Assessments">
+                            <field name="medical_assessment_ids" readonly="state == 'cancelled'">
+                                <list create="false" delete="false">
+                                    <field name="reference"/>
+                                    <field name="assessment_date"/>
+                                    <field name="assessment_type"/>
+                                    <field name="fitness_classification" widget="badge"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_finalize" type="object" string="Finalize"
+                                            icon="fa-check" invisible="state != 'draft'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_work_incident_search" model="ir.ui.view">
+        <field name="name">onehr.work.incident.search.enterprise.restricted</field>
+        <field name="model">onehr.work.incident</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="employee_id"/>
+                <field name="incident_type"/>
+                <field name="severity"/>
+                <field name="state"/>
+                <field name="incident_at"/>
+                <field name="company_id"/>
+                <filter name="open" string="Open" domain="[('state', 'in', ('reported', 'under_review'))]"/>
+                <filter name="critical" string="Critical" domain="[('severity', '=', 'critical')]"/>
+                <filter name="closed" string="Closed" domain="[('state', '=', 'closed')]"/>
+                <group>
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_severity" string="Severity" context="{'group_by': 'severity'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_work_incidents" model="ir.actions.act_window">
+        <field name="name">Work Incidents</field>
+        <field name="res_model">onehr.work.incident</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_work_incident_search"/>
+        <field name="context">{'delete': False}</field>
+    </record>
+
+    <!-- Medical Assessments -->
+    <record id="view_onehr_medical_assessment_list" model="ir.ui.view">
+        <field name="name">onehr.medical.assessment.list.enterprise.restricted</field>
+        <field name="model">onehr.medical.assessment</field>
+        <field name="arch" type="xml">
+            <list create="true" delete="false"
+                  decoration-success="state == 'finalized'"
+                  decoration-muted="state == 'superseded'">
+                <field name="reference"/>
+                <field name="employee_id"/>
+                <field name="assessment_date"/>
+                <field name="assessment_type" widget="badge"/>
+                <field name="fitness_classification" widget="badge"/>
+                <field name="next_review_date" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="incident_id" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_finalize" type="object" string="Finalize" icon="fa-check" invisible="state != 'draft'"/>
+                <button name="action_create_correction" type="object" string="Correction" icon="fa-copy" invisible="state != 'finalized'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_medical_assessment_form" model="ir.ui.view">
+        <field name="name">onehr.medical.assessment.form.enterprise.restricted</field>
+        <field name="model">onehr.medical.assessment</field>
+        <field name="arch" type="xml">
+            <form string="Restricted Medical Assessment" create="true" delete="false">
+                <header>
+                    <button name="action_finalize" type="object" string="Finalize"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_create_correction" type="object" string="Create Superseding Correction"
+                            class="btn-secondary" invisible="state != 'finalized'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,finalized,superseded"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Employee</span></div>
+                        </button>
+                        <button name="action_open_incident" type="object" class="oe_stat_button" icon="fa-exclamation-triangle"
+                                invisible="not incident_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Incident</span></div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Medical — Restricted" bg_color="text-bg-danger"/>
+                    <div class="oe_title"><h1><field name="reference" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Assessment">
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="incident_id" readonly="state != 'draft'"/>
+                            <field name="assessment_date" readonly="state != 'draft'"/>
+                            <field name="assessment_type" readonly="state != 'draft'"/>
+                            <field name="provider_name" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Work-Fitness Classification">
+                            <field name="fitness_classification" readonly="state != 'draft'"/>
+                            <field name="next_review_date" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="supersedes_id" readonly="1"/>
+                            <field name="correction_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Minimum Necessary Restrictions">
+                            <field name="restrictions_summary" readonly="state != 'draft'"/>
+                        </page>
+                        <page string="Confidential Notes">
+                            <field name="confidential_notes" readonly="state != 'draft'"
+                                   placeholder="Avoid unnecessary diagnosis detail; record minimum necessary evidence."/>
+                        </page>
+                        <page string="Finalization Evidence">
+                            <group>
+                                <field name="finalized_at" readonly="1"/>
+                                <field name="finalized_by_id" readonly="1"/>
+                            </group>
+                            <field name="superseded_by_ids" readonly="1">
+                                <list create="false" delete="false">
+                                    <field name="reference"/>
+                                    <field name="assessment_date"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_medical_assessment_search" model="ir.ui.view">
+        <field name="name">onehr.medical.assessment.search.enterprise.restricted</field>
+        <field name="model">onehr.medical.assessment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="employee_id"/>
+                <field name="assessment_type"/>
+                <field name="fitness_classification"/>
+                <field name="state"/>
+                <field name="assessment_date"/>
+                <field name="next_review_date"/>
+                <field name="company_id"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="finalized" string="Finalized" domain="[('state', '=', 'finalized')]"/>
+                <filter name="review_due" string="Review Date Set" domain="[('next_review_date', '!=', False)]"/>
+                <group>
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_type" string="Assessment Type" context="{'group_by': 'assessment_type'}"/>
+                    <filter name="group_fitness" string="Fitness" context="{'group_by': 'fitness_classification'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_medical_assessments" model="ir.actions.act_window">
+        <field name="name">Medical Assessments</field>
+        <field name="res_model">onehr.medical.assessment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_medical_assessment_search"/>
+        <field name="context">{'delete': False}</field>
+    </record>
+
+    <!-- Disability / Accommodation -->
+    <record id="view_onehr_disability_record_list" model="ir.ui.view">
+        <field name="name">onehr.disability.record.list.enterprise.restricted</field>
+        <field name="model">onehr.disability.record</field>
+        <field name="arch" type="xml">
+            <list create="true" delete="false"
+                  decoration-warning="state == 'active' and accommodation_required"
+                  decoration-success="state == 'closed'">
+                <field name="reference"/>
+                <field name="employee_id"/>
+                <field name="category" widget="badge"/>
+                <field name="accommodation_required"/>
+                <field name="valid_from"/>
+                <field name="valid_to" optional="show"/>
+                <field name="review_date" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_activate" type="object" string="Activate" icon="fa-check" invisible="state != 'draft'"/>
+                <button name="action_close" type="object" string="Close" icon="fa-lock" invisible="state != 'active'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_disability_record_form" model="ir.ui.view">
+        <field name="name">onehr.disability.record.form.enterprise.restricted</field>
+        <field name="model">onehr.disability.record</field>
+        <field name="arch" type="xml">
+            <form string="Restricted Disability / Accommodation Record" create="true" delete="false">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_close" type="object" string="Close Record" class="btn-secondary"
+                            invisible="state != 'active'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Employee</span></div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Restricted" bg_color="text-bg-danger"/>
+                    <div class="oe_title"><h1><field name="reference" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Minimum Necessary Classification">
+                            <field name="employee_id" readonly="state == 'closed'"/>
+                            <field name="category" readonly="state == 'closed'"/>
+                            <field name="accommodation_required" readonly="state == 'closed'"/>
+                            <field name="review_date" readonly="state == 'closed'"/>
+                        </group>
+                        <group string="Validity">
+                            <field name="valid_from" readonly="state == 'closed'"/>
+                            <field name="valid_to" readonly="state == 'closed'"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Accommodation">
+                            <field name="accommodation_summary" readonly="state == 'closed'"
+                                   placeholder="Operational accommodation only. Avoid unnecessary diagnosis detail."/>
+                        </page>
+                        <page string="Closure Evidence">
+                            <field name="closure_note" readonly="state == 'closed'"
+                                   placeholder="Record factual closure or end-of-accommodation evidence before closing."/>
+                            <group>
+                                <field name="closed_at" readonly="1"/>
+                                <field name="closed_by_id" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_disability_record_search" model="ir.ui.view">
+        <field name="name">onehr.disability.record.search.enterprise.restricted</field>
+        <field name="model">onehr.disability.record</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="employee_id"/>
+                <field name="category"/>
+                <field name="state"/>
+                <field name="review_date"/>
+                <field name="company_id"/>
+                <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="accommodation" string="Accommodation Required" domain="[('accommodation_required', '=', True), ('state', '=', 'active')]"/>
+                <filter name="closed" string="Closed" domain="[('state', '=', 'closed')]"/>
+                <group>
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_disability_records" model="ir.actions.act_window">
+        <field name="name">Accommodation Records</field>
+        <field name="res_model">onehr.disability.record</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_disability_record_search"/>
+        <field name="context">{'delete': False}</field>
+    </record>
+</odoo>

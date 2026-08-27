@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_onehr_mobile_kiosk" model="ir.module.category">
+        <field name="name">OneHR Mobile Kiosk</field>
+        <field name="description">Kiosk device operation, token governance and mobile attendance synchronization.</field>
+        <field name="sequence">52</field>
+    </record>
+
+    <record id="privilege_onehr_mobile_kiosk" model="res.groups.privilege">
+        <field name="name">OneHR Mobile Kiosk</field>
+        <field name="description">Operate assigned kiosks or administer enterprise kiosk devices.</field>
+        <field name="category_id" ref="module_category_onehr_mobile_kiosk"/>
+        <field name="sequence">52</field>
+    </record>
+
+    <record id="group_onehr_kiosk_operator" model="res.groups">
+        <field name="name">Kiosk Operator</field>
+        <field name="privilege_id" ref="privilege_onehr_mobile_kiosk"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_attendance.group_onehr_attendance_officer'))
+        ]"/>
+        <field name="comment">Dedicated device/service users may operate only their assigned kiosk and normal Attendance authority. No device token administration.</field>
+    </record>
+
+    <record id="group_onehr_kiosk_admin" model="res.groups">
+        <field name="name">Kiosk Administrator</field>
+        <field name="privilege_id" ref="privilege_onehr_mobile_kiosk"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_mobile_kiosk.group_onehr_kiosk_operator')),
+            Command.link(ref('onehr_attendance.group_onehr_attendance_manager'))
+        ]"/>
+        <field name="comment">Registers/activates devices, rotates tokens, controls queue/dead-letter recovery and reviews company kiosk evidence.</field>
+    </record>
+</odoo>

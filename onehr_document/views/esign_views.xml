@@ -1,0 +1,153 @@
+<odoo>
+    <record id="view_esign_transaction_list" model="ir.ui.view">
+        <field name="name">onehr.esign.transaction.list.enterprise</field>
+        <field name="model">onehr.esign.transaction</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state in ('queued', 'sent', 'viewed')"
+                  decoration-success="state == 'signed'"
+                  decoration-danger="state in ('rejected', 'error')"
+                  decoration-muted="state == 'cancelled'">
+                <field name="correlation_id"/>
+                <field name="document_version_id"/>
+                <field name="employee_id"/>
+                <field name="category_id"/>
+                <field name="provider_key"/>
+                <field name="provider_reference" optional="show"/>
+                <field name="signer_name"/>
+                <field name="signer_email" optional="show"/>
+                <field name="requested_at"/>
+                <field name="completed_at"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state" widget="badge"/>
+                <button name="action_open_document_version" type="object" string="Version" icon="fa-external-link"/>
+                <button name="action_cancel" type="object" string="Cancel" icon="fa-times"
+                        groups="onehr_document.group_onehr_document_manager"
+                        invisible="state in ('signed', 'rejected', 'cancelled', 'error')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_esign_transaction_form" model="ir.ui.view">
+        <field name="name">onehr.esign.transaction.form.enterprise</field>
+        <field name="model">onehr.esign.transaction</field>
+        <field name="arch" type="xml">
+            <form string="E-Sign Transaction">
+                <header>
+                    <button name="action_cancel" type="object" string="Cancel Transaction"
+                            groups="onehr_document.group_onehr_document_manager"
+                            invisible="state in ('signed', 'rejected', 'cancelled', 'error')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="queued,sent,viewed,signed,rejected,cancelled,error"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_open_document_version" type="object" icon="fa-file-pdf-o">
+                            <div class="o_stat_info"><span class="o_stat_text">Document Version</span></div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Signed" bg_color="text-bg-success" invisible="state != 'signed'"/>
+                    <widget name="web_ribbon" title="Error" bg_color="text-bg-danger" invisible="state != 'error'"/>
+                    <div class="oe_title">
+                        <h1><field name="correlation_id" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Document">
+                            <field name="document_version_id" readonly="1"/>
+                            <field name="employee_id" readonly="1"/>
+                            <field name="category_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                        <group string="Provider Metadata">
+                            <field name="provider_key" readonly="1"/>
+                            <field name="provider_reference" readonly="1"/>
+                            <field name="requested_at" readonly="1"/>
+                            <field name="requested_by_id" readonly="1"/>
+                            <field name="completed_at" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Signer">
+                            <group>
+                                <field name="signer_name" readonly="1"/>
+                                <field name="signer_email" readonly="1"/>
+                                <field name="message" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Status Evidence">
+                            <field name="status_note" readonly="1"/>
+                            <group>
+                                <field name="supersedes_id" readonly="1"/>
+                                <field name="superseded_by_id" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Security Contract">
+                            <p class="text-muted">
+                                This record stores provider status/correlation metadata only. API keys, passwords, bearer tokens and provider secrets are forbidden in onehr_document.
+                            </p>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_esign_transaction_search" model="ir.ui.view">
+        <field name="name">onehr.esign.transaction.search.enterprise</field>
+        <field name="model">onehr.esign.transaction</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="correlation_id"/>
+                <field name="provider_reference"/>
+                <field name="document_version_id"/>
+                <field name="employee_id"/>
+                <field name="category_id"/>
+                <field name="provider_key"/>
+                <field name="signer_name"/>
+                <field name="signer_email"/>
+                <field name="company_id"/>
+                <field name="state"/>
+                <filter name="queued" string="Queued" domain="[('state', '=', 'queued')]"/>
+                <filter name="in_flight" string="In Flight" domain="[('state', 'in', ['sent', 'viewed'])]"/>
+                <filter name="signed" string="Signed" domain="[('state', '=', 'signed')]"/>
+                <filter name="exceptions" string="Exceptions" domain="[('state', 'in', ['rejected', 'error'])]"/>
+                <group>
+                    <filter name="group_provider" string="Provider" context="{'group_by': 'provider_key'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_esign_transactions" model="ir.actions.act_window">
+        <field name="name">E-Sign Transactions</field>
+        <field name="res_model">onehr.esign.transaction</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_esign_transaction_search"/>
+    </record>
+
+    <record id="view_esign_transaction_pivot" model="ir.ui.view">
+        <field name="name">onehr.esign.transaction.pivot.enterprise</field>
+        <field name="model">onehr.esign.transaction</field>
+        <field name="arch" type="xml">
+            <pivot string="E-Sign Transaction Analysis">
+                <field name="provider_key" type="row"/>
+                <field name="state" type="col"/>
+                <field name="company_id" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_esign_transaction_graph" model="ir.ui.view">
+        <field name="name">onehr.esign.transaction.graph.enterprise</field>
+        <field name="model">onehr.esign.transaction</field>
+        <field name="arch" type="xml">
+            <graph string="E-Sign Status" type="bar">
+                <field name="provider_key"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+</odoo>

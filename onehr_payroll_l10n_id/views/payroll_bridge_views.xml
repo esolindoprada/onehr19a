@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_payroll_export_form_l10n_id" model="ir.ui.view">
+        <field name="name">onehr.payroll.export.form.l10n.id</field>
+        <field name="model">onehr.payroll.export</field>
+        <field name="inherit_id" ref="onehr_payroll_bridge.view_onehr_payroll_export_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_onehr_l10n_param" type="object"
+                        class="oe_stat_button" icon="fa-flag"
+                        invisible="not onehr_l10n_param_id"
+                        groups="onehr_payroll_bridge.group_onehr_payroll_manager">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">ID Parameters</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='export_sha256']" position="after">
+                <field name="onehr_l10n_param_id" readonly="1"
+                       groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager"/>
+                <field name="onehr_l10n_sha256" readonly="1"
+                       groups="onehr_payroll_bridge.group_onehr_payroll_officer,onehr_payroll_bridge.group_onehr_payroll_manager"/>
+            </xpath>
+            <xpath expr="//page[@name='mapping_snapshot']" position="after">
+                <page string="Indonesia Localization Snapshot"
+                      name="indonesia_localization_snapshot"
+                      groups="onehr_payroll_bridge.group_onehr_payroll_manager">
+                    <field name="onehr_l10n_snapshot_json" nolabel="1" readonly="1"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_onehr_payroll_export_list_l10n_id" model="ir.ui.view">
+        <field name="name">onehr.payroll.export.list.l10n.id</field>
+        <field name="model">onehr.payroll.export</field>
+        <field name="inherit_id" ref="onehr_payroll_bridge.view_onehr_payroll_export_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='export_sha256']" position="after">
+                <field name="onehr_l10n_param_id" optional="hide"/>
+                <field name="onehr_l10n_sha256" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_onehr_payroll_bridge_config_form_l10n_id" model="ir.ui.view">
+        <field name="name">onehr.payroll.bridge.config.form.l10n.id</field>
+        <field name="model">onehr.payroll.bridge.config</field>
+        <field name="inherit_id" ref="onehr_payroll_bridge.view_onehr_payroll_bridge_config_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_indonesia_localization" type="object"
+                        class="oe_stat_button" icon="fa-flag"
+                        groups="onehr_payroll_bridge.group_onehr_payroll_manager">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Localization ID</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

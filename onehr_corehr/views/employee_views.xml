@@ -1,0 +1,235 @@
+<odoo>
+    <record id="view_employee_form_onehr_corehr" model="ir.ui.view">
+        <field name="name">hr.employee.form.onehr.corehr.enterprise</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_onehr_dependents" type="object" class="oe_stat_button" icon="fa-users"
+                        groups="onehr_corehr.group_onehr_corehr_officer">
+                    <field name="onehr_dependent_count" widget="statinfo" string="Dependents"/>
+                </button>
+                <button name="action_open_onehr_emergency_contacts" type="object" class="oe_stat_button" icon="fa-phone"
+                        groups="onehr_corehr.group_onehr_corehr_officer">
+                    <field name="onehr_emergency_contact_count" widget="statinfo" string="Emergency"/>
+                </button>
+                <button name="action_open_onehr_identifiers" type="object" class="oe_stat_button" icon="fa-id-card"
+                        groups="onehr_corehr.group_onehr_identifier_steward">
+                    <field name="onehr_identifier_count" widget="statinfo" string="Identifiers"/>
+                </button>
+                <button name="action_open_onehr_education" type="object" class="oe_stat_button" icon="fa-graduation-cap"
+                        groups="onehr_corehr.group_onehr_corehr_officer">
+                    <field name="onehr_education_count" widget="statinfo" string="Education"/>
+                </button>
+                <button name="action_open_onehr_employment_history" type="object" class="oe_stat_button" icon="fa-briefcase"
+                        groups="onehr_corehr.group_onehr_corehr_officer">
+                    <field name="onehr_employment_history_count" widget="statinfo" string="Prior Jobs"/>
+                </button>
+                <button name="action_open_onehr_checklists" type="object" class="oe_stat_button" icon="fa-check-square-o"
+                        groups="hr.group_hr_user">
+                    <field name="onehr_checklist_count" widget="statinfo" string="Checklists"/>
+                </button>
+                <button name="action_open_onehr_work_incidents" type="object" class="oe_stat_button" icon="fa-exclamation-triangle"
+                        groups="onehr_corehr.group_onehr_occupational_health_officer">
+                    <field name="onehr_work_incident_count" widget="statinfo" string="Incidents"/>
+                </button>
+                <button name="action_open_onehr_medical_assessments" type="object" class="oe_stat_button" icon="fa-medkit"
+                        groups="onehr_corehr.group_onehr_occupational_health_officer">
+                    <field name="onehr_medical_assessment_count" widget="statinfo" string="Assessments"/>
+                </button>
+                <button name="action_open_onehr_disability_records" type="object" class="oe_stat_button" icon="fa-universal-access"
+                        groups="onehr_corehr.group_onehr_occupational_health_officer">
+                    <field name="onehr_disability_record_count" widget="statinfo" string="Accommodation"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="OneHR Profile" name="onehr_corehr_profile"
+                      groups="onehr_corehr.group_onehr_corehr_officer">
+                    <group>
+                        <group string="Enterprise Identity">
+                            <field name="onehr_employee_number"/>
+                            <field name="onehr_profile_completeness" widget="progressbar" readonly="1"/>
+                            <field name="onehr_profile_status" widget="badge" readonly="1"/>
+                        </group>
+                        <group string="Current Versioned Classification">
+                            <field name="onehr_engagement_type_id"/>
+                            <field name="onehr_grade_id"/>
+                            <field name="onehr_primary_position_id"/>
+                            <field name="onehr_accommodation_required"
+                                   groups="hr.group_hr_manager,onehr_corehr.group_onehr_occupational_health_officer"
+                                   readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_onehr_checklists" type="object"
+                                string="Open Lifecycle Checklists" class="btn-secondary"
+                                icon="fa-check-square-o"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Dependents">
+                            <field name="onehr_dependent_ids">
+                                <list delete="false">
+                                    <field name="name"/>
+                                    <field name="relationship" widget="badge"/>
+                                    <field name="birth_date"/>
+                                    <field name="benefit_eligible"/>
+                                    <field name="valid_from"/>
+                                    <field name="valid_to"/>
+                                    <field name="active" optional="hide"/>
+                                    <button name="action_expire" type="object" string="Expire"
+                                            icon="fa-calendar-times-o" invisible="not active"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Emergency Contacts">
+                            <field name="onehr_emergency_contact_ids">
+                                <list delete="false">
+                                    <field name="name"/>
+                                    <field name="relationship"/>
+                                    <field name="phone" widget="phone"/>
+                                    <field name="priority"/>
+                                    <field name="is_primary"/>
+                                    <field name="valid_from"/>
+                                    <field name="valid_to"/>
+                                    <button name="action_set_primary" type="object" string="Primary"
+                                            icon="fa-star" invisible="is_primary or not active"/>
+                                    <button name="action_expire" type="object" string="Expire"
+                                            icon="fa-calendar-times-o" invisible="not active"/>
+                                    <field name="active" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Education">
+                            <field name="onehr_education_ids">
+                                <list delete="false">
+                                    <field name="institution_name"/>
+                                    <field name="qualification_level" widget="badge"/>
+                                    <field name="qualification_name"/>
+                                    <field name="completed"/>
+                                    <field name="award_date"/>
+                                    <button name="action_mark_completed" type="object" string="Complete"
+                                            icon="fa-check" invisible="completed"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Prior External Employment">
+                            <field name="onehr_employment_history_ids">
+                                <list delete="false">
+                                    <field name="employer_name"/>
+                                    <field name="job_title"/>
+                                    <field name="valid_from"/>
+                                    <field name="valid_to"/>
+                                    <field name="verified"/>
+                                    <button name="action_verify" type="object" string="Verify"
+                                            icon="fa-check" invisible="verified"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </page>
+
+                <page string="Restricted Identifiers" name="onehr_restricted_identifiers"
+                      groups="onehr_corehr.group_onehr_identifier_steward">
+                    <field name="onehr_identifier_ids">
+                        <list delete="false">
+                            <field name="reference"/>
+                            <field name="identifier_type" widget="badge"/>
+                            <field name="masked_value"/>
+                            <field name="issuer"/>
+                            <field name="verified"/>
+                            <field name="valid_from"/>
+                            <field name="valid_to"/>
+                            <button name="action_verify" type="object" string="Verify"
+                                    icon="fa-check" invisible="verified"/>
+                            <button name="action_expire" type="object" string="Expire"
+                                    icon="fa-ban" invisible="not active"/>
+                            <field name="active" column_invisible="1"/>
+                        </list>
+                    </field>
+                </page>
+
+                <page string="Occupational Health — Restricted" name="onehr_occupational_health"
+                      groups="onehr_corehr.group_onehr_occupational_health_officer">
+                    <div class="alert alert-danger" role="alert">
+                        Restricted minimum-necessary occupational-health data.
+                        Security Admin and normal HR Manager do not receive this access automatically.
+                    </div>
+                    <group>
+                        <field name="onehr_accommodation_required" readonly="1"/>
+                        <field name="onehr_work_incident_count" readonly="1"/>
+                        <field name="onehr_medical_assessment_count" readonly="1"/>
+                        <field name="onehr_disability_record_count" readonly="1"/>
+                    </group>
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_onehr_work_incidents" type="object"
+                                string="Work Incidents" class="btn-secondary" icon="fa-exclamation-triangle"/>
+                        <button name="action_open_onehr_medical_assessments" type="object"
+                                string="Medical Assessments" class="btn-secondary" icon="fa-medkit"/>
+                        <button name="action_open_onehr_disability_records" type="object"
+                                string="Accommodation Records" class="btn-secondary" icon="fa-universal-access"/>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_employee_tree_onehr_corehr" model="ir.ui.view">
+        <field name="name">hr.employee.list.onehr.corehr.enterprise</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="onehr_employee_number" optional="show"/>
+                <field name="onehr_profile_status" widget="badge" optional="show"
+                       groups="hr.group_hr_user"/>
+                <field name="onehr_profile_completeness" optional="hide"
+                       groups="hr.group_hr_user"/>
+                <field name="onehr_engagement_type_id" optional="show"
+                       groups="hr.group_hr_user"/>
+                <field name="onehr_grade_id" optional="hide"
+                       groups="hr.group_hr_user"/>
+                <field name="onehr_primary_position_id" optional="hide"
+                       groups="hr.group_hr_user"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_employee_filter_onehr_corehr" model="ir.ui.view">
+        <field name="name">hr.employee.search.onehr.corehr.enterprise</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="onehr_employee_number"/>
+                <field name="onehr_engagement_type_id" groups="hr.group_hr_user"/>
+                <field name="onehr_grade_id" groups="hr.group_hr_user"/>
+                <field name="onehr_primary_position_id" groups="hr.group_hr_user"/>
+                <filter name="onehr_profile_incomplete" string="OneHR Profile Incomplete"
+                        domain="[('onehr_profile_status', '=', 'incomplete')]"
+                        groups="hr.group_hr_user"/>
+                <filter name="onehr_profile_ready" string="OneHR Profile Ready"
+                        domain="[('onehr_profile_status', '=', 'ready')]"
+                        groups="hr.group_hr_user"/>
+                <group>
+                    <filter name="group_onehr_engagement" string="OneHR Engagement"
+                            context="{'group_by': 'onehr_engagement_type_id'}"
+                            groups="hr.group_hr_user"/>
+                    <filter name="group_onehr_grade" string="OneHR Grade"
+                            context="{'group_by': 'onehr_grade_id'}"
+                            groups="hr.group_hr_user"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_onehr_corehr_employees" model="ir.actions.act_window">
+        <field name="name">Employees</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,kanban,form,activity,graph,pivot</field>
+        <field name="search_view_id" ref="hr.view_employee_filter"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+</odoo>

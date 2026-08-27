@@ -1,0 +1,247 @@
+<odoo>
+    <!-- Template Master -->
+    <record id="view_document_template_list" model="ir.ui.view">
+        <field name="name">onehr.document.template.list.enterprise</field>
+        <field name="model">onehr.document.template</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="version_count"/>
+                <field name="generated_document_count"/>
+                <field name="valid_from"/>
+                <field name="valid_to"/>
+                <field name="active"/>
+                <button name="action_create_version" type="object" string="New Version" icon="fa-plus"
+                        groups="onehr_document.group_onehr_document_manager"/>
+                <button name="action_open_versions" type="object" string="Versions" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_document_template_form" model="ir.ui.view">
+        <field name="name">onehr.document.template.form.enterprise</field>
+        <field name="model">onehr.document.template</field>
+        <field name="arch" type="xml">
+            <form string="Document Template">
+                <header>
+                    <button name="action_create_version" type="object" string="Create Template Version"
+                            class="btn-primary" groups="onehr_document.group_onehr_document_manager"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_open_versions" type="object" icon="fa-copy">
+                            <field name="version_count" widget="statinfo" string="Versions"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_open_generated_documents" type="object" icon="fa-files-o">
+                            <field name="generated_document_count" widget="statinfo" string="Generated"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Inactive" bg_color="text-bg-secondary" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="code" class="oe_inline"/></div>
+                    </div>
+                    <group>
+                        <group string="Template Governance">
+                            <field name="code"/>
+                            <field name="category_id" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Effective Dating">
+                            <field name="valid_from"/>
+                            <field name="valid_to"/>
+                        </group>
+                    </group>
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_create_version" type="object" string="Create Controlled Successor Version"
+                                class="btn-secondary" icon="fa-copy"
+                                groups="onehr_document.group_onehr_document_manager"/>
+                    </div>
+                    <notebook>
+                        <page string="Template Versions">
+                            <field name="version_ids">
+                                <list decoration-info="state == 'draft'"
+                                      decoration-success="state == 'active'"
+                                      decoration-muted="state == 'retired'">
+                                    <field name="version"/>
+                                    <field name="valid_from"/>
+                                    <field name="valid_to"/>
+                                    <field name="variable_contract" optional="show"/>
+                                    <field name="content_checksum" optional="hide"/>
+                                    <field name="generated_version_count"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_template" type="object" string="Template" icon="fa-external-link"/>
+                                    <button name="action_activate" type="object" string="Activate" icon="fa-check"
+                                            groups="onehr_document.group_onehr_document_manager"
+                                            invisible="state != 'draft'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Description">
+                            <field name="description" placeholder="Purpose, intended audience and legal/content ownership..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_document_template_search" model="ir.ui.view">
+        <field name="name">onehr.document.template.search.enterprise</field>
+        <field name="model">onehr.document.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="company_id"/>
+                <filter name="active_only" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Inactive" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_document_templates" model="ir.actions.act_window">
+        <field name="name">Document Templates</field>
+        <field name="res_model">onehr.document.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_document_template_search"/>
+    </record>
+
+    <!-- Template Version -->
+    <record id="view_document_template_version_list" model="ir.ui.view">
+        <field name="name">onehr.document.template.version.list.enterprise</field>
+        <field name="model">onehr.document.template.version</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                  decoration-success="state == 'active'"
+                  decoration-muted="state == 'retired'">
+                <field name="template_id"/>
+                <field name="version"/>
+                <field name="category_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="valid_from"/>
+                <field name="valid_to"/>
+                <field name="variable_contract" optional="show"/>
+                <field name="content_checksum" optional="hide"/>
+                <field name="generated_version_count"/>
+                <field name="state" widget="badge"/>
+                <button name="action_activate" type="object" string="Activate" icon="fa-check"
+                        groups="onehr_document.group_onehr_document_manager"
+                        invisible="state != 'draft'"/>
+                <button name="action_create_successor" type="object" string="Successor" icon="fa-copy"
+                        groups="onehr_document.group_onehr_document_manager"/>
+                <button name="action_open_template" type="object" string="Template" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_document_template_version_form" model="ir.ui.view">
+        <field name="name">onehr.document.template.version.form.enterprise</field>
+        <field name="model">onehr.document.template.version</field>
+        <field name="arch" type="xml">
+            <form string="Document Template Version">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            groups="onehr_document.group_onehr_document_manager"
+                            invisible="state != 'draft'"/>
+                    <button name="action_retire" type="object" string="Retire"
+                            groups="onehr_document.group_onehr_document_manager"
+                            invisible="state != 'active'"/>
+                    <button name="action_create_successor" type="object" string="Create Successor"
+                            groups="onehr_document.group_onehr_document_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,retired"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_open_template" type="object" icon="fa-file-text-o">
+                            <div class="o_stat_info"><span class="o_stat_text">Template</span></div>
+                        </button>
+                        <button class="oe_stat_button" name="action_open_generated_versions" type="object" icon="fa-files-o">
+                            <field name="generated_version_count" widget="statinfo" string="Generated"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Version Identity">
+                            <field name="template_id" readonly="state != 'draft'"/>
+                            <field name="version" readonly="state != 'draft'"/>
+                            <field name="category_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                        <group string="Effective Dating">
+                            <field name="valid_from" readonly="state != 'draft'"/>
+                            <field name="valid_to" readonly="state != 'draft'"/>
+                            <field name="content_checksum" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Template Content">
+                            <group>
+                                <field name="subject_template" readonly="state != 'draft'"/>
+                                <field name="filename_template" readonly="state != 'draft'"/>
+                                <field name="variable_contract" readonly="1"/>
+                            </group>
+                            <field name="body_html" widget="html" readonly="state != 'draft'"/>
+                        </page>
+                        <page string="Approved Variable Contract">
+                            <p class="text-muted">
+                                Stored templates are not executable code. Only the bounded {{ token }} variables listed below are accepted; values are HTML-escaped before substitution.
+                            </p>
+                            <div class="text-muted">
+                                <p><strong>Employee:</strong> employee.name, employee.onehr_employee_number, employee.work_email</p>
+                                <p><strong>Organization:</strong> company.name, category.name</p>
+                                <p><strong>Source:</strong> source.display_name</p>
+                                <p><strong>Dates:</strong> current_date, effective_from, effective_to, expiry_date</p>
+                                <p><strong>Document:</strong> document.name, document.number</p>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_document_template_version_search" model="ir.ui.view">
+        <field name="name">onehr.document.template.version.search.enterprise</field>
+        <field name="model">onehr.document.template.version</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="template_id"/>
+                <field name="category_id"/>
+                <field name="company_id"/>
+                <field name="variable_contract"/>
+                <field name="state"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="retired" string="Retired" domain="[('state', '=', 'retired')]"/>
+                <group>
+                    <filter name="group_template" string="Template" context="{'group_by': 'template_id'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_document_template_versions" model="ir.actions.act_window">
+        <field name="name">Template Versions</field>
+        <field name="res_model">onehr.document.template.version</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_document_template_version_search"/>
+    </record>
+</odoo>

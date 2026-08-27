@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_onehr_attendance_record" model="ir.actions.report">
+        <field name="name">OneHR Attendance Record</field>
+        <field name="model">hr.attendance</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_attendance.report_attendance_record_document</field>
+        <field name="report_file">onehr_attendance.report_attendance_record_document</field>
+        <field name="binding_model_id" ref="hr_attendance.model_hr_attendance"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[Command.link(ref('onehr_attendance.group_onehr_attendance_officer'))]"/>
+        <field name="print_report_name">'Attendance - %s - %s' % (object.employee_id.name, object.date)</field>
+    </record>
+
+    <template id="report_attendance_record_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>OneHR Attendance Record</h2>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr><th>Employee</th><td><span t-field="o.employee_id"/></td><th>Date</th><td><span t-field="o.date"/></td></tr>
+                                <tr><th>Check In</th><td><span t-field="o.check_in"/></td><th>Check Out</th><td><span t-field="o.check_out"/></td></tr>
+                                <tr><th>Worked Hours</th><td><span t-field="o.worked_hours"/></td><th>Rounded Hours</th><td><span t-field="o.onehr_rounded_worked_hours"/></td></tr>
+                                <tr><th>Shift</th><td><span t-field="o.onehr_shift_id"/></td><th>Processing Status</th><td><span t-field="o.onehr_processing_state"/></td></tr>
+                                <tr><th>Late Minutes</th><td><span t-field="o.onehr_late_minutes"/></td><th>Early Leave Minutes</th><td><span t-field="o.onehr_early_leave_minutes"/></td></tr>
+                                <tr><th>Overtime Hours</th><td><span t-field="o.overtime_hours"/></td><th>Overtime Status</th><td><span t-field="o.overtime_status"/></td></tr>
+                                <tr><th>Source</th><td><span t-field="o.onehr_source_channel"/> / <span t-field="o.onehr_source_system"/></td><th>External Ref.</th><td><span t-field="o.onehr_external_reference"/></td></tr>
+                            </tbody>
+                        </table>
+                        <h4>Exception Evidence</h4>
+                        <table class="table table-sm">
+                            <thead><tr><th>Type</th><th>Severity</th><th>Variance</th><th>Status</th><th>Resolution</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="o.onehr_exception_ids" t-as="e">
+                                    <td><span t-field="e.exception_type"/></td><td><span t-field="e.severity"/></td><td><span t-field="e.variance_minutes"/></td><td><span t-field="e.state"/></td><td><span t-field="e.resolution_reason"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-muted">Native Odoo attendance and overtime remain canonical. OneHR adds shift/reconciliation evidence and downstream readiness status.</p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_onehr_attendance_reconciliation" model="ir.actions.report">
+        <field name="name">Attendance Reconciliation Control Report</field>
+        <field name="model">onehr.attendance.reconciliation</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_attendance.report_reconciliation_document</field>
+        <field name="report_file">onehr_attendance.report_reconciliation_document</field>
+        <field name="binding_model_id" ref="model_onehr_attendance_reconciliation"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[Command.link(ref('onehr_attendance.group_onehr_attendance_officer'))]"/>
+        <field name="print_report_name">'Attendance Reconciliation - %s' % object.name</field>
+    </record>
+
+    <template id="report_reconciliation_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Attendance Reconciliation Control Report</h2>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr><th>Reference</th><td><span t-field="o.name"/></td><th>Status</th><td><span t-field="o.state"/></td></tr>
+                                <tr><th>Source Type</th><td><span t-field="o.source_type"/></td><th>Source System</th><td><span t-field="o.source_system"/></td></tr>
+                                <tr><th>Candidate Rows</th><td><span t-field="o.candidate_count"/></td><th>Canonical Attendances</th><td><span t-field="o.attendance_count"/></td></tr>
+                                <tr><th>Exceptions</th><td><span t-field="o.exception_count"/></td><th>Import Batch</th><td><span t-field="o.import_batch_id"/></td></tr>
+                                <tr><th>Submitted</th><td><span t-field="o.submitted_at"/> — <span t-field="o.submitted_by_id"/></td><th>Approved</th><td><span t-field="o.approved_at"/> — <span t-field="o.approved_by_id"/></td></tr>
+                                <tr><th>Posted</th><td colspan="3"><span t-field="o.posted_at"/> — <span t-field="o.posted_by_id"/></td></tr>
+                            </tbody>
+                        </table>
+                        <h4>Canonical Attendance Output</h4>
+                        <table class="table table-sm">
+                            <thead><tr><th>Employee</th><th>Date</th><th>Check In</th><th>Check Out</th><th>Exception</th><th>Status</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="o.attendance_ids" t-as="a">
+                                    <td><span t-field="a.employee_id"/></td><td><span t-field="a.date"/></td><td><span t-field="a.check_in"/></td><td><span t-field="a.check_out"/></td><td><span t-field="a.onehr_exception_state"/></td><td><span t-field="a.onehr_processing_state"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

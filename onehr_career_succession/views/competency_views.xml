@@ -1,0 +1,144 @@
+<odoo>
+    <record id="view_onehr_competency_list" model="ir.ui.view">
+        <field name="name">onehr.competency.list</field>
+        <field name="model">onehr.competency</field>
+        <field name="arch" type="xml">
+            <list string="Competency Dictionary"
+                  decoration-muted="not active">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="category" widget="badge"/>
+                <field name="level_min"/>
+                <field name="level_max"/>
+                <field name="position_count"/>
+                <field name="talent_count"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active" optional="hide"/>
+                <button name="action_open_position_requirements" type="object"
+                        string="Requirements" icon="fa-bullseye"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_competency_form" model="ir.ui.view">
+        <field name="name">onehr.competency.form</field>
+        <field name="model">onehr.competency</field>
+        <field name="arch" type="xml">
+            <form string="Competency">
+                <header>
+                    <button name="action_archive_governed" type="object"
+                            string="Archive" class="btn-secondary"
+                            invisible="not active"
+                            groups="onehr_career_succession.group_onehr_talent_manager"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_position_requirements" type="object"
+                                class="oe_stat_button" icon="fa-bullseye">
+                            <field name="position_count" widget="statinfo" string="Positions"/>
+                        </button>
+                        <button name="action_open_related_talent" type="object"
+                                class="oe_stat_button" icon="fa-users">
+                            <field name="talent_count" widget="statinfo" string="Talent"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Archived"
+                            bg_color="text-bg-secondary"
+                            invisible="active"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Strategic Leadership"/></h1>
+                        <div class="text-muted"><field name="code"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Identity">
+                            <field name="code"/>
+                            <field name="category"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Level Scale">
+                            <field name="level_min"/>
+                            <field name="level_max"/>
+                            <field name="usage_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Definition">
+                            <field name="description"
+                                   placeholder="Describe the competency and business context..."/>
+                            <field name="evidence_guidance"
+                                   placeholder="Describe acceptable observable evidence..."/>
+                        </page>
+
+                        <page string="Behaviour Anchors">
+                            <group>
+                                <field name="level_1_behavior"/>
+                                <field name="level_2_behavior"/>
+                                <field name="level_3_behavior"/>
+                                <field name="level_4_behavior"/>
+                                <field name="level_5_behavior"/>
+                            </group>
+                        </page>
+
+                        <page string="Position Requirements">
+                            <div class="mb-2">
+                                <button name="action_open_position_requirements"
+                                        type="object"
+                                        string="Open Full Requirement Workspace"
+                                        class="btn-secondary"/>
+                            </div>
+                            <field name="position_requirement_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="position_id"/>
+                                    <field name="required_level"/>
+                                    <field name="weight"/>
+                                    <field name="mandatory"/>
+                                    <field name="evidence_required"/>
+                                    <button name="action_open_position" type="object"
+                                            string="Position" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_competency_search" model="ir.ui.view">
+        <field name="name">onehr.competency.search</field>
+        <field name="model">onehr.competency</field>
+        <field name="arch" type="xml">
+            <search string="Search Competencies">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="category"/>
+                <field name="company_id"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter name="group_category" string="Category"
+                        context="{'group_by': 'category'}"/>
+                <filter name="group_company" string="Company"
+                        context="{'group_by': 'company_id'}"
+                        groups="base.group_multi_company"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_competency" model="ir.actions.act_window">
+        <field name="name">Competencies</field>
+        <field name="res_model">onehr.competency</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_competency_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+</odoo>

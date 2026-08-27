@@ -1,0 +1,392 @@
+<odoo>
+    <record id="action_report_discipline_hearing_summons" model="ir.actions.report">
+        <field name="name">Discipline Hearing Summons</field>
+        <field name="model">onehr.discipline.case</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_discipline.report_discipline_hearing_summons</field>
+        <field name="report_file">onehr_discipline.report_discipline_hearing_summons</field>
+        <field name="print_report_name">'Hearing Summons - %s' % object.reference</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_discipline.group_onehr_discipline_investigator'))
+        ]"/>
+    </record>
+
+    <record id="action_report_discipline_hearing_minutes" model="ir.actions.report">
+        <field name="name">Discipline Hearing Minutes</field>
+        <field name="model">onehr.discipline.case</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_discipline.report_discipline_hearing_minutes</field>
+        <field name="report_file">onehr_discipline.report_discipline_hearing_minutes</field>
+        <field name="print_report_name">'Hearing Minutes - %s' % object.reference</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_discipline.group_onehr_discipline_investigator'))
+        ]"/>
+    </record>
+
+    <record id="action_report_discipline_case_outcome" model="ir.actions.report">
+        <field name="name">Discipline Case Outcome</field>
+        <field name="model">onehr.discipline.case</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_discipline.report_discipline_case_outcome</field>
+        <field name="report_file">onehr_discipline.report_discipline_case_outcome</field>
+        <field name="print_report_name">'Discipline Outcome - %s' % object.reference</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_discipline.group_onehr_discipline_investigator'))
+        ]"/>
+    </record>
+
+    <record id="action_report_discipline_case_register" model="ir.actions.report">
+        <field name="name">Discipline Outcome &amp; Lead-Time Register</field>
+        <field name="model">onehr.discipline.case</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_discipline.report_discipline_case_register</field>
+        <field name="report_file">onehr_discipline.report_discipline_case_register</field>
+        <field name="binding_model_id" ref="model_onehr_discipline_case"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Discipline Outcome and Lead-Time Register'</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_discipline.group_onehr_discipline_manager'))
+        ]"/>
+    </record>
+
+    <record id="action_report_discipline_sanction_letter" model="ir.actions.report">
+        <field name="name">Disciplinary Sanction / Warning Letter</field>
+        <field name="model">onehr.discipline.sanction</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_discipline.report_discipline_sanction_letter</field>
+        <field name="report_file">onehr_discipline.report_discipline_sanction_letter</field>
+        <field name="print_report_name">'Sanction Letter - %s' % object.reference</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_discipline.group_onehr_discipline_investigator'))
+        ]"/>
+    </record>
+
+    <record id="action_report_discipline_decision_record" model="ir.actions.report">
+        <field name="name">Discipline Decision Record</field>
+        <field name="model">onehr.discipline.sanction</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_discipline.report_discipline_decision_record</field>
+        <field name="report_file">onehr_discipline.report_discipline_decision_record</field>
+        <field name="binding_model_id" ref="model_onehr_discipline_sanction"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Discipline Decision - %s' % object.reference</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_discipline.group_onehr_discipline_hrbp'))
+        ]"/>
+    </record>
+
+    <template id="report_discipline_hearing_summons">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Formal Disciplinary Hearing Notice</h2>
+                        <p>
+                            <strong>Case:</strong>
+                            <span t-field="doc.reference"/>
+                        </p>
+                        <p>
+                            To: <strong><span t-field="doc.employee_name"/></strong><br/>
+                            Department: <span t-field="doc.department_name"/><br/>
+                            Job / Role: <span t-field="doc.job_name"/>
+                        </p>
+                        <p>
+                            You are requested to attend a formal employee-relations hearing
+                            so that the reported matter may be clarified through a fair process.
+                            This notice does not determine the outcome of the case.
+                        </p>
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th style="width:30%">Hearing Schedule</th>
+                                    <td><span t-field="doc.hearing_scheduled_at"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Location</th>
+                                    <td><span t-field="doc.hearing_location"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Allegation Summary</th>
+                                    <td><span t-field="doc.allegation_summary"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Policy / Rule Reference</th>
+                                    <td><span t-field="doc.policy_reference"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>
+                            You may provide your clarification and relevant information/evidence
+                            during the hearing in accordance with applicable company policy and law.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_discipline_hearing_minutes">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Disciplinary Hearing Minutes</h2>
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Case</th>
+                                    <td><span t-field="doc.reference"/></td>
+                                    <th>Employee</th>
+                                    <td><span t-field="doc.employee_name"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Schedule</th>
+                                    <td><span t-field="doc.hearing_scheduled_at"/></td>
+                                    <th>Location</th>
+                                    <td><span t-field="doc.hearing_location"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h4>Attendees</h4>
+                        <p t-field="doc.hearing_attendee_names"/>
+                        <h4>Employee Statement</h4>
+                        <div t-field="doc.employee_statement"/>
+                        <h4>Witness Statement</h4>
+                        <div t-field="doc.witness_statement"/>
+                        <h4>Minutes</h4>
+                        <div t-field="doc.hearing_minutes"/>
+                        <h4>Recommendation</h4>
+                        <p t-field="doc.hearing_recommendation"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_discipline_case_outcome">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Discipline Case Outcome</h2>
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Reference</th>
+                                    <td><span t-field="doc.reference"/></td>
+                                    <th>Status</th>
+                                    <td><span t-field="doc.state"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Employee</th>
+                                    <td><span t-field="doc.employee_name"/></td>
+                                    <th>Department</th>
+                                    <td><span t-field="doc.department_name"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Violation Category</th>
+                                    <td><span t-field="doc.violation_category"/></td>
+                                    <th>Severity</th>
+                                    <td><span t-field="doc.severity"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Reported</th>
+                                    <td><span t-field="doc.reported_at"/></td>
+                                    <th>Resolution Days</th>
+                                    <td><span t-field="doc.resolution_days"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Allegation Summary</h4>
+                        <p t-field="doc.allegation_summary"/>
+
+                        <h4>Investigation Findings</h4>
+                        <div t-field="doc.investigation_findings"/>
+
+                        <h4>Hearing Summary</h4>
+                        <div t-field="doc.hearing_minutes"/>
+
+                        <h4>Decision</h4>
+                        <p>
+                            <strong>Disposition:</strong>
+                            <span t-field="doc.final_disposition"/>
+                        </p>
+                        <div t-field="doc.decision_summary"/>
+                        <div t-field="doc.decision_rationale"/>
+
+                        <h4>Sanctions / Decisions</h4>
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Reference</th>
+                                    <th>Type</th>
+                                    <th>State</th>
+                                    <th>Decision Date</th>
+                                    <th>Executed</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.sanction_ids" t-as="sanction">
+                                    <tr>
+                                        <td><span t-field="sanction.reference"/></td>
+                                        <td><span t-field="sanction.sanction_type"/></td>
+                                        <td><span t-field="sanction.state"/></td>
+                                        <td><span t-field="sanction.decision_date"/></td>
+                                        <td><span t-field="sanction.executed_at"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <h4>Appeal</h4>
+                        <p><strong>Status:</strong> <span t-field="doc.appeal_state"/></p>
+                        <div t-field="doc.appeal_outcome_summary"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_discipline_case_register">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Discipline Outcome &amp; Lead-Time Register</h2>
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Reference</th>
+                                <th>Employee</th>
+                                <th>Department</th>
+                                <th>Violation</th>
+                                <th>Severity</th>
+                                <th>State</th>
+                                <th>Reported</th>
+                                <th>Resolution Days</th>
+                                <th>Disposition</th>
+                                <th>Repeat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="doc">
+                                <tr>
+                                    <td><span t-field="doc.reference"/></td>
+                                    <td><span t-field="doc.employee_name"/></td>
+                                    <td><span t-field="doc.department_name"/></td>
+                                    <td><span t-field="doc.violation_category"/></td>
+                                    <td><span t-field="doc.severity"/></td>
+                                    <td><span t-field="doc.state"/></td>
+                                    <td><span t-field="doc.reported_at"/></td>
+                                    <td><span t-field="doc.resolution_days"/></td>
+                                    <td><span t-field="doc.final_disposition"/></td>
+                                    <td><span t-field="doc.repeat_offense"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_discipline_sanction_letter">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Disciplinary Decision / Warning Letter</h2>
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Sanction Reference</th>
+                                    <td><span t-field="doc.reference"/></td>
+                                    <th>Case Reference</th>
+                                    <td><span t-field="doc.case_reference"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Employee</th>
+                                    <td><span t-field="doc.employee_name"/></td>
+                                    <th>Department</th>
+                                    <td><span t-field="doc.department_name"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Decision Type</th>
+                                    <td><span t-field="doc.sanction_type"/></td>
+                                    <th>Decision Date</th>
+                                    <td><span t-field="doc.decision_date"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Effective From</th>
+                                    <td><span t-field="doc.effective_start_date"/></td>
+                                    <th>Effective To</th>
+                                    <td><span t-field="doc.effective_end_date"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h4>Decision Basis</h4>
+                        <div t-field="doc.decision_basis"/>
+                        <h4>Applicable Basis</h4>
+                        <div t-field="doc.legal_basis"/>
+                        <h4>Terms / Expectations</h4>
+                        <div t-field="doc.sanction_terms"/>
+                        <div t-field="doc.manager_expectations"/>
+                        <div class="mt-4" t-if="doc.warning_expiry_date">
+                            <strong>Warning Expiry:</strong>
+                            <span t-field="doc.warning_expiry_date"/>
+                        </div>
+                        <div class="mt-2" t-if="doc.probation_start_date">
+                            <strong>Probation / Last Chance Period:</strong>
+                            <span t-field="doc.probation_start_date"/>
+                            <span> — </span>
+                            <span t-field="doc.probation_end_date"/>
+                            <div t-field="doc.probation_conditions"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_discipline_decision_record">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Discipline Decision Record</h2>
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Reference</th>
+                                <th>Case</th>
+                                <th>Employee</th>
+                                <th>Type</th>
+                                <th>Severity</th>
+                                <th>State</th>
+                                <th>Decision</th>
+                                <th>Approved</th>
+                                <th>Executed</th>
+                                <th>Served</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="doc">
+                                <tr>
+                                    <td><span t-field="doc.reference"/></td>
+                                    <td><span t-field="doc.case_reference"/></td>
+                                    <td><span t-field="doc.employee_name"/></td>
+                                    <td><span t-field="doc.sanction_type"/></td>
+                                    <td><span t-field="doc.severity"/></td>
+                                    <td><span t-field="doc.state"/></td>
+                                    <td><span t-field="doc.decision_date"/></td>
+                                    <td><span t-field="doc.approved_at"/></td>
+                                    <td><span t-field="doc.executed_at"/></td>
+                                    <td><span t-field="doc.served_at"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_offer_list" model="ir.ui.view">
+        <field name="name">onehr.offer.list</field>
+        <field name="model">onehr.offer</field>
+        <field name="arch" type="xml">
+            <list string="Recruitment Offers" decoration-success="state == 'accepted'" decoration-danger="state in ('rejected','declined','withdrawn','expired')" decoration-warning="state == 'pending_approval'">
+                <field name="name"/>
+                <field name="applicant_id"/>
+                <field name="job_id"/>
+                <field name="position_id" optional="show"/>
+                <field name="offer_date"/>
+                <field name="proposed_start_date" optional="show"/>
+                <field name="expiry_date"/>
+                <field name="total_cash_compensation" widget="monetary" groups="onehr_recruitment.group_onehr_recruiter" optional="show"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="state" widget="badge"/>
+                <field name="onehr_latest_approval_state" widget="badge" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <button name="action_open_applicant" type="object" icon="fa-user" title="Open Applicant"/>
+                <button name="action_create_preboarding" type="object" icon="fa-rocket" title="Start Preboarding" groups="onehr_recruitment.group_onehr_recruiter" invisible="state != 'accepted'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_offer_form" model="ir.ui.view">
+        <field name="name">onehr.offer.form</field>
+        <field name="model">onehr.offer</field>
+        <field name="arch" type="xml">
+            <form string="Recruitment Offer">
+                <header>
+                    <button name="action_submit_for_approval" type="object" string="Submit for Approval" class="btn-primary" groups="onehr_recruitment.group_onehr_recruiter" invisible="state != 'draft'"/>
+                    <button name="action_generate_offer_document" type="object" string="Generate Offer Document" groups="onehr_recruitment.group_onehr_recruiter" invisible="state not in ('approved','sent','accepted')"/>
+                    <button name="action_mark_sent" type="object" string="Mark Sent" class="btn-primary" groups="onehr_recruitment.group_onehr_recruiter" invisible="state != 'approved'"/>
+                    <button name="action_accept" type="object" string="Accept" class="btn-primary" groups="onehr_recruitment.group_onehr_recruiter" invisible="state != 'sent'"/>
+                    <button name="action_decline" type="object" string="Decline" groups="onehr_recruitment.group_onehr_recruiter" invisible="state != 'sent'"/>
+                    <button name="action_expire" type="object" string="Mark Expired" groups="onehr_recruitment.group_onehr_recruiter" invisible="state != 'sent'"/>
+                    <button name="action_withdraw" type="object" string="Withdraw" groups="onehr_recruitment.group_onehr_recruitment_manager" invisible="state not in ('approved','sent')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,pending_approval,approved,sent,accepted"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_approval_requests" type="object" class="oe_stat_button" icon="fa-check-square-o" groups="onehr_recruitment.group_onehr_recruiter">
+                            <field name="onehr_approval_request_count" widget="statinfo" string="Approvals"/>
+                        </button>
+                        <button name="action_open_applicant" type="object" class="oe_stat_button" icon="fa-user"><span class="o_stat_text">Applicant</span></button>
+                        <button name="action_open_preboarding" type="object" class="oe_stat_button" icon="fa-rocket" invisible="not preboarding_count">
+                            <field name="preboarding_count" widget="statinfo" string="Preboarding"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Accepted" bg_color="text-bg-success" invisible="state != 'accepted'"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                    <widget name="web_ribbon" title="Declined" bg_color="text-bg-danger" invisible="state != 'declined'"/>
+                    <widget name="web_ribbon" title="Expired" bg_color="text-bg-secondary" invisible="state != 'expired'"/>
+                    <widget name="web_ribbon" title="Withdrawn" bg_color="text-bg-secondary" invisible="state != 'withdrawn'"/>
+                    <div class="oe_title"><label for="name"/><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Candidate &amp; Position">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="applicant_id"/>
+                            <field name="requisition_id"/>
+                            <field name="job_id" readonly="1"/>
+                            <field name="position_id"/>
+                        </group>
+                        <group string="Offer Dates">
+                            <field name="offer_date"/>
+                            <field name="proposed_start_date"/>
+                            <field name="expiry_date"/>
+                            <field name="approved_at" readonly="1"/>
+                            <field name="sent_at" readonly="1"/>
+                            <field name="responded_at" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Compensation" groups="onehr_recruitment.group_onehr_recruiter">
+                        <field name="currency_id"/>
+                        <field name="base_salary"/>
+                        <field name="variable_compensation"/>
+                        <field name="other_compensation"/>
+                        <field name="total_cash_compensation" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Offer Terms" name="terms">
+                            <field name="terms" widget="html" placeholder="Governed offer terms, benefits, conditions and candidate-facing notes..."/>
+                        </page>
+                        <page string="Internal Justification" name="internal" groups="onehr_recruitment.group_onehr_recruiter">
+                            <field name="internal_justification" placeholder="Compensation rationale and internal approval context..."/>
+                        </page>
+                        <page string="Candidate Response" name="response">
+                            <field name="response_note" placeholder="Decline/withdrawal/response details..."/>
+                        </page>
+                    </notebook>
+                    <div class="d-flex gap-2 mt16" groups="onehr_recruitment.group_onehr_recruiter">
+                        <button name="action_generate_offer_document" type="object" string="Generate Governed Offer Letter" class="btn-primary" invisible="state not in ('approved','sent','accepted')"/>
+                        <button name="action_create_preboarding" type="object" string="Start Preboarding" class="btn-primary" invisible="state != 'accepted'"/>
+                    </div>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_offer_search" model="ir.ui.view">
+        <field name="name">onehr.offer.search</field>
+        <field name="model">onehr.offer</field>
+        <field name="arch" type="xml">
+            <search string="Search Recruitment Offers">
+                <field name="name"/>
+                <field name="applicant_id"/>
+                <field name="job_id"/>
+                <field name="position_id"/>
+                <field name="requisition_id"/>
+                <filter name="pending_approval" string="Pending Approval" domain="[('state', '=', 'pending_approval')]"/>
+                <filter name="awaiting_response" string="Awaiting Response" domain="[('state', '=', 'sent')]"/>
+                <filter name="accepted" string="Accepted" domain="[('state', '=', 'accepted')]"/>
+                <filter name="expired_open" string="Past Expiry / Still Sent" domain="[('expiry_date', '&lt;', context_today()), ('state', '=', 'sent')]"/>
+                <filter name="offer_date" string="Offer Date" date="offer_date"/>
+                <group>
+                    <filter name="group_job" string="Job" context="{'group_by': 'job_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_offer" model="ir.actions.act_window">
+        <field name="name">Offers</field>
+        <field name="res_model">onehr.offer</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_offer_search"/>
+    </record>
+</odoo>

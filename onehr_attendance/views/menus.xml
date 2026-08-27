@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Attendance officers are deliberately not made HR officers merely to see OneHR. -->
+    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[Command.link(ref('onehr_attendance.group_onehr_attendance_officer'))]"/>
+    </record>
+
+    <!-- ============================== ACTIONS ============================== -->
+    <record id="action_onehr_attendance" model="ir.actions.act_window">
+        <field name="name">Attendance</field>
+        <field name="res_model">hr.attendance</field>
+        <field name="view_mode">list,calendar,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_hr_attendance_onehr_search"/>
+    </record>
+    <record id="action_onehr_attendance_list_view" model="ir.actions.act_window.view"><field name="sequence">1</field><field name="view_mode">list</field><field name="view_id" ref="view_hr_attendance_onehr_list"/><field name="act_window_id" ref="action_onehr_attendance"/></record>
+    <record id="action_onehr_attendance_calendar_view" model="ir.actions.act_window.view"><field name="sequence">2</field><field name="view_mode">calendar</field><field name="view_id" ref="view_hr_attendance_onehr_calendar"/><field name="act_window_id" ref="action_onehr_attendance"/></record>
+    <record id="action_onehr_attendance_pivot_view" model="ir.actions.act_window.view"><field name="sequence">3</field><field name="view_mode">pivot</field><field name="view_id" ref="view_hr_attendance_onehr_pivot"/><field name="act_window_id" ref="action_onehr_attendance"/></record>
+    <record id="action_onehr_attendance_graph_view" model="ir.actions.act_window.view"><field name="sequence">4</field><field name="view_mode">graph</field><field name="view_id" ref="view_hr_attendance_onehr_graph"/><field name="act_window_id" ref="action_onehr_attendance"/></record>
+    <record id="action_onehr_attendance_form_view" model="ir.actions.act_window.view"><field name="sequence">5</field><field name="view_mode">form</field><field name="view_id" ref="view_hr_attendance_onehr_form"/><field name="act_window_id" ref="action_onehr_attendance"/></record>
+
+    <record id="action_onehr_attendance_review" model="ir.actions.act_window">
+        <field name="name">Attendance Review Queue</field><field name="res_model">hr.attendance</field><field name="view_mode">list,form,pivot,graph</field>
+        <field name="domain">[('onehr_requires_review','=',True)]</field><field name="search_view_id" ref="view_hr_attendance_onehr_search"/><field name="view_id" ref="view_hr_attendance_onehr_list"/>
+    </record>
+
+    <record id="action_onehr_shift" model="ir.actions.act_window"><field name="name">Shifts</field><field name="res_model">onehr.shift</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_onehr_shift_search"/></record>
+    <record id="action_onehr_shift_pattern" model="ir.actions.act_window"><field name="name">Shift Patterns</field><field name="res_model">onehr.shift.pattern</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_onehr_shift_pattern_search"/></record>
+    <record id="action_onehr_shift_assignment" model="ir.actions.act_window"><field name="name">Employee Shift Schedules</field><field name="res_model">onehr.shift.assignment</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_onehr_shift_assignment_search"/></record>
+
+    <record id="action_onehr_attendance_exception" model="ir.actions.act_window"><field name="name">Attendance Exceptions</field><field name="res_model">onehr.attendance.exception</field><field name="view_mode">list,pivot,graph,form</field><field name="search_view_id" ref="view_onehr_attendance_exception_search"/></record>
+    <record id="action_onehr_attendance_reconciliation" model="ir.actions.act_window"><field name="name">Attendance Reconciliations</field><field name="res_model">onehr.attendance.reconciliation</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_onehr_attendance_reconciliation_search"/></record>
+    <record id="action_onehr_attendance_import_batch" model="ir.actions.act_window"><field name="name">Attendance Import Batches</field><field name="res_model">onehr.attendance.import.batch</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_onehr_attendance_import_batch_search"/></record>
+
+    <record id="action_onehr_overtime_line" model="ir.actions.act_window"><field name="name">Overtime Lines</field><field name="res_model">hr.attendance.overtime.line</field><field name="view_mode">list,pivot,graph,form</field><field name="search_view_id" ref="view_hr_attendance_overtime_line_onehr_search"/></record>
+    <record id="action_onehr_overtime_line_list_view" model="ir.actions.act_window.view"><field name="sequence">1</field><field name="view_mode">list</field><field name="view_id" ref="view_hr_attendance_overtime_line_onehr_list"/><field name="act_window_id" ref="action_onehr_overtime_line"/></record>
+    <record id="action_onehr_overtime_line_pivot_view" model="ir.actions.act_window.view"><field name="sequence">2</field><field name="view_mode">pivot</field><field name="view_id" ref="view_hr_attendance_overtime_line_onehr_pivot"/><field name="act_window_id" ref="action_onehr_overtime_line"/></record>
+    <record id="action_onehr_overtime_line_graph_view" model="ir.actions.act_window.view"><field name="sequence">3</field><field name="view_mode">graph</field><field name="view_id" ref="view_hr_attendance_overtime_line_onehr_graph"/><field name="act_window_id" ref="action_onehr_overtime_line"/></record>
+    <record id="action_onehr_overtime_line_form_view" model="ir.actions.act_window.view"><field name="sequence">4</field><field name="view_mode">form</field><field name="view_id" ref="view_hr_attendance_overtime_line_onehr_form"/><field name="act_window_id" ref="action_onehr_overtime_line"/></record>
+
+    <record id="action_onehr_overtime_rule" model="ir.actions.act_window"><field name="name">Overtime Rules</field><field name="res_model">hr.attendance.overtime.rule</field><field name="view_mode">list,form</field><field name="view_id" ref="view_hr_attendance_overtime_rule_onehr_list"/><field name="search_view_id" ref="view_hr_attendance_overtime_rule_onehr_search"/></record>
+    <record id="action_onehr_overtime_ruleset" model="ir.actions.act_window"><field name="name">Overtime Rulesets</field><field name="res_model">hr.attendance.overtime.ruleset</field><field name="view_mode">list,form</field><field name="view_id" ref="view_hr_attendance_overtime_ruleset_onehr_list"/><field name="search_view_id" ref="view_hr_attendance_overtime_ruleset_onehr_search"/></record>
+
+    <!-- ============================== MENUS =============================== -->
+    <menuitem id="menu_onehr_time_labor" name="Time &amp; Labor" parent="onehr_base.menu_onehr_root" sequence="20" groups="onehr_attendance.group_onehr_attendance_officer"/>
+
+    <menuitem id="menu_onehr_attendance_operations" name="Attendance Operations" parent="menu_onehr_time_labor" sequence="10"/>
+    <menuitem id="menu_onehr_attendance" name="Attendance" parent="menu_onehr_attendance_operations" action="action_onehr_attendance" sequence="10"/>
+    <menuitem id="menu_onehr_attendance_review" name="Review Queue" parent="menu_onehr_attendance_operations" action="action_onehr_attendance_review" sequence="20"/>
+    <menuitem id="menu_onehr_attendance_exceptions" name="Exceptions" parent="menu_onehr_attendance_operations" action="action_onehr_attendance_exception" sequence="30"/>
+    <menuitem id="menu_onehr_overtime_lines" name="Overtime" parent="menu_onehr_attendance_operations" action="action_onehr_overtime_line" sequence="40"/>
+
+    <menuitem id="menu_onehr_shift_scheduling" name="Shift Scheduling" parent="menu_onehr_time_labor" sequence="20"/>
+    <menuitem id="menu_onehr_shift_schedules" name="Employee Schedules" parent="menu_onehr_shift_scheduling" action="action_onehr_shift_assignment" sequence="10"/>
+    <menuitem id="menu_onehr_shifts" name="Shifts" parent="menu_onehr_shift_scheduling" action="action_onehr_shift" sequence="20"/>
+    <menuitem id="menu_onehr_shift_patterns" name="Rotation Patterns" parent="menu_onehr_shift_scheduling" action="action_onehr_shift_pattern" sequence="30"/>
+
+    <menuitem id="menu_onehr_attendance_reconciliation_root" name="Imports &amp; Reconciliation" parent="menu_onehr_time_labor" sequence="30"/>
+    <menuitem id="menu_onehr_attendance_imports" name="Import Batches" parent="menu_onehr_attendance_reconciliation_root" action="action_onehr_attendance_import_batch" sequence="10"/>
+    <menuitem id="menu_onehr_attendance_reconciliations" name="Reconciliations" parent="menu_onehr_attendance_reconciliation_root" action="action_onehr_attendance_reconciliation" sequence="20"/>
+
+    <menuitem id="menu_onehr_attendance_configuration" name="Configuration" parent="menu_onehr_time_labor" sequence="90" groups="onehr_attendance.group_onehr_attendance_manager"/>
+    <menuitem id="menu_onehr_overtime_rulesets" name="Overtime Rulesets" parent="menu_onehr_attendance_configuration" action="action_onehr_overtime_ruleset" sequence="10"/>
+    <menuitem id="menu_onehr_overtime_rules" name="Overtime Rules" parent="menu_onehr_attendance_configuration" action="action_onehr_overtime_rule" sequence="20"/>
+</odoo>

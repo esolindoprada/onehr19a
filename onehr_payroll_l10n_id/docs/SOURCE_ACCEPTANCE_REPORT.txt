@@ -1,0 +1,75 @@
+PASS: HARD_GATE_0 exact addon identity
+PASS: Odoo 19 manifest version
+PASS: hard dependency exactly onehr_payroll_bridge
+PASS: all manifest data files exist
+PASS: all Python sources compile
+PASS: all XML files parse
+PASS: XML external ids unique (10)
+PASS: Odoo 19 search <group> elements have no attributes
+PASS: HARD_GATE_4 exact one localization persistent model
+PASS: Payroll Bridge integration uses inheritance without new model ownership
+PASS: no legacy _sql_constraints pattern
+PASS: Odoo 19 models.Constraint pattern present
+PASS: no business sudo() bypass
+PASS: no unlink override
+PASS: uninstall-safe history deletion guard present
+PASS: no public API/controller ownership
+PASS: no API/password/private-key credential ownership
+PASS: exact Officer-read / Manager-admin ACL rows
+PASS: no broad base.group_user localization ACL
+PASS: Payroll Officer is read-only for localization parameters
+PASS: explicit allowed-company localization record rule
+PASS: generic tutorial scaffold removed
+PASS: HARD_GATE_8 List/Form/Search coverage for localization model
+PASS: effective-date Calendar view present
+PASS: enterprise UI marker: smart buttons
+PASS: enterprise UI marker: body action
+PASS: enterprise UI marker: One2many row action
+PASS: enterprise UI marker: effective-period ribbon
+PASS: enterprise UI marker: chatter
+PASS: enterprise UI marker: TER preview
+PASS: enterprise UI marker: JSON export
+PASS: enterprise UI marker: CSV export
+PASS: no fake statusbar; product workflow is explicitly configuration-only
+PASS: ir.actions.report avoids groups_id compatibility defect
+PASS: QWeb report uses Odoo 19 group_ids restriction
+PASS: Payroll Bridge contract marker: generation localization binding
+PASS: Payroll Bridge contract marker: employee-row localization hook
+PASS: Payroll Bridge contract marker: generation reset localization clear
+PASS: Payroll Bridge contract marker: adapter payload extension
+PASS: Payroll Bridge contract marker: frozen localization snapshot
+PASS: Payroll Bridge contract marker: frozen localization SHA-256
+PASS: DEFAULT_TER_A_JSON complete/open-ended (44 bands)
+PASS: DEFAULT_TER_B_JSON complete/open-ended (40 bands)
+PASS: DEFAULT_TER_C_JSON complete/open-ended (41 bands)
+PASS: Article 17 five-band progressive defaults present
+PASS: PTKP baseline mapping present
+PASS: business contract marker: mandatory regulatory review before payroll
+PASS: business contract marker: used-parameter immutability
+PASS: business contract marker: effective-date overlap protection
+PASS: business contract marker: governed successor
+PASS: business contract marker: governed correction
+PASS: business contract marker: parameter hash material
+PASS: business contract marker: TER monthly lookup
+PASS: business contract marker: THR prorata utility
+PASS: business contract marker: JSON/CSV import
+PASS: business contract marker: temporary PPh21 policy hand-off
+PASS: business contract marker: 2026 JP ceiling baseline
+PASS: runtime test source inventory exactly 36 methods
+PASS: all mandatory Guardrail/completeness/regulatory documentation present
+PASS: all user-defined Hard Gates present; Gate 11 intentionally undefined
+
+SOURCE_FILES_PYTHON: 14
+SOURCE_FILES_XML: 5
+CUSTOM_PERSISTENT_MODELS: 1
+INHERITED_EXISTING_MODELS: 2
+ACL_ROWS: 2
+XML_EXTERNAL_IDS: 10
+RUNTIME_TEST_METHODS: 36
+SOURCE_ACCEPTANCE_PASS_COUNT: 60
+SOURCE_ACCEPTANCE_FAIL_COUNT: 0
+ONEHR_PAYROLL_L10N_ID_DIRECT_FULL_SOURCE_ACCEPTANCE: PASS
+REGISTRY_ED_CLASSIFICATION: PENDING_EXACT_REGISTRY_ROW_VERIFICATION
+DEPLOYMENT_REGULATORY_REVIEW: PENDING
+WINDOWS_RUNTIME_ACCEPTANCE: PENDING
+ONEHR_PAYROLL_L10N_ID_MOVE_FORWARD_READY: NO

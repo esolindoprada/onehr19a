@@ -1,0 +1,64 @@
+<odoo>
+    <record id="rule_onehr_dependent_company" model="ir.rule">
+        <field name="name">OneHR Dependents — allowed companies</field>
+        <field name="model_id" ref="model_onehr_employee_dependent"/>
+        <field name="groups" eval="[Command.link(ref('onehr_corehr.group_onehr_corehr_officer'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_emergency_company" model="ir.rule">
+        <field name="name">OneHR Emergency Contacts — allowed companies</field>
+        <field name="model_id" ref="model_onehr_employee_emergency_contact"/>
+        <field name="groups" eval="[Command.link(ref('onehr_corehr.group_onehr_corehr_officer'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_education_company" model="ir.rule">
+        <field name="name">OneHR Education — allowed companies</field>
+        <field name="model_id" ref="model_onehr_employee_education"/>
+        <field name="groups" eval="[Command.link(ref('onehr_corehr.group_onehr_corehr_officer'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_employment_history_company" model="ir.rule">
+        <field name="name">OneHR External Employment — allowed companies</field>
+        <field name="model_id" ref="model_onehr_employee_employment_history"/>
+        <field name="groups" eval="[Command.link(ref('onehr_corehr.group_onehr_corehr_officer'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_engagement_company" model="ir.rule">
+        <field name="name">OneHR Engagement Types — allowed companies/global</field>
+        <field name="model_id" ref="model_onehr_engagement_type"/>
+        <field name="groups" eval="[Command.link(ref('onehr_corehr.group_onehr_corehr_officer'))]"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_identifier_company" model="ir.rule">
+        <field name="name">OneHR Identifiers — allowed companies</field>
+        <field name="model_id" ref="model_onehr_employee_identifier"/>
+        <field name="groups" eval="[Command.link(ref('onehr_corehr.group_onehr_identifier_steward'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_work_incident_company" model="ir.rule">
+        <field name="name">OneHR Work Incidents — restricted allowed companies</field>
+        <field name="model_id" ref="model_onehr_work_incident"/>
+        <field name="groups" eval="[Command.link(ref('onehr_corehr.group_onehr_occupational_health_officer'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_medical_assessment_company" model="ir.rule">
+        <field name="name">OneHR Medical Assessments — restricted allowed companies</field>
+        <field name="model_id" ref="model_onehr_medical_assessment"/>
+        <field name="groups" eval="[Command.link(ref('onehr_corehr.group_onehr_occupational_health_officer'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_onehr_disability_record_company" model="ir.rule">
+        <field name="name">OneHR Accommodation Records — restricted allowed companies</field>
+        <field name="model_id" ref="model_onehr_disability_record"/>
+        <field name="groups" eval="[Command.link(ref('onehr_corehr.group_onehr_occupational_health_officer'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

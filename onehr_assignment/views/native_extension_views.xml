@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_employee_form_onehr_assignment" model="ir.ui.view">
+        <field name="name">hr.employee.form.onehr.assignment.enterprise</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="onehr_corehr.view_employee_form_onehr_corehr"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_onehr_assignments" type="object" class="oe_stat_button" icon="fa-exchange"
+                        groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager">
+                    <field name="onehr_assignment_count" widget="statinfo" string="Assignments"/>
+                </button>
+                <button name="action_open_onehr_current_primary_assignment" type="object" class="oe_stat_button" icon="fa-briefcase"
+                        groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"
+                        invisible="not onehr_current_primary_assignment_id">
+                    <div class="o_stat_info"><span class="o_stat_text">Primary Assignment</span></div>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='onehr_corehr_profile']//group[@string='Current Versioned Classification']" position="inside">
+                <field name="onehr_current_primary_assignment_id" readonly="1"
+                       groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_position_form_onehr_assignment" model="ir.ui.view">
+        <field name="name">onehr.position.form.onehr.assignment.enterprise</field>
+        <field name="model">onehr.position</field>
+        <field name="inherit_id" ref="onehr_base.view_position_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_onehr_position_assignments" type="object" class="oe_stat_button" icon="fa-users"
+                        groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager">
+                    <field name="onehr_assignment_count" widget="statinfo" string="Assignments"/>
+                </button>
+                <button name="action_open_onehr_position_budgets" type="object" class="oe_stat_button" icon="fa-money"
+                        groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager">
+                    <field name="onehr_position_budget_count" widget="statinfo" string="Budgets"/>
+                </button>
+            </xpath>
+            <xpath expr="//page[@string='Authorized Capacity']" position="after">
+                <page string="Assignment Occupancy" name="onehr_assignment_occupancy"
+                      groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager">
+                    <group>
+                        <group string="Current Utilization">
+                            <field name="onehr_active_headcount" readonly="1"/>
+                            <field name="onehr_active_fte" readonly="1"/>
+                            <field name="onehr_occupancy_state" widget="badge" readonly="1"/>
+                        </group>
+                        <group string="Current Availability">
+                            <field name="onehr_available_headcount" readonly="1"/>
+                            <field name="onehr_available_fte" readonly="1"/>
+                        </group>
+                    </group>
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_onehr_position_assignments" type="object" string="Open Assignment History" class="btn-secondary" icon="fa-users"/>
+                        <button name="action_open_onehr_position_budgets" type="object" string="Open Position Budgets" class="btn-secondary" icon="fa-money"/>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_position_list_onehr_assignment" model="ir.ui.view">
+        <field name="name">onehr.position.list.onehr.assignment.enterprise</field>
+        <field name="model">onehr.position</field>
+        <field name="inherit_id" ref="onehr_base.view_position_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='authorized_headcount']" position="after">
+                <field name="onehr_active_headcount" string="Assigned HC" optional="show"
+                       groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                <field name="onehr_active_fte" string="Assigned FTE" optional="show"
+                       groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                <field name="onehr_available_fte" string="Available FTE" optional="show"
+                       groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                <field name="onehr_occupancy_state" widget="badge" optional="show"
+                       groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

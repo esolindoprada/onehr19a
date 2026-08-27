@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_learning_session_summary" model="ir.actions.report">
+        <field name="name">Learning Session Summary</field>
+        <field name="model">onehr.learning.session</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_learning.report_learning_session_summary_document</field>
+        <field name="report_file">onehr_learning.report_learning_session_summary_document</field>
+        <field name="binding_model_id" ref="model_onehr_learning_session"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_learning.group_onehr_learning_officer')),
+            Command.link(ref('onehr_learning.group_onehr_learning_trainer')),
+            Command.link(ref('onehr_learning.group_onehr_learning_manager_approver'))
+        ]"/>
+        <field name="print_report_name">'Learning Session - %s' % object.name</field>
+    </record>
+
+    <record id="action_report_learning_certificate" model="ir.actions.report">
+        <field name="name">Learning Certificate</field>
+        <field name="model">onehr.learning.certificate</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_learning.report_learning_certificate_document</field>
+        <field name="report_file">onehr_learning.report_learning_certificate_document</field>
+        <field name="binding_model_id" ref="model_onehr_learning_certificate"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_learning.group_onehr_learning_officer')),
+            Command.link(ref('onehr_learning.group_onehr_learning_trainer')),
+            Command.link(ref('onehr_learning.group_onehr_learning_manager_approver'))
+        ]"/>
+        <field name="print_report_name">'Learning Certificate - %s' % object.name</field>
+    </record>
+
+    <template id="report_learning_session_summary_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Learning Session Summary</h2>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Session</th><td><span t-field="o.name"/></td>
+                                    <th>Status</th><td><span t-field="o.state"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Course</th><td><span t-field="o.course_id"/></td>
+                                    <th>Delivery</th><td><span t-field="o.delivery_mode"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Start</th><td><span t-field="o.start_datetime"/></td>
+                                    <th>End</th><td><span t-field="o.end_datetime"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Enrolled</th><td><span t-field="o.enrolled_count"/></td>
+                                    <th>Attended</th><td><span t-field="o.attended_count"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Attendance Rate</th><td><span t-field="o.attendance_rate"/>%</td>
+                                    <th>Completion Rate</th><td><span t-field="o.completion_rate"/>%</td>
+                                </tr>
+                                <tr>
+                                    <th>Estimated Cost</th><td><span t-field="o.estimated_cost"/></td>
+                                    <th>Actual Cost</th><td><span t-field="o.actual_cost"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Participants</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Participant</th>
+                                    <th>Status</th>
+                                    <th>Attendance %</th>
+                                    <th>Post-Test</th>
+                                    <th>Certificate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.enrollment_ids" t-as="line">
+                                    <td><span t-field="line.employee_name"/></td>
+                                    <td><span t-field="line.state"/></td>
+                                    <td><span t-field="line.attendance_percent"/></td>
+                                    <td><span t-field="line.post_test_score"/></td>
+                                    <td><span t-field="line.certificate_id"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-muted">
+                            Training attendance is Learning evidence and is not automatically
+                            equivalent to canonical work attendance.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_learning_certificate_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="text-center" style="padding-top: 60px;">
+                            <h1><span t-field="o.course_id.certificate_title"/></h1>
+                            <p class="lead">This certifies that</p>
+                            <h2><span t-field="o.employee_name"/></h2>
+                            <p><span t-field="o.course_id.certificate_statement"/></p>
+                            <h2><span t-field="o.course_id"/></h2>
+                            <p>
+                                Session <strong><span t-field="o.session_id"/></strong>
+                            </p>
+                            <p>
+                                Certificate No. <strong><span t-field="o.name"/></strong>
+                            </p>
+                            <p>
+                                Issued <span t-field="o.issue_date"/>
+                                <t t-if="o.valid_to">
+                                    · Valid until <span t-field="o.valid_to"/>
+                                </t>
+                            </p>
+                            <div class="mt-5" t-if="o.course_id.certificate_signatory_name">
+                                <p><strong><span t-field="o.course_id.certificate_signatory_name"/></strong></p>
+                                <p t-if="o.course_id.certificate_signatory_title">
+                                    <span t-field="o.course_id.certificate_signatory_title"/>
+                                </p>
+                            </div>
+                            <div class="mt-4">
+                                <p class="text-muted">
+                                    OneHR Learning controlled certification evidence.
+                                    Revoked certificates remain auditable in the source system.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

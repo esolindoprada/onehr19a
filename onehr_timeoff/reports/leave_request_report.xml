@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_onehr_leave_request" model="ir.actions.report">
+        <field name="name">Leave Request</field>
+        <field name="model">onehr.leave.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_timeoff.report_onehr_leave_request_document</field>
+        <field name="report_file">onehr_timeoff.report_onehr_leave_request_document</field>
+        <field name="binding_model_id" ref="model_onehr_leave_request"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_timeoff.group_onehr_timeoff_user'))
+        ]"/>
+    </record>
+
+    <template id="report_onehr_leave_request_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>OneHR Leave Request</h2>
+                        <table class="table table-sm table-borderless">
+                            <tbody>
+                                <tr><th>Request No.</th><td><span t-field="o.name"/></td></tr>
+                                <tr><th>Employee</th><td><span t-field="o.employee_name"/></td></tr>
+                                <tr><th>Department</th><td><span t-field="o.department_name"/></td></tr>
+                                <tr><th>Leave Type</th><td><span t-field="o.leave_type_id"/></td></tr>
+                                <tr><th>Period</th><td><span t-field="o.date_from"/> — <span t-field="o.date_to"/></td></tr>
+                                <tr><th>Requested Days</th><td><span t-field="o.requested_days"/></td></tr>
+                                <tr><th>Status</th><td><span t-field="o.state"/></td></tr>
+                            </tbody>
+                        </table>
+                        <h4>Reason</h4>
+                        <p><span t-field="o.reason"/></p>
+                        <h4>Approval Evidence</h4>
+                        <table class="table table-sm table-borderless">
+                            <tbody>
+                                <tr><th>Submitted</th><td><span t-field="o.submitted_at"/></td></tr>
+                                <tr><th>Approved</th><td><span t-field="o.approved_at"/></td></tr>
+                                <tr><th>Approved By</th><td><span t-field="o.approved_by_id"/></td></tr>
+                                <tr><th>Balance Before</th><td><span t-field="o.balance_before"/></td></tr>
+                                <tr><th>Balance After</th><td><span t-field="o.balance_after"/></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

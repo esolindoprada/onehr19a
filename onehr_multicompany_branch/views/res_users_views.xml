@@ -1,0 +1,143 @@
+<odoo>
+    <record id="view_users_form_onehr_branch" model="ir.ui.view">
+        <field name="name">res.users.form.onehr.branch.enterprise</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_onehr_allowed_branches"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-sitemap"
+                    groups="onehr_multicompany_branch.group_onehr_branch_admin,onehr_multicompany_branch.group_onehr_central_office,onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin"
+                    invisible="not id"
+                >
+                    <field name="onehr_branch_count" widget="statinfo" string="Branches"/>
+                </button>
+                <button
+                    name="action_open_onehr_branch_roles"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-id-badge"
+                    groups="onehr_multicompany_branch.group_onehr_branch_admin,onehr_multicompany_branch.group_onehr_central_office,onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin"
+                    invisible="not id"
+                >
+                    <div class="o_stat_info"><span class="o_stat_text">Branch Roles</span></div>
+                </button>
+            </xpath>
+
+            <xpath expr="//page[@name='page_security']" position="before">
+                <page
+                    string="OneHR Branch Scope"
+                    name="onehr_branch_scope"
+                    groups="onehr_multicompany_branch.group_onehr_branch_admin"
+                >
+                    <group>
+                        <group string="Explicit Operational Scope">
+                            <field
+                                name="onehr_allowed_branch_ids"
+                                widget="many2many_tags"
+                                domain="[('company_id', 'in', company_ids)]"
+                            />
+                            <field
+                                name="onehr_default_branch_id"
+                                domain="[('id', 'in', onehr_allowed_branch_ids), ('active', '=', True)]"
+                            />
+                        </group>
+                        <group string="Effective Coverage">
+                            <field name="onehr_effective_branch_ids" widget="many2many_tags" readonly="1"/>
+                            <field name="onehr_branch_count" readonly="1"/>
+                            <field name="onehr_effective_branch_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        Odoo allowed companies remain authoritative. Branch scope can only narrow access inside those legal companies.
+                    </div>
+                    <div class="d-flex gap-2 my-3">
+                        <button
+                            name="action_open_onehr_allowed_branches"
+                            type="object"
+                            string="Review Allowed Branches"
+                            class="btn-primary"
+                            icon="fa-sitemap"
+                            invisible="not id"
+                        />
+                        <button
+                            name="action_open_onehr_branch_roles"
+                            type="object"
+                            string="Review Branch Role Assignments"
+                            class="btn-secondary"
+                            icon="fa-id-badge"
+                            invisible="not id"
+                        />
+                    </div>
+                </page>
+
+                <page
+                    string="OneHR Branch Visibility"
+                    name="onehr_branch_visibility"
+                    groups="onehr_multicompany_branch.group_onehr_central_office,onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin"
+                >
+                    <group>
+                        <group string="Authorized Scope">
+                            <field name="onehr_allowed_branch_ids" widget="many2many_tags" readonly="1"/>
+                            <field name="onehr_default_branch_id" readonly="1"/>
+                        </group>
+                        <group string="Effective Coverage">
+                            <field name="onehr_effective_branch_ids" widget="many2many_tags" readonly="1"/>
+                            <field name="onehr_effective_branch_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_onehr_allowed_branches" type="object" string="Review Allowed Branches" class="btn-secondary" icon="fa-sitemap" invisible="not id"/>
+                        <button name="action_open_onehr_branch_roles" type="object" string="Review Branch Role Assignments" class="btn-secondary" icon="fa-id-badge" invisible="not id"/>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Add branch context to the security-owned role assignment One2many. -->
+    <record id="view_users_form_onehr_security_branch_extension" model="ir.ui.view">
+        <field name="name">res.users.form.onehr.security.branch.extension</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="onehr_security.view_users_form_onehr_security"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='onehr_role_assignment_ids']/list/field[@name='company_id']" position="after">
+                <field name="branch_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_users_tree_onehr_branch" model="ir.ui.view">
+        <field name="name">res.users.list.onehr.branch.enterprise</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_tree"/>
+        <field name="arch" type="xml">
+            <field name="role" position="after">
+                <field name="onehr_default_branch_id" string="Default Branch" optional="show"/>
+                <field name="onehr_effective_branch_count" string="Effective Branches" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_users_search_onehr_branch" model="ir.ui.view">
+        <field name="name">res.users.search.onehr.branch.enterprise</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_search"/>
+        <field name="arch" type="xml">
+            <field name="share" position="after">
+                <field name="onehr_default_branch_id" string="Default Branch"/>
+                <field name="onehr_allowed_branch_ids" string="Allowed Branch"/>
+            </field>
+            <xpath expr="//search" position="inside">
+                <filter name="onehr_has_branch_scope" string="Has Branch Scope" domain="[('onehr_allowed_branch_ids', '!=', False)]"/>
+                <filter name="onehr_no_branch_scope" string="No Branch Scope" domain="[('onehr_allowed_branch_ids', '=', False)]"/>
+                <group>
+                    <filter name="group_onehr_default_branch" string="Default Branch" context="{'group_by': 'onehr_default_branch_id'}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

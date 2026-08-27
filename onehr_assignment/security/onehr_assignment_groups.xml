@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_onehr_assignment" model="ir.module.category">
+        <field name="name">OneHR Assignment</field>
+        <field name="description">Employee placement, movement, occupancy and workforce planning authority.</field>
+        <field name="sequence">38</field>
+    </record>
+
+    <record id="privilege_onehr_assignment" model="res.groups.privilege">
+        <field name="name">OneHR Assignment</field>
+        <field name="description">Assignment proposal, operations and workforce planning privileges.</field>
+        <field name="category_id" ref="module_category_onehr_assignment"/>
+        <field name="sequence">38</field>
+    </record>
+
+    <record id="group_onehr_assignment_proposer" model="res.groups">
+        <field name="name">Assignment Proposer</field>
+        <field name="privilege_id" ref="privilege_onehr_assignment"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_security.group_onehr_security_user')),
+            Command.link(ref('onehr_workflow_approval.group_onehr_approval_user'))
+        ]"/>
+        <field name="comment">Unit manager proposal role. Can propose governed movement only for direct reports; receives no broad private employee ACL.</field>
+    </record>
+
+    <record id="group_onehr_assignment_officer" model="res.groups">
+        <field name="name">Assignment Officer</field>
+        <field name="privilege_id" ref="privilege_onehr_assignment"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_assignment.group_onehr_assignment_proposer')),
+            Command.link(ref('onehr_corehr.group_onehr_corehr_officer'))
+        ]"/>
+        <field name="comment">Operates assignment records, costing and movement preparation across allowed companies. Cannot approve/execute by role alone.</field>
+    </record>
+
+    <record id="group_onehr_assignment_manager" model="res.groups">
+        <field name="name">Assignment Manager</field>
+        <field name="privilege_id" ref="privilege_onehr_assignment"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('onehr_assignment.group_onehr_assignment_officer')),
+            Command.link(ref('hr.group_hr_manager')),
+            Command.link(ref('onehr_workflow_approval.group_onehr_approver'))
+        ]"/>
+        <field name="comment">Executes approved movements, activates assignments and administers workforce/position budget planning.</field>
+    </record>
+</odoo>

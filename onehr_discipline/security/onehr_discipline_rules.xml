@@ -1,0 +1,89 @@
+<odoo>
+    <!-- Global company boundaries intersect every role-specific visibility rule. -->
+    <record id="rule_discipline_case_company_global" model="ir.rule">
+        <field name="name">Discipline Case — allowed companies</field>
+        <field name="model_id" ref="model_onehr_discipline_case"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_discipline_sanction_company_global" model="ir.rule">
+        <field name="name">Discipline Sanction — allowed companies</field>
+        <field name="model_id" ref="model_onehr_discipline_sanction"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Investigation access is assignment-scoped; no ordinary HR-wide rule exists. -->
+    <record id="rule_discipline_case_investigator_assigned" model="ir.rule">
+        <field name="name">Discipline Case — Investigator assigned/owned</field>
+        <field name="model_id" ref="model_onehr_discipline_case"/>
+        <field name="groups" eval="[Command.link(ref('onehr_discipline.group_onehr_discipline_investigator'))]"/>
+        <field name="domain_force">[
+            '|',
+            ('investigator_user_id', '=', user.id),
+            ('case_owner_user_id', '=', user.id)
+        ]</field>
+    </record>
+
+    <record id="rule_discipline_case_hrbp_assigned" model="ir.rule">
+        <field name="name">Discipline Case — HRBP assigned/owned</field>
+        <field name="model_id" ref="model_onehr_discipline_case"/>
+        <field name="groups" eval="[Command.link(ref('onehr_discipline.group_onehr_discipline_hrbp'))]"/>
+        <field name="domain_force">[
+            '|',
+            ('hrbp_user_id', '=', user.id),
+            ('case_owner_user_id', '=', user.id)
+        ]</field>
+    </record>
+
+    <record id="rule_discipline_case_manager_company" model="ir.rule">
+        <field name="name">Discipline Case — Manager company scope</field>
+        <field name="model_id" ref="model_onehr_discipline_case"/>
+        <field name="groups" eval="[Command.link(ref('onehr_discipline.group_onehr_discipline_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_discipline_case_legal_company" model="ir.rule">
+        <field name="name">Discipline Case — Legal IR company scope</field>
+        <field name="model_id" ref="model_onehr_discipline_case"/>
+        <field name="groups" eval="[Command.link(ref('onehr_discipline.group_onehr_discipline_legal'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_discipline_sanction_investigator_assigned" model="ir.rule">
+        <field name="name">Discipline Sanction — Investigator linked case</field>
+        <field name="model_id" ref="model_onehr_discipline_sanction"/>
+        <field name="groups" eval="[Command.link(ref('onehr_discipline.group_onehr_discipline_investigator'))]"/>
+        <field name="domain_force">[
+            '|',
+            ('case_id.investigator_user_id', '=', user.id),
+            ('case_id.case_owner_user_id', '=', user.id)
+        ]</field>
+    </record>
+
+    <record id="rule_discipline_sanction_hrbp_assigned" model="ir.rule">
+        <field name="name">Discipline Sanction — HRBP linked case</field>
+        <field name="model_id" ref="model_onehr_discipline_sanction"/>
+        <field name="groups" eval="[Command.link(ref('onehr_discipline.group_onehr_discipline_hrbp'))]"/>
+        <field name="domain_force">[
+            '|',
+            ('case_id.hrbp_user_id', '=', user.id),
+            ('case_id.case_owner_user_id', '=', user.id)
+        ]</field>
+    </record>
+
+    <record id="rule_discipline_sanction_manager_company" model="ir.rule">
+        <field name="name">Discipline Sanction — Manager company scope</field>
+        <field name="model_id" ref="model_onehr_discipline_sanction"/>
+        <field name="groups" eval="[Command.link(ref('onehr_discipline.group_onehr_discipline_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_discipline_sanction_legal_company" model="ir.rule">
+        <field name="name">Discipline Sanction — Legal IR company scope</field>
+        <field name="model_id" ref="model_onehr_discipline_sanction"/>
+        <field name="groups" eval="[Command.link(ref('onehr_discipline.group_onehr_discipline_legal'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

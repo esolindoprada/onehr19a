@@ -1,0 +1,2 @@
+The Direct Full package intentionally does not fabricate the prior binary icon.png.
+The deployment helper preserves/restores the existing onehr_assignment/static/description/icon.png when present.

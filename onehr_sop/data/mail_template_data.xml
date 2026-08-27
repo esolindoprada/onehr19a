@@ -1,0 +1,40 @@
+<odoo noupdate="1">
+    <record id="mail_template_sop_publication" model="mail.template">
+        <field name="name">OneHR SOP — Publication Notice</field>
+        <field name="model_id" ref="model_onehr_sop_ack"/>
+        <field name="subject">SOP published: {{ object.version_id.sop_id.code }} — {{ object.version_id.sop_id.name }}</field>
+        <field name="email_to">{{ object.employee_id.work_email or '' }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello <t t-out="object.employee_name"/>,</p>
+                <p>
+                    A Standard Operating Procedure has been published for your role/unit:
+                    <strong><t t-out="object.version_id.sop_id.code"/> —
+                    <t t-out="object.version_id.sop_id.name"/></strong>.
+                </p>
+                <p>Please open OneHR SOP, read the current version, and complete
+                <strong>Read &amp; Agree</strong>.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+    <record id="mail_template_sop_ack_reminder" model="mail.template">
+        <field name="name">OneHR SOP — Acknowledgement Reminder</field>
+        <field name="model_id" ref="model_onehr_sop_ack"/>
+        <field name="subject">Reminder: acknowledge SOP {{ object.version_id.sop_id.code }}</field>
+        <field name="email_to">{{ object.employee_id.work_email or '' }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello <t t-out="object.employee_name"/>,</p>
+                <p>
+                    Your acknowledgement is still pending for
+                    <strong><t t-out="object.version_id.sop_id.code"/> —
+                    <t t-out="object.version_id.sop_id.name"/></strong>.
+                </p>
+                <p>Please read the published SOP and complete <strong>Read &amp; Agree</strong>.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+</odoo>

@@ -1,0 +1,49 @@
+<odoo noupdate="1">
+    <record id="mail_template_discipline_hearing_notice" model="mail.template">
+        <field name="name">OneHR Discipline — Hearing Notice</field>
+        <field name="model_id" ref="model_onehr_discipline_case"/>
+        <field name="subject">Disciplinary hearing notice — {{ object.reference }}</field>
+        <field name="email_to">{{ object.employee_id.work_email or '' }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello <t t-out="object.employee_name"/>,</p>
+                <p>
+                    You are requested to attend a formal employee-relations hearing
+                    concerning case <strong><t t-out="object.reference"/></strong>.
+                </p>
+                <p>
+                    <strong>Schedule:</strong>
+                    <t t-out="object.hearing_scheduled_at"/><br/>
+                    <strong>Location:</strong>
+                    <t t-out="object.hearing_location or '-'"/>
+                </p>
+                <p>
+                    This notice does not determine the outcome. You will have the
+                    opportunity to provide clarification during the hearing.
+                </p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+    <record id="mail_template_discipline_decision_notice" model="mail.template">
+        <field name="name">OneHR Discipline — Decision Notice</field>
+        <field name="model_id" ref="model_onehr_discipline_sanction"/>
+        <field name="subject">Disciplinary decision notice — {{ object.reference }}</field>
+        <field name="email_to">{{ object.employee_id.work_email or '' }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello <t t-out="object.employee_name"/>,</p>
+                <p>
+                    A formal disciplinary decision has been issued for case
+                    <strong><t t-out="object.case_reference"/></strong>.
+                </p>
+                <p>
+                    Please refer to the controlled decision letter and follow the
+                    applicable employee-relations process for acknowledgement or appeal.
+                </p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+</odoo>

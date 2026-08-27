@@ -1,0 +1,50 @@
+PASS: PROJECT/ADDON identity
+PASS: Odoo 19 manifest version
+PASS: hard dependencies exactly ['onehr_base', 'mail']
+PASS: no reverse hard dependency on onehr_multicompany_branch
+PASS: manifest installable
+PASS: security-safe uninstall_hook declared
+PASS: all Python sources compile
+PASS: all XML files parse
+PASS: all manifest data files exist
+PASS: exact five custom security Registry models
+PASS: canonical res.users extension present
+PASS: no prohibited parallel user/group/branch model ownership
+PASS: no unregistered transient provisioning model introduced
+PASS: uninstall hook revokes OneHR-managed group memberships
+PASS: generic scaffold controllers/demo/models/views removed
+PASS: active manifest/app description is Odoo 19 only
+PASS: ACL CSV header
+PASS: ACL inventory exactly 18 rows
+PASS: no broad base.group_user custom security ACL
+PASS: all ACL rows have eight columns
+PASS: Odoo 19 privilege/governance/sensitive-access groups present
+PASS: company/self record-rule coverage present
+PASS: sudo() confined to private append-only evidence services
+PASS: server-side privileged role-assignment checks present
+PASS: Admin-only role-to-group mapping guard present
+PASS: raw Odoo group write is separated from controlled reconciliation
+PASS: system-user elevation confined to read-only global entitlement derivation
+PASS: enterprise list coverage for all custom persistent models
+PASS: professional form coverage for all custom persistent models
+PASS: mandatory search coverage for all custom persistent models
+PASS: statusbar widgets
+PASS: smart buttons
+PASS: body-form access reconciliation
+PASS: body-form SoD recheck
+PASS: body-form SoD scan
+PASS: One2many/list activation actions
+PASS: One2many/list revocation actions
+PASS: chatter integration
+PASS: native res.users list/form/search extensions present
+PASS: ED1 role/user-role/SoD policy coverage present
+PASS: role-assignment history deletion protection present
+PASS: branch extension hooks present without reverse dependency
+TEST_METHOD_COUNT: 12
+PASS: exactly 12 enterprise runtime test methods
+PASS: governance/registry/UI/security/completeness documents present
+PASS: no generated cache/log/database artifact inside addon
+
+ONEHR_SECURITY_DIRECT_FULL_SOURCE_ACCEPTANCE: PASS
+WINDOWS_RUNTIME_ACCEPTANCE: PENDING
+ONEHR_SECURITY_MOVE_FORWARD_READY: NO

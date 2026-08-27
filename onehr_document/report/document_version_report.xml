@@ -1,0 +1,42 @@
+<odoo>
+    <record id="action_report_document_version" model="ir.actions.report">
+        <field name="name">Controlled HR Document</field>
+        <field name="model">onehr.document.version</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_document.report_document_version</field>
+        <field name="report_file">onehr_document.report_document_version</field>
+        <field name="print_report_name">'%s-V%s' % (object.document_id.document_number, object.version)</field>
+    </record>
+
+    <template id="report_document_version">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="mb-3">
+                            <h2 t-field="doc.rendered_subject"/>
+                            <div class="text-muted">
+                                <span t-field="doc.document_id.document_number"/>
+                                <span> · Version </span><span t-field="doc.version"/>
+                                <span> · </span><span t-field="doc.category_id.name"/>
+                            </div>
+                        </div>
+                        <div t-if="doc.rendered_content_html" t-field="doc.rendered_content_html"/>
+                        <div t-else="">
+                            <p>This version contains an uploaded binary file. Use the secured file field on the document version to download the original.</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-top">
+                            <small>
+                                Effective:
+                                <span t-field="doc.effective_from"/>
+                                <t t-if="doc.effective_to"> — <span t-field="doc.effective_to"/></t>
+                                <t t-if="doc.expiry_date"> · Expires: <span t-field="doc.expiry_date"/></t>
+                                <t t-if="doc.state == 'signed'"> · Signed evidence recorded</t>
+                            </small>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

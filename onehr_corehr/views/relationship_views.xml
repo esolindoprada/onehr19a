@@ -1,0 +1,189 @@
+<odoo>
+    <!-- Dependents -->
+    <record id="view_onehr_dependent_list" model="ir.ui.view">
+        <field name="name">onehr.employee.dependent.list.enterprise</field>
+        <field name="model">onehr.employee.dependent</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="relationship" widget="badge"/>
+                <field name="birth_date" optional="show"/>
+                <field name="benefit_eligible" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="valid_from"/>
+                <field name="valid_to" optional="show"/>
+                <field name="active" optional="hide"/>
+                <button name="action_open_employee" type="object" string="Employee" icon="fa-external-link"/>
+                <button name="action_expire" type="object" string="Expire" icon="fa-calendar-times-o"
+                        invisible="not active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_dependent_form" model="ir.ui.view">
+        <field name="name">onehr.employee.dependent.form.enterprise</field>
+        <field name="model">onehr.employee.dependent</field>
+        <field name="arch" type="xml">
+            <form string="Employee Dependent">
+                <header>
+                    <button name="action_expire" type="object" string="End Relationship"
+                            class="btn-secondary" invisible="not active"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Employee</span></div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Ended" bg_color="text-bg-secondary" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Relationship">
+                            <field name="employee_id"/>
+                            <field name="relationship"/>
+                            <field name="birth_date"/>
+                            <field name="benefit_eligible"/>
+                        </group>
+                        <group string="Validity &amp; Scope">
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="valid_from"/>
+                            <field name="valid_to"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Contact">
+                            <group>
+                                <field name="contact_phone" widget="phone"/>
+                                <field name="contact_email" widget="email"/>
+                            </group>
+                        </page>
+                        <page string="Notes"><field name="notes"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_dependent_search" model="ir.ui.view">
+        <field name="name">onehr.employee.dependent.search.enterprise</field>
+        <field name="model">onehr.employee.dependent</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="relationship"/>
+                <field name="company_id"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="benefit" string="Benefit Eligible" domain="[('benefit_eligible', '=', True)]"/>
+                <group>
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_relationship" string="Relationship" context="{'group_by': 'relationship'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_dependents" model="ir.actions.act_window">
+        <field name="name">Dependents</field>
+        <field name="res_model">onehr.employee.dependent</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_dependent_search"/>
+    </record>
+
+    <!-- Emergency Contacts -->
+    <record id="view_onehr_emergency_contact_list" model="ir.ui.view">
+        <field name="name">onehr.employee.emergency.contact.list.enterprise</field>
+        <field name="model">onehr.employee.emergency.contact</field>
+        <field name="arch" type="xml">
+            <list decoration-success="is_primary and active" decoration-muted="not active">
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="relationship"/>
+                <field name="phone" widget="phone"/>
+                <field name="priority"/>
+                <field name="is_primary"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="valid_from"/>
+                <field name="valid_to" optional="hide"/>
+                <field name="active" optional="hide"/>
+                <button name="action_set_primary" type="object" string="Set Primary" icon="fa-star"
+                        invisible="is_primary or not active"/>
+                <button name="action_expire" type="object" string="Expire" icon="fa-calendar-times-o"
+                        invisible="not active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_emergency_contact_form" model="ir.ui.view">
+        <field name="name">onehr.employee.emergency.contact.form.enterprise</field>
+        <field name="model">onehr.employee.emergency.contact</field>
+        <field name="arch" type="xml">
+            <form string="Emergency Contact">
+                <header>
+                    <button name="action_set_primary" type="object" string="Make Primary"
+                            class="btn-primary" invisible="is_primary or not active"/>
+                    <button name="action_expire" type="object" string="End Contact" invisible="not active"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Employee</span></div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Primary" bg_color="text-bg-success" invisible="not is_primary or not active"/>
+                    <widget name="web_ribbon" title="Ended" bg_color="text-bg-secondary" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Contact">
+                            <field name="employee_id"/>
+                            <field name="relationship"/>
+                            <field name="phone" widget="phone"/>
+                            <field name="email" widget="email"/>
+                        </group>
+                        <group string="Priority &amp; Validity">
+                            <field name="priority"/>
+                            <field name="is_primary"/>
+                            <field name="valid_from"/>
+                            <field name="valid_to"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook><page string="Notes"><field name="notes"/></page></notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_emergency_contact_search" model="ir.ui.view">
+        <field name="name">onehr.employee.emergency.contact.search.enterprise</field>
+        <field name="model">onehr.employee.emergency.contact</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="relationship"/>
+                <field name="phone"/>
+                <field name="company_id"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="primary" string="Primary" domain="[('is_primary', '=', True), ('active', '=', True)]"/>
+                <group>
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_emergency_contacts" model="ir.actions.act_window">
+        <field name="name">Emergency Contacts</field>
+        <field name="res_model">onehr.employee.emergency.contact</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_emergency_contact_search"/>
+    </record>
+</odoo>

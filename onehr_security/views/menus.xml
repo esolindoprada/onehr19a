@@ -1,0 +1,63 @@
+<odoo>
+    <menuitem
+        id="menu_onehr_security_root"
+        name="Security &amp; Compliance"
+        parent="onehr_base.menu_onehr_root"
+        sequence="80"
+        groups="onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin,onehr_security.group_onehr_compliance_officer"
+    />
+
+    <menuitem
+        id="menu_onehr_security_users"
+        name="User Access"
+        parent="menu_onehr_security_root"
+        action="action_onehr_security_users"
+        sequence="10"
+        groups="onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin"
+    />
+
+    <menuitem
+        id="menu_onehr_roles"
+        name="Roles"
+        parent="menu_onehr_security_root"
+        action="action_onehr_roles"
+        sequence="20"
+        groups="onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin"
+    />
+
+    <menuitem
+        id="menu_onehr_user_roles"
+        name="Role Assignments"
+        parent="menu_onehr_security_root"
+        action="action_onehr_user_roles"
+        sequence="30"
+        groups="onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin"
+    />
+
+    <menuitem
+        id="menu_onehr_sod_matrix"
+        name="SoD Matrix"
+        parent="menu_onehr_security_root"
+        action="action_onehr_sod_matrix"
+        sequence="40"
+        groups="onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin,onehr_security.group_onehr_compliance_officer"
+    />
+
+    <menuitem
+        id="menu_onehr_sod_conflicts"
+        name="SoD Conflicts"
+        parent="menu_onehr_security_root"
+        action="action_onehr_sod_conflicts"
+        sequence="50"
+        groups="onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin,onehr_security.group_onehr_compliance_officer"
+    />
+
+    <menuitem
+        id="menu_onehr_audit_logs"
+        name="Security Audit"
+        parent="menu_onehr_security_root"
+        action="action_onehr_audit_logs"
+        sequence="60"
+        groups="onehr_security.group_onehr_security_manager,onehr_security.group_onehr_security_admin,onehr_security.group_onehr_compliance_officer"
+    />
+</odoo>

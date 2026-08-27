@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_learning_session_list" model="ir.ui.view">
+        <field name="name">onehr.learning.session.list.enterprise</field>
+        <field name="model">onehr.learning.session</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'open'"
+                  decoration-warning="state == 'in_progress'"
+                  decoration-success="state == 'completed'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="course_id"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime"/>
+                <field name="delivery_mode" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="capacity"/>
+                <field name="enrolled_count"/>
+                <field name="waitlist_count" optional="show"/>
+                <field name="attendance_rate" optional="show"/>
+                <field name="completion_rate" optional="show"/>
+                <field name="actual_cost" optional="show"/>
+                <field name="trainer_user_id" optional="show"/>
+                <field name="vendor_id" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <button name="action_open_enrollment" type="object" string="Open"
+                        icon="fa-door-open" invisible="state != 'draft'"
+                        groups="onehr_learning.group_onehr_learning_manager_approver"/>
+                <button name="action_start" type="object" string="Start"
+                        icon="fa-play" invisible="state != 'open'"
+                        groups="onehr_learning.group_onehr_learning_officer"/>
+                <button name="action_complete" type="object" string="Complete"
+                        icon="fa-check" invisible="state != 'in_progress'"
+                        groups="onehr_learning.group_onehr_learning_officer"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_session_form" model="ir.ui.view">
+        <field name="name">onehr.learning.session.form.enterprise</field>
+        <field name="model">onehr.learning.session</field>
+        <field name="arch" type="xml">
+            <form string="Learning Session">
+                <header>
+                    <button name="action_open_enrollment" type="object" string="Open Enrollment"
+                            class="oe_highlight" invisible="state != 'draft'"
+                            groups="onehr_learning.group_onehr_learning_manager_approver"/>
+                    <button name="action_start" type="object" string="Start Session"
+                            class="oe_highlight" invisible="state != 'open'"
+                            groups="onehr_learning.group_onehr_learning_officer"/>
+                    <button name="action_complete" type="object" string="Complete Delivery"
+                            class="oe_highlight" invisible="state != 'in_progress'"
+                            groups="onehr_learning.group_onehr_learning_officer"/>
+                    <button name="action_process_waitlist" type="object" string="Process Waitlist"
+                            invisible="state != 'open' or waitlist_count == 0"
+                            groups="onehr_learning.group_onehr_learning_officer"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state not in ['draft', 'open']"
+                            groups="onehr_learning.group_onehr_learning_manager_approver"
+                            confirm="Cancel this training session and eligible participant records?"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,open,in_progress,completed,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_enrollments" type="object" class="oe_stat_button"
+                                icon="fa-users" groups="onehr_learning.group_onehr_learning_officer">
+                            <field name="enrolled_count" widget="statinfo" string="Enrolled"/>
+                        </button>
+                        <button name="action_open_attendance" type="object" class="oe_stat_button"
+                                icon="fa-check-square-o" groups="onehr_learning.group_onehr_learning_officer">
+                            <field name="attended_count" widget="statinfo" string="Attended"/>
+                        </button>
+                        <button name="action_open_costs" type="object" class="oe_stat_button"
+                                icon="fa-money" groups="onehr_learning.group_onehr_learning_officer">
+                            <field name="actual_cost" widget="statinfo" string="Actual Cost"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="title"/>
+                        <h1><field name="title"/></h1>
+                        <div class="text-muted"><field name="name"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Program &amp; Schedule">
+                            <field name="course_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="session_type"/>
+                            <field name="delivery_mode"/>
+                            <field name="start_datetime"/>
+                            <field name="end_datetime"/>
+                            <field name="planned_hours" readonly="1"/>
+                            <field name="enrollment_deadline"/>
+                        </group>
+                        <group string="Capacity &amp; Delivery">
+                            <field name="capacity"/>
+                            <field name="waitlist_enabled"/>
+                            <field name="waitlist_capacity" invisible="not waitlist_enabled"/>
+                            <field name="venue" invisible="delivery_mode == 'virtual'"/>
+                            <field name="online_url" invisible="delivery_mode == 'classroom'"/>
+                            <field name="reminder_days_before"/>
+                            <field name="sync_work_attendance"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Trainer / Provider">
+                            <field name="trainer_type"/>
+                            <field name="trainer_employee_id" invisible="trainer_type != 'internal'"/>
+                            <field name="trainer_user_id" readonly="1" invisible="trainer_type != 'internal'"/>
+                            <field name="vendor_id" invisible="trainer_type != 'external'"/>
+                            <field name="external_trainer_name" invisible="trainer_type != 'external'"/>
+                        </group>
+                        <group string="Budget &amp; KPI">
+                            <field name="budget_id"/>
+                            <field name="estimated_cost"/>
+                            <field name="actual_cost" readonly="1"/>
+                            <field name="attendance_rate" readonly="1"/>
+                            <field name="completion_rate" readonly="1"/>
+                            <field name="passed_count" readonly="1"/>
+                            <field name="certified_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Operational Actions"
+                           groups="onehr_learning.group_onehr_learning_officer">
+                        <button name="action_process_waitlist" type="object"
+                                string="Process Available Seats" icon="fa-list-ol"
+                                invisible="state != 'open' or waitlist_count == 0"/>
+                        <button name="action_import_participants_csv" type="object"
+                                string="Import Participants CSV" icon="fa-upload"
+                                invisible="state not in ['draft', 'open']"/>
+                        <button name="action_export_results_csv" type="object"
+                                string="Export Grades &amp; Certificates" icon="fa-download"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Enrollments" name="enrollments">
+                            <field name="enrollment_ids">
+                                <list create="0" delete="0"
+                                      decoration-info="state == 'requested'"
+                                      decoration-warning="state == 'waitlisted'"
+                                      decoration-success="state in ['passed', 'certified']"
+                                      decoration-danger="state in ['failed', 'rejected', 'no_show']">
+                                    <field name="name"/>
+                                    <field name="employee_name"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="post_test_score" optional="show"/>
+                                    <field name="attendance_percent" optional="show"/>
+                                    <button name="action_request_approval" type="object"
+                                            string="Request Approval" icon="fa-paper-plane"
+                                            invisible="state != 'draft'"/>
+                                    <button name="action_enroll" type="object"
+                                            string="Enroll" icon="fa-user-plus"
+                                            invisible="state != 'approved'"/>
+                                    <button name="action_open_attendance" type="object"
+                                            string="Attendance" icon="fa-check-square-o"
+                                            invisible="state not in ['enrolled','attended','passed','failed','certified','no_show']"/>
+                                    <button name="action_issue_certificate" type="object"
+                                            string="Certificate" icon="fa-certificate"
+                                            invisible="state != 'passed'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Training Attendance" name="attendance">
+                            <field name="attendance_ids" readonly="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="employee_name"/>
+                                    <field name="attendance_status" widget="badge"/>
+                                    <field name="check_in"/>
+                                    <field name="check_out"/>
+                                    <field name="attended_hours"/>
+                                    <field name="attendance_percent"/>
+                                    <button name="action_open_enrollment" type="object"
+                                            string="Enrollment" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Costs" name="costs"
+                              groups="onehr_learning.group_onehr_learning_officer">
+                            <field name="cost_line_ids">
+                                <list create="1" delete="0">
+                                    <field name="description"/>
+                                    <field name="cost_type"/>
+                                    <field name="vendor_id" optional="show"/>
+                                    <field name="amount"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="reimbursable" optional="show"/>
+                                    <button name="action_commit" type="object" string="Commit"
+                                            icon="fa-lock" invisible="state != 'planned'"/>
+                                    <button name="action_mark_actual" type="object" string="Actual"
+                                            icon="fa-check" invisible="state != 'committed'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Import / Export" name="import_export"
+                              groups="onehr_learning.group_onehr_learning_officer">
+                            <group>
+                                <group string="Mass Participant Import">
+                                    <field name="participant_import_file" filename="participant_import_filename"/>
+                                    <field name="participant_import_filename" invisible="1"/>
+                                    <div class="text-muted">
+                                        CSV column required: employee_number. Optional: request_reason.
+                                        Import creates Draft records only and never bypasses approval.
+                                    </div>
+                                </group>
+                                <group string="Generated Result Export">
+                                    <field name="result_download_filename" readonly="1"/>
+                                    <field name="result_download_file"
+                                           filename="result_download_filename" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_session_search" model="ir.ui.view">
+        <field name="name">onehr.learning.session.search.enterprise</field>
+        <field name="model">onehr.learning.session</field>
+        <field name="arch" type="xml">
+            <search string="Learning Sessions">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="course_id"/>
+                <field name="trainer_employee_id"/>
+                <field name="vendor_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="open" string="Open" domain="[('state', '=', 'open')]"/>
+                <filter name="progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]"/>
+                <filter name="upcoming" string="Upcoming"
+                        domain="[('start_datetime', '&gt;=', context_today())]"/>
+                <filter name="start_date" string="Start" date="start_datetime"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_course" string="Course" context="{'group_by': 'course_id'}"/>
+                    <filter name="group_delivery" string="Delivery" context="{'group_by': 'delivery_mode'}"/>
+                    <filter name="group_month" string="Start Month" context="{'group_by': 'start_datetime:month'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_session_calendar" model="ir.ui.view">
+        <field name="name">onehr.learning.session.calendar.enterprise</field>
+        <field name="model">onehr.learning.session</field>
+        <field name="arch" type="xml">
+            <calendar string="Learning Sessions" date_start="start_datetime"
+                      date_stop="end_datetime" color="course_id">
+                <field name="title"/>
+                <field name="course_id"/>
+                <field name="state"/>
+                <field name="delivery_mode"/>
+                <field name="trainer_user_id"/>
+                <field name="enrolled_count"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_session_pivot" model="ir.ui.view">
+        <field name="name">onehr.learning.session.pivot.enterprise</field>
+        <field name="model">onehr.learning.session</field>
+        <field name="arch" type="xml">
+            <pivot string="Learning Session Analysis">
+                <field name="course_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="planned_hours" type="measure"/>
+                <field name="estimated_cost" type="measure"/>
+                <field name="actual_cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_learning_session_graph" model="ir.ui.view">
+        <field name="name">onehr.learning.session.graph.enterprise</field>
+        <field name="model">onehr.learning.session</field>
+        <field name="arch" type="xml">
+            <graph string="Learning Sessions">
+                <field name="course_id"/>
+                <field name="planned_hours" type="measure"/>
+                <field name="actual_cost" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_learning_sessions" model="ir.actions.act_window">
+        <field name="name">Sessions</field>
+        <field name="res_model">onehr.learning.session</field>
+        <field name="view_mode">list,calendar,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_learning_session_search"/>
+    </record>
+</odoo>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add Hiring Manager to the existing OneHR root navigation without changing sibling source ownership. -->
+    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[Command.link(ref('onehr_recruitment.group_onehr_hiring_manager'))]"/>
+    </record>
+
+    <menuitem id="menu_onehr_recruitment_root" name="Recruitment" parent="onehr_base.menu_onehr_root" sequence="17"
+              groups="onehr_recruitment.group_onehr_hiring_manager,onehr_recruitment.group_onehr_recruiter"/>
+
+    <menuitem id="menu_onehr_recruitment_requisitions" name="Requisitions" parent="menu_onehr_recruitment_root"
+              action="action_onehr_recruitment_requisition" sequence="10" groups="onehr_recruitment.group_onehr_hiring_manager,onehr_recruitment.group_onehr_recruiter"/>
+    <menuitem id="menu_onehr_recruitment_applicants" name="Applicants" parent="menu_onehr_recruitment_root"
+              action="hr_recruitment.crm_case_categ0_act_job" sequence="20" groups="onehr_recruitment.group_onehr_hiring_manager,onehr_recruitment.group_onehr_recruiter"/>
+    <menuitem id="menu_onehr_recruitment_interviews" name="Interviews" parent="menu_onehr_recruitment_root"
+              action="action_onehr_interview_session" sequence="30" groups="onehr_recruitment.group_onehr_hiring_manager,onehr_recruitment.group_onehr_recruiter"/>
+    <menuitem id="menu_onehr_recruitment_offers" name="Offers" parent="menu_onehr_recruitment_root"
+              action="action_onehr_offer" sequence="40" groups="onehr_recruitment.group_onehr_recruiter"/>
+    <menuitem id="menu_onehr_recruitment_preboarding" name="Preboarding" parent="menu_onehr_recruitment_root"
+              action="action_onehr_preboarding" sequence="50" groups="onehr_recruitment.group_onehr_hiring_manager,onehr_recruitment.group_onehr_recruiter"/>
+
+    <menuitem id="menu_onehr_recruitment_reporting" name="Reporting" parent="menu_onehr_recruitment_root" sequence="70"
+              groups="onehr_recruitment.group_onehr_recruiter"/>
+    <menuitem id="menu_onehr_recruitment_source_metrics" name="Source &amp; Funnel Metrics" parent="menu_onehr_recruitment_reporting"
+              action="action_onehr_recruitment_source_metric" sequence="10"/>
+
+    <menuitem id="menu_onehr_recruitment_configuration" name="Configuration" parent="menu_onehr_recruitment_root" sequence="90"
+              groups="onehr_recruitment.group_onehr_recruitment_manager"/>
+    <menuitem id="menu_onehr_recruitment_jobs" name="Job Positions" parent="menu_onehr_recruitment_configuration"
+              action="hr_recruitment.action_hr_job" sequence="10"/>
+    <menuitem id="menu_onehr_interview_templates" name="Interview Templates" parent="menu_onehr_recruitment_configuration"
+              action="action_onehr_interview_template" sequence="20"/>
+    <menuitem id="menu_onehr_recruitment_stages" name="Recruitment Stages" parent="menu_onehr_recruitment_configuration"
+              action="hr_recruitment.hr_recruitment_stage_act" sequence="30"/>
+    <menuitem id="menu_onehr_talent_pools" name="Talent Pools" parent="menu_onehr_recruitment_configuration"
+              action="hr_recruitment.action_hr_talent_pool" sequence="40"/>
+</odoo>

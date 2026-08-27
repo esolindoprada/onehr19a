@@ -1,0 +1,377 @@
+<odoo>
+    <record id="view_onehr_sop_version_list" model="ir.ui.view">
+        <field name="name">onehr.sop.version.list.enterprise</field>
+        <field name="model">onehr.sop.version</field>
+        <field name="arch" type="xml">
+            <list string="SOP Versions"
+                  decoration-success="state == 'published' and is_current"
+                  decoration-info="state == 'review'"
+                  decoration-warning="state == 'approved'"
+                  decoration-muted="state == 'obsolete'">
+                <field name="previous_version_id" column_invisible="True"
+                       groups="onehr_sop.group_onehr_sop_editor"/>
+                <field name="sop_id"/>
+                <field name="version_no"/>
+                <field name="name"/>
+                <field name="state" widget="badge"/>
+                <field name="is_current"/>
+                <field name="effective_from"/>
+                <field name="effective_to"/>
+                <field name="review_due_date"/>
+                <field name="ack_count"/>
+                <field name="acknowledged_count"/>
+                <field name="pending_count"/>
+                <field name="ack_rate" widget="percentage"/>
+                <field name="days_to_90_ack" optional="hide"/>
+                <field name="published_at"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_version" type="object"
+                        string="Open" icon="fa-external-link"/>
+                <button name="action_acknowledge_my_sop" type="object"
+                        string="Read &amp; Agree" icon="fa-check-square-o"
+                        invisible="state != 'published' or not is_current"/>
+                <button name="action_submit_review" type="object"
+                        string="Submit" icon="fa-paper-plane"
+                        invisible="state != 'draft'"
+                        groups="onehr_sop.group_onehr_sop_editor"/>
+                <button name="action_approve" type="object"
+                        string="Approve" icon="fa-check"
+                        invisible="state != 'review'"
+                        groups="onehr_sop.group_onehr_sop_approver"/>
+                <button name="action_publish" type="object"
+                        string="Publish" icon="fa-bullhorn"
+                        invisible="state != 'approved'"
+                        groups="onehr_sop.group_onehr_sop_approver"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_sop_version_form" model="ir.ui.view">
+        <field name="name">onehr.sop.version.form.enterprise</field>
+        <field name="model">onehr.sop.version</field>
+        <field name="arch" type="xml">
+            <form string="SOP Version">
+                <header>
+                    <button name="action_submit_review" type="object"
+                            string="Submit for Review" class="btn-primary"
+                            invisible="state != 'draft'"
+                            groups="onehr_sop.group_onehr_sop_editor"/>
+                    <button name="action_return_draft" type="object"
+                            string="Return to Draft"
+                            invisible="state not in ('review', 'approved')"
+                            groups="onehr_sop.group_onehr_sop_approver"/>
+                    <button name="action_approve" type="object"
+                            string="Approve" class="btn-primary"
+                            invisible="state != 'review'"
+                            groups="onehr_sop.group_onehr_sop_approver"/>
+                    <button name="action_publish" type="object"
+                            string="Publish" class="btn-primary"
+                            invisible="state != 'approved'"
+                            groups="onehr_sop.group_onehr_sop_approver"/>
+                    <button name="action_mark_obsolete" type="object"
+                            string="Mark Obsolete"
+                            invisible="state != 'published'"
+                            groups="onehr_sop.group_onehr_sop_approver"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,review,approved,published,obsolete"/>
+                </header>
+
+                <sheet>
+                    <field name="is_current" invisible="1"/>
+                    <field name="previous_version_id" invisible="1"
+                           groups="onehr_sop.group_onehr_sop_editor"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_sop" type="object"
+                                class="oe_stat_button" icon="fa-book">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">SOP Master</span>
+                            </div>
+                        </button>
+                        <button name="action_open_acknowledgements" type="object"
+                                class="oe_stat_button" icon="fa-check-square-o">
+                            <field name="ack_count" widget="statinfo" string="Audience"/>
+                        </button>
+                        <button name="action_open_my_acknowledgement" type="object"
+                                class="oe_stat_button" icon="fa-user"
+                                invisible="state != 'published' or not is_current">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">My Ack</span>
+                            </div>
+                        </button>
+                        <button name="action_open_previous_version" type="object"
+                                class="oe_stat_button" icon="fa-history"
+                                invisible="not previous_version_id"
+                                groups="onehr_sop.group_onehr_sop_editor">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Previous</span>
+                            </div>
+                        </button>
+                        <button name="action_open_archive_document" type="object"
+                                class="oe_stat_button" icon="fa-archive"
+                                invisible="not archive_document_version_id"
+                                groups="onehr_sop.group_onehr_sop_editor">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Archive Snapshot</span>
+                            </div>
+                        </button>
+                        <button name="action_print_sop" type="object"
+                                class="oe_stat_button" icon="fa-file-pdf-o">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Print SOP</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="CURRENT"
+                            bg_color="text-bg-success"
+                            invisible="not is_current"/>
+                    <widget name="web_ribbon" title="OBSOLETE"
+                            bg_color="text-bg-secondary"
+                            invisible="state != 'obsolete'"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                        <div class="text-muted">
+                            <field name="sop_id"/> · Version <field name="version_no"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Version &amp; Effectivity">
+                            <field name="sop_id" readonly="state != 'draft'"/>
+                            <field name="version_no" readonly="1"/>
+                            <field name="effective_from" readonly="state != 'draft'"/>
+                            <field name="effective_to" readonly="1"/>
+                            <field name="review_due_date" readonly="state != 'draft'"/>
+                            <field name="retention_until" readonly="1"
+                                   groups="onehr_sop.group_onehr_sop_editor"/>
+                        </group>
+                        <group string="Compliance Snapshot">
+                            <field name="completeness_percent" widget="progressbar" readonly="1"
+                                   groups="onehr_sop.group_onehr_sop_editor"/>
+                            <field name="ack_count" readonly="1"/>
+                            <field name="acknowledged_count" readonly="1"/>
+                            <field name="pending_count" readonly="1"/>
+                            <field name="ack_rate" widget="progressbar" readonly="1"/>
+                            <field name="days_to_90_ack" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 mb-3">
+                        <button name="action_acknowledge_my_sop" type="object"
+                                string="Read &amp; Agree"
+                                class="btn-primary"
+                                invisible="state != 'published' or not is_current"/>
+                        <button name="action_preview_audience" type="object"
+                                string="Preview Audience"
+                                class="btn-secondary"
+                                invisible="state != 'draft'"
+                                groups="onehr_sop.group_onehr_sop_editor"/>
+                        <button name="action_print_sop" type="object"
+                                string="Print SOP"
+                                class="btn-secondary"/>
+                        <button name="action_print_compliance" type="object"
+                                string="Compliance Report"
+                                class="btn-secondary"
+                                invisible="state not in ('published', 'obsolete')"
+                                groups="onehr_sop.group_onehr_sop_approver"/>
+                        <button name="action_export_ack_csv" type="object"
+                                string="Prepare Audit CSV"
+                                class="btn-secondary"
+                                invisible="state not in ('published', 'obsolete')"
+                                groups="onehr_sop.group_onehr_sop_approver"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Purpose &amp; Scope">
+                            <field name="purpose" readonly="state != 'draft'"
+                                   placeholder="Why this SOP exists and the outcome it governs..."/>
+                            <field name="scope" readonly="state != 'draft'"
+                                   placeholder="Processes, populations, locations and exclusions covered by this SOP..."/>
+                            <field name="definitions" readonly="state != 'draft'"
+                                   placeholder="Terms, abbreviations and definitions..."/>
+                        </page>
+
+                        <page string="Roles &amp; Responsibilities">
+                            <field name="roles_responsibilities" readonly="state != 'draft'"
+                                   placeholder="Define process owners, performers, approvers and escalation responsibilities..."/>
+                        </page>
+
+                        <page string="Procedure / Work Instructions">
+                            <field name="procedure_steps" readonly="state != 'draft'"
+                                   placeholder="Step-by-step standard operating procedure..."/>
+                        </page>
+
+                        <page string="Controls &amp; Evidence">
+                            <field name="controls" readonly="state != 'draft'"/>
+                            <field name="records_evidence" readonly="state != 'draft'"/>
+                            <field name="training_requirements" readonly="state != 'draft'"/>
+                            <field name="safety_notes" readonly="state != 'draft'"/>
+                            <field name="references" readonly="state != 'draft'"/>
+                        </page>
+
+                        <page string="Publication Audience"
+                              groups="onehr_sop.group_onehr_sop_editor">
+                            <group>
+                                <field name="target_all_employees"
+                                       readonly="state != 'draft'"/>
+                            </group>
+                            <group invisible="target_all_employees">
+                                <field name="target_department_ids"
+                                       widget="many2many_tags"
+                                       readonly="state != 'draft'"/>
+                                <field name="target_job_ids"
+                                       widget="many2many_tags"
+                                       readonly="state != 'draft'"/>
+                                <field name="target_employee_ids"
+                                       widget="many2many_tags"
+                                       readonly="state != 'draft'"/>
+                            </group>
+                            <button name="action_preview_audience" type="object"
+                                    string="Resolve &amp; Preview Audience"
+                                    class="btn-secondary"
+                                    invisible="state != 'draft'"/>
+                        </page>
+
+                        <page string="Acknowledgements"
+                              groups="onehr_sop.group_onehr_sop_editor">
+                            <div class="d-flex gap-2 mb-3"
+                                 groups="onehr_sop.group_onehr_sop_approver">
+                                <button name="action_send_publication_notice" type="object"
+                                        string="Queue Publication Notice"
+                                        class="btn-secondary"
+                                        invisible="state != 'published'"/>
+                                <button name="action_send_ack_reminders" type="object"
+                                        string="Send / Refresh Reminders"
+                                        class="btn-secondary"
+                                        invisible="state != 'published'"/>
+                                <button name="action_export_ack_csv" type="object"
+                                        string="Prepare Audit CSV"
+                                        class="btn-secondary"
+                                        invisible="state not in ('published', 'obsolete')"/>
+                                <button name="action_print_compliance" type="object"
+                                        string="Print Compliance"
+                                        class="btn-secondary"
+                                        invisible="state not in ('published', 'obsolete')"/>
+                            </div>
+                            <field name="ack_ids" readonly="1">
+                                <list create="false" delete="false"
+                                      decoration-success="state == 'acknowledged'"
+                                      decoration-warning="state == 'pending'">
+                                    <field name="employee_number"/>
+                                    <field name="employee_name"/>
+                                    <field name="department_name"/>
+                                    <field name="job_name"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="published_at"/>
+                                    <field name="acknowledged_at"/>
+                                    <field name="days_to_ack"/>
+                                    <field name="acknowledgement_source" optional="hide"/>
+                                    <button name="action_open_employee" type="object"
+                                            string="Employee" icon="fa-user"/>
+                                </list>
+                            </field>
+                            <group groups="onehr_sop.group_onehr_sop_approver">
+                                <field name="export_file" filename="export_filename"
+                                       readonly="1"
+                                       invisible="not export_file"/>
+                                <field name="export_filename" invisible="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Change Control"
+                              groups="onehr_sop.group_onehr_sop_editor">
+                            <field name="change_summary" readonly="state != 'draft'"/>
+                            <field name="change_reason" readonly="state != 'draft'"/>
+                            <field name="reviewer_comments" readonly="state in ('published', 'obsolete')"/>
+                            <field name="approval_comments"
+                                   readonly="state in ('published', 'obsolete')"
+                                   groups="onehr_sop.group_onehr_sop_approver"/>
+                        </page>
+
+                        <page string="Approval &amp; Archive Evidence"
+                              groups="onehr_sop.group_onehr_sop_editor">
+                            <group>
+                                <group>
+                                    <field name="submitted_by_id" readonly="1"/>
+                                    <field name="submitted_at" readonly="1"/>
+                                    <field name="approved_by_id" readonly="1"/>
+                                    <field name="approved_at" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="published_by_id" readonly="1"/>
+                                    <field name="published_at" readonly="1"/>
+                                    <field name="obsolete_by_id" readonly="1"/>
+                                    <field name="obsolete_at" readonly="1"/>
+                                    <field name="archive_document_version_id" readonly="1"/>
+                                    <field name="content_fingerprint" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+
+                    <chatter groups="onehr_sop.group_onehr_sop_editor"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_sop_version_search" model="ir.ui.view">
+        <field name="name">onehr.sop.version.search.enterprise</field>
+        <field name="model">onehr.sop.version</field>
+        <field name="arch" type="xml">
+            <search string="Search SOP Versions">
+                <field name="sop_id"/>
+                <field name="name"/>
+                <filter name="current" string="Current Published"
+                        domain="[('state', '=', 'published'), ('is_current', '=', True)]"/>
+                <filter name="draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="review" string="Review"
+                        domain="[('state', '=', 'review')]"/>
+                <filter name="approved" string="Approved"
+                        domain="[('state', '=', 'approved')]"/>
+                <filter name="published" string="Published"
+                        domain="[('state', '=', 'published')]"/>
+                <filter name="obsolete" string="Obsolete"
+                        domain="[('state', '=', 'obsolete')]"/>
+                <filter name="pending_ack" string="Pending Acknowledgements"
+                        domain="[('pending_count', '&gt;', 0)]"/>
+                <separator/>
+                <group>
+                    <filter name="group_state" string="State"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_sop" string="SOP"
+                            context="{'group_by': 'sop_id'}"/>
+                    <filter name="group_company" string="Company"
+                            context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_sop_version_calendar" model="ir.ui.view">
+        <field name="name">onehr.sop.version.calendar.enterprise</field>
+        <field name="model">onehr.sop.version</field>
+        <field name="arch" type="xml">
+            <calendar string="SOP Review Calendar"
+                      date_start="review_due_date"
+                      color="sop_id">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="ack_rate"/>
+                <field name="pending_count"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_onehr_sop_versions" model="ir.actions.act_window">
+        <field name="name">SOP Versions</field>
+        <field name="res_model">onehr.sop.version</field>
+        <field name="view_mode">list,form,calendar</field>
+        <field name="search_view_id" ref="view_onehr_sop_version_search"/>
+    </record>
+</odoo>

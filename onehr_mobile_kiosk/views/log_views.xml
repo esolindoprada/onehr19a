@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_onehr_kiosk_log_list" model="ir.ui.view">
+        <field name="name">onehr.kiosk.log.list.enterprise</field>
+        <field name="model">onehr.kiosk.log</field>
+        <field name="arch" type="xml">
+            <list decoration-success="sync_state == 'synced'"
+                  decoration-danger="sync_state in ['failed', 'dead_letter']"
+                  decoration-warning="sync_state == 'blocked'"
+                  decoration-info="sync_state in ['queued', 'processing']">
+                <field name="event_at"/>
+                <field name="name"/>
+                <field name="device_id"/>
+                <field name="employee_name"/>
+                <field name="employee_number" optional="hide"/>
+                <field name="event_type" widget="badge"/>
+                <field name="punch_mode" optional="show"/>
+                <field name="credential_type" optional="hide"/>
+                <field name="offline_event" optional="show"/>
+                <field name="geofence_status" widget="badge" optional="show"/>
+                <field name="sync_state" widget="badge"/>
+                <field name="attempt_count" optional="show"/>
+                <field name="latency_ms" optional="hide"/>
+                <field name="error_code" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <button name="action_retry_sync" type="object" string="Retry" icon="fa-refresh"
+                        invisible="sync_state not in ['queued', 'failed', 'dead_letter']"/>
+                <button name="action_open_attendance" type="object" string="Attendance"
+                        icon="fa-clock-o" invisible="not attendance_id"/>
+                <button name="action_open_target" type="object" string="Target"
+                        icon="fa-external-link" invisible="not target_res_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_kiosk_log_form" model="ir.ui.view">
+        <field name="name">onehr.kiosk.log.form.enterprise</field>
+        <field name="model">onehr.kiosk.log</field>
+        <field name="arch" type="xml">
+            <form string="Kiosk Activity">
+                <header>
+                    <button name="action_retry_sync" type="object" string="Retry Sync"
+                            class="btn-primary" icon="fa-refresh"
+                            invisible="sync_state not in ['queued', 'failed', 'dead_letter']"/>
+                    <button name="action_mark_dead_letter" type="object" string="Move to Dead Letter"
+                            class="btn-secondary"
+                            groups="onehr_mobile_kiosk.group_onehr_kiosk_admin"
+                            invisible="sync_state in ['synced', 'dead_letter']"/>
+                    <field name="sync_state" widget="statusbar"
+                           statusbar_visible="queued,processing,synced,failed,blocked,dead_letter"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_device" type="object" class="oe_stat_button" icon="fa-desktop">
+                            <div class="o_stat_info"><span class="o_stat_text">Device</span></div>
+                        </button>
+                        <button name="action_open_attendance" type="object" class="oe_stat_button" icon="fa-clock-o"
+                                invisible="not attendance_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Attendance</span></div>
+                        </button>
+                        <button name="action_open_target" type="object" class="oe_stat_button" icon="fa-external-link"
+                                invisible="not target_res_id">
+                            <div class="o_stat_info"><span class="o_stat_text">HR Target</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div class="text-muted"><field name="client_event_id" class="oe_inline"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Event">
+                            <field name="device_id"/>
+                            <field name="employee_id"/>
+                            <field name="employee_name"/>
+                            <field name="employee_number"/>
+                            <field name="event_type" widget="badge"/>
+                            <field name="punch_mode" invisible="event_type != 'punch'"/>
+                            <field name="credential_type"/>
+                        </group>
+                        <group string="Timing &amp; Sync">
+                            <field name="event_at"/>
+                            <field name="event_date"/>
+                            <field name="received_at"/>
+                            <field name="offline_event"/>
+                            <field name="attempt_count"/>
+                            <field name="last_attempt_at"/>
+                            <field name="next_retry_at"/>
+                            <field name="synced_at"/>
+                            <field name="latency_ms"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_retry_sync" type="object" string="Retry This Event"
+                                class="btn btn-primary" icon="fa-refresh"
+                                invisible="sync_state not in ['queued', 'failed', 'dead_letter']"/>
+                        <button name="action_open_attendance" type="object" string="Open Canonical Attendance"
+                                class="btn btn-secondary" icon="fa-clock-o"
+                                invisible="not attendance_id"/>
+                        <button name="action_open_target" type="object" string="Open HR Target"
+                                class="btn btn-secondary" icon="fa-external-link"
+                                invisible="not target_res_id"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Geolocation">
+                            <group>
+                                <group>
+                                    <field name="latitude"/>
+                                    <field name="longitude"/>
+                                    <field name="location_accuracy_m"/>
+                                </group>
+                                <group>
+                                    <field name="geofence_status" widget="badge"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Quick Time Off" invisible="event_type != 'timeoff'">
+                            <group>
+                                <group>
+                                    <field name="leave_type_code"/>
+                                    <field name="leave_date_from"/>
+                                    <field name="leave_date_to"/>
+                                </group>
+                                <group>
+                                    <field name="target_model"/>
+                                    <field name="target_res_id"/>
+                                    <field name="target_label"/>
+                                </group>
+                            </group>
+                            <field name="leave_reason"/>
+                        </page>
+
+                        <page string="Integration Evidence">
+                            <group>
+                                <group>
+                                    <field name="attendance_id"/>
+                                    <field name="target_model"/>
+                                    <field name="target_res_id"/>
+                                    <field name="target_label"/>
+                                    <field name="payload_hash"/>
+                                </group>
+                                <group>
+                                    <field name="error_code"/>
+                                    <field name="error_message"/>
+                                </group>
+                            </group>
+                            <field name="request_summary"/>
+                        </page>
+
+                        <page string="Operator Notes">
+                            <field name="operator_note"
+                                   placeholder="Investigation note only. Transaction and synchronization evidence remains immutable."/>
+                        </page>
+                    </notebook>
+                    <field name="company_id" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_kiosk_log_search" model="ir.ui.view">
+        <field name="name">onehr.kiosk.log.search.enterprise</field>
+        <field name="model">onehr.kiosk.log</field>
+        <field name="arch" type="xml">
+            <search string="Kiosk Activity">
+                <field name="name"/>
+                <field name="client_event_id"/>
+                <field name="device_id"/>
+                <field name="employee_name"/>
+                <field name="employee_number"/>
+                <field name="event_date"/>
+                <field name="error_code"/>
+                <filter name="today" string="Today" domain="[('event_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="punches" string="Attendance Punches" domain="[('event_type', '=', 'punch')]"/>
+                <filter name="quick_timeoff" string="Quick Time Off" domain="[('event_type', '=', 'timeoff')]"/>
+                <filter name="offline" string="Offline Origin" domain="[('offline_event', '=', True)]"/>
+                <filter name="queued" string="Queued / Failed"
+                        domain="[('sync_state', 'in', ['queued', 'processing', 'failed'])]"/>
+                <filter name="errors" string="Errors"
+                        domain="[('sync_state', 'in', ['failed', 'blocked', 'dead_letter'])]"/>
+                <filter name="dead_letter" string="Dead Letter" domain="[('sync_state', '=', 'dead_letter')]"/>
+                <separator/>
+                <group>
+                    <filter name="group_device" string="Device" context="{'group_by': 'device_id'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'event_date'}"/>
+                    <filter name="group_event" string="Event Type" context="{'group_by': 'event_type'}"/>
+                    <filter name="group_state" string="Sync State" context="{'group_by': 'sync_state'}"/>
+                    <filter name="group_geofence" string="Geofence" context="{'group_by': 'geofence_status'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_kiosk_log_calendar" model="ir.ui.view">
+        <field name="name">onehr.kiosk.log.calendar.enterprise</field>
+        <field name="model">onehr.kiosk.log</field>
+        <field name="arch" type="xml">
+            <calendar string="Kiosk Activity Calendar" date_start="event_at" color="device_id" mode="month">
+                <field name="name"/>
+                <field name="device_id"/>
+                <field name="employee_name"/>
+                <field name="event_type"/>
+                <field name="sync_state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_onehr_kiosk_log_pivot" model="ir.ui.view">
+        <field name="name">onehr.kiosk.log.pivot.enterprise</field>
+        <field name="model">onehr.kiosk.log</field>
+        <field name="arch" type="xml">
+            <pivot string="Kiosk Usage &amp; Sync Analytics">
+                <field name="device_id" type="row"/>
+                <field name="event_type" type="row"/>
+                <field name="event_date" type="col" interval="month"/>
+                <field name="latency_ms" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_kiosk_log_graph" model="ir.ui.view">
+        <field name="name">onehr.kiosk.log.graph.enterprise</field>
+        <field name="model">onehr.kiosk.log</field>
+        <field name="arch" type="xml">
+            <graph string="Kiosk Event Volume" type="bar">
+                <field name="device_id"/>
+                <field name="sync_state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_kiosk_log" model="ir.actions.act_window">
+        <field name="name">Kiosk Activity Logs</field>
+        <field name="res_model">onehr.kiosk.log</field>
+        <field name="view_mode">list,calendar,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_kiosk_log_search"/>
+    </record>
+
+    <record id="action_onehr_kiosk_sync_queue" model="ir.actions.act_window">
+        <field name="name">Kiosk Sync Queue</field>
+        <field name="res_model">onehr.kiosk.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_kiosk_log_search"/>
+        <field name="domain">[('sync_state', 'in', ['queued', 'processing', 'failed', 'dead_letter'])]</field>
+    </record>
+
+    <record id="action_onehr_kiosk_usage_analysis" model="ir.actions.act_window">
+        <field name="name">Kiosk Usage Analytics</field>
+        <field name="res_model">onehr.kiosk.log</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_onehr_kiosk_log_search"/>
+    </record>
+</odoo>

@@ -1,0 +1,174 @@
+<odoo>
+    <record id="action_report_talent_gap" model="ir.actions.report">
+        <field name="name">Talent Competency Gap</field>
+        <field name="model">onehr.talent.pool</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_career_succession.report_talent_gap_document</field>
+        <field name="report_file">onehr_career_succession.report_talent_gap_document</field>
+        <field name="binding_model_id" ref="model_onehr_talent_pool"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Talent Gap - %s' % (object.name)</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_career_succession.group_onehr_career_hrbp'))
+        ]"/>
+    </record>
+
+    <record id="action_report_succession_plan" model="ir.actions.report">
+        <field name="name">Succession Plan</field>
+        <field name="model">onehr.succession.plan</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_career_succession.report_succession_plan_document</field>
+        <field name="report_file">onehr_career_succession.report_succession_plan_document</field>
+        <field name="binding_model_id" ref="model_onehr_succession_plan"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Succession Plan - %s' % (object.name)</field>
+        <field name="group_ids" eval="[
+            Command.link(ref('onehr_career_succession.group_onehr_career_hrbp'))
+        ]"/>
+    </record>
+
+    <template id="report_talent_gap_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Talent Competency Gap Analysis</h2>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Talent:</strong> <span t-field="doc.employee_name"/><br/>
+                                <strong>Reference:</strong> <span t-field="doc.name"/><br/>
+                                <strong>Pool:</strong> <span t-field="doc.pool_code"/><br/>
+                                <strong>Department:</strong> <span t-field="doc.department_name"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Target Position:</strong> <span t-field="doc.target_position_name"/><br/>
+                                <strong>Readiness:</strong> <span t-field="doc.readiness_score"/>%<br/>
+                                <strong>Readiness Level:</strong> <span t-field="doc.readiness_level"/><br/>
+                                <strong>Aggregate Gap:</strong> <span t-field="doc.gap_score"/>%
+                            </div>
+                        </div>
+
+                        <h4>Readiness Components</h4>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Performance</th>
+                                    <th>Potential</th>
+                                    <th>Competency</th>
+                                    <th>Learning</th>
+                                    <th>9-Box</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span t-field="doc.performance_score"/>%</td>
+                                    <td><span t-field="doc.potential_score"/>%</td>
+                                    <td><span t-field="doc.competency_score"/>%</td>
+                                    <td><span t-field="doc.learning_score"/>%</td>
+                                    <td><span t-field="doc.nine_box_position"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Target Position Competency Requirements</h4>
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Competency</th>
+                                    <th>Category</th>
+                                    <th>Required Level</th>
+                                    <th>Weight</th>
+                                    <th>Mandatory</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.target_requirement_ids" t-as="req">
+                                    <tr>
+                                        <td><span t-field="req.competency_id"/></td>
+                                        <td><span t-field="req.competency_category"/></td>
+                                        <td><span t-field="req.required_level"/></td>
+                                        <td><span t-field="req.weight"/>%</td>
+                                        <td><span t-field="req.mandatory"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <h4>Strengths</h4>
+                        <div t-field="doc.strengths"/>
+
+                        <h4 class="mt-3">Development Needs</h4>
+                        <div t-field="doc.development_needs"/>
+
+                        <h4 class="mt-3">Career Aspiration</h4>
+                        <div t-field="doc.career_aspiration"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_succession_plan_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Succession Plan</h2>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Plan:</strong> <span t-field="doc.title"/><br/>
+                                <strong>Reference:</strong> <span t-field="doc.name"/><br/>
+                                <strong>Position:</strong> <span t-field="doc.position_name"/><br/>
+                                <strong>Incumbent:</strong> <span t-field="doc.incumbent_name"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Criticality:</strong> <span t-field="doc.criticality"/><br/>
+                                <strong>Coverage:</strong> <span t-field="doc.coverage_percent"/>%<br/>
+                                <strong>Bench Strength:</strong> <span t-field="doc.bench_strength"/>%<br/>
+                                <strong>Risk Index:</strong> <span t-field="doc.risk_index"/>
+                            </div>
+                        </div>
+
+                        <h4>Successor Candidates</h4>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Talent</th>
+                                    <th>Pool</th>
+                                    <th>Readiness</th>
+                                    <th>Readiness Level</th>
+                                    <th>High Potential</th>
+                                    <th>Retention Risk</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.candidate_talent_ids" t-as="candidate">
+                                    <tr>
+                                        <td><span t-field="candidate.employee_name"/></td>
+                                        <td><span t-field="candidate.pool_code"/></td>
+                                        <td><span t-field="candidate.readiness_score"/>%</td>
+                                        <td><span t-field="candidate.readiness_level"/></td>
+                                        <td><span t-field="candidate.high_potential"/></td>
+                                        <td><span t-field="candidate.retention_risk"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <h4>Succession Strategy</h4>
+                        <div t-field="doc.succession_strategy"/>
+
+                        <h4 class="mt-3">Development Actions</h4>
+                        <div t-field="doc.development_actions"/>
+
+                        <h4 class="mt-3">Risk Mitigation</h4>
+                        <div t-field="doc.risk_mitigation"/>
+
+                        <h4 class="mt-3">Contingency</h4>
+                        <div t-field="doc.contingency_notes"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

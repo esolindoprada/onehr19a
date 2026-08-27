@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================
+         onehr.assignment — core placement/history transaction
+         ================================================================ -->
+    <record id="view_onehr_assignment_list" model="ir.ui.view">
+        <field name="name">onehr.assignment.list.enterprise</field>
+        <field name="model">onehr.assignment</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'proposed'" decoration-success="state == 'active'"
+                  decoration-warning="state == 'approved'" decoration-muted="state in ['ended','cancelled']"
+                  decoration-danger="state == 'rejected'">
+                <field name="name"/>
+                <field name="employee_name" string="Employee"/>
+                <field name="employee_number" optional="show"
+                       groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                <field name="assignment_type" widget="badge"/>
+                <field name="movement_type" optional="show"/>
+                <field name="position_id"/>
+                <field name="department_id" optional="show"
+                       groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                <field name="grade_id" optional="show"
+                       groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                <field name="manager_name" optional="show"/>
+                <field name="fte" sum="Total FTE"/>
+                <field name="effective_from"/>
+                <field name="effective_to" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="change_request_id" column_invisible="True"/>
+                <button name="action_open_position" type="object" string="Position" icon="fa-external-link" groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                <button name="action_open_change_request" type="object" string="Movement" icon="fa-exchange"
+                        invisible="not change_request_id"
+                        groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_assignment_form" model="ir.ui.view">
+        <field name="name">onehr.assignment.form.enterprise</field>
+        <field name="model">onehr.assignment</field>
+        <field name="arch" type="xml">
+            <form string="Employee Assignment">
+                <header>
+                    <button name="action_submit_for_approval" type="object" string="Propose"
+                            class="oe_highlight" invisible="state != 'draft'"
+                            groups="onehr_assignment.group_onehr_assignment_officer"/>
+                    <button name="action_activate" type="object" string="Activate"
+                            class="oe_highlight" invisible="state != 'approved'"
+                            groups="onehr_assignment.group_onehr_assignment_manager"/>
+                    <button name="action_end_today" type="object" string="End Today"
+                            invisible="state != 'active'" groups="onehr_assignment.group_onehr_assignment_manager"
+                            confirm="End this assignment effective today? Historical evidence will be retained."/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            invisible="state != 'rejected'" groups="onehr_assignment.group_onehr_assignment_officer"/>
+                    <button name="action_cancel_draft" type="object" string="Cancel"
+                            invisible="state not in ['draft','rejected']" groups="onehr_assignment.group_onehr_assignment_officer"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,proposed,approved,active,ended,rejected,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-user"
+                                groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager">
+                            <div class="o_stat_info"><span class="o_stat_text">Employee</span></div>
+                        </button>
+                        <button name="action_open_position" type="object" class="oe_stat_button" icon="fa-briefcase" groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager">
+                            <div class="o_stat_info"><span class="o_stat_text">Position</span></div>
+                        </button>
+                        <button name="action_open_approval_requests" type="object" class="oe_stat_button" icon="fa-check-circle"
+                                groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager">
+                            <field name="onehr_approval_request_count" widget="statinfo" string="Approvals"/>
+                        </button>
+                        <button name="action_open_successors" type="object" class="oe_stat_button" icon="fa-forward"
+                                groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager">
+                            <field name="successor_count" widget="statinfo" string="Successors"/>
+                        </button>
+                        <button name="action_open_cost_allocations" type="object" class="oe_stat_button" icon="fa-pie-chart"
+                                groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager">
+                            <field name="allocation_count" widget="statinfo" string="Cost Splits"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Active" bg_color="text-bg-success" invisible="state != 'active'"/>
+                    <widget name="web_ribbon" title="Ended" bg_color="text-bg-secondary" invisible="state != 'ended'"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                        <div class="text-muted"><field name="employee_name" readonly="1"/> · <field name="position_id"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Placement Identity">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="employee_id"
+                                   groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"
+                                   readonly="state not in ['draft','rejected']"/>
+                            <field name="employee_number" readonly="1"
+                                   groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                            <field name="assignment_type" readonly="state not in ['draft','rejected']"/>
+                            <field name="movement_type" readonly="state not in ['draft','rejected']"/>
+                        </group>
+                        <group string="Effective Placement">
+                            <field name="position_id" readonly="state not in ['draft','rejected']"/>
+                            <field name="job_id" readonly="1"
+                                   groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                            <field name="department_id" readonly="1"
+                                   groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                            <field name="grade_id" readonly="1"
+                                   groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                            <field name="work_location_id" readonly="1"
+                                   groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Reporting &amp; Capacity">
+                            <field name="manager_id" readonly="state not in ['draft','rejected']"
+                                   groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                            <field name="manager_name" readonly="1"/>
+                            <field name="fte" readonly="state not in ['draft','rejected']"/>
+                            <field name="is_effective_today" readonly="1"/>
+                        </group>
+                        <group string="Effective Dates">
+                            <field name="effective_from" readonly="state not in ['draft','rejected']"/>
+                            <field name="effective_to" readonly="state not in ['draft','rejected']"/>
+                            <field name="onehr_latest_approval_state" widget="badge" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3" groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager">
+                        <button name="action_schedule_manager_activity" type="object" string="Schedule Manager Review"
+                                class="btn-secondary" icon="fa-calendar-check-o"/>
+                        <button name="action_open_change_request" type="object" string="Open Movement Request"
+                                class="btn-secondary" icon="fa-exchange" invisible="not change_request_id"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Cost Allocation" name="cost_allocation"
+                              groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager">
+                            <group>
+                                <field name="costing_required" readonly="state not in ['draft','rejected']"/>
+                            </group>
+                            <field name="cost_allocation_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="valid_from"/>
+                                    <field name="valid_to"/>
+                                    <field name="percentage" sum="Total %"/>
+                                    <field name="cost_center_code"/>
+                                    <field name="project_code" optional="show"/>
+                                    <field name="product_line_code" optional="hide"/>
+                                    <field name="external_dimension" optional="hide"/>
+                                    <button name="action_open_assignment" type="object" string="Assignment" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Movement History" name="movement_history"
+                              groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager">
+                            <group>
+                                <field name="source_assignment_id" readonly="1"/>
+                                <field name="change_request_id" readonly="1"/>
+                                <field name="change_line_id" readonly="1"/>
+                            </group>
+                            <field name="successor_assignment_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="position_id"/>
+                                    <field name="movement_type"/>
+                                    <field name="effective_from"/>
+                                    <field name="effective_to"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_position" type="object" string="Position" icon="fa-external-link" groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Execution Evidence" name="execution_evidence"
+                              groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager">
+                            <group>
+                                <group string="Approval">
+                                    <field name="approved_at" readonly="1"/>
+                                    <field name="approved_by_id" readonly="1"/>
+                                </group>
+                                <group string="Activation / End">
+                                    <field name="activated_at" readonly="1"/>
+                                    <field name="activated_by_id" readonly="1"/>
+                                    <field name="ended_at" readonly="1"/>
+                                    <field name="ended_by_id" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Notes"><field name="note" readonly="state not in ['draft','rejected']"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_assignment_search" model="ir.ui.view">
+        <field name="name">onehr.assignment.search.enterprise</field>
+        <field name="model">onehr.assignment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_name" string="Employee"/>
+                <field name="employee_id" groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                <field name="position_id"/>
+                <field name="department_id" groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                <field name="manager_name" string="Manager"/>
+                <field name="movement_type"/>
+                <field name="state"/>
+                <field name="company_id"/>
+                <filter name="active_state" string="Active" domain="[('state','=','active')]"/>
+                <filter name="approved" string="Approved / Future" domain="[('state','=','approved')]"/>
+                <filter name="proposed" string="Awaiting Approval" domain="[('state','=','proposed')]"/>
+                <filter name="primary" string="Primary" domain="[('assignment_type','=','primary')]"/>
+                <filter name="secondary" string="Secondary" domain="[('assignment_type','=','secondary')]"/>
+                <filter name="effective_today" string="Effective Today"
+                        domain="[('effective_from','&lt;=',context_today()),'|',('effective_to','=',False),('effective_to','&gt;=',context_today())]"/>
+                <separator/>
+                <group>
+                    <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+                    <filter name="group_type" string="Assignment Type" context="{'group_by':'assignment_type'}"/>
+                    <filter name="group_movement" string="Movement Type" context="{'group_by':'movement_type'}"/>
+                    <filter name="group_position" string="Position" context="{'group_by':'position_id'}"/>
+                    <filter name="group_department" string="Department" context="{'group_by':'department_id'}"
+                            groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_assignment_calendar" model="ir.ui.view">
+        <field name="name">onehr.assignment.calendar.enterprise</field>
+        <field name="model">onehr.assignment</field>
+        <field name="arch" type="xml">
+            <calendar string="Assignment Timeline" date_start="effective_from" date_stop="effective_to" color="position_id" mode="month">
+                <field name="employee_name"/>
+                <field name="position_id"/>
+                <field name="assignment_type"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_onehr_assignment_pivot" model="ir.ui.view">
+        <field name="name">onehr.assignment.pivot.enterprise</field>
+        <field name="model">onehr.assignment</field>
+        <field name="arch" type="xml">
+            <pivot string="Assignment FTE Analysis">
+                <field name="department_id" type="row"/>
+                <field name="position_id" type="row"/>
+                <field name="assignment_type" type="col"/>
+                <field name="fte" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_assignment_graph" model="ir.ui.view">
+        <field name="name">onehr.assignment.graph.enterprise</field>
+        <field name="model">onehr.assignment</field>
+        <field name="arch" type="xml">
+            <graph string="Assignment FTE by Department" type="bar">
+                <field name="department_id"/>
+                <field name="fte" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_assignment" model="ir.actions.act_window">
+        <field name="name">Assignments</field>
+        <field name="res_model">onehr.assignment</field>
+        <field name="view_mode">list,form,calendar,pivot,graph</field>
+        <field name="search_view_id" ref="view_onehr_assignment_search"/>
+    </record>
+
+    <record id="action_onehr_assignment_current" model="ir.actions.act_window">
+        <field name="name">Current Assignments</field>
+        <field name="res_model">onehr.assignment</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="domain">[('state','=','active')]</field>
+        <field name="search_view_id" ref="view_onehr_assignment_search"/>
+    </record>
+
+    <!-- ================================================================
+         Cost allocation — full List/Form/Search because it is registry-owned
+         ================================================================ -->
+    <record id="view_onehr_assignment_cost_allocation_list" model="ir.ui.view">
+        <field name="name">onehr.assignment.cost.allocation.list.enterprise</field>
+        <field name="model">onehr.assignment.cost.allocation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="assignment_id"/>
+                <field name="valid_from"/>
+                <field name="valid_to"/>
+                <field name="percentage" sum="Total %"/>
+                <field name="cost_center_code"/>
+                <field name="project_code"/>
+                <field name="product_line_code" optional="hide"/>
+                <field name="external_dimension" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_assignment" type="object" string="Assignment" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_assignment_cost_allocation_form" model="ir.ui.view">
+        <field name="name">onehr.assignment.cost.allocation.form.enterprise</field>
+        <field name="model">onehr.assignment.cost.allocation</field>
+        <field name="arch" type="xml">
+            <form string="Assignment Cost Allocation">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_assignment" type="object" class="oe_stat_button" icon="fa-external-link">
+                            <div class="o_stat_info"><span class="o_stat_text">Assignment</span></div>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="cost_center_code" placeholder="Cost Center / Dimension"/></h1></div>
+                    <group>
+                        <group string="Assignment"><field name="assignment_id"/><field name="company_id" groups="base.group_multi_company" readonly="1"/></group>
+                        <group string="Effective Split"><field name="valid_from"/><field name="valid_to"/><field name="percentage"/></group>
+                    </group>
+                    <group string="Costing Dimensions">
+                        <field name="cost_center_code"/><field name="project_code"/><field name="product_line_code"/><field name="external_dimension"/><field name="note"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_assignment_cost_allocation_search" model="ir.ui.view">
+        <field name="name">onehr.assignment.cost.allocation.search.enterprise</field>
+        <field name="model">onehr.assignment.cost.allocation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="assignment_id"/><field name="cost_center_code"/><field name="project_code"/><field name="product_line_code"/><field name="company_id"/>
+                <group><filter name="group_assignment" string="Assignment" context="{'group_by':'assignment_id'}"/><filter name="group_cost_center" string="Cost Center" context="{'group_by':'cost_center_code'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/></group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_assignment_cost_allocation" model="ir.actions.act_window">
+        <field name="name">Assignment Cost Allocations</field>
+        <field name="res_model">onehr.assignment.cost.allocation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_assignment_cost_allocation_search"/>
+    </record>
+</odoo>

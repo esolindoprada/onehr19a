@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_policy_reader,Policy Reader,model_onehr_policy,onehr_pnp.group_onehr_pnp_reader,1,0,0,0
+access_policy_owner,Policy Owner,model_onehr_policy,onehr_pnp.group_onehr_pnp_owner,1,1,1,1
+access_policy_compliance,Policy Compliance,model_onehr_policy,onehr_pnp.group_onehr_pnp_compliance,1,1,1,1
+access_policy_admin,Policy Admin,model_onehr_policy,onehr_pnp.group_onehr_pnp_admin,1,1,1,1
+access_policy_ack_reader,Policy Ack Reader,model_onehr_policy_ack,onehr_pnp.group_onehr_pnp_reader,1,1,0,0
+access_policy_ack_owner,Policy Ack Owner,model_onehr_policy_ack,onehr_pnp.group_onehr_pnp_owner,1,1,0,0
+access_policy_ack_compliance,Policy Ack Compliance,model_onehr_policy_ack,onehr_pnp.group_onehr_pnp_compliance,1,1,1,0
+access_policy_ack_admin,Policy Ack Admin,model_onehr_policy_ack,onehr_pnp.group_onehr_pnp_admin,1,1,1,0
+access_policy_evidence_reader,Policy Evidence Reader,model_onehr_policy_evidence,onehr_pnp.group_onehr_pnp_reader,1,1,1,1
+access_policy_evidence_owner,Policy Evidence Owner,model_onehr_policy_evidence,onehr_pnp.group_onehr_pnp_owner,1,1,1,1
+access_policy_evidence_compliance,Policy Evidence Compliance,model_onehr_policy_evidence,onehr_pnp.group_onehr_pnp_compliance,1,1,1,1
+access_policy_evidence_admin,Policy Evidence Admin,model_onehr_policy_evidence,onehr_pnp.group_onehr_pnp_admin,1,1,1,1

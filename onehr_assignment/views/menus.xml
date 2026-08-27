@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Assignment Proposer does not receive hr.group_hr_user, so explicitly surface the OneHR root. -->
+    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[Command.link(ref('onehr_assignment.group_onehr_assignment_proposer'))]"/>
+    </record>
+
+    <menuitem id="menu_onehr_assignment_root" name="Assignments &amp; Workforce" parent="onehr_base.menu_onehr_root" sequence="19"
+              groups="onehr_assignment.group_onehr_assignment_proposer,onehr_assignment.group_onehr_assignment_officer"/>
+
+    <menuitem id="menu_onehr_assignment_movements" name="Movement Requests" parent="menu_onehr_assignment_root"
+              action="action_onehr_assignment_change_request" sequence="10"/>
+    <menuitem id="menu_onehr_assignment_assignments" name="Assignments" parent="menu_onehr_assignment_root"
+              action="action_onehr_assignment" sequence="20" groups="onehr_assignment.group_onehr_assignment_officer"/>
+    <menuitem id="menu_onehr_assignment_current" name="Current Assignments" parent="menu_onehr_assignment_root"
+              action="action_onehr_assignment_current" sequence="30" groups="onehr_assignment.group_onehr_assignment_officer"/>
+
+    <menuitem id="menu_onehr_assignment_planning" name="Workforce Planning" parent="menu_onehr_assignment_root" sequence="60"
+              groups="onehr_assignment.group_onehr_assignment_officer"/>
+    <menuitem id="menu_onehr_workforce_plans" name="Workforce Plans" parent="menu_onehr_assignment_planning"
+              action="action_onehr_workforce_plan" sequence="10"/>
+    <menuitem id="menu_onehr_position_budgets" name="Position Budgets" parent="menu_onehr_assignment_planning"
+              action="action_onehr_position_budget" sequence="20"/>
+
+    <menuitem id="menu_onehr_assignment_reporting" name="Reporting" parent="menu_onehr_assignment_root" sequence="70"
+              groups="onehr_assignment.group_onehr_assignment_officer"/>
+    <menuitem id="menu_onehr_assignment_costing" name="Cost Allocations" parent="menu_onehr_assignment_reporting"
+              action="action_onehr_assignment_cost_allocation" sequence="10"/>
+    <menuitem id="menu_onehr_assignment_movement_lines" name="Movement Line Audit" parent="menu_onehr_assignment_reporting"
+              action="action_onehr_assignment_change_line" sequence="20"/>
+    <menuitem id="menu_onehr_assignment_plan_lines" name="Workforce Plan Line Audit" parent="menu_onehr_assignment_reporting"
+              action="action_onehr_workforce_plan_line" sequence="30"/>
+</odoo>

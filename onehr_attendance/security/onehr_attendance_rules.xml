@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_onehr_shift_company" model="ir.rule">
+        <field name="name">OneHR Shift — allowed companies</field>
+        <field name="model_id" ref="model_onehr_shift"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_onehr_shift_pattern_company" model="ir.rule">
+        <field name="name">OneHR Shift Pattern — allowed companies</field>
+        <field name="model_id" ref="model_onehr_shift_pattern"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_onehr_shift_assignment_company" model="ir.rule">
+        <field name="name">OneHR Shift Schedule — allowed companies</field>
+        <field name="model_id" ref="model_onehr_shift_assignment"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_onehr_attendance_exception_company" model="ir.rule">
+        <field name="name">OneHR Attendance Exception — allowed companies</field>
+        <field name="model_id" ref="model_onehr_attendance_exception"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_onehr_attendance_reconciliation_company" model="ir.rule">
+        <field name="name">OneHR Attendance Reconciliation — allowed companies</field>
+        <field name="model_id" ref="model_onehr_attendance_reconciliation"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_onehr_attendance_import_company" model="ir.rule">
+        <field name="name">OneHR Attendance Import — allowed companies</field>
+        <field name="model_id" ref="model_onehr_attendance_import_batch"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

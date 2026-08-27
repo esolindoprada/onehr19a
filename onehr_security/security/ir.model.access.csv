@@ -1,0 +1,19 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_onehr_role_user,OneHR Role Security User,model_onehr_role,onehr_security.group_onehr_security_user,1,0,0,0
+access_onehr_role_manager,OneHR Role Security Manager,model_onehr_role,onehr_security.group_onehr_security_manager,1,1,1,0
+access_onehr_role_admin,OneHR Role Security Admin,model_onehr_role,onehr_security.group_onehr_security_admin,1,1,1,0
+access_onehr_user_role_user,OneHR User Role Security User,model_onehr_user_role,onehr_security.group_onehr_security_user,1,0,0,0
+access_onehr_user_role_manager,OneHR User Role Security Manager,model_onehr_user_role,onehr_security.group_onehr_security_manager,1,1,1,0
+access_onehr_user_role_admin,OneHR User Role Security Admin,model_onehr_user_role,onehr_security.group_onehr_security_admin,1,1,1,1
+access_onehr_sod_matrix_user,OneHR SoD Matrix Security User,model_onehr_sod_matrix,onehr_security.group_onehr_security_user,1,0,0,0
+access_onehr_sod_matrix_manager,OneHR SoD Matrix Security Manager,model_onehr_sod_matrix,onehr_security.group_onehr_security_manager,1,1,1,0
+access_onehr_sod_matrix_admin,OneHR SoD Matrix Security Admin,model_onehr_sod_matrix,onehr_security.group_onehr_security_admin,1,1,1,0
+access_onehr_sod_conflict_user,OneHR SoD Conflict Security User,model_onehr_sod_conflict_log,onehr_security.group_onehr_security_user,1,0,0,0
+access_onehr_sod_conflict_manager,OneHR SoD Conflict Security Manager,model_onehr_sod_conflict_log,onehr_security.group_onehr_security_manager,1,0,0,0
+access_onehr_sod_conflict_admin,OneHR SoD Conflict Security Admin,model_onehr_sod_conflict_log,onehr_security.group_onehr_security_admin,1,1,0,0
+access_onehr_sod_conflict_compliance,OneHR SoD Conflict Compliance,model_onehr_sod_conflict_log,onehr_security.group_onehr_compliance_officer,1,1,0,0
+access_onehr_audit_manager,OneHR Audit Security Manager,model_onehr_audit_log,onehr_security.group_onehr_security_manager,1,0,0,0
+access_onehr_audit_admin,OneHR Audit Security Admin,model_onehr_audit_log,onehr_security.group_onehr_security_admin,1,1,0,0
+access_onehr_audit_compliance,OneHR Audit Compliance,model_onehr_audit_log,onehr_security.group_onehr_compliance_officer,1,1,0,0
+access_res_users_onehr_security_manager,Users OneHR Security Manager,base.model_res_users,onehr_security.group_onehr_security_manager,1,1,0,0
+access_res_users_onehr_security_admin,Users OneHR Security Admin,base.model_res_users,onehr_security.group_onehr_security_admin,1,1,1,0

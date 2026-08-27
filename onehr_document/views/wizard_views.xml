@@ -1,0 +1,79 @@
+<odoo>
+    <record id="view_wizard_document_generate_form" model="ir.ui.view">
+        <field name="name">wizard.document.generate.form.enterprise</field>
+        <field name="model">wizard.document.generate</field>
+        <field name="arch" type="xml">
+            <form string="Generate HR Document">
+                <sheet>
+                    <div class="oe_title"><h1>Generate Controlled Document</h1></div>
+                    <group>
+                        <group string="Template">
+                            <field name="document_id"/>
+                            <field name="template_id" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"/>
+                            <field name="template_version_id" domain="[('template_id', '=', template_id), ('state', '=', 'active')]"/>
+                            <field name="category_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Target">
+                            <field name="employee_id"/>
+                            <field name="document_name"/>
+                            <field name="source_model_id"/>
+                            <field name="source_res_id"/>
+                        </group>
+                    </group>
+                    <group string="Validity">
+                        <field name="effective_from"/>
+                        <field name="effective_to"/>
+                        <field name="expiry_date"/>
+                    </group>
+                    <notebook invisible="not preview_subject and not preview_html">
+                        <page string="Preview">
+                            <group>
+                                <field name="preview_subject" readonly="1"/>
+                                <field name="preview_filename" readonly="1"/>
+                            </group>
+                            <field name="preview_html" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button name="action_preview" type="object" string="Preview" class="btn-secondary"/>
+                    <button name="action_generate" type="object" string="Generate" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_wizard_document_publish_sign_form" model="ir.ui.view">
+        <field name="name">wizard.document.publish.sign.form.enterprise</field>
+        <field name="model">wizard.document.publish.sign</field>
+        <field name="arch" type="xml">
+            <form string="Publish / Request Signature">
+                <sheet>
+                    <div class="oe_title"><h1>Request Controlled E-Signature</h1></div>
+                    <group>
+                        <group string="Document">
+                            <field name="document_id" readonly="1"/>
+                            <field name="document_version_id" domain="[('document_id', '=', document_id)]"/>
+                            <field name="provider_key"/>
+                            <field name="dispatch_now"/>
+                        </group>
+                        <group string="Signer">
+                            <field name="signer_name"/>
+                            <field name="signer_email"/>
+                        </group>
+                    </group>
+                    <field name="message" placeholder="Optional signer message or business context..."/>
+                    <p class="text-muted">
+                        Provider credentials are not stored here. The request is queued in onehr.esign.transaction and may be dispatched by the optional integrations adapter.
+                    </p>
+                </sheet>
+                <footer>
+                    <button name="action_submit" type="object" string="Queue Signature Request" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

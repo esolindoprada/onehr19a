@@ -1,0 +1,21 @@
+<odoo>
+    <!-- Add approval users to the existing OneHR root menu without granting HR Officer access. -->
+    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[Command.link(ref('onehr_workflow_approval.group_onehr_approval_user'))]"/>
+    </record>
+
+    <menuitem id="menu_onehr_approvals" name="Approvals" parent="onehr_base.menu_onehr_root" sequence="60" groups="onehr_workflow_approval.group_onehr_approval_user"/>
+    <menuitem id="menu_onehr_my_requests" name="My Requests" parent="menu_onehr_approvals" action="action_onehr_my_approval_requests" sequence="10" groups="onehr_workflow_approval.group_onehr_approval_user"/>
+    <menuitem id="menu_onehr_to_approve" name="To Approve" parent="menu_onehr_approvals" action="action_onehr_to_approve" sequence="20" groups="onehr_workflow_approval.group_onehr_approver"/>
+    <menuitem id="menu_onehr_all_requests" name="All Requests" parent="menu_onehr_approvals" action="action_onehr_all_approval_requests" sequence="30" groups="onehr_workflow_approval.group_onehr_workflow_manager"/>
+    <menuitem id="menu_onehr_my_delegations" name="Delegations" parent="menu_onehr_approvals" action="action_onehr_approval_delegations" sequence="40" groups="onehr_workflow_approval.group_onehr_approver"/>
+
+    <menuitem id="menu_onehr_approval_reporting" name="Reporting" parent="menu_onehr_approvals" sequence="70" groups="onehr_workflow_approval.group_onehr_workflow_manager"/>
+    <menuitem id="menu_onehr_approval_kpi" name="SLA &amp; KPI" parent="menu_onehr_approval_reporting" action="action_onehr_approval_kpi" sequence="10"/>
+    <menuitem id="menu_onehr_approval_escalations" name="SLA / Escalation Evidence" parent="menu_onehr_approval_reporting" action="action_onehr_approval_escalations" sequence="20"/>
+    <menuitem id="menu_onehr_approval_decisions" name="Decision Evidence" parent="menu_onehr_approval_reporting" action="action_onehr_approval_decisions" sequence="30"/>
+
+    <menuitem id="menu_onehr_approval_configuration" name="Configuration" parent="menu_onehr_approvals" sequence="90" groups="onehr_workflow_approval.group_onehr_workflow_manager"/>
+    <menuitem id="menu_onehr_approval_rules" name="Approval Rules" parent="menu_onehr_approval_configuration" action="action_onehr_approval_rules" sequence="10"/>
+    <menuitem id="menu_onehr_approval_steps" name="Approval Steps" parent="menu_onehr_approval_configuration" action="action_onehr_approval_steps" sequence="20"/>
+</odoo>

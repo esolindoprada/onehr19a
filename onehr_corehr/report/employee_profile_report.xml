@@ -1,0 +1,51 @@
+<odoo>
+    <record id="action_report_onehr_employee_profile" model="ir.actions.report">
+        <field name="name">OneHR Employee Profile Summary</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_corehr.report_employee_profile</field>
+        <field name="report_file">onehr_corehr.report_employee_profile</field>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[Command.link(ref('onehr_corehr.group_onehr_corehr_officer'))]"/>
+    </record>
+
+    <template id="report_employee_profile">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>OneHR Employee Profile Summary</h2>
+                        <p class="text-muted">
+                            Safe HR profile summary. National identifiers, medical assessments,
+                            disability details and other restricted payload are intentionally excluded.
+                        </p>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr><th>Employee</th><td><span t-field="o.name"/></td></tr>
+                                <tr><th>OneHR Employee No.</th><td><span t-field="o.onehr_employee_number"/></td></tr>
+                                <tr><th>Company</th><td><span t-field="o.company_id"/></td></tr>
+                                <tr><th>Department</th><td><span t-field="o.department_id"/></td></tr>
+                                <tr><th>Job</th><td><span t-field="o.job_id"/></td></tr>
+                                <tr><th>Work Email</th><td><span t-field="o.work_email"/></td></tr>
+                                <tr><th>Work Phone</th><td><span t-field="o.work_phone"/></td></tr>
+                                <tr><th>Engagement</th><td><span t-field="o.onehr_engagement_type_id"/></td></tr>
+                                <tr><th>Grade</th><td><span t-field="o.onehr_grade_id"/></td></tr>
+                                <tr><th>Primary Position</th><td><span t-field="o.onehr_primary_position_id"/></td></tr>
+                                <tr><th>Profile Completeness</th><td><span t-esc="str(o.onehr_profile_completeness) + '%'"/></td></tr>
+                            </tbody>
+                        </table>
+                        <h4>Core HR History Counts</h4>
+                        <ul>
+                            <li>Dependents: <span t-esc="o.onehr_dependent_count"/></li>
+                            <li>Emergency Contacts: <span t-esc="o.onehr_emergency_contact_count"/></li>
+                            <li>Education Records: <span t-esc="o.onehr_education_count"/></li>
+                            <li>Prior External Employment: <span t-esc="o.onehr_employment_history_count"/></li>
+                            <li>Lifecycle Checklists: <span t-esc="o.onehr_checklist_count"/></li>
+                        </ul>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

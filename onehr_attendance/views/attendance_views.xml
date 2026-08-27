@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================ -->
+    <!-- CANONICAL ODOO ATTENDANCE — OneHR operational views             -->
+    <!-- ================================================================ -->
+    <record id="view_hr_attendance_onehr_list" model="ir.ui.view">
+        <field name="name">hr.attendance.onehr.list</field>
+        <field name="model">hr.attendance</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="onehr_requires_review" decoration-success="onehr_processing_state == 'posted'" decoration-muted="not check_out">
+                <field name="employee_id"/>
+                <field name="date"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="worked_hours" sum="Worked Hours"/>
+                <field name="onehr_rounded_worked_hours" sum="Rounded Hours" optional="show"/>
+                <field name="onehr_shift_id" optional="show"/>
+                <field name="onehr_source_channel" widget="badge" optional="show"/>
+                <field name="onehr_late_minutes" optional="show"/>
+                <field name="onehr_early_leave_minutes" optional="show"/>
+                <field name="overtime_hours" sum="Extra Hours" optional="show"/>
+                <field name="overtime_status" widget="badge" optional="show"/>
+                <field name="onehr_exception_state" widget="badge"/>
+                <field name="onehr_exception_count" optional="show"/>
+                <field name="onehr_processing_state" widget="badge"/>
+                <button name="action_onehr_recalculate" type="object" string="Recalculate" icon="fa-refresh" invisible="onehr_processing_state != 'draft'"/>
+                <button name="action_onehr_confirm" type="object" string="Confirm" icon="fa-check" invisible="onehr_processing_state != 'draft' or not check_out"/>
+                <button name="action_onehr_open_exceptions" type="object" string="Exceptions" icon="fa-exclamation-triangle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_attendance_onehr_form" model="ir.ui.view">
+        <field name="name">hr.attendance.onehr.form</field>
+        <field name="model">hr.attendance</field>
+        <field name="arch" type="xml">
+            <form string="OneHR Attendance">
+                <header>
+                    <button name="action_onehr_recalculate" type="object" string="Recalculate" class="btn-secondary" invisible="onehr_processing_state != 'draft'" groups="onehr_attendance.group_onehr_attendance_officer"/>
+                    <button name="action_onehr_confirm" type="object" string="Confirm" class="btn-primary" invisible="onehr_processing_state != 'draft' or not check_out" groups="onehr_attendance.group_onehr_attendance_officer"/>
+                    <button name="action_onehr_post" type="object" string="Post / Payroll Ready" class="btn-primary" invisible="onehr_processing_state != 'confirmed'" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <button name="action_onehr_reset_draft" type="object" string="Reset to Draft" invisible="onehr_processing_state != 'confirmed'" groups="onehr_attendance.group_onehr_attendance_manager"/>
+                    <field name="onehr_processing_state" widget="statusbar" statusbar_visible="draft,confirmed,posted"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Needs Review" bg_color="text-bg-warning" invisible="not onehr_requires_review"/>
+                    <widget name="web_ribbon" title="Posted" bg_color="text-bg-success" invisible="onehr_processing_state != 'posted'"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_onehr_open_employee" type="object" class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Employee</span></div>
+                        </button>
+                        <button name="action_onehr_open_shift" type="object" class="oe_stat_button" icon="fa-clock-o">
+                            <div class="o_stat_info"><span class="o_stat_text">Resolved Shift</span></div>
+                        </button>
+                        <button name="action_onehr_open_reconciliation" type="object" class="oe_stat_button" icon="fa-random">
+                            <div class="o_stat_info"><span class="o_stat_text">Reconciliation</span></div>
+                        </button>
+                        <button name="action_onehr_open_exceptions" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="onehr_exception_count" widget="statinfo" string="Exceptions"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1><field name="employee_id" readonly="onehr_processing_state != 'draft'"/></h1>
+                        <div class="text-muted"><field name="date" readonly="1"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Canonical Attendance">
+                            <field name="check_in" readonly="onehr_processing_state != 'draft'"/>
+                            <field name="check_out" readonly="onehr_processing_state != 'draft'"/>
+                            <field name="worked_hours" readonly="1"/>
+                            <field name="expected_hours" readonly="1"/>
+                            <field name="overtime_hours" readonly="1"/>
+                            <field name="validated_overtime_hours" readonly="1"/>
+                            <field name="overtime_status" widget="badge" readonly="1"/>
+                        </group>
+                        <group string="OneHR Reconciliation">
+                            <field name="onehr_shift_assignment_id" readonly="onehr_processing_state != 'draft'"/>
+                            <field name="onehr_shift_id" readonly="onehr_processing_state != 'draft'"/>
+                            <field name="onehr_planned_start" readonly="1"/>
+                            <field name="onehr_planned_end" readonly="1"/>
+                            <field name="onehr_rounded_worked_hours" readonly="1"/>
+                            <field name="onehr_exception_state" widget="badge" readonly="1"/>
+                            <field name="onehr_requires_review" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <button name="action_onehr_schedule_review" type="object" string="Schedule Manager Review" class="btn-secondary" icon="fa-calendar-plus-o" groups="onehr_attendance.group_onehr_attendance_officer"/>
+
+                    <notebook>
+                        <page string="Variance &amp; Tolerance">
+                            <group>
+                                <group>
+                                    <field name="onehr_late_minutes" readonly="1"/>
+                                    <field name="onehr_early_leave_minutes" readonly="1"/>
+                                    <field name="onehr_schedule_variance_minutes" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="onehr_geofence_status" widget="badge" readonly="1"/>
+                                    <field name="onehr_reconciliation_note" readonly="onehr_processing_state == 'posted'" placeholder="Operational note for reconciliation/review..."/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Source &amp; Device">
+                            <group>
+                                <group>
+                                    <field name="onehr_source_channel" readonly="onehr_processing_state != 'draft'"/>
+                                    <field name="onehr_source_system" readonly="onehr_processing_state != 'draft'"/>
+                                    <field name="onehr_external_reference" readonly="onehr_processing_state != 'draft'"/>
+                                    <field name="onehr_device_reference" readonly="onehr_processing_state != 'draft'"/>
+                                    <field name="onehr_reconciliation_id" readonly="1"/>
+                                </group>
+                                <group string="Native Punch Metadata">
+                                    <field name="in_mode" readonly="1"/>
+                                    <field name="out_mode" readonly="1"/>
+                                    <field name="in_location" readonly="1"/>
+                                    <field name="out_location" readonly="1"/>
+                                    <field name="in_ip_address" readonly="1"/>
+                                    <field name="out_ip_address" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="Coordinates">
+                                <field name="in_latitude" readonly="1"/>
+                                <field name="in_longitude" readonly="1"/>
+                                <button name="action_in_attendance_maps" type="object" string="Open Check-In Map" icon="fa-map-marker" invisible="not in_latitude and not in_longitude"/>
+                                <field name="out_latitude" readonly="1"/>
+                                <field name="out_longitude" readonly="1"/>
+                                <button name="action_out_attendance_maps" type="object" string="Open Check-Out Map" icon="fa-map-marker" invisible="not out_latitude and not out_longitude"/>
+                            </group>
+                        </page>
+                        <page string="Exception Evidence">
+                            <field name="onehr_exception_ids" readonly="1">
+                                <list decoration-danger="severity == 'critical'" decoration-warning="state in ('open','under_review')" decoration-muted="state in ('resolved','waived')">
+                                    <field name="attendance_date"/>
+                                    <field name="exception_type" widget="badge"/>
+                                    <field name="severity" widget="badge"/>
+                                    <field name="variance_minutes"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_start_review" type="object" string="Review" icon="fa-search" invisible="state != 'open'"/>
+                                    <button name="action_open_employee" type="object" string="Employee" icon="fa-user"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Overtime">
+                            <field name="linked_overtime_ids" readonly="1">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="time_start"/>
+                                    <field name="time_stop"/>
+                                    <field name="duration"/>
+                                    <field name="manual_duration"/>
+                                    <field name="amount_rate"/>
+                                    <field name="status" widget="badge"/>
+                                    <field name="onehr_policy_reference" optional="show"/>
+                                    <field name="onehr_payroll_code_snapshot" optional="show"/>
+                                    <button name="action_approve" type="object" string="Approve" icon="fa-check" invisible="status == 'approved'"/>
+                                    <button name="action_refuse" type="object" string="Refuse" icon="fa-times" invisible="status == 'refused'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Audit Evidence">
+                            <group>
+                                <group><field name="onehr_reconciled_at"/><field name="onehr_reconciled_by_id"/><field name="onehr_confirmed_at"/><field name="onehr_confirmed_by_id"/></group>
+                                <group><field name="onehr_posted_at"/><field name="onehr_posted_by_id"/></group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hr_attendance_onehr_search" model="ir.ui.view">
+        <field name="name">hr.attendance.onehr.search</field>
+        <field name="model">hr.attendance</field>
+        <field name="arch" type="xml">
+            <search string="OneHR Attendance">
+                <field name="employee_id"/>
+                <field name="date"/>
+                <field name="onehr_shift_id"/>
+                <field name="onehr_shift_assignment_id"/>
+                <field name="onehr_source_system"/>
+                <field name="onehr_external_reference"/>
+                <filter name="needs_review" string="Needs Review" domain="[('onehr_requires_review','=',True)]"/>
+                <filter name="late" string="Late" domain="[('onehr_late_minutes','&gt;',0)]"/>
+                <filter name="early_leave" string="Early Leave" domain="[('onehr_early_leave_minutes','&gt;',0)]"/>
+                <filter name="missing_checkout" string="Missing Check-Out" domain="[('check_out','=',False)]"/>
+                <filter name="overtime_to_approve" string="Overtime To Approve" domain="[('overtime_status','=','to_approve')]"/>
+                <separator/>
+                <filter name="draft" string="Draft" domain="[('onehr_processing_state','=','draft')]"/>
+                <filter name="confirmed" string="Confirmed" domain="[('onehr_processing_state','=','confirmed')]"/>
+                <filter name="posted" string="Posted" domain="[('onehr_processing_state','=','posted')]"/>
+                <separator/>
+                <filter name="today" string="Today" domain="[('date','=',context_today())]"/>
+                <filter name="this_month" string="This Month" date="date" default_period="month"/>
+                <group>
+                    <filter name="group_employee" string="Employee" context="{'group_by':'employee_id'}"/>
+                    <filter name="group_department" string="Department" context="{'group_by':'department_id'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by':'date'}"/>
+                    <filter name="group_shift" string="Shift" context="{'group_by':'onehr_shift_id'}"/>
+                    <filter name="group_exception" string="Exception" context="{'group_by':'onehr_exception_state'}"/>
+                    <filter name="group_source" string="Source" context="{'group_by':'onehr_source_channel'}"/>
+                    <filter name="group_state" string="Processing Status" context="{'group_by':'onehr_processing_state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_hr_attendance_onehr_calendar" model="ir.ui.view">
+        <field name="name">hr.attendance.onehr.calendar</field>
+        <field name="model">hr.attendance</field>
+        <field name="arch" type="xml">
+            <calendar string="Attendance Calendar" date_start="check_in" date_stop="check_out" color="employee_id" mode="week">
+                <field name="employee_id"/>
+                <field name="onehr_shift_id"/>
+                <field name="onehr_exception_state"/>
+                <field name="onehr_processing_state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_hr_attendance_onehr_pivot" model="ir.ui.view">
+        <field name="name">hr.attendance.onehr.pivot</field>
+        <field name="model">hr.attendance</field>
+        <field name="arch" type="xml">
+            <pivot string="Attendance Analysis">
+                <field name="employee_id" type="row"/>
+                <field name="date" type="col" interval="month"/>
+                <field name="worked_hours" type="measure"/>
+                <field name="onehr_rounded_worked_hours" type="measure"/>
+                <field name="overtime_hours" type="measure"/>
+                <field name="onehr_late_minutes" type="measure"/>
+                <field name="onehr_early_leave_minutes" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_hr_attendance_onehr_graph" model="ir.ui.view">
+        <field name="name">hr.attendance.onehr.graph</field>
+        <field name="model">hr.attendance</field>
+        <field name="arch" type="xml">
+            <graph string="Attendance Trend" type="bar">
+                <field name="date" interval="month"/>
+                <field name="worked_hours" type="measure"/>
+                <field name="overtime_hours" type="measure"/>
+            </graph>
+        </field>
+    </record>
+</odoo>

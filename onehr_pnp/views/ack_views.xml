@@ -1,0 +1,233 @@
+<odoo>
+    <record id="view_onehr_policy_ack_list" model="ir.ui.view">
+        <field name="name">onehr.policy.ack.list.enterprise</field>
+        <field name="model">onehr.policy.ack</field>
+        <field name="arch" type="xml">
+            <list string="Policy Acknowledgements"
+                  decoration-success="state == 'acknowledged'"
+                  decoration-warning="state == 'pending'"
+                  decoration-muted="state == 'not_required'">
+                <field name="policy_code"/>
+                <field name="policy_title"/>
+                <field name="policy_version"/>
+                <field name="employee_number"
+                       groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                <field name="employee_name"/>
+                <field name="department_name"/>
+                <field name="job_name"/>
+                <field name="state" widget="badge"/>
+                <field name="due_date"/>
+                <field name="published_at"/>
+                <field name="acknowledged_at"/>
+                <field name="days_to_ack"/>
+                <field name="verified_evidence_count"/>
+                <field name="acknowledgement_source" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_policy" type="object"
+                        string="Open Policy" icon="fa-book"/>
+                <button name="action_acknowledge" type="object"
+                        string="Read &amp; Acknowledge" icon="fa-check-square-o"
+                        invisible="state != 'pending'"/>
+                <button name="action_open_evidence" type="object"
+                        string="Evidence" icon="fa-folder-open"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_policy_ack_form" model="ir.ui.view">
+        <field name="name">onehr.policy.ack.form.enterprise</field>
+        <field name="model">onehr.policy.ack</field>
+        <field name="arch" type="xml">
+            <form string="Policy Acknowledgement">
+                <header>
+                    <button name="action_acknowledge" type="object"
+                            string="Read &amp; Acknowledge"
+                            class="btn-primary"
+                            invisible="state != 'pending'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,acknowledged,not_required"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_policy" type="object"
+                                class="oe_stat_button" icon="fa-book">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Policy</span>
+                            </div>
+                        </button>
+                        <button name="action_open_evidence" type="object"
+                                class="oe_stat_button" icon="fa-folder-open">
+                            <field name="verified_evidence_count"
+                                   widget="statinfo" string="Verified Evidence"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="ACKNOWLEDGED"
+                            bg_color="text-bg-success"
+                            invisible="state != 'acknowledged'"/>
+                    <widget name="web_ribbon" title="NOT REQUIRED"
+                            bg_color="text-bg-secondary"
+                            invisible="state != 'not_required'"/>
+
+                    <div class="oe_title">
+                        <h1><field name="policy_title" readonly="1"/></h1>
+                        <div class="text-muted">
+                            <field name="policy_code" readonly="1"/> ·
+                            Version <field name="policy_version" readonly="1"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Employee Assignment">
+                            <field name="employee_number" readonly="1"
+                                   groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                            <field name="employee_name" readonly="1"/>
+                            <field name="department_name" readonly="1"/>
+                            <field name="job_name" readonly="1"/>
+                            <field name="company_id" readonly="1"
+                                   groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Acknowledgement Evidence">
+                            <field name="published_at" readonly="1"/>
+                            <field name="due_date" readonly="1"/>
+                            <field name="acknowledged_at" readonly="1"/>
+                            <field name="acknowledged_by_name" readonly="1"/>
+                            <field name="acknowledgement_source" readonly="1"/>
+                            <field name="days_to_ack" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 flex-wrap mb-3">
+                        <button name="action_open_policy" type="object"
+                                string="Read Current Policy"
+                                class="btn-secondary"/>
+                        <button name="action_acknowledge" type="object"
+                                string="Read &amp; Acknowledge"
+                                class="btn-primary"
+                                invisible="state != 'pending'"/>
+                        <button name="action_open_evidence" type="object"
+                                string="Open / Submit Evidence"
+                                class="btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Acknowledgement Comment">
+                            <field name="acknowledgement_comment" readonly="1"
+                                   placeholder="Optional acknowledgement comment captured by a governed Portal/API client."/>
+                        </page>
+
+                        <page string="Compliance Evidence">
+                            <field name="evidence_ids" readonly="1">
+                                <list create="false" delete="false"
+                                      decoration-success="state == 'verified'"
+                                      decoration-info="state == 'submitted'"
+                                      decoration-danger="state == 'rejected'">
+                                    <field name="title"/>
+                                    <field name="evidence_type" widget="badge"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="due_date"/>
+                                    <field name="submitted_at"/>
+                                    <field name="verified_at"/>
+                                    <button name="action_open_policy" type="object"
+                                            string="Policy" icon="fa-book"/>
+                                    <button name="action_submit" type="object"
+                                            string="Submit" icon="fa-paper-plane"
+                                            invisible="state not in ('draft', 'rejected')"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Reminder Evidence"
+                              groups="onehr_pnp.group_onehr_pnp_owner">
+                            <group>
+                                <field name="last_reminder_at" readonly="1"/>
+                                <field name="reminder_count" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+
+                    <chatter groups="onehr_pnp.group_onehr_pnp_owner"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_policy_ack_search" model="ir.ui.view">
+        <field name="name">onehr.policy.ack.search.enterprise</field>
+        <field name="model">onehr.policy.ack</field>
+        <field name="arch" type="xml">
+            <search string="Search Policy Acknowledgements">
+                <field name="policy_code"/>
+                <field name="policy_title"/>
+                <field name="employee_number"
+                       groups="onehr_pnp.group_onehr_pnp_compliance"/>
+                <field name="employee_name"/>
+                <field name="department_name"/>
+                <field name="job_name"/>
+                <filter name="pending" string="Pending"
+                        domain="[('state', '=', 'pending')]"/>
+                <filter name="acknowledged" string="Acknowledged"
+                        domain="[('state', '=', 'acknowledged')]"/>
+                <filter name="not_required" string="Not Required"
+                        domain="[('state', '=', 'not_required')]"/>
+                <filter name="overdue" string="Overdue"
+                        domain="[('state', '=', 'pending'), ('due_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <group>
+                    <filter name="group_policy" string="Policy"
+                            context="{'group_by': 'policy_id'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_department" string="Department"
+                            context="{'group_by': 'department_id'}"/>
+                    <filter name="group_job" string="Job / Role"
+                            context="{'group_by': 'job_id'}"/>
+                    <filter name="group_due" string="Due Date"
+                            context="{'group_by': 'due_date'}"/>
+                    <filter name="group_company" string="Company"
+                            context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_policy_ack_pivot" model="ir.ui.view">
+        <field name="name">onehr.policy.ack.pivot.enterprise</field>
+        <field name="model">onehr.policy.ack</field>
+        <field name="arch" type="xml">
+            <pivot string="Acknowledgement Compliance">
+                <field name="department_id" type="row"/>
+                <field name="policy_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="days_to_ack" type="measure"/>
+                <field name="verified_evidence_count" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_policy_ack_graph" model="ir.ui.view">
+        <field name="name">onehr.policy.ack.graph.enterprise</field>
+        <field name="model">onehr.policy.ack</field>
+        <field name="arch" type="xml">
+            <graph string="Acknowledgement Status by Department" type="bar">
+                <field name="department_id"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_policy_ack_my" model="ir.actions.act_window">
+        <field name="name">My Policy Acknowledgements</field>
+        <field name="res_model">onehr.policy.ack</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_policy_ack_search"/>
+        <field name="domain">[('employee_user_id', '=', uid)]</field>
+    </record>
+
+    <record id="action_onehr_policy_ack_register" model="ir.actions.act_window">
+        <field name="name">Acknowledgement Register</field>
+        <field name="res_model">onehr.policy.ack</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_onehr_policy_ack_search"/>
+    </record>
+</odoo>

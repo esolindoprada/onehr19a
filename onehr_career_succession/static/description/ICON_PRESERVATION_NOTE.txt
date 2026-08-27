@@ -1,0 +1,1 @@
+No binary icon was present in the supplied onehr_career_succession tutorial scaffold. This Direct Full Addon Build does not fabricate or overwrite a project-owned icon.
