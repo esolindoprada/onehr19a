@@ -1,0 +1,19 @@
+
+<odoo noupdate="1">
+    <record id="request_type_general_hr" model="onehr.portal.request.type">
+        <field name="name">General HR Service</field><field name="code">GENERAL_HR</field><field name="service_kind">generic</field><field name="sequence">10</field><field name="sla_hours">72</field>
+    </record>
+    <record id="request_type_profile_change" model="onehr.portal.request.type">
+        <field name="name">Personal Profile Change</field><field name="code">PROFILE_CHANGE</field><field name="service_kind">profile_change</field><field name="sequence">20</field><field name="manager_approval_required">False</field><field name="hr_approval_required">True</field><field name="sla_hours">48</field>
+    </record>
+    <record id="request_type_timeoff" model="onehr.portal.request.type">
+        <field name="name">Time Off Request</field><field name="code">TIMEOFF</field><field name="service_kind">timeoff</field><field name="sequence">30</field><field name="sla_hours">48</field>
+    </record>
+    <record id="request_type_learning" model="onehr.portal.request.type">
+        <field name="name">Learning / Training Request</field><field name="code">LEARNING</field><field name="service_kind">learning</field><field name="sequence">40</field><field name="sla_hours">120</field>
+    </record>
+    <record id="request_type_document" model="onehr.portal.request.type">
+        <field name="name">HR Document Submission</field><field name="code">DOCUMENT</field><field name="service_kind">document</field><field name="sequence">50</field><field name="manager_approval_required">False</field><field name="hr_approval_required">True</field><field name="sla_hours">72</field>
+    </record>
+</odoo>
+

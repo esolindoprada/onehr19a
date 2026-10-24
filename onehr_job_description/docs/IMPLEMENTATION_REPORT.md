@@ -1,3 +1,4 @@
+
 # OneHR Job Description — Direct Full Implementation Report
 
 BUILD: Direct Full Addon Build  
@@ -35,3 +36,4 @@ CODEX ROLE: bounded implementation worker only
 REGISTRY_ED_CLASSIFICATION: PENDING_EXACT_REGISTRY_ROW_VERIFICATION  
 WINDOWS_RUNTIME_ACCEPTANCE: PENDING  
 ONEHR_JOB_DESCRIPTION_MOVE_FORWARD_READY: NO
+

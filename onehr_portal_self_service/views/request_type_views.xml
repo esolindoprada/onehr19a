@@ -1,0 +1,139 @@
+
+<odoo>
+    <record id="view_onehr_portal_request_type_list" model="ir.ui.view">
+        <field name="name">onehr.portal.request.type.list.enterprise</field>
+        <field name="model">onehr.portal.request.type</field>
+        <field name="arch" type="xml">
+            <list string="Request Types" decoration-muted="not active" decoration-info="portal_enabled">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="service_kind" widget="badge"/>
+                <field name="portal_enabled"/>
+                <field name="manager_approval_required" optional="show"/>
+                <field name="hr_approval_required" optional="show"/>
+                <field name="sla_hours" optional="show"/>
+                <field name="request_count"/>
+                <field name="open_count" optional="show"/>
+                <field name="overdue_count" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="active" column_invisible="True"/>
+                <button name="action_open_requests" type="object" string="Requests" icon="fa-list"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_portal_request_type_form" model="ir.ui.view">
+        <field name="name">onehr.portal.request.type.form.enterprise</field>
+        <field name="model">onehr.portal.request.type</field>
+        <field name="arch" type="xml">
+            <form string="Portal Request Type">
+                <header>
+                    <button name="action_toggle_portal" type="object" string="Enable / Disable Portal" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" invisible="active"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_requests" type="object" class="oe_stat_button" icon="fa-list-alt">
+                            <field name="request_count" widget="statinfo" string="Requests"/>
+                        </button>
+                        <button name="action_open_requests" type="object" class="oe_stat_button" icon="fa-hourglass-half">
+                            <field name="open_count" widget="statinfo" string="Open"/>
+                        </button>
+                        <button name="action_open_requests" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="overdue_count" widget="statinfo" string="Overdue"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Employment Letter Request"/></h1>
+                        <div class="text-muted"><field name="code" placeholder="SERVICE_CODE"/></div>
+                    </div>
+                    <group>
+                        <group string="Service Definition">
+                            <field name="service_kind"/>
+                            <field name="sequence"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                            <field name="portal_enabled"/>
+                            <field name="default_priority"/>
+                        </group>
+                        <group string="Approval &amp; SLA">
+                            <field name="manager_approval_required"/>
+                            <field name="hr_approval_required"/>
+                            <field name="responsible_user_id" domain="[('share','=',False)]"/>
+                            <field name="sla_hours"/>
+                            <field name="reminder_hours_before"/>
+                            <field name="auto_execute_on_approval"/>
+                        </group>
+                    </group>
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_requests" type="object" string="Open Operational Requests" class="btn-secondary" icon="fa-external-link"/>
+                    </div>
+                    <notebook>
+                        <page string="Portal Guidance">
+                            <field name="instructions" placeholder="Explain what employees should provide, expected turnaround and relevant policy."/>
+                        </page>
+                        <page string="Notification Text">
+                            <group>
+                                <field name="submission_message"/>
+                                <field name="approval_message"/>
+                                <field name="rejection_message"/>
+                                <field name="completion_message"/>
+                            </group>
+                        </page>
+                        <page string="Profile Change Governance" invisible="service_kind != 'profile_change'">
+                            <field name="profile_allowed_fields"/>
+                            <div class="alert alert-info" role="alert">
+                                Only explicitly whitelisted scalar employee fields may be applied after HR approval.
+                                Relational, binary and unknown fields are blocked at model level.
+                            </div>
+                        </page>
+                        <page string="Requests">
+                            <field name="request_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="employee_name"/>
+                                    <field name="subject"/>
+                                    <field name="priority" widget="priority"/>
+                                    <field name="sla_deadline" optional="show"/>
+                                    <field name="sla_status" widget="badge" optional="show"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_self" type="object" string="Open" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_portal_request_type_search" model="ir.ui.view">
+        <field name="name">onehr.portal.request.type.search.enterprise</field>
+        <field name="model">onehr.portal.request.type</field>
+        <field name="arch" type="xml">
+            <search string="Request Types">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="service_kind"/>
+                <field name="company_id"/>
+                <filter name="portal_enabled" string="Portal Enabled" domain="[('portal_enabled','=',True),('active','=',True)]"/>
+                <filter name="archived" string="Archived" domain="[('active','=',False)]"/>
+                <group>
+                    <filter name="group_service_kind" string="Service Kind" context="{'group_by':'service_kind'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_portal_request_type" model="ir.actions.act_window">
+        <field name="name">Request Types</field>
+        <field name="res_model">onehr.portal.request.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_portal_request_type_search"/>
+    </record>
+</odoo>
+

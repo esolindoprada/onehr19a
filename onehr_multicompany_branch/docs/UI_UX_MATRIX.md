@@ -1,3 +1,4 @@
+
 # UI / UX Matrix
 
 | Model / extension | List | Form | Search | Enterprise controls |
@@ -11,3 +12,4 @@
 ## UI principle
 
 Advanced controls are present only where they represent real business actions. No button can bypass ACL, record rules, company intersection, branch authorization, effective dates or server-side group checks.
+

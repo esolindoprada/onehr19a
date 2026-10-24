@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="action_report_sop_document" model="ir.actions.report">
         <field name="name">Standard Operating Procedure</field>
@@ -242,3 +243,4 @@
         </t>
     </template>
 </odoo>
+

@@ -1,3 +1,4 @@
+
 # OneHR Security — Enterprise UI/UX Matrix
 
 | Model | List | Form | Search | Statusbar | Smart Buttons | Header / Body Actions | Row Buttons | Chatter | Main Security |

@@ -1,3 +1,5 @@
+
+
 # OneHR Base — Full Structural Inventory
 
 Generated from the Direct Full Build source. Fields inherited through approved Odoo mixins/native models are noted by model ownership rather than duplicated here.

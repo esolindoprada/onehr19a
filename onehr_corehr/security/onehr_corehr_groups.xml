@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="module_category_onehr_corehr" model="ir.module.category">
         <field name="name">OneHR Core HR</field>

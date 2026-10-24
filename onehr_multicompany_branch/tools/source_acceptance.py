@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 """Static source acceptance for OneHR Multicompany & Branch.
 
@@ -35,7 +36,7 @@ def read(path: str) -> str:
     return (ROOT / path).read_text(encoding="utf-8", errors="strict")
 
 
-print("SCRIPT_ID: ONEHR_MULTICOMPANY_BRANCH_SOURCE_ACCEPTANCE_V1_20260814")
+print("SCRIPT_ID: ONEHR_MULTICOMPANY_BRANCH_SOURCE_ACCEPTANCE_V3_20260909")
 print(f"TARGET: {ROOT}")
 
 # ---------------------------------------------------------------------------
@@ -48,7 +49,7 @@ except Exception as exc:
     failed(f"manifest is not a literal Odoo manifest: {exc}")
     manifest = {}
 
-if manifest.get("version") == "19.0.1.0.0":
+if manifest.get("version") == "19.0.1.0.2":
     passed("Odoo 19 manifest version")
 else:
     failed(f"unexpected manifest version: {manifest.get('version')!r}")
@@ -127,6 +128,42 @@ else:
 all_model_source = "\n".join(
     path.read_text(encoding="utf-8") for path in sorted((ROOT / "models").glob("*.py"))
 )
+
+# Relational comodel metadata used by the cross-model read-authority closure gate.
+# The parser derives the comodel from field declarations so the gate fails if a
+# future repair silently changes a surfaced relation without updating authority.
+relational_fields: dict[str, str] = {}
+for path in sorted((ROOT / "models").glob("*.py")):
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    for cls in [node for node in tree.body if isinstance(node, ast.ClassDef)]:
+        owner_model = None
+        for node in cls.body:
+            if not isinstance(node, ast.Assign):
+                continue
+            targets = [target.id for target in node.targets if isinstance(target, ast.Name)]
+            if "_name" in targets or "_inherit" in targets:
+                try:
+                    value = ast.literal_eval(node.value)
+                except Exception:
+                    value = None
+                if isinstance(value, str):
+                    if "_name" in targets or owner_model is None:
+                        owner_model = value
+        if not owner_model:
+            continue
+        for node in cls.body:
+            if not isinstance(node, ast.Assign) or len(node.targets) != 1 or not isinstance(node.targets[0], ast.Name):
+                continue
+            if not isinstance(node.value, ast.Call) or not isinstance(node.value.func, ast.Attribute):
+                continue
+            if node.value.func.attr not in {"Many2one", "Many2many", "One2many"} or not node.value.args:
+                continue
+            try:
+                comodel = ast.literal_eval(node.value.args[0])
+            except Exception:
+                continue
+            if isinstance(comodel, str):
+                relational_fields[f"{owner_model}.{node.targets[0].id}"] = comodel
 for marker, label in (
     ('_name = "onehr.branch"', "onehr.branch NEW ED1"),
     ('_name = "onehr.mixin.branch"', "onehr.mixin.branch NEW abstract ED0"),
@@ -196,15 +233,114 @@ with acl_path.open(encoding="utf-8", newline="") as handle:
     acl_rows = list(csv.DictReader(handle))
 
 print(f"ACL_ROW_COUNT: {len(acl_rows)}")
-if len(acl_rows) == 7:
-    passed("exact 7 reviewed ACL rows")
+if len(acl_rows) == 14:
+    passed("exact 14 reviewed ACL rows, including full Users runtime dependency read closure")
 else:
-    failed(f"expected 7 ACL rows, found {len(acl_rows)}")
+    failed(f"expected 14 ACL rows, found {len(acl_rows)}")
 
 if any(row.get("group_id:id") == "base.group_user" for row in acl_rows):
     failed("direct base.group_user ACL detected")
 else:
     passed("no direct base.group_user ACL")
+
+# Generic cross-model comodel-read closure contract for branch fields exposed
+# on Users and Role Assignment governance surfaces.  The consumer groups below
+# are the approved callers of those surfaces; each must have explicit read ACL
+# on the derived relational comodel.  Record rules remain authoritative and are
+# intentionally not widened by this gate.
+read_acl_by_model_group = {
+    (row.get("model_id:id"), row.get("group_id:id"))
+    for row in acl_rows
+    if row.get("perm_read") == "1"
+}
+comodel_model_id = {"onehr.branch": "model_onehr_branch"}
+read_closure_contract = {
+    "res.users.onehr_allowed_branch_ids": {
+        "base.group_system",
+        "onehr_multicompany_branch.group_onehr_branch_admin",
+        "onehr_multicompany_branch.group_onehr_central_office",
+        "onehr_security.group_onehr_security_manager",
+        "onehr_security.group_onehr_security_admin",
+    },
+    "res.users.onehr_default_branch_id": {
+        "base.group_system",
+        "onehr_multicompany_branch.group_onehr_branch_admin",
+        "onehr_multicompany_branch.group_onehr_central_office",
+        "onehr_security.group_onehr_security_manager",
+        "onehr_security.group_onehr_security_admin",
+    },
+    "res.users.onehr_effective_branch_ids": {
+        "base.group_system",
+        "onehr_multicompany_branch.group_onehr_branch_admin",
+        "onehr_multicompany_branch.group_onehr_central_office",
+        "onehr_security.group_onehr_security_manager",
+        "onehr_security.group_onehr_security_admin",
+    },
+    "onehr.user.role.branch_id": {
+        "onehr_multicompany_branch.group_onehr_branch_admin",
+        "onehr_multicompany_branch.group_onehr_central_office",
+        "onehr_security.group_onehr_security_manager",
+        "onehr_security.group_onehr_security_admin",
+    },
+}
+closure_failures = []
+for surface_field, consumer_groups in sorted(read_closure_contract.items()):
+    comodel = relational_fields.get(surface_field)
+    if not comodel:
+        closure_failures.append(f"{surface_field}: relational comodel not derivable from source")
+        continue
+    model_id = comodel_model_id.get(comodel)
+    if not model_id:
+        closure_failures.append(f"{surface_field}: no reviewed model-id mapping for comodel {comodel}")
+        continue
+    for group_xmlid in sorted(consumer_groups):
+        if (model_id, group_xmlid) not in read_acl_by_model_group:
+            closure_failures.append(f"{surface_field}: {group_xmlid} lacks read ACL on {comodel}")
+
+if closure_failures:
+    failed(f"generic cross-model comodel-read closure failed: {closure_failures}")
+else:
+    passed("generic cross-model comodel-read closure for Users / Role Assignment branch surfaces")
+
+for required_acl_id in (
+    "access_onehr_branch_odoo_technical_admin",
+    "access_onehr_branch_security_manager",
+    "access_onehr_branch_security_admin",
+    "access_onehr_user_role_odoo_technical_admin",
+    "access_onehr_role_odoo_technical_admin",
+    "access_onehr_sod_conflict_odoo_technical_admin",
+    "access_onehr_audit_odoo_technical_admin",
+):
+    rows = [row for row in acl_rows if row.get("id") == required_acl_id]
+    if len(rows) == 1 and rows[0].get("perm_read") == "1" and all(
+        rows[0].get(permission) == "0" for permission in ("perm_write", "perm_create", "perm_unlink")
+    ):
+        passed(f"bounded read-only runtime closure ACL: {required_acl_id}")
+    else:
+        failed(f"missing or non-read-only runtime closure ACL: {required_acl_id}")
+
+# Native Settings > Users is not merely a relational-comodel render. The
+# onehr_security summary compute reached by the Users list/search traverses
+# four security-owned support models.  Attempt 2 explicitly closes this whole
+# deterministic dependency graph for Odoo Technical Administration, while the
+# existing branch comodel closure remains mandatory.
+users_runtime_dependency_model_ids = {
+    "onehr.branch": "model_onehr_branch",
+    "onehr.user.role": "onehr_security.model_onehr_user_role",
+    "onehr.role": "onehr_security.model_onehr_role",
+    "onehr.sod.conflict.log": "onehr_security.model_onehr_sod_conflict_log",
+    "onehr.audit.log": "onehr_security.model_onehr_audit_log",
+}
+runtime_dependency_failures = []
+for model_name, model_id in sorted(users_runtime_dependency_model_ids.items()):
+    if (model_id, "base.group_system") not in read_acl_by_model_group:
+        runtime_dependency_failures.append(
+            f"base.group_system lacks read ACL on {model_name} ({model_id})"
+        )
+if runtime_dependency_failures:
+    failed(f"native Users runtime dependency closure failed: {runtime_dependency_failures}")
+else:
+    passed("native Users runtime dependency closure for Odoo Technical Admin across all current support models")
 
 if all(row.get("perm_unlink") == "0" for row in acl_rows):
     passed("no branch-addon ACL grants unlink")
@@ -300,6 +436,10 @@ for marker, label in (
     ('onehr_security.view_onehr_user_role_search', "security role search integration"),
     ('<pivot string="Branch Role Coverage">', "central-office pivot coverage"),
     ('<graph string="Branch Role Coverage"', "central-office graph coverage"),
+    ('name="onehr_allowed_branch_ids"', "Users allowed-branch relational surface"),
+    ('name="onehr_default_branch_id"', "Users default-branch relational surface"),
+    ('name="onehr_effective_branch_ids"', "Users effective-branch relational surface"),
+    ('name="branch_id"', "Role Assignment branch relational surface"),
 ):
     if marker in all_views:
         passed(label)
@@ -322,10 +462,10 @@ for path in sorted((ROOT / "tests").glob("test_*.py")):
         failed(f"runtime test tag missing: {path.name}")
 
 print(f"TEST_METHOD_COUNT: {test_count}")
-if test_count == 18:
-    passed("exact 18 enterprise runtime test methods")
+if test_count == 28:
+    passed("exact 28 enterprise runtime test methods, including full Users runtime dependency regressions")
 else:
-    failed(f"expected 18 runtime test methods, found {test_count}")
+    failed(f"expected 28 runtime test methods, found {test_count}")
 
 required_docs = (
     "PROJECT_IDENTITY_PREFLIGHT.md",
@@ -337,6 +477,13 @@ required_docs = (
     "SECURITY_BRANCH_MATRIX.md",
     "ENTERPRISE_COMPLETENESS_MATRIX.md",
     "ONEHR_MULTICOMPANY_BRANCH_IMPLEMENTATION_REPORT.md",
+    "BOUNDED_PRODUCTION_REPAIR_19_0_1_0_1.md",
+    "CROSS_MODEL_COMODEL_READ_CLOSURE.md",
+    "SCOPE_ISOLATION_REPAIR_19_0_1_0_1.md",
+    "BOUNDED_PRODUCTION_REPAIR_19_0_1_0_2.md",
+    "USERS_RUNTIME_DEPENDENCY_CLOSURE.md",
+    "SCOPE_ISOLATION_REPAIR_19_0_1_0_2.md",
+    "PRESERVATION_DIFF_19_0_1_0_1_TO_19_0_1_0_2.txt",
 )
 missing_docs = [name for name in required_docs if not (ROOT / "docs" / name).exists()]
 if missing_docs:
@@ -377,7 +524,7 @@ fingerprint = hasher.hexdigest().upper()
 print(f"SOURCE_FINGERPRINT_SHA256: {fingerprint}")
 
 report_lines = [
-    "ONEHR_MULTICOMPANY_BRANCH_SOURCE_ACCEPTANCE_V1",
+    "ONEHR_MULTICOMPANY_BRANCH_SOURCE_ACCEPTANCE_V3",
     f"TARGET: {ROOT}",
     f"SOURCE_FINGERPRINT_SHA256: {fingerprint}",
     f"PASS_COUNT: {len(passes)}",
@@ -404,3 +551,4 @@ print("ONEHR_MULTICOMPANY_BRANCH_MOVE_FORWARD_READY: NO")
 print("============================================================")
 
 sys.exit(1 if errors else 0)
+

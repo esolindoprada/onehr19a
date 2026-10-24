@@ -1,34 +1,39 @@
-# -*- coding: utf-8 -*-
 {
-    'name': "onehr_retirement_offboarding",
+    "name": "OneHR Retirement & Offboarding",
+    "summary": "Enterprise retirement, resignation, clearance, exit interview, access revocation and final-benefit orchestration",
+    "description": """
+OneHR Retirement & Offboarding is the enterprise exit-orchestration layer for OneHR NEW
+on Odoo 19 Community Edition. It coordinates resignation, retirement and other approved
+exit cases across HR, line management, IT, Finance, Security and the employee while
+preserving canonical ownership in Core HR, Employment Contract, Workflow Approval,
+Payroll, Document, Portal, Analytics and Integration API addons.
 
-    'summary': "Short (1 phrase/line) summary of the module's purpose",
-
-    'description': """
-Long description of module's purpose
-    """,
-
-    'author': "My Company",
-    'website': "https://www.yourcompany.com",
-
-    # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/15.0/odoo/addons/base/data/ir_module_category_data.xml
-    # for the full list
-    'category': 'Uncategorized',
-    'version': '0.1',
-
-    # any module necessary for this one to work correctly
-    'depends': ['base'],
-
-    # always loaded
-    'data': [
-        # 'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
+The addon owns offboarding cases, generated clearance tasks, clearance-item catalogue
+and exit-interview evidence. It does not create a parallel employee, contract, payroll,
+document, branch, portal or API master. Optional sibling capabilities are resolved through
+bounded runtime service contracts and never through business sudo bypasses.
+""",
+    "author": "OneHR",
+    "website": "https://github.com/onehr",
+    "category": "Human Resources",
+    "version": "19.0.1.0.0",
+    "license": "LGPL-3",
+    "depends": ["onehr_corehr", "onehr_security", "onehr_workflow_approval"],
+    "data": [
+        "security/onehr_offboarding_groups.xml",
+        "security/ir.model.access.csv",
+        "security/onehr_offboarding_rules.xml",
+        "data/offboarding_sequence.xml",
+        "data/offboarding_cron.xml",
+        "views/clearance_item_views.xml",
+        "views/offboarding_checklist_views.xml",
+        "views/exit_interview_views.xml",
+        "views/offboarding_views.xml",
+        "views/hr_employee_views.xml",
+        "report/offboarding_reports.xml",
+        "report/offboarding_report_templates.xml",
+        "views/menus.xml",
     ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
+    "installable": True,
+    "application": False,
 }
-

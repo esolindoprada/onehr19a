@@ -76,7 +76,7 @@ if manifest.get("name") == "OneHR Recruitment":
 else:
     failed(f"unexpected manifest name: {manifest.get('name')!r}")
 
-if manifest.get("version") == "19.0.1.0.0":
+if manifest.get("version") == "19.0.1.0.3":
     passed("Odoo 19 manifest version")
 else:
     failed(f"unexpected manifest version: {manifest.get('version')!r}")
@@ -154,6 +154,377 @@ for path in xml_paths:
         failed(f"deprecated states= view syntax: {path.relative_to(ROOT)}")
 if not any(item.startswith("XML parse") or "deprecated attrs=" in item or "deprecated states=" in item for item in errors):
     passed("all XML parses and avoids deprecated attrs/states syntax")
+
+
+# Odoo 19 fields.Properties definition contract.
+# `definition` must be exactly "<many2one_field>.<properties_definition_field>".
+# Odoo 19 rejects longer traversal paths at model-class setup time.
+properties_definition_calls = 0
+for path in sorted((ROOT / "models").glob("*.py")):
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    except SyntaxError:
+        continue
+    for node in ast.walk(tree):
+        if not (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr == "Properties"
+        ):
+            continue
+
+        properties_definition_calls += 1
+        definition_kw = next(
+            (kw for kw in node.keywords if kw.arg == "definition"),
+            None,
+        )
+        if not definition_kw:
+            failed(
+                f"Odoo 19 fields.Properties missing definition= in "
+                f"{path.relative_to(ROOT)}:{getattr(node, 'lineno', '?')}"
+            )
+            continue
+
+        try:
+            definition_value = ast.literal_eval(definition_kw.value)
+        except Exception:
+            definition_value = None
+
+        if not isinstance(definition_value, str) or definition_value.count(".") != 1:
+            failed(
+                f"Odoo 19 fields.Properties definition must contain exactly one dot "
+                f"in {path.relative_to(ROOT)}:{getattr(node, 'lineno', '?')}: "
+                f"{definition_value!r}"
+            )
+
+if properties_definition_calls == 1 and not any(
+    "fields.Properties" in item for item in errors
+):
+    passed("Odoo 19 fields.Properties definitions use exactly one relation hop")
+elif properties_definition_calls != 1:
+    failed(
+        f"expected exactly one Recruitment fields.Properties field, "
+        f"found {properties_definition_calls}"
+    )
+
+interview_source = (ROOT / "models/interview.py").read_text(encoding="utf-8")
+if 'definition="template_id.scorecard_definition"' in interview_source:
+    passed("Interview scorecard uses template_id.scorecard_definition container contract")
+else:
+    failed("Interview scorecard Properties definition contract is not Odoo 19 compatible")
+
+
+# Odoo 19 Preboarding search-domain regression.
+# The display-only related counter `checklist_pending_task_count` is intentionally
+# non-stored/non-searchable. Search must follow the authoritative checklist task
+# relation and stored task state instead of filtering the computed counter.
+preboarding_view_path = ROOT / "views/preboarding_views.xml"
+try:
+    preboarding_tree = ET.parse(preboarding_view_path)
+except Exception as exc:
+    preboarding_tree = None
+    failed(f"Preboarding search-domain regression XML parse: {exc}")
+
+if preboarding_tree is not None:
+    pending_filters = [
+        node
+        for node in preboarding_tree.getroot().iter("filter")
+        if node.attrib.get("name") == "pending_tasks"
+    ]
+    expected_pending_domain = "[('checklist_instance_id.task_ids.state', '=', 'pending')]"
+    if len(pending_filters) != 1:
+        failed(
+            f"expected exactly one Preboarding pending_tasks filter, found {len(pending_filters)}"
+        )
+    elif pending_filters[0].attrib.get("domain") == expected_pending_domain:
+        passed("Preboarding pending-task search uses searchable checklist task-state relation")
+    else:
+        failed(
+            "Preboarding pending_tasks filter must use searchable relation domain "
+            f"{expected_pending_domain!r}; found {pending_filters[0].attrib.get('domain')!r}"
+        )
+
+    bad_counter_domains = []
+    for node in preboarding_tree.getroot().iter():
+        domain = node.attrib.get("domain", "")
+        if "checklist_pending_task_count" in domain:
+            bad_counter_domains.append(
+                f"{node.tag}:{node.attrib.get('name', '<unnamed>')}={domain}"
+            )
+    if bad_counter_domains:
+        for item in bad_counter_domains:
+            failed(
+                "Preboarding search/domain may not filter non-searchable "
+                f"checklist_pending_task_count: {item}"
+            )
+    else:
+        passed("Preboarding domains do not filter non-searchable checklist_pending_task_count")
+
+
+# Odoo 19 generic Recruitment search-domain compatibility audit.
+#
+# Odoo validates search-view domains at module load. A target-local computed or
+# related field may participate as a domain leaf only when it is stored or has
+# an explicit search method. The audit below inspects every domain attribute in
+# Recruitment view XML and resolves every locally-owned field path that can be
+# proven from this addon source. This catches the defect class globally instead
+# of hard-coding one filter at a time.
+SEARCH_DOMAIN_OPERATORS = {
+    "=", "!=", ">", ">=", "<", "<=", "in", "not in",
+    "like", "not like", "ilike", "not ilike", "=like", "=ilike",
+    "child_of", "parent_of", "any", "not any",
+}
+
+
+def _keyword_literal(call_node: ast.Call, keyword: str, default=None):
+    value_node = next(
+        (kw.value for kw in call_node.keywords if kw.arg == keyword),
+        None,
+    )
+    if value_node is None:
+        return default
+    try:
+        return ast.literal_eval(value_node)
+    except Exception:
+        return "<dynamic>"
+
+
+def _field_call_metadata(call_node: ast.Call):
+    if not (
+        isinstance(call_node.func, ast.Attribute)
+        and isinstance(call_node.func.value, ast.Name)
+        and call_node.func.value.id == "fields"
+    ):
+        return None
+
+    field_type = call_node.func.attr
+    comodel = None
+    if field_type in {"Many2one", "One2many", "Many2many"} and call_node.args:
+        try:
+            comodel = ast.literal_eval(call_node.args[0])
+        except Exception:
+            comodel = None
+
+    return {
+        "type": field_type,
+        "compute": _keyword_literal(call_node, "compute"),
+        "related": _keyword_literal(call_node, "related"),
+        "store": _keyword_literal(call_node, "store", False),
+        "search": _keyword_literal(call_node, "search"),
+        "comodel": comodel,
+    }
+
+
+def _domain_field_paths(domain_text: str):
+    """Return field paths from domain tuple leaves without evaluating the domain."""
+    try:
+        expr = ast.parse(domain_text, mode="eval")
+    except SyntaxError:
+        return []
+
+    field_paths = []
+    for node in ast.walk(expr):
+        if not isinstance(node, (ast.Tuple, ast.List)) or len(node.elts) < 2:
+            continue
+        first, second = node.elts[0], node.elts[1]
+        if not (
+            isinstance(first, ast.Constant)
+            and isinstance(first.value, str)
+            and isinstance(second, ast.Constant)
+            and isinstance(second.value, str)
+            and second.value in SEARCH_DOMAIN_OPERATORS
+        ):
+            continue
+        if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.]*", first.value):
+            field_paths.append(first.value)
+    return field_paths
+
+
+def _source_field_is_searchable(metadata: dict) -> bool:
+    if metadata.get("compute") or metadata.get("related"):
+        return metadata.get("store") is True or bool(metadata.get("search"))
+    return True
+
+
+source_field_registry: dict[str, dict[str, dict]] = {}
+for model_path in sorted((ROOT / "models").glob("*.py")):
+    try:
+        model_tree = ast.parse(model_path.read_text(encoding="utf-8"), filename=str(model_path))
+    except SyntaxError:
+        continue
+
+    for class_node in [node for node in model_tree.body if isinstance(node, ast.ClassDef)]:
+        model_name = literal_assign(class_node, "_name")
+        inherit_name = literal_assign(class_node, "_inherit")
+        if not isinstance(model_name, str):
+            model_name = inherit_name if isinstance(inherit_name, str) else None
+        if not model_name:
+            continue
+
+        fields_for_model = source_field_registry.setdefault(model_name, {})
+        for statement in class_node.body:
+            if not (
+                isinstance(statement, ast.Assign)
+                and len(statement.targets) == 1
+                and isinstance(statement.targets[0], ast.Name)
+                and isinstance(statement.value, ast.Call)
+            ):
+                continue
+            metadata = _field_call_metadata(statement.value)
+            if metadata:
+                fields_for_model[statement.targets[0].id] = metadata
+
+
+def _resolve_local_domain_path(view_model: str, field_path: str):
+    current_model = view_model
+    segments = field_path.split(".")
+    for index, segment in enumerate(segments):
+        metadata = source_field_registry.get(current_model, {}).get(segment)
+        if metadata is None:
+            return "external", current_model, segment
+
+        if index == len(segments) - 1:
+            return (
+                "searchable" if _source_field_is_searchable(metadata) else "unsearchable",
+                current_model,
+                segment,
+            )
+
+        comodel = metadata.get("comodel")
+        if not comodel:
+            return "invalid_path", current_model, segment
+        current_model = comodel
+
+    return "external", current_model, ""
+
+
+search_domain_attribute_count = 0
+search_domain_leaf_count = 0
+resolved_local_leaf_count = 0
+external_domain_paths = []
+
+for view_path in sorted((ROOT / "views").glob("*.xml")):
+    try:
+        view_tree = ET.parse(view_path)
+    except Exception:
+        continue
+
+    for record in view_tree.getroot().findall(".//record[@model='ir.ui.view']"):
+        view_model_node = record.find("./field[@name='model']")
+        arch_node = record.find("./field[@name='arch']")
+        if view_model_node is None or arch_node is None or not view_model_node.text:
+            continue
+        view_model = view_model_node.text.strip()
+
+        for node in arch_node.iter():
+            domain_text = node.attrib.get("domain")
+            if not domain_text:
+                continue
+
+            search_domain_attribute_count += 1
+            field_paths = _domain_field_paths(domain_text)
+            search_domain_leaf_count += len(field_paths)
+
+            for field_path in field_paths:
+                status, resolved_model, resolved_field = _resolve_local_domain_path(
+                    view_model, field_path
+                )
+                if status == "unsearchable":
+                    failed(
+                        "Odoo 19 search domain uses target-local non-searchable field: "
+                        f"{view_path.relative_to(ROOT)} / view_model={view_model} / "
+                        f"domain={domain_text!r} / path={field_path!r} / "
+                        f"resolved={resolved_model}.{resolved_field}"
+                    )
+                elif status == "invalid_path":
+                    failed(
+                        "Recruitment search domain traverses a non-relational target-local field: "
+                        f"{view_path.relative_to(ROOT)} / view_model={view_model} / "
+                        f"domain={domain_text!r} / path={field_path!r}"
+                    )
+                elif status == "searchable":
+                    resolved_local_leaf_count += 1
+                else:
+                    # Parent/native or sibling-owned fields cannot be fully proven by this
+                    # addon-only static gate. They remain subject to Odoo runtime validation.
+                    external_domain_paths.append(
+                        f"{view_model}:{field_path}"
+                    )
+
+if not any("search domain uses target-local non-searchable field" in item for item in errors):
+    passed(
+        "generic Odoo 19 Recruitment search-domain audit finds no "
+        "target-local non-searchable domain leaves"
+    )
+
+if search_domain_attribute_count:
+    passed(
+        "generic Recruitment search-domain audit scanned "
+        f"{search_domain_attribute_count} domain attributes / "
+        f"{search_domain_leaf_count} domain leaves"
+    )
+else:
+    failed("generic Recruitment search-domain audit found no domain attributes")
+
+native_source = (ROOT / "models/native_recruitment.py").read_text(encoding="utf-8")
+native_view_source = (ROOT / "views/native_recruitment_views.xml").read_text(encoding="utf-8")
+
+# Semantics-preserving accepted-offer filter: "latest offer" remains the
+# business field; it is made searchable rather than replacing the filter with
+# "any accepted offer", which would change historical meaning.
+applicant_field_meta = source_field_registry.get("hr.applicant", {}).get(
+    "onehr_latest_offer_state", {}
+)
+if (
+    applicant_field_meta.get("compute") == "_compute_onehr_recruitment_counts"
+    and applicant_field_meta.get("store") is True
+    and applicant_field_meta.get("search") in (None, False)
+):
+    passed("Latest Offer state is stored/searchable while preserving its compute semantics")
+else:
+    failed(
+        "onehr_latest_offer_state must remain computed and become stored/searchable"
+    )
+
+if '"onehr_offer_ids.state"' in native_source:
+    passed("Latest Offer stored compute invalidates when offer lifecycle state changes")
+else:
+    failed("Latest Offer stored compute must depend on onehr_offer_ids.state")
+
+if (
+    "latest = applicant.onehr_offer_ids.sorted" in native_source
+    and 'applicant.onehr_latest_offer_state = latest.state if latest else "none"' in native_source
+):
+    passed("Latest Offer business semantics still select the most recently created offer")
+else:
+    failed("Latest Offer selection semantics changed or cannot be proven")
+
+accepted_offer_domain = "[('onehr_latest_offer_state', '=', 'accepted')]"
+if native_view_source.count(accepted_offer_domain) == 1:
+    passed("Applicant Offer Accepted filter preserves latest-offer semantics")
+else:
+    failed("Applicant Offer Accepted filter no longer has exact latest-offer domain")
+
+expected_open_requisition_domain = (
+    "[('onehr_requisition_ids.state', 'in', ('approved', 'recruiting'))]"
+)
+if native_view_source.count(expected_open_requisition_domain) == 1:
+    passed("Job Open Requisitions filter uses searchable requisition lifecycle relation")
+else:
+    failed(
+        "Job Open Requisitions filter must use searchable requisition lifecycle relation"
+    )
+
+if "onehr_open_requisition_count" in "\n".join(
+    node.attrib.get("domain", "")
+    for path in sorted((ROOT / "views").glob("*.xml"))
+    for node in ET.parse(path).getroot().iter()
+):
+    failed("Recruitment XML domains still filter non-searchable onehr_open_requisition_count")
+else:
+    passed("Recruitment XML domains do not filter onehr_open_requisition_count")
+
+
 
 # HARD GATE 4 — exact Registry rows / native-first ownership.
 custom_models: set[str] = set()

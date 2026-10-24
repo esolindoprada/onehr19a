@@ -1,3 +1,4 @@
+
 from datetime import timedelta
 
 from odoo import _, api, fields, models
@@ -535,3 +536,4 @@ class OneHRPolicyEvidence(models.Model):
                 raise AccessError(
                     _("You may delete only your own Draft evidence.")
                 )
+

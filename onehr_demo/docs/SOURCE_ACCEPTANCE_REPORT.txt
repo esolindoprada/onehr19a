@@ -1,0 +1,1047 @@
+
+PASS: Manifest identity
+PASS: Manifest version 19.0.1.0.2
+PASS: Manifest LGPL-3
+PASS: Manifest installable
+PASS: Capstone addon is not a duplicate root application
+PASS: Hard dependencies exactly frozen production suite (25)
+PASS: Revision-time production addon baseline rediscovered as 25
+PASS: Whole-path MP05-MP24 generator contracts = 20
+PASS: Explicit production sequence policies = 34
+PASS: Exactly one bounded MP05 generator implemented
+PASS: Latest authoritative composite source SHA-256 frozen
+PASS: Root Guardrail SHA-256 frozen
+PASS: MP05 profile volume contract frozen
+PASS: Manifest data exists — security/onehr_demo_groups.xml
+PASS: Manifest data exists — security/ir.model.access.csv
+PASS: Manifest data exists — security/onehr_demo_rules.xml
+PASS: Manifest data exists — data/generator_registry.xml
+PASS: Manifest data exists — views/demo_generator_views.xml
+PASS: Manifest data exists — views/demo_run_views.xml
+PASS: Manifest data exists — views/demo_checkpoint_views.xml
+PASS: Manifest data exists — views/demo_reference_views.xml
+PASS: Manifest data exists — views/demo_log_views.xml
+PASS: Manifest data exists — views/demo_scenario_views.xml
+PASS: Manifest data exists — views/menus.xml
+PASS: Python syntax — __init__.py
+PASS: Python syntax — __manifest__.py
+PASS: Python syntax — generators/__init__.py
+PASS: Python syntax — generators/foundation_enterprise.py
+PASS: Python syntax — models/__init__.py
+PASS: Python syntax — models/demo_checkpoint.py
+PASS: Python syntax — models/demo_generator.py
+PASS: Python syntax — models/demo_log.py
+PASS: Python syntax — models/demo_reference.py
+PASS: Python syntax — models/demo_run.py
+PASS: Python syntax — models/demo_scenario.py
+PASS: Python syntax — services/__init__.py
+PASS: Python syntax — services/authority.py
+PASS: Python syntax — services/compatibility.py
+PASS: Python syntax — services/contracts.py
+PASS: Python syntax — services/deterministic.py
+PASS: Python syntax — services/orchestrator.py
+PASS: Python syntax — services/reset.py
+PASS: Python syntax — services/sanitization.py
+PASS: Python syntax — tests/__init__.py
+PASS: Python syntax — tests/common.py
+PASS: Python syntax — tests/test_control_plane.py
+PASS: Python syntax — tests/test_determinism_contract.py
+PASS: Python syntax — tests/test_mp05_foundation.py
+PASS: Python syntax — tests/test_security_safety.py
+PASS: Python syntax — tools/source_acceptance.py
+PASS: XML syntax — data/generator_registry.xml
+PASS: XML syntax — security/onehr_demo_groups.xml
+PASS: XML syntax — security/onehr_demo_rules.xml
+PASS: XML syntax — views/demo_checkpoint_views.xml
+PASS: XML syntax — views/demo_generator_views.xml
+PASS: XML syntax — views/demo_log_views.xml
+PASS: XML syntax — views/demo_reference_views.xml
+PASS: XML syntax — views/demo_run_views.xml
+PASS: XML syntax — views/demo_scenario_views.xml
+PASS: XML syntax — views/menus.xml
+PASS: No legacy tree view tag
+PASS: No legacy attrs modifier
+PASS: No legacy states modifier
+PASS: No invalid Odoo 19 action groups_id field
+PASS: No inherited XPath selector by @string
+PASS: No duplicate XML IDs inside onehr_demo
+PASS: Exact six persistent demo-owned models
+PASS: Model present — onehr.demo.checkpoint
+PASS: PostgreSQL table identifier safe — onehr_demo_checkpoint
+PASS: Model present — onehr.demo.generator
+PASS: PostgreSQL table identifier safe — onehr_demo_generator
+PASS: Model present — onehr.demo.log
+PASS: PostgreSQL table identifier safe — onehr_demo_log
+PASS: Model present — onehr.demo.reference
+PASS: PostgreSQL table identifier safe — onehr_demo_reference
+PASS: Model present — onehr.demo.run
+PASS: PostgreSQL table identifier safe — onehr_demo_run
+PASS: Model present — onehr.demo.scenario
+PASS: PostgreSQL table identifier safe — onehr_demo_scenario
+PASS: No legacy _sql_constraints
+PASS: Odoo 19 models.Constraint used
+PASS: No business sudo() bypass
+PASS: No safe_eval execution
+PASS: No raw eval execution
+PASS: No arbitrary getattr dispatch
+PASS: No dynamic import execution
+PASS: Direct onehr_demo next_by_code usage is forbidden
+PASS: No uncontrolled fields.Date.today business clock
+PASS: No uncontrolled context_today business clock
+PASS: No wall-clock datetime/date business truth
+PASS: Deterministic seeded pseudo-random helper present
+PASS: Odoo 19 res.groups.privilege pattern
+PASS: Security role present — group_onehr_demo_viewer
+PASS: Security role present — group_onehr_demo_operator
+PASS: Security role present — group_onehr_demo_admin
+PASS: Exactly 12 bounded ACL rows
+PASS: No broad base.group_user custom-model ACL
+PASS: Operational evidence models have no ACL delete permission
+PASS: Five company-boundary record rules
+PASS: All company rules use caller allowed-company scope
+PASS: High-impact server actions require system plus demo authority
+PASS: Readiness audits all implemented generator authorities before mutation
+PASS: Persisted operational logs use sanitization
+PASS: onehr.demo.checkpoint has List view
+PASS: onehr.demo.checkpoint has Form view
+PASS: onehr.demo.checkpoint has Search view
+PASS: onehr.demo.generator has List view
+PASS: onehr.demo.generator has Form view
+PASS: onehr.demo.generator has Search view
+PASS: onehr.demo.log has List view
+PASS: onehr.demo.log has Form view
+PASS: onehr.demo.log has Search view
+PASS: onehr.demo.reference has List view
+PASS: onehr.demo.reference has Form view
+PASS: onehr.demo.reference has Search view
+PASS: onehr.demo.run has List view
+PASS: onehr.demo.run has Form view
+PASS: onehr.demo.run has Search view
+PASS: onehr.demo.scenario has List view
+PASS: onehr.demo.scenario has Form view
+PASS: onehr.demo.scenario has Search view
+PASS: Enterprise Demo Dataset parent is a pure navigation container
+PASS: Creatable Demo Control Center is an explicit reachable leaf menu
+PASS: Demo Evidence remains a separate secondary navigation branch
+PASS: Demo Control Center action does not suppress Scenario creation
+PASS: Evidence action intentionally suppresses manual create — action_onehr_demo_generators
+PASS: Evidence action intentionally suppresses manual create — action_onehr_demo_runs
+PASS: Evidence action intentionally suppresses manual create — action_onehr_demo_checkpoints
+PASS: Evidence action intentionally suppresses manual create — action_onehr_demo_references
+PASS: Evidence action intentionally suppresses manual create — action_onehr_demo_logs
+PASS: Enterprise Demo Dataset exposes exactly Control Center plus Evidence branches
+PASS: Demo Evidence exposes exactly the five governed evidence lists
+PASS: Control Center statusbar
+PASS: Refresh Source Compatibility button
+PASS: Validate Readiness button
+PASS: Explicit non-production enable button
+PASS: Full Enterprise generation boundary
+PASS: Dataset validation button
+PASS: Reset Preview button
+PASS: Safe Reset button
+PASS: Rebuild button
+PASS: Smart buttons
+PASS: NON-PRODUCTION ribbon
+PASS: Compatibility Evidence surface
+PASS: Fixed generator registry contains 20 rows
+PASS: Generator registry exactly matches frozen code-owned keys
+PASS: Generator keys unique
+PASS: Exactly MP05 foundation.enterprise is implemented
+PASS: foundation.enterprise: XML implementation flag matches frozen contract
+PASS: foundation.enterprise: XML contract digest matches frozen contract
+PASS: foundation.enterprise: XML side-effect classification matches contract
+PASS: foundation.enterprise: XML reset policy matches contract
+PASS: foundation.enterprise: side-effect classification explicit
+PASS: foundation.enterprise: reset policy explicit
+PASS: organization.jobs_positions: XML implementation flag matches frozen contract
+PASS: organization.jobs_positions: XML contract digest matches frozen contract
+PASS: organization.jobs_positions: XML side-effect classification matches contract
+PASS: organization.jobs_positions: XML reset policy matches contract
+PASS: organization.jobs_positions: side-effect classification explicit
+PASS: organization.jobs_positions: reset policy explicit
+PASS: workforce.personas: XML implementation flag matches frozen contract
+PASS: workforce.personas: XML contract digest matches frozen contract
+PASS: workforce.personas: XML side-effect classification matches contract
+PASS: workforce.personas: XML reset policy matches contract
+PASS: workforce.personas: side-effect classification explicit
+PASS: workforce.personas: reset policy explicit
+PASS: recruitment.pipeline: XML implementation flag matches frozen contract
+PASS: recruitment.pipeline: XML contract digest matches frozen contract
+PASS: recruitment.pipeline: XML side-effect classification matches contract
+PASS: recruitment.pipeline: XML reset policy matches contract
+PASS: recruitment.pipeline: side-effect classification explicit
+PASS: recruitment.pipeline: reset policy explicit
+PASS: hiring.onboarding: XML implementation flag matches frozen contract
+PASS: hiring.onboarding: XML contract digest matches frozen contract
+PASS: hiring.onboarding: XML side-effect classification matches contract
+PASS: hiring.onboarding: XML reset policy matches contract
+PASS: hiring.onboarding: side-effect classification explicit
+PASS: hiring.onboarding: reset policy explicit
+PASS: time.attendance: XML implementation flag matches frozen contract
+PASS: time.attendance: XML contract digest matches frozen contract
+PASS: time.attendance: XML side-effect classification matches contract
+PASS: time.attendance: XML reset policy matches contract
+PASS: time.attendance: side-effect classification explicit
+PASS: time.attendance: reset policy explicit
+PASS: time.leave: XML implementation flag matches frozen contract
+PASS: time.leave: XML contract digest matches frozen contract
+PASS: time.leave: XML side-effect classification matches contract
+PASS: time.leave: XML reset policy matches contract
+PASS: time.leave: side-effect classification explicit
+PASS: time.leave: reset policy explicit
+PASS: payroll.bridge: XML implementation flag matches frozen contract
+PASS: payroll.bridge: XML contract digest matches frozen contract
+PASS: payroll.bridge: XML side-effect classification matches contract
+PASS: payroll.bridge: XML reset policy matches contract
+PASS: payroll.bridge: side-effect classification explicit
+PASS: payroll.bridge: reset policy explicit
+PASS: learning.history: XML implementation flag matches frozen contract
+PASS: learning.history: XML contract digest matches frozen contract
+PASS: learning.history: XML side-effect classification matches contract
+PASS: learning.history: XML reset policy matches contract
+PASS: learning.history: side-effect classification explicit
+PASS: learning.history: reset policy explicit
+PASS: performance.appraisal: XML implementation flag matches frozen contract
+PASS: performance.appraisal: XML contract digest matches frozen contract
+PASS: performance.appraisal: XML side-effect classification matches contract
+PASS: performance.appraisal: XML reset policy matches contract
+PASS: performance.appraisal: side-effect classification explicit
+PASS: performance.appraisal: reset policy explicit
+PASS: talent.succession: XML implementation flag matches frozen contract
+PASS: talent.succession: XML contract digest matches frozen contract
+PASS: talent.succession: XML side-effect classification matches contract
+PASS: talent.succession: XML reset policy matches contract
+PASS: talent.succession: side-effect classification explicit
+PASS: talent.succession: reset policy explicit
+PASS: governance.content: XML implementation flag matches frozen contract
+PASS: governance.content: XML contract digest matches frozen contract
+PASS: governance.content: XML side-effect classification matches contract
+PASS: governance.content: XML reset policy matches contract
+PASS: governance.content: side-effect classification explicit
+PASS: governance.content: reset policy explicit
+PASS: employee_relations.discipline: XML implementation flag matches frozen contract
+PASS: employee_relations.discipline: XML contract digest matches frozen contract
+PASS: employee_relations.discipline: XML side-effect classification matches contract
+PASS: employee_relations.discipline: XML reset policy matches contract
+PASS: employee_relations.discipline: side-effect classification explicit
+PASS: employee_relations.discipline: reset policy explicit
+PASS: self_service.portal: XML implementation flag matches frozen contract
+PASS: self_service.portal: XML contract digest matches frozen contract
+PASS: self_service.portal: XML side-effect classification matches contract
+PASS: self_service.portal: XML reset policy matches contract
+PASS: self_service.portal: side-effect classification explicit
+PASS: self_service.portal: reset policy explicit
+PASS: mobility.assignment: XML implementation flag matches frozen contract
+PASS: mobility.assignment: XML contract digest matches frozen contract
+PASS: mobility.assignment: XML side-effect classification matches contract
+PASS: mobility.assignment: XML reset policy matches contract
+PASS: mobility.assignment: side-effect classification explicit
+PASS: mobility.assignment: reset policy explicit
+PASS: separation.offboarding: XML implementation flag matches frozen contract
+PASS: separation.offboarding: XML contract digest matches frozen contract
+PASS: separation.offboarding: XML side-effect classification matches contract
+PASS: separation.offboarding: XML reset policy matches contract
+PASS: separation.offboarding: side-effect classification explicit
+PASS: separation.offboarding: reset policy explicit
+PASS: integration.safe_demo: XML implementation flag matches frozen contract
+PASS: integration.safe_demo: XML contract digest matches frozen contract
+PASS: integration.safe_demo: XML side-effect classification matches contract
+PASS: integration.safe_demo: XML reset policy matches contract
+PASS: integration.safe_demo: side-effect classification explicit
+PASS: integration.safe_demo: reset policy explicit
+PASS: history.reconciliation: XML implementation flag matches frozen contract
+PASS: history.reconciliation: XML contract digest matches frozen contract
+PASS: history.reconciliation: XML side-effect classification matches contract
+PASS: history.reconciliation: XML reset policy matches contract
+PASS: history.reconciliation: side-effect classification explicit
+PASS: history.reconciliation: reset policy explicit
+PASS: analytics.kpi: XML implementation flag matches frozen contract
+PASS: analytics.kpi: XML contract digest matches frozen contract
+PASS: analytics.kpi: XML side-effect classification matches contract
+PASS: analytics.kpi: XML reset policy matches contract
+PASS: analytics.kpi: side-effect classification explicit
+PASS: analytics.kpi: reset policy explicit
+PASS: presentation.validation: XML implementation flag matches frozen contract
+PASS: presentation.validation: XML contract digest matches frozen contract
+PASS: presentation.validation: XML side-effect classification matches contract
+PASS: presentation.validation: XML reset policy matches contract
+PASS: presentation.validation: side-effect classification explicit
+PASS: presentation.validation: reset policy explicit
+PASS: onehr.api.queue: direct demo sequence use forbidden
+PASS: onehr.api.queue: deterministic sequence strategy explicit
+PASS: onehr.appraisal.form: direct demo sequence use forbidden
+PASS: onehr.appraisal.form: deterministic sequence strategy explicit
+PASS: onehr.approval.request: direct demo sequence use forbidden
+PASS: onehr.approval.request: deterministic sequence strategy explicit
+PASS: onehr.assignment: direct demo sequence use forbidden
+PASS: onehr.assignment: deterministic sequence strategy explicit
+PASS: onehr.assignment.change.request: direct demo sequence use forbidden
+PASS: onehr.assignment.change.request: deterministic sequence strategy explicit
+PASS: onehr.attendance.import.batch: direct demo sequence use forbidden
+PASS: onehr.attendance.import.batch: deterministic sequence strategy explicit
+PASS: onehr.attendance.reconciliation: direct demo sequence use forbidden
+PASS: onehr.attendance.reconciliation: deterministic sequence strategy explicit
+PASS: onehr.disability.record: direct demo sequence use forbidden
+PASS: onehr.disability.record: deterministic sequence strategy explicit
+PASS: onehr.discipline.case: direct demo sequence use forbidden
+PASS: onehr.discipline.case: deterministic sequence strategy explicit
+PASS: onehr.discipline.sanction: direct demo sequence use forbidden
+PASS: onehr.discipline.sanction: deterministic sequence strategy explicit
+PASS: onehr.document: direct demo sequence use forbidden
+PASS: onehr.document: deterministic sequence strategy explicit
+PASS: onehr.employee: direct demo sequence use forbidden
+PASS: onehr.employee: deterministic sequence strategy explicit
+PASS: onehr.employee.identifier: direct demo sequence use forbidden
+PASS: onehr.employee.identifier: deterministic sequence strategy explicit
+PASS: onehr.employment.contract: direct demo sequence use forbidden
+PASS: onehr.employment.contract: deterministic sequence strategy explicit
+PASS: onehr.jd: direct demo sequence use forbidden
+PASS: onehr.jd: deterministic sequence strategy explicit
+PASS: onehr.kiosk.device: direct demo sequence use forbidden
+PASS: onehr.kiosk.device: deterministic sequence strategy explicit
+PASS: onehr.kiosk.log: direct demo sequence use forbidden
+PASS: onehr.kiosk.log: deterministic sequence strategy explicit
+PASS: onehr.learning.certificate: direct demo sequence use forbidden
+PASS: onehr.learning.certificate: deterministic sequence strategy explicit
+PASS: onehr.learning.enrollment: direct demo sequence use forbidden
+PASS: onehr.learning.enrollment: deterministic sequence strategy explicit
+PASS: onehr.learning.session: direct demo sequence use forbidden
+PASS: onehr.learning.session: deterministic sequence strategy explicit
+PASS: onehr.leave.allocation: direct demo sequence use forbidden
+PASS: onehr.leave.allocation: deterministic sequence strategy explicit
+PASS: onehr.leave.request: direct demo sequence use forbidden
+PASS: onehr.leave.request: deterministic sequence strategy explicit
+PASS: onehr.medical.assessment: direct demo sequence use forbidden
+PASS: onehr.medical.assessment: deterministic sequence strategy explicit
+PASS: onehr.offboarding: direct demo sequence use forbidden
+PASS: onehr.offboarding: deterministic sequence strategy explicit
+PASS: onehr.payroll.export: direct demo sequence use forbidden
+PASS: onehr.payroll.export: deterministic sequence strategy explicit
+PASS: onehr.payroll.import: direct demo sequence use forbidden
+PASS: onehr.payroll.import: deterministic sequence strategy explicit
+PASS: onehr.policy: direct demo sequence use forbidden
+PASS: onehr.policy: deterministic sequence strategy explicit
+PASS: onehr.portal.request: direct demo sequence use forbidden
+PASS: onehr.portal.request: deterministic sequence strategy explicit
+PASS: onehr.recruitment.offer: direct demo sequence use forbidden
+PASS: onehr.recruitment.offer: deterministic sequence strategy explicit
+PASS: onehr.recruitment.requisition: direct demo sequence use forbidden
+PASS: onehr.recruitment.requisition: deterministic sequence strategy explicit
+PASS: onehr.sop: direct demo sequence use forbidden
+PASS: onehr.sop: deterministic sequence strategy explicit
+PASS: onehr.succession.plan: direct demo sequence use forbidden
+PASS: onehr.succession.plan: deterministic sequence strategy explicit
+PASS: onehr.talent.pool: direct demo sequence use forbidden
+PASS: onehr.talent.pool: deterministic sequence strategy explicit
+PASS: onehr.work.incident: direct demo sequence use forbidden
+PASS: onehr.work.incident: deterministic sequence strategy explicit
+PASS: MP05 fixed code-owned generator handler
+PASS: MP05 fixed code-owned generator validator
+PASS: MP05 fixed readiness checker
+PASS: No arbitrary dynamic generator dispatch
+PASS: MP05 deterministic branch catalog
+PASS: MP05 deterministic organization catalog
+PASS: MP05 deterministic production business codes
+PASS: MP05 consumes no mutable production sequence
+PASS: MP05 does not bypass production security
+PASS: MP05 business dates come only from scenario reference clock
+PASS: MP05 uses canonical production owners
+PASS: MP05 reset policy explicit in generator
+PASS: MP05 deterministic collision lookup includes archived masters
+PASS: Scenario stable identity includes code/profile/reference contract
+PASS: Scenario identity mutation is blocked after provenance exists
+PASS: Reset service has no generic unlink fallback
+PASS: Reset preview starts from explicit scenario provenance
+PASS: MP05 bounded reset handler — res.company
+PASS: MP05 bounded reset handler — onehr.branch
+PASS: MP05 bounded reset handler — hr.department
+PASS: Reset fails closed for unimplemented model/policy pairs
+PASS: Reset executes as one bounded atomic unit
+PASS: Reset verifies active-provenance postcondition
+PASS: Root Guardrail raw SHA-256 matches
+PASS: Root Guardrail declared checksum matches
+PASS: Production manifest exists — onehr_analytics
+PASS: Production source version — onehr_analytics=19.0.1.0.0
+PASS: Production manifest fingerprint — onehr_analytics
+PASS: Production manifest exists — onehr_appraisal
+PASS: Production source version — onehr_appraisal=19.0.1.0.1
+PASS: Production manifest fingerprint — onehr_appraisal
+PASS: Production manifest exists — onehr_assignment
+PASS: Production source version — onehr_assignment=19.0.1.0.1
+PASS: Production manifest fingerprint — onehr_assignment
+PASS: Production manifest exists — onehr_attendance
+PASS: Production source version — onehr_attendance=19.0.1.0.2
+PASS: Production manifest fingerprint — onehr_attendance
+PASS: Production manifest exists — onehr_base
+PASS: Production source version — onehr_base=19.0.1.0.0
+PASS: Production manifest fingerprint — onehr_base
+PASS: Production manifest exists — onehr_career_succession
+PASS: Production source version — onehr_career_succession=19.0.1.0.1
+PASS: Production manifest fingerprint — onehr_career_succession
+PASS: Production manifest exists — onehr_corehr
+PASS: Production source version — onehr_corehr=19.0.1.0.0
+PASS: Production manifest fingerprint — onehr_corehr
+PASS: Production manifest exists — onehr_discipline
+PASS: Production source version — onehr_discipline=19.0.1.0.1
+PASS: Production manifest fingerprint — onehr_discipline
+PASS: Production manifest exists — onehr_document
+PASS: Production source version — onehr_document=19.0.1.0.0
+PASS: Production manifest fingerprint — onehr_document
+PASS: Production manifest exists — onehr_employment_contract
+PASS: Production source version — onehr_employment_contract=19.0.1.0.0
+PASS: Production manifest fingerprint — onehr_employment_contract
+PASS: Production manifest exists — onehr_integrations_api
+PASS: Production source version — onehr_integrations_api=19.0.1.0.1
+PASS: Production manifest fingerprint — onehr_integrations_api
+PASS: Production manifest exists — onehr_job_description
+PASS: Production source version — onehr_job_description=19.0.1.0.0
+PASS: Production manifest fingerprint — onehr_job_description
+PASS: Production manifest exists — onehr_learning
+PASS: Production source version — onehr_learning=19.0.1.0.0
+PASS: Production manifest fingerprint — onehr_learning
+PASS: Production manifest exists — onehr_mobile_kiosk
+PASS: Production source version — onehr_mobile_kiosk=19.0.1.0.1
+PASS: Production manifest fingerprint — onehr_mobile_kiosk
+PASS: Production manifest exists — onehr_multicompany_branch
+PASS: Production source version — onehr_multicompany_branch=19.0.1.0.2
+PASS: Production manifest fingerprint — onehr_multicompany_branch
+PASS: Production manifest exists — onehr_payroll_bridge
+PASS: Production source version — onehr_payroll_bridge=19.0.1.0.0
+PASS: Production manifest fingerprint — onehr_payroll_bridge
+PASS: Production manifest exists — onehr_payroll_l10n_id
+PASS: Production source version — onehr_payroll_l10n_id=19.0.1.0.0
+PASS: Production manifest fingerprint — onehr_payroll_l10n_id
+PASS: Production manifest exists — onehr_pnp
+PASS: Production source version — onehr_pnp=19.0.1.0.1
+PASS: Production manifest fingerprint — onehr_pnp
+PASS: Production manifest exists — onehr_portal_self_service
+PASS: Production source version — onehr_portal_self_service=19.0.1.0.2
+PASS: Production manifest fingerprint — onehr_portal_self_service
+PASS: Production manifest exists — onehr_recruitment
+PASS: Production source version — onehr_recruitment=19.0.1.0.3
+PASS: Production manifest fingerprint — onehr_recruitment
+PASS: Production manifest exists — onehr_retirement_offboarding
+PASS: Production source version — onehr_retirement_offboarding=19.0.1.0.0
+PASS: Production manifest fingerprint — onehr_retirement_offboarding
+PASS: Production manifest exists — onehr_security
+PASS: Production source version — onehr_security=19.0.1.0.0
+PASS: Production manifest fingerprint — onehr_security
+PASS: Production manifest exists — onehr_sop
+PASS: Production source version — onehr_sop=19.0.1.0.0
+PASS: Production manifest fingerprint — onehr_sop
+PASS: Production manifest exists — onehr_timeoff
+PASS: Production source version — onehr_timeoff=19.0.1.0.0
+PASS: Production manifest fingerprint — onehr_timeoff
+PASS: Production manifest exists — onehr_workflow_approval
+PASS: Production source version — onehr_workflow_approval=19.0.1.0.0
+PASS: Production manifest fingerprint — onehr_workflow_approval
+PASS: Published source fingerprint exists — onehr_analytics
+PASS: Published source fingerprint frozen — onehr_analytics
+PASS: Published source fingerprint exists — onehr_appraisal
+PASS: Published source fingerprint frozen — onehr_appraisal
+PASS: Published source fingerprint exists — onehr_career_succession
+PASS: Published source fingerprint frozen — onehr_career_succession
+PASS: Published source fingerprint exists — onehr_discipline
+PASS: Published source fingerprint frozen — onehr_discipline
+PASS: Published source fingerprint exists — onehr_integrations_api
+PASS: Published source fingerprint frozen — onehr_integrations_api
+PASS: Published source fingerprint exists — onehr_job_description
+PASS: Published source fingerprint frozen — onehr_job_description
+PASS: Published source fingerprint exists — onehr_pnp
+PASS: Published source fingerprint frozen — onehr_pnp
+PASS: Published source fingerprint exists — onehr_portal_self_service
+PASS: Published source fingerprint frozen — onehr_portal_self_service
+PASS: Published source fingerprint exists — onehr_recruitment
+PASS: Published source fingerprint frozen — onehr_recruitment
+PASS: Published source fingerprint exists — onehr_retirement_offboarding
+PASS: Published source fingerprint frozen — onehr_retirement_offboarding
+PASS: Published source fingerprint exists — onehr_sop
+PASS: Published source fingerprint frozen — onehr_sop
+PASS: MP05 Odoo-native runtime field contract is explicit and bounded
+PASS: foundation.enterprise: production model — hr.department
+PASS: foundation.enterprise: field/type — hr.department.onehr_code=char
+PASS: foundation.enterprise: field/type — hr.department.onehr_unit_type=selection
+PASS: foundation.enterprise: field/type — hr.department.onehr_valid_from=date
+PASS: foundation.enterprise: field/type — hr.department.onehr_valid_to=date
+PASS: foundation.enterprise: production model — onehr.branch
+PASS: foundation.enterprise: field/type — onehr.branch.active=boolean
+PASS: foundation.enterprise: field/type — onehr.branch.branch_type=selection
+PASS: foundation.enterprise: field/type — onehr.branch.code=char
+PASS: foundation.enterprise: field/type — onehr.branch.company_id=many2one
+PASS: foundation.enterprise: field/type — onehr.branch.lifecycle_status=selection
+PASS: foundation.enterprise: field/type — onehr.branch.name=char
+PASS: foundation.enterprise: field/type — onehr.branch.parent_id=many2one
+PASS: foundation.enterprise: field/type — onehr.branch.valid_from=date
+PASS: foundation.enterprise: field/type — onehr.branch.valid_to=date
+PASS: foundation.enterprise: production model — res.company
+PASS: foundation.enterprise: field/type — res.company.onehr_branch_enabled=boolean
+PASS: foundation.enterprise: business method — hr.department.onehr_is_effective_on
+PASS: foundation.enterprise: business method — onehr.branch.action_activate
+PASS: foundation.enterprise: selection contract — hr.department.onehr_unit_type
+PASS: foundation.enterprise: selection contract — onehr.branch.branch_type
+PASS: foundation.enterprise: selection contract — onehr.branch.lifecycle_status
+PASS: foundation.enterprise: actor group — onehr_multicompany_branch.group_onehr_branch_admin
+PASS: foundation.enterprise: critical XML ID — onehr_base.menu_onehr_root
+PASS: foundation.enterprise: critical XML ID — onehr_base.menu_onehr_configuration
+PASS: organization.jobs_positions: production model — hr.job
+PASS: organization.jobs_positions: field/type — hr.job.onehr_code=char
+PASS: organization.jobs_positions: field/type — hr.job.onehr_valid_from=date
+PASS: organization.jobs_positions: field/type — hr.job.onehr_valid_to=date
+PASS: organization.jobs_positions: production model — hr.work.location
+PASS: organization.jobs_positions: field/type — hr.work.location.onehr_site_code=char
+PASS: organization.jobs_positions: field/type — hr.work.location.onehr_timezone=selection
+PASS: organization.jobs_positions: field/type — hr.work.location.onehr_valid_from=date
+PASS: organization.jobs_positions: field/type — hr.work.location.onehr_valid_to=date
+PASS: organization.jobs_positions: production model — onehr.grade
+PASS: organization.jobs_positions: field/type — onehr.grade.code=char
+PASS: organization.jobs_positions: field/type — onehr.grade.company_id=many2one
+PASS: organization.jobs_positions: production model — onehr.position
+PASS: organization.jobs_positions: field/type — onehr.position.authorized_fte=float
+PASS: organization.jobs_positions: field/type — onehr.position.authorized_headcount=integer
+PASS: organization.jobs_positions: field/type — onehr.position.code=char
+PASS: organization.jobs_positions: field/type — onehr.position.company_id=many2one
+PASS: organization.jobs_positions: field/type — onehr.position.department_id=many2one
+PASS: organization.jobs_positions: field/type — onehr.position.grade_id=many2one
+PASS: organization.jobs_positions: field/type — onehr.position.job_id=many2one
+PASS: organization.jobs_positions: field/type — onehr.position.status=selection
+PASS: organization.jobs_positions: field/type — onehr.position.work_location_id=many2one
+PASS: organization.jobs_positions: business method — onehr.position.action_open_onehr_position_assignments
+PASS: organization.jobs_positions: selection contract — onehr.position.status
+PASS: organization.jobs_positions: actor group — onehr_assignment.group_onehr_assignment_manager
+PASS: workforce.personas: production model — hr.employee
+PASS: workforce.personas: field/type — hr.employee.onehr_employee_number=char
+PASS: workforce.personas: field/type — hr.employee.onehr_engagement_type_id=many2one
+PASS: workforce.personas: field/type — hr.employee.onehr_grade_id=many2one
+PASS: workforce.personas: field/type — hr.employee.onehr_primary_position_id=many2one
+PASS: workforce.personas: production model — hr.version
+PASS: workforce.personas: field/type — hr.version.onehr_engagement_type_id=many2one
+PASS: workforce.personas: field/type — hr.version.onehr_grade_id=many2one
+PASS: workforce.personas: field/type — hr.version.onehr_primary_position_id=many2one
+PASS: workforce.personas: production model — onehr.assignment
+PASS: workforce.personas: field/type — onehr.assignment.assignment_type=selection
+PASS: workforce.personas: field/type — onehr.assignment.company_id=many2one
+PASS: workforce.personas: field/type — onehr.assignment.effective_from=date
+PASS: workforce.personas: field/type — onehr.assignment.effective_to=date
+PASS: workforce.personas: field/type — onehr.assignment.employee_id=many2one
+PASS: workforce.personas: field/type — onehr.assignment.name=char
+PASS: workforce.personas: field/type — onehr.assignment.position_id=many2one
+PASS: workforce.personas: field/type — onehr.assignment.state=selection
+PASS: workforce.personas: business method — onehr.assignment.action_submit_for_approval
+PASS: workforce.personas: business method — onehr.assignment.action_activate
+PASS: workforce.personas: selection contract — onehr.assignment.assignment_type
+PASS: workforce.personas: selection contract — onehr.assignment.state
+PASS: workforce.personas: actor group — onehr_corehr.group_onehr_corehr_manager
+PASS: workforce.personas: actor group — onehr_assignment.group_onehr_assignment_manager
+PASS: recruitment.pipeline: production model — hr.applicant
+PASS: recruitment.pipeline: field/type — hr.applicant.onehr_latest_offer_state=selection
+PASS: recruitment.pipeline: field/type — hr.applicant.onehr_requisition_id=many2one
+PASS: recruitment.pipeline: production model — onehr.interview.session
+PASS: recruitment.pipeline: field/type — onehr.interview.session.applicant_id=many2one
+PASS: recruitment.pipeline: field/type — onehr.interview.session.requisition_id=many2one
+PASS: recruitment.pipeline: field/type — onehr.interview.session.scheduled_start=datetime
+PASS: recruitment.pipeline: field/type — onehr.interview.session.state=selection
+PASS: recruitment.pipeline: production model — onehr.offer
+PASS: recruitment.pipeline: field/type — onehr.offer.applicant_id=many2one
+PASS: recruitment.pipeline: field/type — onehr.offer.expiry_date=date
+PASS: recruitment.pipeline: field/type — onehr.offer.name=char
+PASS: recruitment.pipeline: field/type — onehr.offer.offer_date=date
+PASS: recruitment.pipeline: field/type — onehr.offer.proposed_start_date=date
+PASS: recruitment.pipeline: field/type — onehr.offer.requisition_id=many2one
+PASS: recruitment.pipeline: field/type — onehr.offer.state=selection
+PASS: recruitment.pipeline: production model — onehr.recruitment.requisition
+PASS: recruitment.pipeline: field/type — onehr.recruitment.requisition.company_id=many2one
+PASS: recruitment.pipeline: field/type — onehr.recruitment.requisition.job_id=many2one
+PASS: recruitment.pipeline: field/type — onehr.recruitment.requisition.name=char
+PASS: recruitment.pipeline: field/type — onehr.recruitment.requisition.position_id=many2one
+PASS: recruitment.pipeline: field/type — onehr.recruitment.requisition.requested_headcount=integer
+PASS: recruitment.pipeline: field/type — onehr.recruitment.requisition.state=selection
+PASS: recruitment.pipeline: field/type — onehr.recruitment.requisition.target_start_date=date
+PASS: recruitment.pipeline: business method — onehr.interview.session.action_confirm
+PASS: recruitment.pipeline: business method — onehr.interview.session.action_complete
+PASS: recruitment.pipeline: business method — onehr.offer.action_submit_for_approval
+PASS: recruitment.pipeline: business method — onehr.offer.action_mark_sent
+PASS: recruitment.pipeline: business method — onehr.offer.action_accept
+PASS: recruitment.pipeline: business method — onehr.recruitment.requisition.action_submit_for_approval
+PASS: recruitment.pipeline: business method — onehr.recruitment.requisition.action_start_recruiting
+PASS: recruitment.pipeline: selection contract — onehr.interview.session.state
+PASS: recruitment.pipeline: selection contract — onehr.offer.state
+PASS: recruitment.pipeline: selection contract — onehr.recruitment.requisition.state
+PASS: recruitment.pipeline: actor group — onehr_recruitment.group_onehr_recruiter
+PASS: recruitment.pipeline: actor group — onehr_recruitment.group_onehr_recruitment_manager
+PASS: hiring.onboarding: production model — onehr.checklist.instance
+PASS: hiring.onboarding: field/type — onehr.checklist.instance.employee_id=many2one
+PASS: hiring.onboarding: field/type — onehr.checklist.instance.event_date=date
+PASS: hiring.onboarding: field/type — onehr.checklist.instance.state=selection
+PASS: hiring.onboarding: field/type — onehr.checklist.instance.template_id=many2one
+PASS: hiring.onboarding: production model — onehr.checklist.task
+PASS: hiring.onboarding: field/type — onehr.checklist.task.due_date=date
+PASS: hiring.onboarding: field/type — onehr.checklist.task.employee_id=many2one
+PASS: hiring.onboarding: field/type — onehr.checklist.task.instance_id=many2one
+PASS: hiring.onboarding: field/type — onehr.checklist.task.state=selection
+PASS: hiring.onboarding: production model — onehr.contract
+PASS: hiring.onboarding: field/type — onehr.contract.contract_kind=selection
+PASS: hiring.onboarding: field/type — onehr.contract.employee_id=many2one
+PASS: hiring.onboarding: field/type — onehr.contract.hr_version_id=many2one
+PASS: hiring.onboarding: field/type — onehr.contract.name=char
+PASS: hiring.onboarding: field/type — onehr.contract.state=selection
+PASS: hiring.onboarding: production model — onehr.preboarding
+PASS: hiring.onboarding: field/type — onehr.preboarding.applicant_id=many2one
+PASS: hiring.onboarding: field/type — onehr.preboarding.employee_id=many2one
+PASS: hiring.onboarding: field/type — onehr.preboarding.offer_id=many2one
+PASS: hiring.onboarding: field/type — onehr.preboarding.planned_start_date=date
+PASS: hiring.onboarding: field/type — onehr.preboarding.state=selection
+PASS: hiring.onboarding: business method — onehr.checklist.instance.action_complete
+PASS: hiring.onboarding: business method — onehr.contract.action_submit_for_review
+PASS: hiring.onboarding: business method — onehr.contract.action_activate
+PASS: hiring.onboarding: business method — onehr.preboarding.action_prepare
+PASS: hiring.onboarding: business method — onehr.preboarding.action_ready
+PASS: hiring.onboarding: business method — onehr.preboarding.action_complete
+PASS: hiring.onboarding: selection contract — onehr.checklist.instance.state
+PASS: hiring.onboarding: selection contract — onehr.contract.state
+PASS: hiring.onboarding: selection contract — onehr.preboarding.state
+PASS: hiring.onboarding: actor group — onehr_employment_contract.group_onehr_contract_manager
+PASS: hiring.onboarding: actor group — onehr_recruitment.group_onehr_recruitment_manager
+PASS: time.attendance: production model — onehr.attendance.exception
+PASS: time.attendance: field/type — onehr.attendance.exception.attendance_date=date
+PASS: time.attendance: field/type — onehr.attendance.exception.employee_id=many2one
+PASS: time.attendance: field/type — onehr.attendance.exception.exception_type=selection
+PASS: time.attendance: field/type — onehr.attendance.exception.state=selection
+PASS: time.attendance: production model — onehr.kiosk.device
+PASS: time.attendance: field/type — onehr.kiosk.device.code=char
+PASS: time.attendance: field/type — onehr.kiosk.device.company_id=many2one
+PASS: time.attendance: field/type — onehr.kiosk.device.state=selection
+PASS: time.attendance: production model — onehr.kiosk.log
+PASS: time.attendance: field/type — onehr.kiosk.log.client_event_id=char
+PASS: time.attendance: field/type — onehr.kiosk.log.company_id=many2one
+PASS: time.attendance: field/type — onehr.kiosk.log.device_id=many2one
+PASS: time.attendance: field/type — onehr.kiosk.log.event_at=datetime
+PASS: time.attendance: field/type — onehr.kiosk.log.event_type=selection
+PASS: time.attendance: field/type — onehr.kiosk.log.sync_state=selection
+PASS: time.attendance: production model — onehr.shift
+PASS: time.attendance: field/type — onehr.shift.code=char
+PASS: time.attendance: field/type — onehr.shift.company_id=many2one
+PASS: time.attendance: field/type — onehr.shift.end_hour=float
+PASS: time.attendance: field/type — onehr.shift.start_hour=float
+PASS: time.attendance: field/type — onehr.shift.state=selection
+PASS: time.attendance: production model — onehr.shift.assignment
+PASS: time.attendance: field/type — onehr.shift.assignment.company_id=many2one
+PASS: time.attendance: field/type — onehr.shift.assignment.employee_id=many2one
+PASS: time.attendance: field/type — onehr.shift.assignment.state=selection
+PASS: time.attendance: business method — onehr.kiosk.log.action_retry_sync
+PASS: time.attendance: business method — onehr.shift.action_activate
+PASS: time.attendance: business method — onehr.shift.assignment.action_activate
+PASS: time.attendance: selection contract — onehr.shift.assignment.state
+PASS: time.attendance: selection contract — onehr.shift.state
+PASS: time.attendance: actor group — onehr_attendance.group_onehr_attendance_manager
+PASS: time.attendance: actor group — onehr_mobile_kiosk.group_onehr_kiosk_admin
+PASS: time.leave: production model — onehr.leave.allocation
+PASS: time.leave: field/type — onehr.leave.allocation.allocated_days=float
+PASS: time.leave: field/type — onehr.leave.allocation.employee_id=many2one
+PASS: time.leave: field/type — onehr.leave.allocation.leave_type_id=many2one
+PASS: time.leave: field/type — onehr.leave.allocation.name=char
+PASS: time.leave: field/type — onehr.leave.allocation.period_end=date
+PASS: time.leave: field/type — onehr.leave.allocation.period_start=date
+PASS: time.leave: field/type — onehr.leave.allocation.state=selection
+PASS: time.leave: production model — onehr.leave.request
+PASS: time.leave: field/type — onehr.leave.request.date_from=date
+PASS: time.leave: field/type — onehr.leave.request.date_to=date
+PASS: time.leave: field/type — onehr.leave.request.employee_id=many2one
+PASS: time.leave: field/type — onehr.leave.request.leave_type_id=many2one
+PASS: time.leave: field/type — onehr.leave.request.name=char
+PASS: time.leave: field/type — onehr.leave.request.requested_days=float
+PASS: time.leave: field/type — onehr.leave.request.state=selection
+PASS: time.leave: production model — onehr.leave.type
+PASS: time.leave: field/type — onehr.leave.type.allocation_required=boolean
+PASS: time.leave: field/type — onehr.leave.type.code=char
+PASS: time.leave: field/type — onehr.leave.type.company_id=many2one
+PASS: time.leave: field/type — onehr.leave.type.state=selection
+PASS: time.leave: business method — onehr.leave.allocation.action_confirm
+PASS: time.leave: business method — onehr.leave.request.action_submit_for_approval
+PASS: time.leave: business method — onehr.leave.request.action_mark_done
+PASS: time.leave: selection contract — onehr.leave.allocation.state
+PASS: time.leave: selection contract — onehr.leave.request.state
+PASS: time.leave: selection contract — onehr.leave.type.state
+PASS: time.leave: actor group — onehr_timeoff.group_onehr_timeoff_hr
+PASS: payroll.bridge: production model — onehr.payroll.bridge.config
+PASS: payroll.bridge: field/type — onehr.payroll.bridge.config.active=boolean
+PASS: payroll.bridge: field/type — onehr.payroll.bridge.config.code=char
+PASS: payroll.bridge: field/type — onehr.payroll.bridge.config.company_id=many2one
+PASS: payroll.bridge: field/type — onehr.payroll.bridge.config.provider_mode=selection
+PASS: payroll.bridge: production model — onehr.payroll.export
+PASS: payroll.bridge: field/type — onehr.payroll.export.company_id=many2one
+PASS: payroll.bridge: field/type — onehr.payroll.export.name=char
+PASS: payroll.bridge: field/type — onehr.payroll.export.period_end=date
+PASS: payroll.bridge: field/type — onehr.payroll.export.period_start=date
+PASS: payroll.bridge: field/type — onehr.payroll.export.state=selection
+PASS: payroll.bridge: production model — onehr.payroll.l10n.param
+PASS: payroll.bridge: field/type — onehr.payroll.l10n.param.code=char
+PASS: payroll.bridge: field/type — onehr.payroll.l10n.param.company_id=many2one
+PASS: payroll.bridge: field/type — onehr.payroll.l10n.param.revision=integer
+PASS: payroll.bridge: field/type — onehr.payroll.l10n.param.valid_from=date
+PASS: payroll.bridge: field/type — onehr.payroll.l10n.param.valid_to=date
+PASS: payroll.bridge: business method — onehr.payroll.bridge.config.action_validate_configuration
+PASS: payroll.bridge: business method — onehr.payroll.export.action_generate_export
+PASS: payroll.bridge: business method — onehr.payroll.export.action_reconcile
+PASS: payroll.bridge: business method — onehr.payroll.l10n.param.action_validate_parameters
+PASS: payroll.bridge: selection contract — onehr.payroll.bridge.config.provider_mode
+PASS: payroll.bridge: selection contract — onehr.payroll.export.state
+PASS: payroll.bridge: actor group — onehr_payroll_bridge.group_onehr_payroll_manager
+PASS: learning.history: production model — onehr.learning.certificate
+PASS: learning.history: field/type — onehr.learning.certificate.course_id=many2one
+PASS: learning.history: field/type — onehr.learning.certificate.employee_id=many2one
+PASS: learning.history: field/type — onehr.learning.certificate.issue_date=date
+PASS: learning.history: field/type — onehr.learning.certificate.name=char
+PASS: learning.history: field/type — onehr.learning.certificate.state=selection
+PASS: learning.history: production model — onehr.learning.course
+PASS: learning.history: field/type — onehr.learning.course.code=char
+PASS: learning.history: field/type — onehr.learning.course.company_id=many2one
+PASS: learning.history: field/type — onehr.learning.course.duration_hours=float
+PASS: learning.history: field/type — onehr.learning.course.published=boolean
+PASS: learning.history: production model — onehr.learning.enrollment
+PASS: learning.history: field/type — onehr.learning.enrollment.company_id=many2one
+PASS: learning.history: field/type — onehr.learning.enrollment.employee_id=many2one
+PASS: learning.history: field/type — onehr.learning.enrollment.name=char
+PASS: learning.history: field/type — onehr.learning.enrollment.session_id=many2one
+PASS: learning.history: field/type — onehr.learning.enrollment.state=selection
+PASS: learning.history: production model — onehr.learning.session
+PASS: learning.history: field/type — onehr.learning.session.company_id=many2one
+PASS: learning.history: field/type — onehr.learning.session.course_id=many2one
+PASS: learning.history: field/type — onehr.learning.session.end_datetime=datetime
+PASS: learning.history: field/type — onehr.learning.session.name=char
+PASS: learning.history: field/type — onehr.learning.session.start_datetime=datetime
+PASS: learning.history: field/type — onehr.learning.session.state=selection
+PASS: learning.history: business method — onehr.learning.certificate.action_issue
+PASS: learning.history: business method — onehr.learning.enrollment.action_request_approval
+PASS: learning.history: business method — onehr.learning.enrollment.action_enroll
+PASS: learning.history: business method — onehr.learning.enrollment.action_evaluate_result
+PASS: learning.history: business method — onehr.learning.session.action_start
+PASS: learning.history: business method — onehr.learning.session.action_complete
+PASS: learning.history: selection contract — onehr.learning.certificate.state
+PASS: learning.history: selection contract — onehr.learning.enrollment.state
+PASS: learning.history: selection contract — onehr.learning.session.state
+PASS: learning.history: actor group — onehr_learning.group_onehr_learning_officer
+PASS: learning.history: actor group — onehr_learning.group_onehr_learning_manager_approver
+PASS: performance.appraisal: production model — onehr.appraisal.cycle
+PASS: performance.appraisal: field/type — onehr.appraisal.cycle.code=char
+PASS: performance.appraisal: field/type — onehr.appraisal.cycle.company_id=many2one
+PASS: performance.appraisal: field/type — onehr.appraisal.cycle.date_end=date
+PASS: performance.appraisal: field/type — onehr.appraisal.cycle.date_start=date
+PASS: performance.appraisal: field/type — onehr.appraisal.cycle.state=selection
+PASS: performance.appraisal: production model — onehr.appraisal.form
+PASS: performance.appraisal: field/type — onehr.appraisal.form.company_id=many2one
+PASS: performance.appraisal: field/type — onehr.appraisal.form.cycle_id=many2one
+PASS: performance.appraisal: field/type — onehr.appraisal.form.employee_id=many2one
+PASS: performance.appraisal: field/type — onehr.appraisal.form.final_score=float
+PASS: performance.appraisal: field/type — onehr.appraisal.form.name=char
+PASS: performance.appraisal: field/type — onehr.appraisal.form.state=selection
+PASS: performance.appraisal: business method — onehr.appraisal.cycle.action_generate_appraisal_forms
+PASS: performance.appraisal: business method — onehr.appraisal.cycle.action_start_consolidation
+PASS: performance.appraisal: business method — onehr.appraisal.cycle.action_close_cycle
+PASS: performance.appraisal: business method — onehr.appraisal.form.action_start_review
+PASS: performance.appraisal: business method — onehr.appraisal.form.action_submit_self_review
+PASS: performance.appraisal: business method — onehr.appraisal.form.action_submit_manager_review
+PASS: performance.appraisal: business method — onehr.appraisal.form.action_close
+PASS: performance.appraisal: selection contract — onehr.appraisal.cycle.state
+PASS: performance.appraisal: selection contract — onehr.appraisal.form.state
+PASS: performance.appraisal: actor group — onehr_appraisal.group_onehr_appraisal_admin
+PASS: talent.succession: production model — onehr.succession.plan
+PASS: talent.succession: field/type — onehr.succession.plan.company_id=many2one
+PASS: talent.succession: field/type — onehr.succession.plan.criticality=selection
+PASS: talent.succession: field/type — onehr.succession.plan.position_id=many2one
+PASS: talent.succession: field/type — onehr.succession.plan.state=selection
+PASS: talent.succession: production model — onehr.talent.pool
+PASS: talent.succession: field/type — onehr.talent.pool.company_id=many2one
+PASS: talent.succession: field/type — onehr.talent.pool.employee_id=many2one
+PASS: talent.succession: field/type — onehr.talent.pool.pool_code=char
+PASS: talent.succession: field/type — onehr.talent.pool.readiness_level=selection
+PASS: talent.succession: field/type — onehr.talent.pool.state=selection
+PASS: talent.succession: business method — onehr.succession.plan.action_propose
+PASS: talent.succession: business method — onehr.succession.plan.action_approve
+PASS: talent.succession: business method — onehr.succession.plan.action_activate
+PASS: talent.succession: business method — onehr.talent.pool.action_propose
+PASS: talent.succession: business method — onehr.talent.pool.action_approve
+PASS: talent.succession: business method — onehr.talent.pool.action_activate
+PASS: talent.succession: selection contract — onehr.succession.plan.state
+PASS: talent.succession: selection contract — onehr.talent.pool.state
+PASS: talent.succession: actor group — onehr_career_succession.group_onehr_talent_manager
+PASS: governance.content: production model — onehr.document
+PASS: governance.content: field/type — onehr.document.category_id=many2one
+PASS: governance.content: field/type — onehr.document.company_id=many2one
+PASS: governance.content: field/type — onehr.document.document_number=char
+PASS: governance.content: field/type — onehr.document.state=selection
+PASS: governance.content: production model — onehr.jd
+PASS: governance.content: field/type — onehr.jd.code=char
+PASS: governance.content: field/type — onehr.jd.company_id=many2one
+PASS: governance.content: field/type — onehr.jd.lifecycle_state=selection
+PASS: governance.content: production model — onehr.policy
+PASS: governance.content: field/type — onehr.policy.company_id=many2one
+PASS: governance.content: field/type — onehr.policy.effective_from=date
+PASS: governance.content: field/type — onehr.policy.policy_code=char
+PASS: governance.content: field/type — onehr.policy.state=selection
+PASS: governance.content: production model — onehr.sop
+PASS: governance.content: field/type — onehr.sop.code=char
+PASS: governance.content: field/type — onehr.sop.company_id=many2one
+PASS: governance.content: field/type — onehr.sop.lifecycle_state=selection
+PASS: governance.content: business method — onehr.document.action_activate
+PASS: governance.content: business method — onehr.jd.action_create_new_version
+PASS: governance.content: business method — onehr.policy.action_submit_policy_approval
+PASS: governance.content: business method — onehr.policy.action_publish
+PASS: governance.content: business method — onehr.sop.action_create_new_version
+PASS: governance.content: selection contract — onehr.policy.state
+PASS: governance.content: actor group — onehr_document.group_onehr_document_manager
+PASS: governance.content: actor group — onehr_job_description.group_onehr_jd_admin
+PASS: governance.content: actor group — onehr_sop.group_onehr_sop_admin
+PASS: governance.content: actor group — onehr_pnp.group_onehr_pnp_admin
+PASS: employee_relations.discipline: production model — onehr.discipline.case
+PASS: employee_relations.discipline: field/type — onehr.discipline.case.company_id=many2one
+PASS: employee_relations.discipline: field/type — onehr.discipline.case.employee_id=many2one
+PASS: employee_relations.discipline: field/type — onehr.discipline.case.incident_date=datetime
+PASS: employee_relations.discipline: field/type — onehr.discipline.case.reference=char
+PASS: employee_relations.discipline: field/type — onehr.discipline.case.severity=selection
+PASS: employee_relations.discipline: field/type — onehr.discipline.case.state=selection
+PASS: employee_relations.discipline: production model — onehr.discipline.sanction
+PASS: employee_relations.discipline: field/type — onehr.discipline.sanction.case_id=many2one
+PASS: employee_relations.discipline: field/type — onehr.discipline.sanction.company_id=many2one
+PASS: employee_relations.discipline: field/type — onehr.discipline.sanction.employee_id=many2one
+PASS: employee_relations.discipline: field/type — onehr.discipline.sanction.reference=char
+PASS: employee_relations.discipline: field/type — onehr.discipline.sanction.sanction_type=selection
+PASS: employee_relations.discipline: field/type — onehr.discipline.sanction.state=selection
+PASS: employee_relations.discipline: business method — onehr.discipline.case.action_start_investigation
+PASS: employee_relations.discipline: business method — onehr.discipline.case.action_move_to_hearing
+PASS: employee_relations.discipline: business method — onehr.discipline.case.action_move_to_decision
+PASS: employee_relations.discipline: business method — onehr.discipline.sanction.action_submit_for_sanction_approval
+PASS: employee_relations.discipline: business method — onehr.discipline.sanction.action_execute
+PASS: employee_relations.discipline: selection contract — onehr.discipline.case.state
+PASS: employee_relations.discipline: selection contract — onehr.discipline.sanction.state
+PASS: employee_relations.discipline: actor group — onehr_discipline.group_onehr_discipline_manager
+PASS: self_service.portal: production model — onehr.portal.request
+PASS: self_service.portal: field/type — onehr.portal.request.company_id=many2one
+PASS: self_service.portal: field/type — onehr.portal.request.employee_id=many2one
+PASS: self_service.portal: field/type — onehr.portal.request.name=char
+PASS: self_service.portal: field/type — onehr.portal.request.service_kind=selection
+PASS: self_service.portal: field/type — onehr.portal.request.state=selection
+PASS: self_service.portal: production model — res.users
+PASS: self_service.portal: field/type — res.users.onehr_portal_employee_id=many2one
+PASS: self_service.portal: field/type — res.users.onehr_portal_self_service_enabled=boolean
+PASS: self_service.portal: business method — onehr.portal.request.action_submit
+PASS: self_service.portal: business method — onehr.portal.request.action_manager_approve
+PASS: self_service.portal: business method — onehr.portal.request.action_hr_approve
+PASS: self_service.portal: business method — onehr.portal.request.action_complete
+PASS: self_service.portal: actor group — onehr_portal_self_service.group_onehr_portal_admin
+PASS: mobility.assignment: production model — onehr.assignment
+PASS: mobility.assignment: field/type — onehr.assignment.effective_from=date
+PASS: mobility.assignment: field/type — onehr.assignment.employee_id=many2one
+PASS: mobility.assignment: field/type — onehr.assignment.position_id=many2one
+PASS: mobility.assignment: field/type — onehr.assignment.state=selection
+PASS: mobility.assignment: production model — onehr.assignment.change.request
+PASS: mobility.assignment: field/type — onehr.assignment.change.request.company_id=many2one
+PASS: mobility.assignment: field/type — onehr.assignment.change.request.effective_date=date
+PASS: mobility.assignment: field/type — onehr.assignment.change.request.movement_type=selection
+PASS: mobility.assignment: field/type — onehr.assignment.change.request.name=char
+PASS: mobility.assignment: field/type — onehr.assignment.change.request.state=selection
+PASS: mobility.assignment: production model — onehr.workforce.plan
+PASS: mobility.assignment: field/type — onehr.workforce.plan.company_id=many2one
+PASS: mobility.assignment: field/type — onehr.workforce.plan.period_end=date
+PASS: mobility.assignment: field/type — onehr.workforce.plan.period_start=date
+PASS: mobility.assignment: field/type — onehr.workforce.plan.plan_code=char
+PASS: mobility.assignment: field/type — onehr.workforce.plan.state=selection
+PASS: mobility.assignment: business method — onehr.assignment.change.request.action_submit_for_approval
+PASS: mobility.assignment: business method — onehr.assignment.change.request.action_execute
+PASS: mobility.assignment: business method — onehr.workforce.plan.action_submit_for_approval
+PASS: mobility.assignment: business method — onehr.workforce.plan.action_activate
+PASS: mobility.assignment: selection contract — onehr.assignment.change.request.state
+PASS: mobility.assignment: selection contract — onehr.workforce.plan.state
+PASS: mobility.assignment: actor group — onehr_assignment.group_onehr_assignment_manager
+PASS: separation.offboarding: production model — onehr.exit.interview
+PASS: separation.offboarding: field/type — onehr.exit.interview.company_id=many2one
+PASS: separation.offboarding: field/type — onehr.exit.interview.employee_id=many2one
+PASS: separation.offboarding: field/type — onehr.exit.interview.offboarding_id=many2one
+PASS: separation.offboarding: field/type — onehr.exit.interview.state=selection
+PASS: separation.offboarding: production model — onehr.offboarding
+PASS: separation.offboarding: field/type — onehr.offboarding.company_id=many2one
+PASS: separation.offboarding: field/type — onehr.offboarding.effective_exit_date=date
+PASS: separation.offboarding: field/type — onehr.offboarding.employee_id=many2one
+PASS: separation.offboarding: field/type — onehr.offboarding.name=char
+PASS: separation.offboarding: field/type — onehr.offboarding.offboarding_type=selection
+PASS: separation.offboarding: field/type — onehr.offboarding.proposed_exit_date=date
+PASS: separation.offboarding: field/type — onehr.offboarding.state=selection
+PASS: separation.offboarding: business method — onehr.exit.interview.action_schedule
+PASS: separation.offboarding: business method — onehr.exit.interview.action_start
+PASS: separation.offboarding: business method — onehr.exit.interview.action_submit
+PASS: separation.offboarding: business method — onehr.offboarding.action_generate_checklist
+PASS: separation.offboarding: business method — onehr.offboarding.action_check_readiness
+PASS: separation.offboarding: business method — onehr.offboarding.action_complete
+PASS: separation.offboarding: selection contract — onehr.exit.interview.state
+PASS: separation.offboarding: selection contract — onehr.offboarding.state
+PASS: separation.offboarding: actor group — onehr_retirement_offboarding.group_onehr_offboarding_admin
+PASS: integration.safe_demo: production model — onehr.api.key
+PASS: integration.safe_demo: field/type — onehr.api.key.active=boolean
+PASS: integration.safe_demo: field/type — onehr.api.key.company_id=many2one
+PASS: integration.safe_demo: field/type — onehr.api.key.public_id=char
+PASS: integration.safe_demo: field/type — onehr.api.key.state=selection
+PASS: integration.safe_demo: production model — onehr.api.queue
+PASS: integration.safe_demo: field/type — onehr.api.queue.company_id=many2one
+PASS: integration.safe_demo: field/type — onehr.api.queue.dedupe_key=char
+PASS: integration.safe_demo: field/type — onehr.api.queue.state=selection
+PASS: integration.safe_demo: production model — onehr.webhook
+PASS: integration.safe_demo: field/type — onehr.webhook.company_id=many2one
+PASS: integration.safe_demo: field/type — onehr.webhook.direction=selection
+PASS: integration.safe_demo: field/type — onehr.webhook.endpoint_key=char
+PASS: integration.safe_demo: field/type — onehr.webhook.state=selection
+PASS: integration.safe_demo: field/type — onehr.webhook.target_url=char
+PASS: integration.safe_demo: business method — onehr.api.key.action_generate_secret
+PASS: integration.safe_demo: business method — onehr.api.key.action_activate
+PASS: integration.safe_demo: business method — onehr.api.key.action_revoke
+PASS: integration.safe_demo: business method — onehr.webhook.action_activate
+PASS: integration.safe_demo: business method — onehr.webhook.action_disable
+PASS: integration.safe_demo: selection contract — onehr.api.key.state
+PASS: integration.safe_demo: selection contract — onehr.api.queue.state
+PASS: integration.safe_demo: selection contract — onehr.webhook.state
+PASS: integration.safe_demo: actor group — onehr_integrations_api.group_onehr_api_admin
+PASS: history.reconciliation: production model — hr.employee
+PASS: history.reconciliation: field/type — hr.employee.onehr_employee_number=char
+PASS: history.reconciliation: production model — onehr.assignment
+PASS: history.reconciliation: field/type — onehr.assignment.effective_from=date
+PASS: history.reconciliation: field/type — onehr.assignment.effective_to=date
+PASS: history.reconciliation: field/type — onehr.assignment.state=selection
+PASS: history.reconciliation: actor group — onehr_corehr.group_onehr_corehr_manager
+PASS: analytics.kpi: production model — onehr.analytics.tile
+PASS: analytics.kpi: field/type — onehr.analytics.tile.code=char
+PASS: analytics.kpi: field/type — onehr.analytics.tile.company_id=many2one
+PASS: analytics.kpi: field/type — onehr.analytics.tile.provider_mode=selection
+PASS: analytics.kpi: field/type — onehr.analytics.tile.state=selection
+PASS: analytics.kpi: production model — onehr.kpi.snapshot
+PASS: analytics.kpi: field/type — onehr.kpi.snapshot.company_id=many2one
+PASS: analytics.kpi: field/type — onehr.kpi.snapshot.period_end=date
+PASS: analytics.kpi: field/type — onehr.kpi.snapshot.period_start=date
+PASS: analytics.kpi: field/type — onehr.kpi.snapshot.status=selection
+PASS: analytics.kpi: field/type — onehr.kpi.snapshot.tile_id=many2one
+PASS: analytics.kpi: field/type — onehr.kpi.snapshot.value=float
+PASS: analytics.kpi: business method — onehr.analytics.tile.action_activate
+PASS: analytics.kpi: business method — onehr.analytics.tile.action_snapshot_now
+PASS: analytics.kpi: business method — onehr.analytics.tile.onehr_analytics_kpi_feed
+PASS: analytics.kpi: selection contract — onehr.analytics.tile.provider_mode
+PASS: analytics.kpi: selection contract — onehr.analytics.tile.state
+PASS: analytics.kpi: selection contract — onehr.kpi.snapshot.status
+PASS: analytics.kpi: actor group — onehr_analytics.group_onehr_analytics_admin
+PASS: presentation.validation: production model — onehr.analytics.tile
+PASS: presentation.validation: field/type — onehr.analytics.tile.code=char
+PASS: presentation.validation: field/type — onehr.analytics.tile.state=selection
+PASS: presentation.validation: production model — onehr.portal.request
+PASS: presentation.validation: field/type — onehr.portal.request.employee_id=many2one
+PASS: presentation.validation: field/type — onehr.portal.request.state=selection
+PASS: presentation.validation: business method — onehr.analytics.tile.action_open_source_records
+PASS: presentation.validation: business method — onehr.portal.request.action_open_self
+PASS: presentation.validation: actor group — onehr_analytics.group_onehr_analytics_admin
+PASS: presentation.validation: actor group — onehr_portal_self_service.group_onehr_portal_admin
+PASS: Production sequence configured — onehr.api.queue
+PASS: Sequence stable identity — onehr.api.queue -> onehr.api.queue.dedupe_key
+PASS: Production sequence configured — onehr.appraisal.form
+PASS: Sequence stable identity — onehr.appraisal.form -> onehr.appraisal.form.name
+PASS: Production sequence configured — onehr.approval.request
+PASS: Sequence stable identity — onehr.approval.request -> onehr.approval.request.source_model
+PASS: Sequence stable identity — onehr.approval.request -> onehr.approval.request.source_res_id
+PASS: Production sequence configured — onehr.assignment
+PASS: Sequence stable identity — onehr.assignment -> onehr.assignment.name
+PASS: Production sequence configured — onehr.assignment.change.request
+PASS: Sequence stable identity — onehr.assignment.change.request -> onehr.assignment.change.request.name
+PASS: Production sequence configured — onehr.attendance.import.batch
+PASS: Sequence stable identity — onehr.attendance.import.batch -> onehr.attendance.import.batch.name
+PASS: Production sequence configured — onehr.attendance.reconciliation
+PASS: Sequence stable identity — onehr.attendance.reconciliation -> onehr.attendance.reconciliation.name
+PASS: Production sequence configured — onehr.disability.record
+PASS: Sequence stable identity — onehr.disability.record -> onehr.disability.record.reference
+PASS: Production sequence configured — onehr.discipline.case
+PASS: Sequence stable identity — onehr.discipline.case -> onehr.discipline.case.reference
+PASS: Production sequence configured — onehr.discipline.sanction
+PASS: Sequence stable identity — onehr.discipline.sanction -> onehr.discipline.sanction.reference
+PASS: Production sequence configured — onehr.document
+PASS: Sequence stable identity — onehr.document -> onehr.document.document_number
+PASS: Production sequence configured — onehr.employee
+PASS: Sequence stable identity — onehr.employee -> hr.employee.onehr_employee_number
+PASS: Production sequence configured — onehr.employee.identifier
+PASS: Sequence stable identity — onehr.employee.identifier -> onehr.employee.identifier.reference
+PASS: Production sequence configured — onehr.employment.contract
+PASS: Sequence stable identity — onehr.employment.contract -> onehr.contract.name
+PASS: Production sequence configured — onehr.jd
+PASS: Sequence stable identity — onehr.jd -> onehr.jd.code
+PASS: Production sequence configured — onehr.kiosk.device
+PASS: Sequence stable identity — onehr.kiosk.device -> onehr.kiosk.device.code
+PASS: Production sequence configured — onehr.kiosk.log
+PASS: Sequence stable identity — onehr.kiosk.log -> onehr.kiosk.log.client_event_id
+PASS: Production sequence configured — onehr.learning.certificate
+PASS: Sequence stable identity — onehr.learning.certificate -> onehr.learning.certificate.name
+PASS: Production sequence configured — onehr.learning.enrollment
+PASS: Sequence stable identity — onehr.learning.enrollment -> onehr.learning.enrollment.name
+PASS: Production sequence configured — onehr.learning.session
+PASS: Sequence stable identity — onehr.learning.session -> onehr.learning.session.name
+PASS: Production sequence configured — onehr.leave.allocation
+PASS: Sequence stable identity — onehr.leave.allocation -> onehr.leave.allocation.name
+PASS: Production sequence configured — onehr.leave.request
+PASS: Sequence stable identity — onehr.leave.request -> onehr.leave.request.name
+PASS: Production sequence configured — onehr.medical.assessment
+PASS: Sequence stable identity — onehr.medical.assessment -> onehr.medical.assessment.reference
+PASS: Production sequence configured — onehr.offboarding
+PASS: Sequence stable identity — onehr.offboarding -> onehr.offboarding.name
+PASS: Production sequence configured — onehr.payroll.export
+PASS: Sequence stable identity — onehr.payroll.export -> onehr.payroll.export.name
+PASS: Production sequence configured — onehr.payroll.import
+PASS: Sequence stable identity — onehr.payroll.import -> onehr.payroll.import.name
+PASS: Production sequence configured — onehr.policy
+PASS: Sequence stable identity — onehr.policy -> onehr.policy.policy_code
+PASS: Production sequence configured — onehr.portal.request
+PASS: Sequence stable identity — onehr.portal.request -> onehr.portal.request.name
+PASS: Production sequence configured — onehr.recruitment.offer
+PASS: Sequence stable identity — onehr.recruitment.offer -> onehr.offer.name
+PASS: Production sequence configured — onehr.recruitment.requisition
+PASS: Sequence stable identity — onehr.recruitment.requisition -> onehr.recruitment.requisition.name
+PASS: Production sequence configured — onehr.sop
+PASS: Sequence stable identity — onehr.sop -> onehr.sop.code
+PASS: Production sequence configured — onehr.succession.plan
+PASS: Sequence stable identity — onehr.succession.plan -> onehr.succession.plan.name
+PASS: Production sequence configured — onehr.talent.pool
+PASS: Sequence stable identity — onehr.talent.pool -> onehr.talent.pool.name
+PASS: Production sequence configured — onehr.work.incident
+PASS: Sequence stable identity — onehr.work.incident -> onehr.work.incident.reference
+PASS: Runtime compatibility audits MP05 Odoo-native fields
+PASS: Runtime compatibility audits every generator contract
+PASS: Runtime compatibility audits every sequence policy
+PASS: Runtime compatibility validates source manifests
+PASS: Runtime compatibility validates published fingerprints
+PASS: Module-operation quiescence covers install/upgrade/remove
+PASS: Stable compatibility lock excludes execution-only metadata and human source label
+PASS: Post-install runtime tag — test_control_plane.py
+PASS: Post-install runtime tag — test_determinism_contract.py
+PASS: Post-install runtime tag — test_mp05_foundation.py
+PASS: Post-install runtime tag — test_security_safety.py
+PASS: Bounded runtime regression methods >=23 (actual 27)
+PASS: Governance/documentation artifact — README.md
+PASS: Governance/documentation artifact — docs/CONTROL_CENTER_NAVIGATION_CLOSURE.md
+PASS: Governance/documentation artifact — docs/DETERMINISTIC_SEQUENCE_POLICY.md
+PASS: Governance/documentation artifact — docs/ENTERPRISE_COMPLETENESS_MATRIX.md
+PASS: Governance/documentation artifact — docs/ENTERPRISE_DEVELOPMENT_GUARDRAIL.md
+PASS: Governance/documentation artifact — docs/FROZEN_MP02_MP04_CONTRACT.json
+PASS: Governance/documentation artifact — docs/FROZEN_MP02_MP05_CONTRACT.json
+PASS: Governance/documentation artifact — docs/MP02_MP04_IMPLEMENTATION_EVIDENCE.md
+PASS: Governance/documentation artifact — docs/MP02_MP05_IMPLEMENTATION_EVIDENCE.md
+PASS: Governance/documentation artifact — docs/MP05_FOUNDATION_DATASET_CONTRACT.md
+PASS: Governance/documentation artifact — docs/MP05_IMPLEMENTATION_EVIDENCE.md
+PASS: Governance/documentation artifact — docs/PROJECT_IDENTITY_PREFLIGHT.md
+PASS: Governance/documentation artifact — docs/RESET_CAPABILITY_MATRIX.md
+PASS: Governance/documentation artifact — docs/SECURITY_PRIVACY_MATRIX.md
+PASS: Governance/documentation artifact — docs/SIDE_EFFECT_QUARANTINE_MATRIX.md
+PASS: Governance/documentation artifact — docs/UI_UX_MATRIX.md
+PASS: Governance/documentation artifact — docs/WHOLE_PATH_RUNTIME_CONTRACT.md
+PASS: Governance/documentation artifact — docs/WINDOWS_RUNTIME_ACCEPTANCE.md
+WARN: Windows/Odoo runtime install and registry acceptance are intentionally NOT_RUN by static acceptance.
+WARN: Windows/Odoo MP05 generation, idempotency, reset/rebuild and UI acceptance remain NOT_RUN by static acceptance.
+SOURCE_ACCEPTANCE_PASS_COUNT=1034
+SOURCE_ACCEPTANCE_WARN_COUNT=2
+SOURCE_ACCEPTANCE_FAIL_COUNT=0
+ONEHR_DEMO_MP02_MP05_SOURCE_ACCEPTANCE=PASS
+MP02_MP05_STATIC_RESULT=PASS_FOR_WINDOWS_RUNTIME_TRIAL
+WINDOWS_RUNTIME_INSTALL=NOT_RUN
+MP05_RUNTIME_GENERATION=NOT_RUN
+MP05_MOVE_FORWARD_READY=NO
+ONEHR_DEMO_MOVE_FORWARD_READY=NO
+

@@ -1,3 +1,4 @@
+
 <odoo noupdate="1">
     <record id="mail_template_discipline_hearing_notice" model="mail.template">
         <field name="name">OneHR Discipline — Hearing Notice</field>
@@ -47,3 +48,4 @@
         <field name="auto_delete" eval="False"/>
     </record>
 </odoo>
+

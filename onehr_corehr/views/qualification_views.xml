@@ -1,3 +1,4 @@
+
 <odoo>
     <!-- Education -->
     <record id="view_onehr_education_list" model="ir.ui.view">

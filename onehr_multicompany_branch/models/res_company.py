@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 from odoo import _, api, fields, models
@@ -60,3 +61,4 @@ class ResCompany(models.Model):
             domain=[("company_id", "=", self.id)],
             context={"default_company_id": self.id},
         )
+

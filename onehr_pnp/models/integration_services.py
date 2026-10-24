@@ -1,3 +1,4 @@
+
 from odoo import _, api, models
 from odoo.exceptions import AccessError, ValidationError
 
@@ -209,3 +210,4 @@ class OneHRPnPIntegrationServices(models.Model):
                 else 0.0
             ),
         }
+

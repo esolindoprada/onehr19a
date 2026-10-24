@@ -1,3 +1,4 @@
+
 from odoo import _
 from odoo.exceptions import AccessError
 
@@ -54,3 +55,4 @@ def display_notification(
             "sticky": False,
         },
     }
+

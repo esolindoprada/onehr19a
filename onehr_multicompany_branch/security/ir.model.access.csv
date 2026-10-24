@@ -1,3 +1,4 @@
+
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_onehr_branch_user,OneHR Branch User,model_onehr_branch,onehr_multicompany_branch.group_onehr_branch_user,1,0,0,0
 access_onehr_branch_manager,OneHR Branch Manager,model_onehr_branch,onehr_multicompany_branch.group_onehr_branch_manager,1,0,0,0
@@ -6,3 +7,10 @@ access_onehr_branch_central,OneHR Branch Central Office,model_onehr_branch,onehr
 access_res_users_onehr_branch_admin,Users OneHR Branch Admin,base.model_res_users,onehr_multicompany_branch.group_onehr_branch_admin,1,1,0,0
 access_onehr_user_role_branch_admin,OneHR User Role Branch Admin,onehr_security.model_onehr_user_role,onehr_multicompany_branch.group_onehr_branch_admin,1,0,0,0
 access_onehr_user_role_central,OneHR User Role Central Office,onehr_security.model_onehr_user_role,onehr_multicompany_branch.group_onehr_central_office,1,0,0,0
+access_onehr_branch_odoo_technical_admin,OneHR Branch Odoo Technical Admin Read,model_onehr_branch,base.group_system,1,0,0,0
+access_onehr_branch_security_manager,OneHR Branch Security Manager Read,model_onehr_branch,onehr_security.group_onehr_security_manager,1,0,0,0
+access_onehr_branch_security_admin,OneHR Branch Security Admin Read,model_onehr_branch,onehr_security.group_onehr_security_admin,1,0,0,0
+access_onehr_user_role_odoo_technical_admin,OneHR User Role Odoo Technical Admin Read,onehr_security.model_onehr_user_role,base.group_system,1,0,0,0
+access_onehr_role_odoo_technical_admin,OneHR Role Odoo Technical Admin Read,onehr_security.model_onehr_role,base.group_system,1,0,0,0
+access_onehr_sod_conflict_odoo_technical_admin,OneHR SoD Conflict Odoo Technical Admin Read,onehr_security.model_onehr_sod_conflict_log,base.group_system,1,0,0,0
+access_onehr_audit_odoo_technical_admin,OneHR Audit Odoo Technical Admin Read,onehr_security.model_onehr_audit_log,base.group_system,1,0,0,0

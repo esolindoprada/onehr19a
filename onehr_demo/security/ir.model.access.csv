@@ -1,0 +1,15 @@
+
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_onehr_demo_scenario_viewer,onehr.demo.scenario viewer,model_onehr_demo_scenario,onehr_demo.group_onehr_demo_viewer,1,0,0,0
+access_onehr_demo_run_viewer,onehr.demo.run viewer,model_onehr_demo_run,onehr_demo.group_onehr_demo_viewer,1,0,0,0
+access_onehr_demo_generator_viewer,onehr.demo.generator viewer,model_onehr_demo_generator,onehr_demo.group_onehr_demo_viewer,1,0,0,0
+access_onehr_demo_checkpoint_viewer,onehr.demo.checkpoint viewer,model_onehr_demo_checkpoint,onehr_demo.group_onehr_demo_viewer,1,0,0,0
+access_onehr_demo_reference_viewer,onehr.demo.reference viewer,model_onehr_demo_reference,onehr_demo.group_onehr_demo_viewer,1,0,0,0
+access_onehr_demo_log_viewer,onehr.demo.log viewer,model_onehr_demo_log,onehr_demo.group_onehr_demo_viewer,1,0,0,0
+access_onehr_demo_scenario_admin,onehr.demo.scenario admin,model_onehr_demo_scenario,onehr_demo.group_onehr_demo_admin,1,1,1,1
+access_onehr_demo_run_admin,onehr.demo.run admin,model_onehr_demo_run,onehr_demo.group_onehr_demo_admin,1,1,1,0
+access_onehr_demo_checkpoint_admin,onehr.demo.checkpoint admin,model_onehr_demo_checkpoint,onehr_demo.group_onehr_demo_admin,1,1,1,0
+access_onehr_demo_reference_admin,onehr.demo.reference admin,model_onehr_demo_reference,onehr_demo.group_onehr_demo_admin,1,1,1,0
+access_onehr_demo_log_admin,onehr.demo.log admin,model_onehr_demo_log,onehr_demo.group_onehr_demo_admin,1,1,1,0
+access_onehr_demo_generator_admin,onehr.demo.generator admin read,model_onehr_demo_generator,onehr_demo.group_onehr_demo_admin,1,0,0,0
+

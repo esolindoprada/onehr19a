@@ -1,3 +1,4 @@
+
 # OneHR Job Description — Security & Privacy Matrix
 
 | Role | JD Master | JD Version | Workflow | Scope |
@@ -20,3 +21,4 @@ Security controls:
 - approval routing is enforced in Python when assigned approvers are configured;
 - no business `sudo()`;
 - no public controller.
+

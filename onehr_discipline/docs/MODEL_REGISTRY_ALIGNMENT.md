@@ -1,3 +1,4 @@
+
 # OneHR Discipline — Model Registry Alignment
 
 The authoritative OneHR 25-addon specification identifies exactly:
@@ -22,3 +23,4 @@ Registry ED0–ED5 rows for these two models. No ED classification is invented.
 
 REGISTRY_MODEL_NAME_ALIGNMENT: PASS_TO_AUTHORITATIVE_PRODUCT_SPEC  
 REGISTRY_ED_CLASSIFICATION: PENDING_EXACT_REGISTRY_ROW_VERIFICATION
+

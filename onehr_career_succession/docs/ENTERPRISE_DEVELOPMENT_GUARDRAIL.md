@@ -1,3 +1,4 @@
+
 # OneHR Career & Succession — Enterprise Development Guardrail
 
 GUARDRAIL_ID: ONEHR-EDG-V1-CAREER-SUCCESSION-DIRECT-FULL
@@ -97,3 +98,4 @@ ADDON_SOURCE_FAILURE, TEST_DEFECT, DATA/MIGRATION_FAILURE, ARCHITECTURE_CONFLICT
 
 Default write scope is `onehr_career_succession` only. Sibling addon source edits are
 forbidden unless explicitly authorized.
+

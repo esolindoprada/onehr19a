@@ -1,3 +1,4 @@
+
 from datetime import timedelta
 
 from odoo import _, api, fields, models
@@ -704,3 +705,4 @@ class OneHRJobDescription(models.Model):
                     note=_("Review current published JD %s.") % record.display_name,
                 )
         return True
+

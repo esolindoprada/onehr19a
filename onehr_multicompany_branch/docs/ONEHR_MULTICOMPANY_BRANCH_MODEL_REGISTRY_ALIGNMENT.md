@@ -1,3 +1,4 @@
+
 # OneHR Multicompany & Branch — Master Model Registry Alignment
 
 | # | Model | Class | ED | Implementation contract |
@@ -18,3 +19,4 @@
 ## Dependency direction
 
 Hard dependency is exactly `onehr_security`. `onehr_security` does not depend on this addon. No circular dependency is introduced.
+

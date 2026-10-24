@@ -1,3 +1,4 @@
+
 <odoo>
     <!-- Global company boundaries intersect every role-specific visibility rule. -->
     <record id="rule_discipline_case_company_global" model="ir.rule">
@@ -87,3 +88,4 @@
         <field name="domain_force">[(1, '=', 1)]</field>
     </record>
 </odoo>
+

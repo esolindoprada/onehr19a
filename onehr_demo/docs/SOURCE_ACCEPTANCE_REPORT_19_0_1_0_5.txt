@@ -1,0 +1,13 @@
+
+ONEHR DEMO SOURCE ACCEPTANCE — 19.0.1.0.5
+
+[PASS] Python syntax compilation for all addon Python files.
+[PASS] XML parse for data/generator_registry.xml and views/demo_scenario_views.xml.
+[PASS] Frozen contract ordering uses phase + key.
+[PASS] MP05 foundation.enterprise remains implemented.
+[PASS] MP06 organization.jobs_positions implemented with handler, validator and readiness checker.
+[PASS] Model-by-model progress derives from retained scenario-wide PASS checkpoints.
+[PASS] No production sequence/counter is used for model-by-model identity/order.
+[PASS] Fail-closed behavior retained for planned MP07+ contracts.
+[NOT CLAIMED] Native Odoo runtime installation/upgrade/UI execution; Odoo runtime is not available in this build environment.
+

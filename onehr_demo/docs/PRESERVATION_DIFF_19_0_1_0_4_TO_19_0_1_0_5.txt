@@ -1,0 +1,31 @@
+
+OneHR Demo preservation audit 19.0.1.0.4 -> 19.0.1.0.5
+
+PRESERVED
+- Existing six-model Control Center remains intact.
+- Existing MP05 foundation generator remains intact.
+- Existing compatibility/readiness/safety/reset/provenance contracts remain intact.
+- Existing authoritative source and governing guardrail fingerprints remain unchanged.
+- Existing production sequence policy audit remains compatibility evidence only.
+- No production sequence/counter is used as demo identity or model-by-model ordering.
+
+ADDED
+- MP06 bounded generator: organization.jobs_positions.
+- Deterministic jobs, grades, work locations and positions with demo provenance.
+- Scenario-wide model-by-model progress computed from retained PASS checkpoints.
+- Explicit next deterministic contract fields.
+- Execute Next Model action that executes exactly one bounded generator.
+- Contract order is frozen by (phase, key), independent of mutable production sequence state.
+- Fail-closed behavior when the next contract is planned but not implemented.
+
+UI
+- Added Execute Next Model Control Center action.
+- Added Model-by-Model execution progress and next-contract visibility.
+- Legacy bulk profile buttons are removed from the Control Center; backward-compatible Python methods remain.
+
+VALIDATION
+- Python syntax compilation PASS.
+- XML parse PASS.
+- Static contract inspection PASS: MP05 and MP06 implemented; MP07+ remain planned.
+- Native Odoo runtime execution was not available in this build environment and is therefore not claimed as PASS.
+

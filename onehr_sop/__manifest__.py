@@ -1,3 +1,4 @@
+
 {
     "name": "OneHR SOP",
     "summary": "Enterprise SOP versioning, targeted publication, acknowledgement and compliance governance",
@@ -13,6 +14,7 @@ audit export and downstream Portal/API service contracts.
     "version": "19.0.1.0.0",
     "license": "LGPL-3",
     "depends": [
+        "onehr_base",
         "onehr_security",
         "onehr_document",
     ],
@@ -30,6 +32,7 @@ audit export and downstream Portal/API service contracts.
         "views/menus.xml",
     ],
     "installable": True,
-    "application": True,
+    "application": False,
     "auto_install": False,
 }
+

@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="action_report_onehr_policy" model="ir.actions.report">
         <field name="name">Policy / Procedure</field>
@@ -292,3 +293,4 @@
         </t>
     </template>
 </odoo>
+

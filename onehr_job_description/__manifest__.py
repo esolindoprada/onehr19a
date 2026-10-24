@@ -1,3 +1,4 @@
+
 {
     "name": "OneHR Job Description",
     "summary": "Enterprise position Job Description governance, versioning, KPI, competency and HSE",
@@ -28,6 +29,7 @@ Recruitment/Appraisal/Portal integration services.
         "views/menus.xml",
     ],
     "installable": True,
-    "application": True,
+    "application": False,
     "auto_install": False,
 }
+

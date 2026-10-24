@@ -1,3 +1,4 @@
+
 from odoo import _, api, fields, models
 from odoo.api import SUPERUSER_ID
 from odoo.fields import Command

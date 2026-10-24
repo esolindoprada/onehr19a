@@ -1,31 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!--
+        Canonical Home application ownership:
+        OneHR — Talent & Performance is owned by onehr_base.
+        This addon contributes the Career & Succession navigation only.
+    -->
     <menuitem id="menu_onehr_talent_root"
-              name="Talent"
-              parent="onehr_base.menu_onehr_root"
-              sequence="60"
+              name="Career &amp; Succession"
+              parent="onehr_base.menu_onehr_domain_talent"
+              sequence="30"
               groups="onehr_career_succession.group_onehr_career_hrbp"/>
 
-    <menuitem id="menu_onehr_talent_operations"
-              name="Talent &amp; Succession"
-              parent="menu_onehr_talent_root"
-              sequence="10"/>
-
-    <menuitem id="menu_onehr_talent_pool"
-              name="Talent Pool"
-              parent="menu_onehr_talent_operations"
-              action="action_onehr_talent_pool"
-              sequence="10"/>
-
-    <menuitem id="menu_onehr_succession_plans"
-              name="Succession Plans"
-              parent="menu_onehr_talent_operations"
-              action="action_onehr_succession_plan"
-              sequence="20"/>
-
     <menuitem id="menu_onehr_talent_configuration"
-              name="Configuration"
+              name="Career"
               parent="menu_onehr_talent_root"
-              sequence="90"
+              sequence="10"
               groups="onehr_career_succession.group_onehr_talent_manager"/>
 
     <menuitem id="menu_onehr_competencies"
@@ -38,5 +27,22 @@
               name="Position Competencies"
               parent="menu_onehr_talent_configuration"
               action="action_onehr_position_competency"
+              sequence="20"/>
+
+    <menuitem id="menu_onehr_talent_operations"
+              name="Succession"
+              parent="menu_onehr_talent_root"
+              sequence="20"/>
+
+    <menuitem id="menu_onehr_talent_pool"
+              name="Talent Pool"
+              parent="menu_onehr_talent_operations"
+              action="action_onehr_talent_pool"
+              sequence="10"/>
+
+    <menuitem id="menu_onehr_succession_plans"
+              name="Succession Plans"
+              parent="menu_onehr_talent_operations"
+              action="action_onehr_succession_plan"
               sequence="20"/>
 </odoo>

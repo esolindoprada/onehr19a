@@ -1,3 +1,4 @@
+
 from odoo import fields
 from odoo.fields import Command
 from odoo.tests.common import TransactionCase
@@ -286,3 +287,4 @@ class OneHRPnPCommon(TransactionCase):
                 "evidence_note": "Employee confirms required compliance evidence.",
             }
         )
+

@@ -1,3 +1,4 @@
+
 {
     "name": "OneHR Assignment",
     "summary": "Enterprise employee placement, movement, position occupancy, workforce planning and assignment costing",
@@ -7,7 +8,7 @@ assignments, governed mass movement, position occupancy, assignment-level costin
 workforce planning and position budgets while synchronizing approved primary placement
 to Odoo 19 native hr.version employment facts.
 """,
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "category": "Human Resources/Employees",
     "author": "PT Dua Empat Tujuh Open Source",
     "website": "https://odoocamp.net",
@@ -32,5 +33,6 @@ to Odoo 19 native hr.version employment facts.
         "views/menus.xml",
     ],
     "installable": True,
-    "application": True,
+    "application": False,
 }
+

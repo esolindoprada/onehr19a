@@ -1,3 +1,4 @@
+
 <odoo noupdate="1">
     <record id="ir_cron_onehr_reconcile_effective_roles" model="ir.cron">
         <field name="name">OneHR Security — Reconcile Effective Roles</field>

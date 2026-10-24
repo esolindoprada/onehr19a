@@ -1,0 +1,23 @@
+<odoo>
+    <record id="action_report_offboarding_clearance" model="ir.actions.report">
+        <field name="name">Offboarding Clearance Summary</field>
+        <field name="model">onehr.offboarding</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_retirement_offboarding.report_offboarding_clearance</field>
+        <field name="report_file">onehr_retirement_offboarding.report_offboarding_clearance</field>
+        <field name="binding_model_id" ref="model_onehr_offboarding"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[Command.link(ref('onehr_retirement_offboarding.group_onehr_offboarding_officer'))]"/>
+    </record>
+
+    <record id="action_report_exit_interview" model="ir.actions.report">
+        <field name="name">Exit Interview Summary</field>
+        <field name="model">onehr.exit.interview</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">onehr_retirement_offboarding.report_exit_interview</field>
+        <field name="report_file">onehr_retirement_offboarding.report_exit_interview</field>
+        <field name="binding_model_id" ref="model_onehr_exit_interview"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[Command.link(ref('onehr_retirement_offboarding.group_onehr_offboarding_officer'))]"/>
+    </record>
+</odoo>

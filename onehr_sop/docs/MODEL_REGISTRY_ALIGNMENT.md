@@ -1,3 +1,4 @@
+
 # OneHR SOP — Model Registry Alignment
 
 Approved OneHR product contract identifies exactly:
@@ -18,3 +19,4 @@ Registry ED0–ED5 rows for these three SOP models. No ED classification is inve
 
 REGISTRY_MODEL_NAME_ALIGNMENT_SOURCE: PASS_TO_PRODUCT_BASELINE  
 REGISTRY_ED_CLASSIFICATION: PENDING_EXACT_REGISTRY_ROW_VERIFICATION
+

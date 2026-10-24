@@ -1,3 +1,4 @@
+
 import base64
 
 from odoo import fields
@@ -197,3 +198,4 @@ class OneHRJobDescriptionCommon(TransactionCase):
         version.with_user(self.approver).action_approve()
         version.with_user(self.approver).action_publish()
         return version
+

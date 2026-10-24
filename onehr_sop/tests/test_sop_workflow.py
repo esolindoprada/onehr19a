@@ -1,3 +1,4 @@
+
 from odoo.exceptions import AccessError, UserError
 from odoo.fields import Command
 from odoo.tests import tagged
@@ -165,3 +166,4 @@ class TestSOPWorkflow(OneHRSOPCommon):
         version = self.publish_version(self.make_version())
         with self.assertRaises(UserError):
             version.with_user(self.admin).unlink()
+

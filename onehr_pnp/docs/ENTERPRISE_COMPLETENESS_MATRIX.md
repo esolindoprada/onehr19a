@@ -1,7 +1,9 @@
+
 # OneHR PnP — Enterprise Completeness Matrix
 
 | Area | Source status | Runtime status |
 |---|---|---|
+| Odoo 19 Users / Access Rights dynamic privilege-category XML safety | PASS source | PENDING User form smoke |
 | Root Guardrail / Direct Full / bounded worker | PASS source | n/a |
 | Tutorial scaffold removal | PASS source | PENDING install |
 | Exactly 3 persistent PnP models | PASS source | PENDING registry |
@@ -44,7 +46,7 @@
 | No broad base.group_user CRUD | PASS source | PENDING ACL registry |
 | No business sudo/public route | PASS source | PENDING runtime |
 | HARD GATE 11 identifier safety | PASS when scanner passes | PENDING DB registry |
-| 47 post-install tests | PASS source inventory | PENDING execution |
+| 49 post-install tests | PASS source inventory | PENDING execution |
 | Exact Registry ED0–ED5 rows | PENDING authoritative rows | PENDING |
 | Fresh install | n/a | PENDING |
 | Repeated upgrade/idempotency | n/a | PENDING |
@@ -54,3 +56,4 @@
 SOURCE_ENTERPRISE_COMPLETENESS: PASS_FOR_RUNTIME when source acceptance passes.  
 WINDOWS_RUNTIME_ACCEPTANCE: PENDING  
 ONEHR_PNP_MOVE_FORWARD_READY: NO
+

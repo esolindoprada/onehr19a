@@ -1,3 +1,4 @@
+
 {
     "name": "OneHR Career & Succession",
     "summary": "Enterprise competency, talent pool, readiness and succession planning",
@@ -9,7 +10,7 @@ readiness/gap analysis, critical-position succession plans and governed soft int
     "author": "PT Dua Empat Tujuh Open Source",
     "website": "https://odoocamp.net",
     "category": "Human Resources/Talent",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "license": "LGPL-3",
     "depends": [
         "onehr_base",
@@ -29,6 +30,7 @@ readiness/gap analysis, critical-position succession plans and governed soft int
         "views/menus.xml",
     ],
     "installable": True,
-    "application": True,
+    "application": False,
     "auto_install": False,
 }
+

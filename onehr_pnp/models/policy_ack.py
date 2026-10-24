@@ -1,3 +1,4 @@
+
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 
@@ -346,3 +347,4 @@ class OneHRPolicyAcknowledgement(models.Model):
         raise AccessError(
             _("Policy acknowledgement assignments/evidence are retained and cannot be deleted.")
         )
+

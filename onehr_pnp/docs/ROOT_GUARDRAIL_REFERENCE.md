@@ -1,3 +1,4 @@
+
 # OneHR Root Guardrail Reference
 
 ROOT_GUARDRAIL_ID: ONEHR-EDG-V1  
@@ -16,3 +17,4 @@ Codex remains BOUNDED_IMPLEMENTATION_WORKER:
 - same root cause repeated at most once
 - static/runtime PASS is not enterprise completeness
 - move-forward requires every applicable hard gate
+

@@ -1,0 +1,32 @@
+<odoo>
+    <!-- Analytics Analysts can be independent of broad HR officer groups. Extend only
+         the existing OneHR root menu visibility; no onehr_base source is modified. -->
+    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[Command.link(ref('onehr_analytics.group_onehr_analytics_analyst'))]"/>
+    </record>
+
+    <menuitem id="menu_onehr_analytics_root"
+              name="Analytics"
+              parent="onehr_base.menu_onehr_root"
+              sequence="75"
+              groups="onehr_analytics.group_onehr_analytics_analyst"/>
+
+    <menuitem id="menu_onehr_analytics_dashboard"
+              name="Executive KPI Dashboard"
+              parent="menu_onehr_analytics_root"
+              action="action_onehr_analytics_dashboard"
+              sequence="10"/>
+
+    <menuitem id="menu_onehr_analytics_evidence"
+              name="KPI Trend &amp; Evidence"
+              parent="menu_onehr_analytics_root"
+              action="action_onehr_kpi_snapshot_analysis"
+              sequence="20"/>
+
+    <menuitem id="menu_onehr_analytics_configuration"
+              name="KPI Configuration"
+              parent="menu_onehr_analytics_root"
+              action="action_onehr_analytics_tiles"
+              sequence="90"
+              groups="onehr_analytics.group_onehr_analytics_manager"/>
+</odoo>

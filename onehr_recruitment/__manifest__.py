@@ -7,7 +7,7 @@ requisitions, structured interview scorecards, offer approval, preboarding
 orchestration and immutable recruitment snapshots while preserving Odoo-native
 applicant, stage, job and talent-pool ownership.
 """,
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.3",
     "category": "Human Resources/Recruitment",
     "author": "PT Dua Empat Tujuh Open Source",
     "website": "https://odoocamp.net",

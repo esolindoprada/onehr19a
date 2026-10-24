@@ -1,3 +1,4 @@
+
 # OneHR Discipline — Enterprise Development Guardrail
 
 GUARDRAIL_ID: ONEHR-EDG-V1-DISCIPLINE-DIRECT-FULL  
@@ -128,3 +129,4 @@ Runtime root-cause classes:
 
 Default write scope is `onehr_discipline` only. Sibling OneHR source changes
 require a separate approved change contract.
+

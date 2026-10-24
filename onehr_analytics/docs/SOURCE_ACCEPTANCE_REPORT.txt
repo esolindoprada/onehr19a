@@ -1,0 +1,243 @@
+PASS: Manifest product identity
+PASS: Manifest version 19.0.1.0.0
+PASS: Hard dependencies exactly onehr_security
+PASS: Manifest LGPL-3 license
+PASS: Manifest installable
+PASS: Analytics remains OneHR addon, not duplicate root application
+PASS: Manifest data exists — security/onehr_analytics_groups.xml
+PASS: Manifest data exists — security/ir.model.access.csv
+PASS: Manifest data exists — security/onehr_analytics_rules.xml
+PASS: Manifest data exists — data/analytics_cron.xml
+PASS: Manifest data exists — views/analytics_tile_views.xml
+PASS: Manifest data exists — views/kpi_snapshot_views.xml
+PASS: Manifest data exists — views/menus.xml
+PASS: README target is Odoo 19 CE
+PASS: README exact Analytics model contract
+PASS: Python syntax — __init__.py
+PASS: Python syntax — __manifest__.py
+PASS: Python syntax — models/__init__.py
+PASS: Python syntax — models/analytics_mixin.py
+PASS: Python syntax — models/analytics_tile.py
+PASS: Python syntax — models/kpi_snapshot.py
+PASS: Python syntax — models/provider_engine.py
+PASS: Python syntax — tests/__init__.py
+PASS: Python syntax — tests/common.py
+PASS: Python syntax — tests/test_provider_contracts.py
+PASS: Python syntax — tests/test_snapshot_security.py
+PASS: Python syntax — tests/test_tile_lifecycle.py
+PASS: Python syntax — tools/source_acceptance.py
+PASS: Exact Analytics ORM model names
+PASS: onehr.mixin.analytics is abstract
+PASS: Persistent model onehr.analytics.tile
+PASS: Persistent model onehr.kpi.snapshot
+PASS: Tutorial model removed
+PASS: No Analytics controller import
+PASS: No public/private controller scaffold retained
+PASS: Tutorial demo scaffold removed
+PASS: Human-friendly model module present — models/analytics_mixin.py
+PASS: Human-friendly model module present — models/provider_engine.py
+PASS: Human-friendly model module present — models/analytics_tile.py
+PASS: Human-friendly model module present — models/kpi_snapshot.py
+PASS: Provider engine decomposed from ORM model
+PASS: Human-readable Tile class name
+PASS: Human-readable Snapshot class name
+PASS: PostgreSQL identifier <63 bytes — onehr_analytics_tile
+PASS: PostgreSQL identifier <63 bytes — onehr_kpi_snapshot
+PASS: PostgreSQL identifier <63 bytes — onehr_analytics_tile_alert_user_rel
+PASS: PostgreSQL identifier <63 bytes — onehr_analytics_tile_favorite_user_rel
+PASS: Alert Many2many relation explicitly named
+PASS: Favorite Many2many relation explicitly named
+PASS: No legacy _sql_constraints
+PASS: Odoo 19 models.Constraint used
+PASS: Tile company/code uniqueness constraint
+PASS: Snapshot tile/period uniqueness constraint
+PASS: XML syntax — data/analytics_cron.xml
+PASS: XML syntax — security/onehr_analytics_groups.xml
+PASS: XML syntax — security/onehr_analytics_rules.xml
+PASS: XML syntax — views/analytics_tile_views.xml
+PASS: XML syntax — views/kpi_snapshot_views.xml
+PASS: XML syntax — views/menus.xml
+PASS: No duplicate XML IDs
+PASS: No legacy tree view tag
+PASS: No legacy attrs modifier
+PASS: No legacy states modifier
+PASS: No invalid action groups_id field
+PASS: Odoo 19 action group_ids used
+PASS: Form labels have field target — kpi_snapshot_views.xml
+PASS: Form labels have field target — menus.xml
+PASS: Form labels have field target — analytics_tile_views.xml
+PASS: Search group elements attribute-free — kpi_snapshot_views.xml
+PASS: Search group elements attribute-free — menus.xml
+PASS: Search group elements attribute-free — analytics_tile_views.xml
+PASS: Tile List view
+PASS: Tile Form view
+PASS: Tile Search view
+PASS: Snapshot List view
+PASS: Snapshot Form view
+PASS: Snapshot Search view
+PASS: Tile executive Kanban dashboard
+PASS: Snapshot Pivot analysis
+PASS: Snapshot Graph analysis
+PASS: Tile workflow Statusbar Widget
+PASS: Snapshot KPI outcome Statusbar Widget
+PASS: Professional Tile UI — Activate Action Button
+PASS: Professional Tile UI — Pause Action Button
+PASS: Professional Tile UI — Resume Action Button
+PASS: Professional Tile UI — Retire Action Button
+PASS: Professional Tile UI — Generate Snapshot Action Button
+PASS: Professional Tile UI — Smart Button framework
+PASS: Professional Tile UI — Snapshot Smart Button
+PASS: Professional Tile UI — Breach Smart Button
+PASS: Professional Tile UI — Provider body action
+PASS: Professional Tile UI — Drill-through body action
+PASS: Professional Tile UI — CSV body action
+PASS: Professional Tile UI — Favorite action
+PASS: One2many snapshot row action buttons
+PASS: Tile chatter/activity surface
+PASS: Snapshot immutable form UX
+PASS: Enterprise ribbons used where meaningful
+PASS: Exactly six custom-model ACL rows
+PASS: No broad base.group_user Analytics ACL
+PASS: Security role present — group_onehr_analytics_analyst
+PASS: Security role present — group_onehr_analytics_manager
+PASS: Security role present — group_onehr_analytics_admin
+PASS: Odoo 19 res.groups.privilege pattern
+PASS: Analytics Analyst implies OneHR security user
+PASS: Analytics roles do not escalate HR/System authority
+PASS: Two global company boundary rules
+PASS: Company rules cover both persistent models
+PASS: No business sudo bypass in Analytics models/provider
+PASS: No safe_eval formula execution
+PASS: No raw eval formula execution
+PASS: Literal-only configured domain parsing
+PASS: Approved provider allow-list — hr.employee
+PASS: Approved provider allow-list — hr.applicant
+PASS: Approved provider allow-list — onehr.recruitment.source.metric
+PASS: Approved provider allow-list — hr.attendance
+PASS: Approved provider allow-list — onehr.leave.request
+PASS: Approved provider allow-list — onehr.learning.session
+PASS: Approved provider allow-list — onehr.learning.enrollment
+PASS: Approved provider allow-list — onehr.appraisal.form
+PASS: Approved provider allow-list — onehr.payroll.export
+PASS: Approved provider allow-list — onehr.talent.pool
+PASS: Approved provider allow-list — onehr.succession.plan
+PASS: Approved provider allow-list — onehr.discipline.case
+PASS: Soft integration contract — Appraisal KPI service
+PASS: Soft integration contract — Learning KPI service
+PASS: Soft integration contract — Career KPI service
+PASS: Provider preserves source model read authority
+PASS: Branch resolution preserves source authority
+PASS: Provider documents fail-closed branch behavior
+PASS: Branch-scoped provider requires branch_id
+PASS: Branch master remains soft capability
+PASS: Fixed model allow-list enforcement
+PASS: Fixed service metric allow-list enforcement
+PASS: Only selected fixed KPI service dispatch
+PASS: Analytics functional contract — Draft lifecycle
+PASS: Analytics functional contract — Active lifecycle
+PASS: Analytics functional contract — Paused lifecycle
+PASS: Analytics functional contract — Retired lifecycle
+PASS: Analytics functional contract — Warning threshold
+PASS: Analytics functional contract — Critical threshold
+PASS: Analytics functional contract — Snapshot frequency
+PASS: Analytics functional contract — Next snapshot scheduling
+PASS: Analytics functional contract — Alert recipients
+PASS: Analytics functional contract — Per-user favorites
+PASS: Analytics functional contract — Threshold activity alerts
+PASS: Analytics functional contract — Scheduled snapshot generation
+PASS: Analytics functional contract — Retention archival
+PASS: Analytics functional contract — Source drill-through
+PASS: Analytics functional contract — CSV export
+PASS: Analytics functional contract — Downstream model-level KPI feed
+PASS: Snapshot evidence contract — Previous-period baseline
+PASS: Snapshot evidence contract — Month-over-month baseline
+PASS: Snapshot evidence contract — Half-over-half baseline
+PASS: Snapshot evidence contract — Year-over-year baseline
+PASS: Snapshot evidence contract — Previous-period percent change
+PASS: Snapshot evidence contract — MoM percent change
+PASS: Snapshot evidence contract — HoH percent change
+PASS: Snapshot evidence contract — YoY percent change
+PASS: Snapshot evidence contract — Aggregate record count provenance
+PASS: Snapshot evidence contract — Sanitized provider provenance
+PASS: Snapshot evidence contract — Drill-through domain evidence
+PASS: Snapshot create path is transport-controlled
+PASS: Snapshot deletion blocked
+PASS: Snapshot archival write is context-gated
+PASS: Configured domains use ast.literal_eval
+PASS: Central threshold evaluation helper
+PASS: Central trend percentage helper
+PASS: Central periodic snapshot helper
+PASS: No fabricated Spreadsheet engine in Python source
+PASS: No fabricated Cohort view
+PASS: No fabricated Gantt view
+PASS: Exactly 34 bounded runtime test methods
+PASS: Post-install runtime tag — test_provider_contracts.py
+PASS: Post-install runtime tag — test_snapshot_security.py
+PASS: Post-install runtime tag — test_tile_lifecycle.py
+PASS: Runtime regression coverage — snapshot creation
+PASS: Runtime regression coverage — snapshot idempotency
+PASS: Runtime regression coverage — company isolation
+PASS: Runtime regression coverage — domain injection defense
+PASS: Runtime regression coverage — branch fail-closed
+PASS: Runtime regression coverage — analyst configuration denial
+PASS: Runtime regression coverage — soft service contracts
+PASS: Governance documentation — ENTERPRISE_DEVELOPMENT_GUARDRAIL.md
+PASS: Governance documentation — PROJECT_IDENTITY_PREFLIGHT.md
+PASS: Governance documentation — FULL_STRUCTURAL_INVENTORY.md
+PASS: Governance documentation — UI_UX_MATRIX.md
+PASS: Governance documentation — SECURITY_PRIVACY_MATRIX.md
+PASS: Governance documentation — INTEGRATION_CONTRACT.md
+PASS: Governance documentation — ANALYTICS_PROVIDER_MATRIX.md
+PASS: Governance documentation — MODEL_REGISTRY_ALIGNMENT.md
+PASS: Governance documentation — DATABASE_IDENTIFIER_ORM_SAFETY.md
+PASS: Governance documentation — ENTERPRISE_COMPLETENESS_MATRIX.md
+PASS: Governance documentation — WINDOWS_RUNTIME_ACCEPTANCE.md
+PASS: Governance documentation — IMPLEMENTATION_REPORT.md
+PASS: Governance documentation — ROOT_GUARDRAIL_REFERENCE.md
+PASS: Governance documentation — SCOPE_ISOLATION_REPORT.md
+PASS: Governance documentation — CODEX_BOUNDED_IMPLEMENTATION_CONTRACT.md
+PASS: Governance documentation — BOUNDED_IMPLEMENTATION_EVIDENCE.md
+PASS: Enterprise Guardrail contains Hard Gate 0
+PASS: Enterprise Guardrail contains Hard Gate 1
+PASS: Enterprise Guardrail contains Hard Gate 2
+PASS: Enterprise Guardrail contains Hard Gate 3
+PASS: Enterprise Guardrail contains Hard Gate 4
+PASS: Enterprise Guardrail contains Hard Gate 5
+PASS: Enterprise Guardrail contains Hard Gate 6
+PASS: Enterprise Guardrail contains Hard Gate 7
+PASS: Enterprise Guardrail contains Hard Gate 8
+PASS: Enterprise Guardrail contains Hard Gate 9
+PASS: Enterprise Guardrail contains Hard Gate 10
+PASS: Enterprise Guardrail contains Hard Gate 11
+PASS: Enterprise Guardrail contains Hard Gate 12
+PASS: Enterprise Guardrail contains Hard Gate 13
+PASS: Enterprise Guardrail contains Hard Gate 14
+PASS: Enterprise Guardrail contains Hard Gate 15
+PASS: Hard Gate 11 exact database/ORM safety title
+PASS: Codex bounded implementation worker role
+PASS: Bounded task Attempt 1/2 documented
+PASS: Maximum two source attempts documented
+PASS: Same root-cause repeat limit documented
+PASS: Root guardrail SHA-256 reference recorded
+PASS: Static description corrected to Odoo 19 CE
+PASS: Static description exact model footprint
+PASS: Static description discloses non-fabricated CE capability boundary
+PASS: Icon preservation note present
+PASS: No compiled/junk Python artifacts
+WARN: Exact Master Model Registry ED classification is unavailable; no ED0–ED5 value is invented
+WARN: Spreadsheet/Cohort/Gantt are not fabricated on Odoo 19 CE; runtime uses native Kanban/List/Form/Search/Pivot/Graph plus CSV
+SOURCE_FILES_PYTHON=13
+SOURCE_FILES_XML=6
+CUSTOM_PERSISTENT_MODELS=2
+CUSTOM_ABSTRACT_MODELS=1
+EXPLICIT_RELATION_NAMES=2
+ACL_ROWS=6
+RUNTIME_TEST_METHODS=34
+SOURCE_ACCEPTANCE_PASS_COUNT=226
+SOURCE_ACCEPTANCE_WARN_COUNT=2
+SOURCE_ACCEPTANCE_FAIL_COUNT=0
+ONEHR_ANALYTICS_DIRECT_FULL_SOURCE_ACCEPTANCE=PASS
+SOURCE_ENTERPRISE_COMPLETENESS=PASS_FOR_RUNTIME
+REGISTRY_ED_CLASSIFICATION=PENDING_EXACT_REGISTRY_ROW_VERIFICATION
+WINDOWS_RUNTIME_ACCEPTANCE=PENDING
+ONEHR_ANALYTICS_MOVE_FORWARD_READY=NO

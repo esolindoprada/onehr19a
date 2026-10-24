@@ -1,0 +1,129 @@
+PASS: HARD GATE 0 manifest parse
+PASS: HARD GATE 0 exact addon identity
+PASS: Manifest version 19.0.1.0.2
+PASS: Hard dependencies exactly CoreHR + Security + Portal + Web + Mail
+PASS: Optional OneHR bridges remain soft dependencies
+PASS: All manifest data files exist
+PASS: Python syntax (21 files)
+PASS: HARD GATE 5/12 no duplicate class method definitions
+PASS: HARD GATE 4 exact three persistent Portal business models
+PASS: Persistent model implemented: onehr.portal.request
+PASS: Persistent model implemented: onehr.portal.request.stage
+PASS: Persistent model implemented: onehr.portal.request.type
+PASS: All Portal business models use approved OneHR audit mixin
+PASS: No duplicate direct chatter mixin ownership
+PASS: No business sudo() bypass
+PASS: No broad Exception swallowing in runtime source
+PASS: No unbounded retry loop
+PASS: No legacy _sql_constraints
+PASS: Odoo 19 @api.depends contains no explicit .id dependency
+PASS: Tutorial scaffold removed completely
+PASS: No tutorial model residue
+PASS: XML syntax (13 files)
+PASS: Odoo 19 ir.actions.act_window uses group_ids, never groups_id
+PASS: Bulk Request Decision action keeps Manager/HR restriction through group_ids
+PASS: Odoo 19 list syntax uses <list>
+PASS: Odoo 19 direct view modifiers
+PASS: Odoo 19 search <group> elements have no attributes
+PASS: HARD GATE 7/8/9 List/Form/Search views: onehr.portal.request
+PASS: HARD GATE 7/8/9 List/Form/Search views: onehr.portal.request.stage
+PASS: HARD GATE 7/8/9 List/Form/Search views: onehr.portal.request.type
+PASS: HARD GATE 6 enterprise UI — Statusbar widgets
+PASS: HARD GATE 6 enterprise UI — Smart buttons
+PASS: HARD GATE 6 enterprise UI — Body form action buttons
+PASS: HARD GATE 6 enterprise UI — One2many row action buttons
+PASS: HARD GATE 6 enterprise UI — Chatter
+PASS: HARD GATE 6 enterprise UI — Kanban
+PASS: HARD GATE 6 enterprise UI — Calendar
+PASS: HARD GATE 6 enterprise UI — Pivot
+PASS: HARD GATE 6 enterprise UI — Graph
+PASS: HARD GATE 6 enterprise UI — Badges
+PASS: HARD GATE 6 enterprise UI — Ribbons
+PASS: Object button → Python method cross-reference
+PASS: All OneHR HR portal routes require authenticated users
+PASS: Portal route present: /my/hr
+PASS: Portal route present: /my/hr/new
+PASS: Portal route present: /my/team
+PASS: Portal POST forms include CSRF tokens
+PASS: HARD GATE 10 portal chatter excludes raw/internal message stream
+PASS: HARD GATE 10 controller filters internal mail subtypes
+PASS: HARD GATE 10 portal uploads use governed mail.thread attachment path
+PASS: HARD GATE 3 portal upload count/per-file/total-size limits
+PASS: ACL CSV parse (14 rows)
+PASS: HARD GATE 10 no broad base.group_user Portal CRUD
+PASS: HARD GATE 10 auto-execution never escalates non-HR approval authority
+PASS: Security role present: group_onehr_portal_employee
+PASS: Security role present: group_onehr_portal_manager
+PASS: Security role present: group_onehr_portal_hr
+PASS: Security role present: group_onehr_portal_admin
+PASS: Odoo 19 res.groups.privilege pattern used
+PASS: Odoo 19 Portal user type uses base.group_portal
+PASS: Employee self-scope uses stored user boundary
+PASS: Manager direct-team scope uses stored user boundary
+PASS: Company boundary uses allowed companies
+PASS: Historical evidence deletion guards present
+PASS: HARD GATE 11 model/relation identifiers stay within PostgreSQL limit
+PASS: HARD GATE 11 explicit short Portal attachment relation name
+PASS: HARD GATE 11 Odoo 19 models.Constraint policy
+PASS: HARD GATE 3/15 functional contract — Employee submission
+PASS: HARD GATE 3/15 functional contract — Manager approval
+PASS: HARD GATE 3/15 functional contract — Manager rejection
+PASS: HARD GATE 3/15 functional contract — HR approval
+PASS: HARD GATE 3/15 functional contract — HR rejection
+PASS: HARD GATE 3/15 functional contract — HR processing
+PASS: HARD GATE 3/15 functional contract — Completion
+PASS: HARD GATE 3/15 functional contract — Cancellation
+PASS: HARD GATE 3/15 functional contract — SLA reminder monitor
+PASS: HARD GATE 3/15 functional contract — Searchable SLA overdue status
+PASS: HARD GATE 3/15 functional contract — Profile Change payload
+PASS: HARD GATE 3/15 functional contract — Time Off soft hand-off
+PASS: HARD GATE 3/15 functional contract — Learning accepted service contract
+PASS: HARD GATE 3/15 functional contract — Document soft hand-off
+PASS: HARD GATE 3/15 functional contract — Appraisal self-service contract
+PASS: HARD GATE 3/15 functional contract — Payroll employee-safe contract
+PASS: HARD GATE 3/15 functional contract — Job Description employee-safe contract
+PASS: HARD GATE 3/15 functional contract — PnP acknowledgement contract
+PASS: HARD GATE 3/15 functional contract — SOP acknowledgement contract
+PASS: HARD GATE 3/15 functional contract — Career employee-safe contract
+PASS: HARD GATE 3/15 functional contract — My HR portal
+PASS: HARD GATE 3/15 functional contract — My Team portal
+PASS: Confidential Discipline domain is not exposed to employee portal
+PASS: Runtime test inventory exactly 34 methods
+PASS: Runtime test suites are post-install tagged
+PASS: Mandatory Enterprise documentation set
+PASS: Guardrail contains HARD GATE 0
+PASS: Guardrail contains HARD GATE 1
+PASS: Guardrail contains HARD GATE 2
+PASS: Guardrail contains HARD GATE 3
+PASS: Guardrail contains HARD GATE 4
+PASS: Guardrail contains HARD GATE 5
+PASS: Guardrail contains HARD GATE 6
+PASS: Guardrail contains HARD GATE 7
+PASS: Guardrail contains HARD GATE 8
+PASS: Guardrail contains HARD GATE 9
+PASS: Guardrail contains HARD GATE 10
+PASS: Guardrail contains HARD GATE 11
+PASS: Guardrail contains HARD GATE 12
+PASS: Guardrail contains HARD GATE 13
+PASS: Guardrail contains HARD GATE 14
+PASS: Guardrail contains HARD GATE 15
+PASS: Codex bounded-worker role
+PASS: Codex retry limit = 2
+PASS: Same-root-cause repeat limit = 1
+WARN: Exact Master Model Registry ED rows remain pending; classifications were not invented
+WARN: Native Gantt intentionally not fabricated on Odoo 19 CE
+
+SOURCE_FILES_PYTHON=21
+SOURCE_FILES_XML=13
+CUSTOM_PERSISTENT_MODELS=3
+EXPLICIT_RELATION_NAMES=1
+ACL_ROWS=14
+RUNTIME_TEST_METHODS=34
+SOURCE_ACCEPTANCE_PASS_COUNT=112
+SOURCE_ACCEPTANCE_WARN_COUNT=2
+SOURCE_ACCEPTANCE_FAIL_COUNT=0
+ONEHR_PORTAL_SELF_SERVICE_DIRECT_FULL_SOURCE_ACCEPTANCE=PASS
+SOURCE_ENTERPRISE_COMPLETENESS=PASS_FOR_RUNTIME
+REGISTRY_ED_CLASSIFICATION=PENDING_EXACT_REGISTRY_ROW_VERIFICATION
+WINDOWS_RUNTIME_ACCEPTANCE=PENDING
+ONEHR_PORTAL_SELF_SERVICE_MOVE_FORWARD_READY=NO

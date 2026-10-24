@@ -1,3 +1,4 @@
+
 # OneHR Job Description — Scope Isolation Report
 
 TASK: Direct Full Addon Build  
@@ -35,3 +36,4 @@ Canonical dependencies and downstream boundaries are consumed through model refe
 and soft service contracts rather than source edits.
 
 `SCOPE_ISOLATION_RESULT: PASS_FOR_PACKAGE`
+

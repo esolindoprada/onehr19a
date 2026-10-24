@@ -2,7 +2,7 @@
 <odoo>
     <menuitem id="menu_onehr_learning_root"
               name="Learning"
-              parent="onehr_base.menu_onehr_root"
+              parent="onehr_appraisal.menu_onehr_performance"
               sequence="60"
               groups="onehr_learning.group_onehr_learning_officer,onehr_learning.group_onehr_learning_trainer,onehr_learning.group_onehr_learning_manager_approver"/>
 

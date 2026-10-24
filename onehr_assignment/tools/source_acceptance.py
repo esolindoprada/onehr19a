@@ -1,4 +1,5 @@
-from __future__ import annotations
+
+﻿from __future__ import annotations
 
 import ast
 import csv
@@ -62,7 +63,7 @@ if manifest.get("name") == "OneHR Assignment":
 else:
     failed(f"unexpected manifest name: {manifest.get('name')!r}")
 
-if manifest.get("version") == "19.0.1.0.0":
+if manifest.get("version") == "19.0.1.0.1":
     passed("Odoo 19 manifest version")
 else:
     failed(f"unexpected manifest version: {manifest.get('version')!r}")
@@ -240,6 +241,22 @@ for label, marker in markers.items():
     else:
         failed(f"enterprise UI marker missing: {label}")
 
+# Odoo 19 inherited-view compatibility regression: no xpath selector may use @string.
+invalid_string_xpath_selectors = []
+for path in sorted((ROOT / "views").glob("*.xml")):
+    root = ET.parse(path).getroot()
+    for node in root.iter("xpath"):
+        expr = node.attrib.get("expr", "")
+        if "@string" in expr:
+            invalid_string_xpath_selectors.append(
+                f"{path.relative_to(ROOT)}: {expr}"
+            )
+
+if invalid_string_xpath_selectors:
+    for item in invalid_string_xpath_selectors:
+        failed(f"Odoo 19 inherited XPath may not use @string selector: {item}")
+else:
+    passed("Odoo 19 inherited XPath selectors do not use @string")
 # Test inventory.
 test_methods = []
 for path in sorted((ROOT / "tests").glob("test_*.py")):
@@ -319,3 +336,4 @@ if errors:
 print("ONEHR_ASSIGNMENT_DIRECT_FULL_SOURCE_ACCEPTANCE: PASS")
 print("WINDOWS_RUNTIME_ACCEPTANCE: PENDING")
 print("ONEHR_ASSIGNMENT_MOVE_FORWARD_READY: NO")
+

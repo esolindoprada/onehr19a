@@ -1,0 +1,165 @@
+<odoo>
+    <record id="view_onehr_kpi_snapshot_list" model="ir.ui.view">
+        <field name="name">onehr.kpi.snapshot.list.enterprise</field>
+        <field name="model">onehr.kpi.snapshot</field>
+        <field name="arch" type="xml">
+            <list string="KPI Snapshot Evidence" create="0" edit="0" delete="0" decoration-danger="status == 'critical'" decoration-warning="status == 'warning'" decoration-muted="archived">
+                <field name="name" optional="hide"/>
+                <field name="tile_id"/>
+                <field name="category" widget="badge" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="branch_code" optional="hide"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="value"/>
+                <field name="target_value"/>
+                <field name="variance_value"/>
+                <field name="status" widget="badge"/>
+                <field name="previous_change_percent" optional="hide"/>
+                <field name="mom_change_percent" optional="show"/>
+                <field name="hoh_change_percent" optional="hide"/>
+                <field name="yoy_change_percent" optional="show"/>
+                <field name="source_name" optional="show"/>
+                <field name="source_record_count" optional="hide"/>
+                <field name="archived" optional="hide"/>
+                <button name="action_open_source" type="object" string="Source" icon="fa-external-link" invisible="not drilldown_model_name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_kpi_snapshot_form" model="ir.ui.view">
+        <field name="name">onehr.kpi.snapshot.form.enterprise</field>
+        <field name="model">onehr.kpi.snapshot</field>
+        <field name="arch" type="xml">
+            <form string="KPI Snapshot Evidence" create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_open_source" type="object" string="Open Source" class="btn-secondary" invisible="not drilldown_model_name"/>
+                    <button name="action_archive_evidence" type="object" string="Archive Evidence" groups="onehr_analytics.group_onehr_analytics_manager" invisible="archived"/>
+                    <button name="action_restore_evidence" type="object" string="Restore Evidence" groups="onehr_analytics.group_onehr_analytics_admin" invisible="not archived"/>
+                    <field name="status" widget="statusbar" statusbar_visible="normal,warning,critical,unavailable"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Immutable Snapshot" bg_color="text-bg-info" invisible="archived"/>
+                    <widget name="web_ribbon" title="Archived Evidence" bg_color="text-bg-secondary" invisible="not archived"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_tile" type="object" class="oe_stat_button" icon="fa-dashboard">
+                            <div class="o_stat_info"><span class="o_stat_text">KPI Tile</span></div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <div class="row g-2 my-3">
+                        <div class="col-lg-3"><div class="alert alert-info mb-0"><strong>Value</strong><br/><span class="fs-3"><field name="value"/></span></div></div>
+                        <div class="col-lg-3"><div class="alert alert-light mb-0"><strong>Target</strong><br/><span class="fs-3"><field name="target_value"/></span></div></div>
+                        <div class="col-lg-3"><div class="alert alert-light mb-0"><strong>Variance</strong><br/><span class="fs-3"><field name="variance_value"/></span></div></div>
+                        <div class="col-lg-3"><div class="alert alert-light mb-0"><strong>Status</strong><br/><field name="status" widget="badge"/></div></div>
+                    </div>
+
+                    <group>
+                        <group string="Snapshot Scope">
+                            <field name="tile_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_code"/>
+                            <field name="category"/>
+                            <field name="snapshot_at"/>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                        </group>
+                        <group string="Source Evidence">
+                            <field name="source_name"/>
+                            <field name="source_record_count"/>
+                            <field name="drilldown_model_name"/>
+                            <field name="archived"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Trend Comparisons">
+                            <group>
+                                <group string="Previous / MoM">
+                                    <field name="previous_value"/>
+                                    <field name="previous_change_percent"/>
+                                    <field name="mom_baseline_value"/>
+                                    <field name="mom_change_percent"/>
+                                </group>
+                                <group string="HoH / YoY">
+                                    <field name="hoh_baseline_value"/>
+                                    <field name="hoh_change_percent"/>
+                                    <field name="yoy_baseline_value"/>
+                                    <field name="yoy_change_percent"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Technical Aggregate Evidence" groups="onehr_analytics.group_onehr_analytics_manager">
+                            <field name="source_payload_json" nolabel="1"/>
+                            <field name="drilldown_domain_expression" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_kpi_snapshot_search" model="ir.ui.view">
+        <field name="name">onehr.kpi.snapshot.search.enterprise</field>
+        <field name="model">onehr.kpi.snapshot</field>
+        <field name="arch" type="xml">
+            <search string="KPI Snapshot Evidence">
+                <field name="name"/>
+                <field name="tile_id"/>
+                <field name="category"/>
+                <field name="branch_code"/>
+                <field name="source_name"/>
+                <filter name="current_evidence" string="Current Evidence" domain="[('archived','=',False)]"/>
+                <filter name="warnings" string="Warnings" domain="[('status','=','warning')]"/>
+                <filter name="critical" string="Critical" domain="[('status','=','critical')]"/>
+                <filter name="breaches" string="All Breaches" domain="[('status','in',('warning','critical'))]"/>
+                <filter name="archived" string="Archived" domain="[('archived','=',True)]"/>
+                <group>
+                    <filter name="group_tile" string="KPI Tile" context="{'group_by':'tile_id'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by':'category'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by':'status'}"/>
+                    <filter name="group_period" string="Period End" context="{'group_by':'period_end'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_kpi_snapshot_graph" model="ir.ui.view">
+        <field name="name">onehr.kpi.snapshot.graph.trend</field>
+        <field name="model">onehr.kpi.snapshot</field>
+        <field name="arch" type="xml">
+            <graph string="KPI Trend" type="line">
+                <field name="period_end" interval="month"/>
+                <field name="value" type="measure"/>
+                <field name="target_value" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_onehr_kpi_snapshot_pivot" model="ir.ui.view">
+        <field name="name">onehr.kpi.snapshot.pivot.analysis</field>
+        <field name="model">onehr.kpi.snapshot</field>
+        <field name="arch" type="xml">
+            <pivot string="KPI Snapshot Analysis">
+                <field name="tile_id" type="row"/>
+                <field name="period_end" interval="month" type="col"/>
+                <field name="value" type="measure"/>
+                <field name="target_value" type="measure"/>
+                <field name="variance_value" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_onehr_kpi_snapshot_analysis" model="ir.actions.act_window">
+        <field name="name">KPI Trend &amp; Evidence</field>
+        <field name="res_model">onehr.kpi.snapshot</field>
+        <field name="view_mode">list,graph,pivot,form</field>
+        <field name="search_view_id" ref="view_onehr_kpi_snapshot_search"/>
+        <field name="context">{'search_default_current_evidence': 1}</field>
+        <field name="group_ids" eval="[Command.link(ref('onehr_analytics.group_onehr_analytics_analyst'))]"/>
+    </record>
+</odoo>

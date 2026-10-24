@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="view_onehr_branch_list" model="ir.ui.view">
         <field name="name">onehr.branch.list.enterprise</field>
@@ -240,3 +241,4 @@
         <field name="context">{'search_default_effective': 1}</field>
     </record>
 </odoo>
+

@@ -1,0 +1,24 @@
+
+OneHR Demo 19.0.1.0.3 -> 19.0.1.0.4 Preservation / Scope Diff
+
+WRITE_SCOPE: onehr_demo only
+ARCHITECTURE CHANGE: NONE
+MODEL OWNERSHIP CHANGE: NONE
+DEPENDENCY CHANGE: NONE
+
+Bounded correction:
+- Persisted lifecycle state is now followed by a Control Center form reload after lifecycle notifications.
+- Readiness compatibility mismatch now returns a persisted blocked state instead of raising after the controlled write.
+- Generation/validation/reset failures now preserve bounded failure evidence and paused/reset-previewed state instead of re-raising and risking transaction rollback of the control-plane evidence.
+- Rebuild returns the readiness action when readiness is not PASS rather than raising after a persisted readiness result.
+- The notification helper supports an explicit `reload_form` contract.
+
+Preserved:
+- six-model control-plane boundary;
+- fixed generator registry;
+- deterministic reference/provenance model;
+- production sequence policies;
+- security/ACL architecture;
+- reset ownership rules;
+- all business generator behavior.
+

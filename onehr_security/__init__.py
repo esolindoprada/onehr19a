@@ -1,3 +1,4 @@
+
 from odoo.fields import Command
 
 from . import models

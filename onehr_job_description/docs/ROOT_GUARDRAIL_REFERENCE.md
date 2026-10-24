@@ -1,3 +1,4 @@
+
 # OneHR Root Guardrail Reference
 
 ROOT_GUARDRAIL_ID: ONEHR-EDG-V1  
@@ -17,3 +18,4 @@ Codex remains:
 - max same-root-cause repeat: 1
 - static/runtime PASS is not functional completeness
 - move-forward requires all applicable hard gates
+

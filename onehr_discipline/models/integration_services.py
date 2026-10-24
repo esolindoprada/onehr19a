@@ -1,3 +1,4 @@
+
 from collections import Counter
 from datetime import date, datetime
 
@@ -443,3 +444,4 @@ class OneHRDisciplineSanctionIntegration(models.Model):
             }
             for sanction in sanctions
         ]
+

@@ -1,0 +1,60 @@
+
+OneHR Demo 19.0.1.0.0 -> 19.0.1.0.1 Preservation / Scope Diff
+Baseline: /mnt/data/work_onehr_demo_current (MP02-MP04)
+Target: onehr_demo 19.0.1.0.1 (MP05)
+
+ADDED_FILES=7
+CHANGED_FILES=24
+REMOVED_FILES=0
+UNCHANGED_FILES=26
+
+REMOVED FILES:
+  NONE
+
+ADDED FILES:
+  docs/FROZEN_MP02_MP05_CONTRACT.json
+  docs/MP02_MP05_IMPLEMENTATION_EVIDENCE.md
+  docs/MP05_FOUNDATION_DATASET_CONTRACT.md
+  docs/MP05_IMPLEMENTATION_EVIDENCE.md
+  generators/__init__.py
+  generators/foundation_enterprise.py
+  tests/test_mp05_foundation.py
+
+CHANGED FILES:
+  README.md
+  __init__.py
+  __manifest__.py
+  data/generator_registry.xml
+  docs/DETERMINISTIC_SEQUENCE_POLICY.md
+  docs/ENTERPRISE_COMPLETENESS_MATRIX.md
+  docs/PROJECT_IDENTITY_PREFLIGHT.md
+  docs/RESET_CAPABILITY_MATRIX.md
+  docs/SECURITY_PRIVACY_MATRIX.md
+  docs/SIDE_EFFECT_QUARANTINE_MATRIX.md
+  docs/SOURCE_ACCEPTANCE_REPORT.txt
+  docs/WHOLE_PATH_RUNTIME_CONTRACT.md
+  docs/WINDOWS_RUNTIME_ACCEPTANCE.md
+  models/demo_scenario.py
+  security/ir.model.access.csv
+  services/compatibility.py
+  services/contracts.py
+  services/orchestrator.py
+  services/reset.py
+  tests/__init__.py
+  tests/common.py
+  tests/test_control_plane.py
+  tests/test_determinism_contract.py
+  tools/source_acceptance.py
+
+KEY PRESERVATION ASSERTIONS:
+  PASS: No baseline file removed.
+  PASS: Six demo control-plane model names preserved.
+  PASS: Production addon dependencies remain the frozen 25-addon topology.
+  PASS: No sibling production addon source is part of this package.
+  PASS: Existing MP02-MP04 run/checkpoint/reference/log models preserved.
+  PASS: Security groups/rules architecture preserved; ACL semantics unchanged (CSV leading blank normalized only).
+  PASS: MP05 adds one fixed generator implementation only; MP06+ remain planned.
+  PASS: No onehr_demo direct ir.sequence.next_by_code() identity dependency.
+  PASS: Scenario deterministic identity freezes after provenance exists.
+  PASS: Reset remains provenance-first and now executes atomically.
+

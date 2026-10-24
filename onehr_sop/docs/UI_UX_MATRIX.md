@@ -1,3 +1,4 @@
+
 # OneHR SOP — UI/UX Matrix
 
 | Model | List | Form | Search | Extra views | Enterprise interactions |
@@ -11,3 +12,4 @@ Odoo 19 compatibility:
 - direct `readonly`/`invisible`, never legacy `attrs`/`states`;
 - Search `<group>` carries no attributes;
 - no Enterprise-only Gantt renderer is fabricated.
+

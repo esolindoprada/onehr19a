@@ -1,3 +1,4 @@
+
 # OneHR SOP — Full Structural Inventory
 
 ## Persistent business models — exactly three
@@ -42,3 +43,4 @@ snapshots, branch mappings, portal records or API tokens.
 Branch remains a downstream optional extension. Portal owns routes/session security.
 Analytics owns dashboards/snapshots. Integrations API owns HTTP authentication.
 Document owns immutable archived document payload/evidence.
+

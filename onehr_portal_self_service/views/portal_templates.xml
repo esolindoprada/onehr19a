@@ -1,0 +1,590 @@
+
+<odoo>
+    <!-- ================================================================
+         Portal home shortcuts
+         ================================================================ -->
+    <template id="portal_my_home_onehr_hr" inherit_id="portal.portal_my_home" priority="35">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="request.env.user.has_group('onehr_portal_self_service.group_onehr_portal_employee') or request.env.user.has_group('onehr_portal_self_service.group_onehr_portal_hr')">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">My HR</t>
+                    <t t-set="url" t-value="'/my/hr'"/>
+                    <t t-set="text">Submit HR service requests, follow approvals, and review your OneHR self-service dashboard.</t>
+                    <t t-set="placeholder_count" t-value="'onehr_hr_request_count'"/>
+                </t>
+            </t>
+            <t t-if="request.env.user.has_group('onehr_portal_self_service.group_onehr_portal_manager')">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">My Team</t>
+                    <t t-set="url" t-value="'/my/team'"/>
+                    <t t-set="text">Review direct-team HR requests waiting for your decision.</t>
+                    <t t-set="placeholder_count" t-value="'onehr_team_request_count'"/>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- ================================================================
+         My HR dashboard / request register
+         ================================================================ -->
+    <template id="portal_my_hr" name="OneHR My HR">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My HR</t>
+            </t>
+
+            <div class="container-fluid px-0">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                    <div>
+                        <h2 class="mb-1">My HR Self-Service</h2>
+                        <p class="text-muted mb-0">
+                            Submit, track and collaborate on governed HR service requests.
+                        </p>
+                    </div>
+                    <a class="btn btn-primary" href="/my/hr/new">
+                        <i class="fa fa-plus me-1"/> New HR Request
+                    </a>
+                </div>
+
+                <t t-set="profile" t-value="dashboard.get('employee', {})"/>
+                <t t-set="metrics" t-value="dashboard.get('request_metrics', {})"/>
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-lg-4">
+                                <div class="text-muted small">Employee</div>
+                                <div class="fw-semibold fs-5" t-out="profile.get('employee_name') or request.env.user.name"/>
+                                <div class="text-muted">
+                                    <span t-out="profile.get('employee_number') or ''"/>
+                                    <t t-if="profile.get('department')"> · <span t-out="profile.get('department')"/></t>
+                                </div>
+                                <div class="small mt-1" t-if="profile.get('job')">
+                                    <i class="fa fa-briefcase me-1 text-muted"/><span t-out="profile.get('job')"/>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-1 text-center">
+                                <div class="fs-4 fw-semibold" t-out="metrics.get('total', 0)"/>
+                                <div class="small text-muted">Total</div>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-1 text-center">
+                                <div class="fs-4 fw-semibold" t-out="metrics.get('open', 0)"/>
+                                <div class="small text-muted">Open</div>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-2 text-center">
+                                <div class="fs-4 fw-semibold" t-out="metrics.get('awaiting_manager', 0)"/>
+                                <div class="small text-muted">Manager Review</div>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-2 text-center">
+                                <div class="fs-4 fw-semibold" t-out="metrics.get('awaiting_hr', 0)"/>
+                                <div class="small text-muted">HR Review</div>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-1 text-center">
+                                <div class="fs-4 fw-semibold text-danger" t-out="metrics.get('overdue', 0)"/>
+                                <div class="small text-muted">Overdue</div>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-1 text-center">
+                                <div class="fs-4 fw-semibold text-success" t-out="metrics.get('done', 0)"/>
+                                <div class="small text-muted">Done</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4" t-if="dashboard.get('integrations')">
+                    <t t-set="integrations" t-value="dashboard.get('integrations', {})"/>
+                    <div class="col-md-6 col-xl-4" t-if="integrations.get('appraisals')">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5><i class="fa fa-line-chart me-2"/>Performance</h5>
+                                <p class="text-muted small mb-2">Recent appraisal information available to your account.</p>
+                                <t t-foreach="integrations.get('appraisals', [])[:3]" t-as="item">
+                                    <div class="border-top py-2">
+                                        <strong t-out="item.get('reference') or item.get('cycle_code')"/>
+                                        <span class="badge text-bg-light ms-1" t-out="item.get('state')"/>
+                                        <div class="small" t-if="item.get('final_rating')">
+                                            Final rating: <span t-out="item.get('final_rating')"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4" t-if="integrations.get('learning')">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5><i class="fa fa-graduation-cap me-2"/>Learning</h5>
+                                <p class="text-muted small mb-2">Learning records exposed by OneHR Learning under your access rights.</p>
+                                <t t-foreach="integrations.get('learning', [])[:3]" t-as="item">
+                                    <div class="border-top py-2">
+                                        <strong t-out="item.get('course') or item.get('session') or item.get('reference') or 'Learning'"/>
+                                        <div class="small text-muted" t-out="item.get('state') or item.get('status') or ''"/>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4" t-if="integrations.get('payslips')">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5><i class="fa fa-file-text-o me-2"/>Payroll</h5>
+                                <p class="text-muted small mb-2">Recent payroll summaries available to your account.</p>
+                                <t t-foreach="integrations.get('payslips', [])[:3]" t-as="item">
+                                    <div class="border-top py-2">
+                                        <strong t-out="item.get('payslip_number') or 'Payslip'"/>
+                                        <div class="small text-muted">
+                                            <span t-out="item.get('period_start') or ''"/>
+                                            <t t-if="item.get('period_end')"> — <span t-out="item.get('period_end')"/></t>
+                                            <t t-if="item.get('state')"> · <span t-out="item.get('state')"/></t>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4" t-if="integrations.get('career')">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5><i class="fa fa-road me-2"/>Career</h5>
+                                <p class="text-muted small mb-2">Career and succession information visible to you.</p>
+                                <t t-foreach="integrations.get('career', [])[:3]" t-as="item">
+                                    <div class="border-top py-2">
+                                        <strong t-out="item.get('pool') or item.get('reference') or 'Career'"/>
+                                        <div class="small text-muted" t-out="item.get('target_position') or item.get('readiness_level') or item.get('state') or ''"/>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-xl-4" t-if="integrations.get('policy_acknowledgements') or integrations.get('sop_acknowledgements')">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5><i class="fa fa-check-square-o me-2"/>Acknowledgements</h5>
+                                <p class="text-muted small mb-2">Policies and SOP acknowledgements visible to your account.</p>
+                                <t t-foreach="integrations.get('policy_acknowledgements', [])[:2]" t-as="item">
+                                    <div class="border-top py-2">
+                                        <strong t-out="item.get('policy_title') or item.get('policy_reference')"/>
+                                        <div class="small text-muted">Policy · <span t-out="item.get('state') or ''"/></div>
+                                    </div>
+                                </t>
+                                <t t-foreach="integrations.get('sop_acknowledgements', [])[:2]" t-as="item">
+                                    <div class="border-top py-2">
+                                        <strong t-out="item.get('sop_title') or item.get('sop_reference')"/>
+                                        <div class="small text-muted">SOP · <span t-out="item.get('state') or ''"/></div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4" t-if="integrations.get('job_description')">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5><i class="fa fa-id-card-o me-2"/>Job Description</h5>
+                                <p class="text-muted small mb-2">Your current published job-description summary.</p>
+                                <t t-set="jd" t-value="integrations.get('job_description') or {}"/>
+                                <strong t-out="jd.get('title') or jd.get('position_name') or 'Published Job Description'"/>
+                                <div class="small text-muted">
+                                    <span t-out="jd.get('position_code') or ''"/>
+                                    <t t-if="jd.get('version')"> · Version <span t-out="jd.get('version')"/></t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-4"><strong>My Requests</strong></div>
+                            <div class="col-md-8">
+                                <form method="get" action="/my/hr" class="row g-2 justify-content-end">
+                                    <div class="col-sm-4">
+                                        <select name="state" class="form-select form-select-sm">
+                                            <option value="all" t-att-selected="selected_state == 'all'">All states</option>
+                                            <t t-foreach="request_state_selection" t-as="state_item">
+                                                <option t-att-value="state_item[0]" t-att-selected="selected_state == state_item[0]" t-out="state_item[1]"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <select name="type_id" class="form-select form-select-sm">
+                                            <option value="">All request types</option>
+                                            <t t-foreach="request_types" t-as="request_type">
+                                                <option t-att-value="request_type.id" t-att-selected="selected_type_id == request_type.id" t-out="request_type.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <input type="hidden" name="sortby" t-att-value="sortby"/>
+                                    <div class="col-sm-3 d-grid">
+                                        <button class="btn btn-outline-secondary btn-sm" type="submit">Filter</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Reference</th>
+                                    <th>Request</th>
+                                    <th>Submitted</th>
+                                    <th>SLA</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="not requests">
+                                    <tr><td colspan="6" class="text-center py-5 text-muted">No HR requests match the selected filters.</td></tr>
+                                </t>
+                                <t t-foreach="requests" t-as="hr_request">
+                                    <tr>
+                                        <td><strong t-out="hr_request.name"/></td>
+                                        <td>
+                                            <div class="fw-semibold" t-out="hr_request.subject"/>
+                                            <div class="small text-muted" t-out="hr_request.type_id.name"/>
+                                        </td>
+                                        <td><span t-field="hr_request.submitted_at"/></td>
+                                        <td>
+                                            <span t-if="hr_request.sla_deadline" t-field="hr_request.sla_deadline"/>
+                                            <span t-else="" class="text-muted">—</span>
+                                            <span t-if="hr_request.is_sla_overdue" class="badge text-bg-danger ms-1">Overdue</span>
+                                        </td>
+                                        <td><span class="badge text-bg-light" t-out="request_state_labels.get(hr_request.state)"/></td>
+                                        <td class="text-end"><a class="btn btn-sm btn-outline-primary" t-att-href="'/my/hr/%s' % hr_request.id">Open</a></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-3" t-if="pager"><t t-call="portal.pager"/></div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ================================================================
+         New self-service request
+         ================================================================ -->
+    <template id="portal_request_new" name="OneHR New HR Request">
+        <t t-call="portal.portal_layout">
+            <div class="container px-0">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="mb-1">New HR Request</h2>
+                        <p class="text-muted mb-0">Create a governed OneHR self-service transaction.</p>
+                    </div>
+                    <a href="/my/hr" class="btn btn-outline-secondary">Back to My HR</a>
+                </div>
+
+                <div t-if="error" class="alert alert-danger" role="alert" t-out="error"/>
+
+                <form method="post" action="/my/hr/new" enctype="multipart/form-data" class="card shadow-sm">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div class="card-body p-4">
+                        <div class="row g-4">
+                            <div class="col-lg-6">
+                                <label class="form-label fw-semibold">Request Type</label>
+                                <select name="type_id" class="form-select" required="required">
+                                    <option value="">Select HR service…</option>
+                                    <t t-foreach="request_types" t-as="request_type">
+                                        <option t-att-value="request_type.id"
+                                                t-att-selected="selected_type and selected_type.id == request_type.id"
+                                                t-out="request_type.name"/>
+                                    </t>
+                                </select>
+                                <div class="form-text">Only services enabled for self-service and your company are shown.</div>
+                            </div>
+                            <div class="col-lg-3">
+                                <label class="form-label fw-semibold">Priority</label>
+                                <select name="priority" class="form-select">
+                                    <option value="0">Normal</option>
+                                    <option value="1">Low</option>
+                                    <option value="2">High</option>
+                                    <option value="3">Urgent</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 d-flex align-items-end">
+                                <div class="alert alert-light border mb-0 w-100 small">
+                                    <strong>SLA:</strong>
+                                    <span t-if="selected_type and selected_type.sla_hours"><span t-out="selected_type.sla_hours"/> hours</span>
+                                    <span t-else="">determined by service policy</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Subject</label>
+                                <input type="text" name="subject" class="form-control" required="required" t-att-value="form_values.get('subject', '')"/>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Description / Business Reason</label>
+                                <textarea name="description" rows="5" class="form-control" required="required" t-out="form_values.get('description', '')"/>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Employee Note</label>
+                                <textarea name="employee_note" rows="3" class="form-control" t-out="form_values.get('employee_note', '')"/>
+                            </div>
+                        </div>
+
+                        <hr class="my-4"/>
+                        <h5>Service Details <span class="text-muted fw-normal fs-6">— complete only the section relevant to your request type</span></h5>
+                        <div class="row g-4 mt-1">
+                            <div class="col-lg-6">
+                                <div class="border rounded p-3 h-100">
+                                    <h6><i class="fa fa-calendar me-1"/> Time Off</h6>
+                                    <div class="row g-2">
+                                        <div class="col-12">
+                                            <label class="form-label small">Leave Type Code</label>
+                                            <input name="leave_type_code" class="form-control" t-att-value="form_values.get('leave_type_code', '')" placeholder="e.g. ANNUAL"/>
+                                        </div>
+                                        <div class="col-6"><label class="form-label small">From</label><input name="requested_date_from" type="date" class="form-control" t-att-value="form_values.get('requested_date_from', '')"/></div>
+                                        <div class="col-6"><label class="form-label small">To</label><input name="requested_date_to" type="date" class="form-control" t-att-value="form_values.get('requested_date_to', '')"/></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="border rounded p-3 h-100">
+                                    <h6><i class="fa fa-graduation-cap me-1"/> Learning</h6>
+                                    <label class="form-label small">Learning Session Reference</label>
+                                    <input name="learning_session_reference" class="form-control" t-att-value="form_values.get('learning_session_reference', '')"/>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="border rounded p-3 h-100">
+                                    <h6><i class="fa fa-file-o me-1"/> Document</h6>
+                                    <label class="form-label small">Document Category Code</label>
+                                    <input name="document_category_code" class="form-control mb-2" t-att-value="form_values.get('document_category_code', '')"/>
+                                    <label class="form-label small">Document Title</label>
+                                    <input name="document_title" class="form-control" t-att-value="form_values.get('document_title', '')"/>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="border rounded p-3 h-100">
+                                    <h6><i class="fa fa-user me-1"/> Profile Change</h6>
+                                    <div class="row g-2">
+                                        <div class="col-6"><input name="private_email" class="form-control" placeholder="Private email" t-att-value="form_values.get('private_email', '')"/></div>
+                                        <div class="col-6"><input name="private_phone" class="form-control" placeholder="Private phone" t-att-value="form_values.get('private_phone', '')"/></div>
+                                        <div class="col-12"><input name="private_street" class="form-control" placeholder="Private street" t-att-value="form_values.get('private_street', '')"/></div>
+                                        <div class="col-12"><input name="private_street2" class="form-control" placeholder="Address line 2" t-att-value="form_values.get('private_street2', '')"/></div>
+                                        <div class="col-7"><input name="private_city" class="form-control" placeholder="City" t-att-value="form_values.get('private_city', '')"/></div>
+                                        <div class="col-5"><input name="private_zip" class="form-control" placeholder="ZIP / Postal code" t-att-value="form_values.get('private_zip', '')"/></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Supporting Attachments</label>
+                                <input type="file" name="attachments" class="form-control" multiple="multiple"/>
+                                <div class="form-text">Attachments remain governed by OneHR and Odoo access controls.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white d-flex flex-wrap justify-content-end gap-2 py-3">
+                        <a href="/my/hr" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" name="submit_now" value="0" class="btn btn-secondary">Save Draft</button>
+                        <button type="submit" name="submit_now" value="1" class="btn btn-primary">Submit Request</button>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <!-- ================================================================
+         Request detail / collaboration
+         ================================================================ -->
+    <template id="portal_request_detail" name="OneHR HR Request Detail">
+        <t t-call="portal.portal_layout">
+            <div class="container px-0">
+                <div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-start mb-4">
+                    <div>
+                        <div class="text-muted small" t-out="hr_request.name"/>
+                        <h2 class="mb-1" t-out="hr_request.subject"/>
+                        <div>
+                            <span class="badge text-bg-light" t-out="hr_request.type_id.name"/>
+                            <span class="badge text-bg-primary ms-1" t-out="request_state_labels.get(hr_request.state)"/>
+                            <span t-if="hr_request.is_sla_overdue" class="badge text-bg-danger ms-1">SLA Overdue</span>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/my/hr" class="btn btn-outline-secondary">My HR</a>
+                        <a t-if="is_manager" href="/my/team" class="btn btn-outline-primary">My Team</a>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-white"><strong>Request Details</strong></div>
+                            <div class="card-body">
+                                <p style="white-space: pre-wrap" t-out="hr_request.description"/>
+                                <div t-if="hr_request.employee_note" class="alert alert-light border">
+                                    <strong>Employee note</strong><br/><span style="white-space: pre-wrap" t-out="hr_request.employee_note"/>
+                                </div>
+                                <div class="row g-3 small">
+                                    <div class="col-md-6"><span class="text-muted">Employee</span><br/><strong t-out="hr_request.employee_name"/></div>
+                                    <div class="col-md-6"><span class="text-muted">Manager</span><br/><strong t-out="hr_request.manager_name or '—'"/></div>
+                                    <div class="col-md-6"><span class="text-muted">Department</span><br/><span t-out="hr_request.department_name or '—'"/></div>
+                                    <div class="col-md-6"><span class="text-muted">Job</span><br/><span t-out="hr_request.job_name or '—'"/></div>
+                                    <div class="col-md-6"><span class="text-muted">Submitted</span><br/><span t-field="hr_request.submitted_at"/></div>
+                                    <div class="col-md-6"><span class="text-muted">SLA Deadline</span><br/><span t-if="hr_request.sla_deadline" t-field="hr_request.sla_deadline"/><span t-else="">—</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm mb-4" t-if="hr_request.manager_decision_at or hr_request.hr_decision_at">
+                            <div class="card-header bg-white"><strong>Decision History</strong></div>
+                            <div class="card-body small">
+                                <div t-if="hr_request.manager_decision_at" class="mb-3">
+                                    <div class="text-muted">Manager decision · <span t-field="hr_request.manager_decision_at"/></div>
+                                    <div t-if="hr_request.manager_decision_note" class="mt-1" style="white-space: pre-wrap" t-out="hr_request.manager_decision_note"/>
+                                </div>
+                                <div t-if="hr_request.hr_decision_at">
+                                    <div class="text-muted">HR decision · <span t-field="hr_request.hr_decision_at"/></div>
+                                    <div t-if="hr_request.hr_decision_note" class="mt-1" style="white-space: pre-wrap" t-out="hr_request.hr_decision_note"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm mb-4" t-if="hr_request.service_kind != 'generic'">
+                            <div class="card-header bg-white"><strong>Service-Specific Information</strong></div>
+                            <div class="card-body small">
+                                <div t-if="hr_request.service_kind == 'timeoff'">
+                                    <strong>Leave Type:</strong> <span t-out="hr_request.leave_type_code"/><br/>
+                                    <strong>Requested Period:</strong> <span t-field="hr_request.requested_date_from"/> — <span t-field="hr_request.requested_date_to"/>
+                                </div>
+                                <div t-if="hr_request.service_kind == 'learning'">
+                                    <strong>Learning Session:</strong> <span t-out="hr_request.learning_session_reference"/>
+                                </div>
+                                <div t-if="hr_request.service_kind == 'document'">
+                                    <strong>Document Category:</strong> <span t-out="hr_request.document_category_code"/><br/>
+                                    <strong>Document Title:</strong> <span t-out="hr_request.document_title or hr_request.subject"/>
+                                </div>
+                                <div t-if="hr_request.service_kind == 'profile_change'">
+                                    <strong>Requested Changes</strong>
+                                    <ul class="mb-0 mt-2">
+                                        <li t-foreach="(hr_request.profile_change_json or {}).items()" t-as="profile_item">
+                                            <strong t-out="profile_item[0]"/>: <span t-out="profile_item[1]"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-white"><strong>Conversation &amp; History</strong></div>
+                            <div class="card-body">
+                                <t t-if="not portal_messages"><p class="text-muted mb-0">No portal-visible messages yet.</p></t>
+                                <div t-foreach="portal_messages" t-as="message" class="border-bottom py-3">
+                                    <div class="d-flex justify-content-between gap-3">
+                                        <strong t-out="message.author_id.name or 'OneHR'"/>
+                                        <span class="text-muted small" t-field="message.date"/>
+                                    </div>
+                                    <div class="mt-1" t-field="message.body"/>
+                                </div>
+                                <form method="post" t-att-action="'/my/hr/%s/comment' % hr_request.id" class="mt-4">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <label class="form-label fw-semibold">Add a comment</label>
+                                    <textarea name="comment" rows="3" class="form-control mb-2" required="required"/>
+                                    <button type="submit" class="btn btn-outline-primary">Post Comment</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-white"><strong>Workflow</strong></div>
+                            <div class="card-body">
+                                <dl class="row small mb-0">
+                                    <dt class="col-5">Stage</dt><dd class="col-7" t-out="hr_request.stage_id.name or '—'"/>
+                                    <dt class="col-5">SLA</dt><dd class="col-7" t-out="sla_status_labels.get(hr_request.sla_status)"/>
+                                    <dt class="col-5">Integration</dt><dd class="col-7" t-out="integration_status_labels.get(hr_request.integration_status)"/>
+                                </dl>
+                                <div t-if="hr_request.integration_reference" class="alert alert-light border small mt-3 mb-0">
+                                    <strong>Downstream:</strong> <span t-out="hr_request.integration_reference"/>
+                                </div>
+                                <div t-if="hr_request.integration_message" class="small text-muted mt-2" t-out="hr_request.integration_message"/>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm mb-4" t-if="hr_request.attachment_ids">
+                            <div class="card-header bg-white"><strong>Attachments</strong></div>
+                            <div class="list-group list-group-flush">
+                                <a t-foreach="hr_request.attachment_ids" t-as="attachment"
+                                   class="list-group-item list-group-item-action"
+                                   t-att-href="'/web/content/%s?download=true' % attachment.id">
+                                    <i class="fa fa-paperclip me-2"/><span t-out="attachment.name"/>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2" t-if="is_owner and hr_request.state in ('draft', 'submitted', 'manager_review', 'hr_review')">
+                            <form t-if="hr_request.state == 'draft'" method="post" t-att-action="'/my/hr/%s/submit' % hr_request.id">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="btn btn-primary w-100">Submit Request</button>
+                            </form>
+                            <form method="post" t-att-action="'/my/hr/%s/cancel' % hr_request.id">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="btn btn-outline-danger w-100">Cancel Request</button>
+                            </form>
+                        </div>
+
+                        <div t-if="is_manager and hr_request.state == 'manager_review'" class="card shadow-sm mt-4">
+                            <div class="card-header bg-white"><strong>Manager Decision</strong></div>
+                            <div class="card-body">
+                                <form method="post" t-att-action="'/my/team/%s/approve' % hr_request.id" class="mb-3">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <textarea name="note" rows="2" class="form-control mb-2" placeholder="Approval note (optional)"/>
+                                    <button class="btn btn-success w-100" type="submit">Approve</button>
+                                </form>
+                                <form method="post" t-att-action="'/my/team/%s/reject' % hr_request.id">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <textarea name="note" rows="2" class="form-control mb-2" required="required" placeholder="Rejection reason"/>
+                                    <button class="btn btn-outline-danger w-100" type="submit">Reject</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ================================================================
+         My Team approval queue
+         ================================================================ -->
+    <template id="portal_my_team" name="OneHR My Team">
+        <t t-call="portal.portal_layout">
+            <div class="container px-0">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="mb-1">My Team</h2>
+                        <p class="text-muted mb-0">Direct-report HR requests waiting for your decision.</p>
+                    </div>
+                    <a href="/my/hr" class="btn btn-outline-secondary">My HR</a>
+                </div>
+                <div class="card shadow-sm">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr><th>Employee</th><th>Request</th><th>Submitted</th><th>SLA</th><th class="text-end">Decision</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr t-if="not team_requests"><td colspan="5" class="text-center py-5 text-muted">No requests are waiting for your decision.</td></tr>
+                                <tr t-foreach="team_requests" t-as="hr_request">
+                                    <td><strong t-out="hr_request.employee_name"/><div class="small text-muted" t-out="hr_request.department_name or ''"/></td>
+                                    <td><a t-att-href="'/my/hr/%s' % hr_request.id" class="fw-semibold text-decoration-none" t-out="hr_request.subject"/><div class="small text-muted"><span t-out="hr_request.name"/> · <span t-out="hr_request.type_id.name"/></div></td>
+                                    <td><span t-field="hr_request.submitted_at"/></td>
+                                    <td><span t-if="hr_request.sla_deadline" t-field="hr_request.sla_deadline"/><span t-else="">—</span><span t-if="hr_request.is_sla_overdue" class="badge text-bg-danger ms-1">Overdue</span></td>
+                                    <td class="text-end"><a class="btn btn-sm btn-primary" t-att-href="'/my/hr/%s' % hr_request.id">Review</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-3" t-if="pager"><t t-call="portal.pager"/></div>
+            </div>
+        </t>
+    </template>
+</odoo>
+

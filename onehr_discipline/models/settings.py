@@ -1,3 +1,4 @@
+
 from odoo import fields, models
 
 
@@ -49,3 +50,4 @@ class ResConfigSettings(models.TransientModel):
         default=100,
         config_parameter="onehr_discipline.weight_critical",
     )
+

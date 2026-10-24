@@ -1,3 +1,4 @@
+
 # OneHR Job Description — UI/UX Matrix
 
 | Model | List | Form | Search | Extra analysis | Enterprise interactions |
@@ -10,3 +11,4 @@ Odoo 19 CE compatibility:
 - direct `invisible`/`readonly`, no `attrs`/`states`;
 - Search-view `<group>` has no attributes;
 - no Enterprise-only Gantt renderer is fabricated.
+

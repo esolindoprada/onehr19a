@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="res_config_settings_view_form_onehr_discipline" model="ir.ui.view">
         <field name="name">res.config.settings.view.form.onehr.discipline</field>
@@ -46,3 +47,4 @@
         </field>
     </record>
 </odoo>
+

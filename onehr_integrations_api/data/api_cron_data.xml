@@ -1,0 +1,23 @@
+<odoo noupdate="1">
+    <record id="ir_cron_onehr_api_retry_queue" model="ir.cron">
+        <field name="name">OneHR Integrations API — Process Retry Queue</field>
+        <field name="model_id" ref="model_onehr_api_queue"/>
+        <field name="state">code</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="code">model._cron_process_retry_queue()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_onehr_api_archive_logs" model="ir.cron">
+        <field name="name">OneHR Integrations API — Archive Old Logs</field>
+        <field name="model_id" ref="model_onehr_api_log"/>
+        <field name="state">code</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="code">model._cron_archive_old_logs()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

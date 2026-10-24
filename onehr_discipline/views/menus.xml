@@ -1,8 +1,8 @@
 <odoo>
     <menuitem id="menu_onehr_employee_relations"
               name="Employee Relations"
-              parent="onehr_base.menu_onehr_root"
-              sequence="65"
+              parent="onehr_base.menu_onehr_domain_relations"
+              sequence="10"
               groups="onehr_discipline.group_onehr_discipline_investigator"/>
 
     <menuitem id="menu_onehr_discipline_cases"
@@ -29,17 +29,21 @@
               action="action_onehr_discipline_sanctions"
               sequence="40"/>
 
-    <menuitem id="menu_onehr_discipline_case_analytics"
-              name="Case Analytics"
+    <menuitem id="menu_onehr_discipline_reporting"
+              name="Discipline Reporting"
               parent="menu_onehr_employee_relations"
-              action="action_onehr_discipline_case_analytics"
               sequence="50"
               groups="onehr_discipline.group_onehr_discipline_manager"/>
 
+    <menuitem id="menu_onehr_discipline_case_analytics"
+              name="Case Analytics"
+              parent="menu_onehr_discipline_reporting"
+              action="action_onehr_discipline_case_analytics"
+              sequence="10"/>
+
     <menuitem id="menu_onehr_discipline_sanction_analytics"
               name="Sanction Analytics"
-              parent="menu_onehr_employee_relations"
+              parent="menu_onehr_discipline_reporting"
               action="action_onehr_discipline_sanction_analytics"
-              sequence="60"
-              groups="onehr_discipline.group_onehr_discipline_manager"/>
+              sequence="20"/>
 </odoo>

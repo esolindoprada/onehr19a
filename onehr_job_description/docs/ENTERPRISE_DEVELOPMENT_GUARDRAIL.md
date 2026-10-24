@@ -1,3 +1,4 @@
+
 # OneHR Job Description — Enterprise Development Guardrail
 
 GUARDRAIL_ID: ONEHR-EDG-V1-JD-DIRECT-FULL
@@ -127,3 +128,4 @@ ADDON_SOURCE_FAILURE, TEST_DEFECT, DATA/MIGRATION_FAILURE, ARCHITECTURE_CONFLICT
 
 Default write scope is `onehr_job_description` only. Sibling addon source changes
 require separate architecture authorization.
+

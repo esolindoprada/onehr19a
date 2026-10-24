@@ -1,3 +1,4 @@
+
 """Pure approval-routing helpers.
 
 Odoo 19 builds registry classes dynamically, therefore reusable implementation

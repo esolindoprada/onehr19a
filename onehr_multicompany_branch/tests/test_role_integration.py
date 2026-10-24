@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
@@ -105,3 +106,4 @@ class TestRoleBranchIntegration(OneHRBranchCommon):
         all_ids = self.env["onehr.user.role"].with_user(self.security_manager_all).search([]).ids
         self.assertIn(row_a.id, all_ids)
         self.assertIn(row_b.id, all_ids)
+

@@ -1,0 +1,144 @@
+PASS: HARD GATE 0 manifest parse
+PASS: HARD GATE 0 project/addon identity
+PASS: Manifest version 19.0.1.0.1
+PASS: Hard dependency exactly onehr_security
+PASS: All manifest data files exist
+PASS: Python syntax (25 files)
+PASS: HARD GATE 4 exact five persistent integration models
+PASS: Persistent model implemented: onehr.api.key
+PASS: Persistent model implemented: onehr.api.log
+PASS: Persistent model implemented: onehr.api.queue
+PASS: Persistent model implemented: onehr.api.scope
+PASS: Persistent model implemented: onehr.webhook
+PASS: Native res.config.settings transient extension
+PASS: Tutorial model removed
+PASS: Tutorial scaffold paths removed
+PASS: No legacy _sql_constraints
+PASS: Odoo 19 @api.depends contains no explicit .id dependency
+PASS: HARD GATE 10 domain adapters contain no business sudo bypass
+PASS: Service identity boundary uses with_user
+PASS: Service identity boundary uses with_company
+PASS: Service identity boundary uses allowed_company_ids
+PASS: HARD GATE 10 no broad base.group_user custom-model CRUD
+PASS: Public REST routes authenticate before domain execution
+PASS: Inbound webhook dispatch is fixed allow-list, not arbitrary model/method
+PASS: PBKDF2-HMAC API secret hashing
+PASS: constant-time API secret comparison
+PASS: cryptographic API secret generation
+PASS: hashed credential persistence
+PASS: No plaintext API-key credential field is persisted
+PASS: request ID replay control
+PASS: timestamp replay window
+PASS: request HMAC signature
+PASS: stable rate-limit error
+PASS: payload redaction contract
+PASS: SSRF IP classification
+PASS: private-address blocking
+PASS: redirect rejection
+PASS: bounded webhook response size
+PASS: outbound webhook HMAC
+PASS: XML syntax (12 files)
+PASS: Odoo 19 list syntax uses <list>
+PASS: Odoo 19 direct view modifiers
+PASS: HARD GATE 11 no invalid ir.actions.act_window.groups_id
+PASS: Odoo 19 ir.actions.act_window group_ids used on all API actions
+PASS: Odoo 19 search <group> elements have no attributes
+PASS: Odoo searchability regression — onehr.webhook.failed_count is stored/searchable
+PASS: Webhook Has Dead Letters filter remains functionally preserved
+PASS: HARD GATE 7/8/9 List/Form/Search: onehr.api.key
+PASS: HARD GATE 7/8/9 List/Form/Search: onehr.api.log
+PASS: HARD GATE 7/8/9 List/Form/Search: onehr.api.queue
+PASS: HARD GATE 7/8/9 List/Form/Search: onehr.api.scope
+PASS: HARD GATE 7/8/9 List/Form/Search: onehr.webhook
+PASS: HARD GATE 6 enterprise UI — Statusbar
+PASS: HARD GATE 6 enterprise UI — Smart buttons
+PASS: HARD GATE 6 enterprise UI — Body buttons
+PASS: HARD GATE 6 enterprise UI — One2many row buttons
+PASS: HARD GATE 6 enterprise UI — Chatter
+PASS: HARD GATE 6 enterprise UI — Kanban
+PASS: HARD GATE 6 enterprise UI — Pivot
+PASS: HARD GATE 6 enterprise UI — Graph
+PASS: HARD GATE 6 enterprise UI — Badges
+PASS: HARD GATE 6 enterprise UI — Ribbons
+PASS: Object button → Python method cross-reference
+PASS: Unique local XML external IDs
+PASS: HARD GATE 11 PostgreSQL identifier and explicit M2M relation safety
+PASS: ACL CSV parse (10 rows)
+PASS: Exact 10 least-privilege ACL rows
+PASS: Security role present: group_onehr_api_user
+PASS: Security role present: group_onehr_api_admin
+PASS: Odoo 19 res.groups.privilege pattern
+PASS: Global company boundary on key/webhook/log/queue
+PASS: Exact 19 approved seed API scopes
+PASS: Versioned REST route present: /onehr/api/v1/health
+PASS: Versioned REST route present: /onehr/api/v1/employees
+PASS: Versioned REST route present: /onehr/api/v1/attendance
+PASS: Versioned REST route present: /onehr/api/v1/recruitment/applicants
+PASS: Versioned REST route present: /onehr/api/v1/timeoff/requests
+PASS: Versioned REST route present: /onehr/api/v1/approvals/events
+PASS: Versioned REST route present: /onehr/api/v1/documents/esign/status
+PASS: Soft integration contract — Attendance service
+PASS: Soft integration contract — Appraisal service
+PASS: Soft integration contract — Learning result service
+PASS: Soft integration contract — Learning enrollment service
+PASS: Soft integration contract — Career assessment service
+PASS: Soft integration contract — Payroll export service
+PASS: Soft integration contract — Payroll result service
+PASS: Soft integration contract — PnP acknowledgement service
+PASS: Soft integration contract — PnP evidence service
+PASS: Soft integration contract — SOP acknowledgement service
+PASS: Soft integration contract — Job Description service
+PASS: Soft integration contract — Portal My HR service
+PASS: Soft integration contract — Document e-Sign service
+PASS: HARD GATE 3/15 functional contract — API Keys
+PASS: HARD GATE 3/15 functional contract — API Scopes
+PASS: HARD GATE 3/15 functional contract — Webhooks
+PASS: HARD GATE 3/15 functional contract — Audit Log
+PASS: HARD GATE 3/15 functional contract — Retry Queue
+PASS: HARD GATE 3/15 functional contract — Secret rotation
+PASS: HARD GATE 3/15 functional contract — Dead-letter lifecycle
+PASS: HARD GATE 3/15 functional contract — Retry scheduler
+PASS: HARD GATE 3/15 functional contract — Log retention scheduler
+PASS: HARD GATE 3/15 functional contract — OpenAPI endpoint
+PASS: HARD GATE 3/15 functional contract — CORS preflight
+PASS: HARD GATE 3/15 functional contract — Soft-addon absence handling
+PASS: OpenAPI YAML and Postman assets
+PASS: Runtime test inventory exactly 26 methods
+PASS: Runtime test suites are post-install tagged
+PASS: Mandatory Enterprise documentation set
+PASS: Guardrail contains HARD GATE 0
+PASS: Guardrail contains HARD GATE 1
+PASS: Guardrail contains HARD GATE 2
+PASS: Guardrail contains HARD GATE 3
+PASS: Guardrail contains HARD GATE 4
+PASS: Guardrail contains HARD GATE 5
+PASS: Guardrail contains HARD GATE 6
+PASS: Guardrail contains HARD GATE 7
+PASS: Guardrail contains HARD GATE 8
+PASS: Guardrail contains HARD GATE 9
+PASS: Guardrail contains HARD GATE 10
+PASS: Guardrail contains HARD GATE 11
+PASS: Guardrail contains HARD GATE 12
+PASS: Guardrail contains HARD GATE 13
+PASS: Guardrail contains HARD GATE 14
+PASS: Guardrail contains HARD GATE 15
+PASS: HARD GATE 11 explicitly defined
+PASS: Codex bounded-worker/retry contract
+WARN: Exact Master Model Registry ED rows remain pending; classifications were not invented
+WARN: Native Gantt intentionally not fabricated on Odoo 19 CE
+
+SOURCE_FILES_PYTHON=25
+SOURCE_FILES_XML=12
+CUSTOM_PERSISTENT_MODELS=5
+EXPLICIT_RELATION_NAMES=1
+ACL_ROWS=10
+SEED_API_SCOPES=19
+RUNTIME_TEST_METHODS=26
+SOURCE_ACCEPTANCE_PASS_COUNT=126
+SOURCE_ACCEPTANCE_WARN_COUNT=2
+SOURCE_ACCEPTANCE_FAIL_COUNT=0
+ONEHR_INTEGRATIONS_API_DIRECT_FULL_SOURCE_ACCEPTANCE=PASS
+SOURCE_ENTERPRISE_COMPLETENESS=PASS_FOR_RUNTIME
+REGISTRY_ED_CLASSIFICATION=PENDING_EXACT_REGISTRY_ROW_VERIFICATION
+WINDOWS_RUNTIME_ACCEPTANCE=PENDING
+ONEHR_INTEGRATIONS_API_MOVE_FORWARD_READY=NO

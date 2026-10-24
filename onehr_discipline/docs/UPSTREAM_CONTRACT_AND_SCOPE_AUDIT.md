@@ -1,3 +1,4 @@
+
 # OneHR Discipline — Upstream Contract & Scope Isolation Audit
 
 LATEST_WORKSPACE: `onehr19a(20260821-090735).md`  
@@ -50,3 +51,4 @@ No sibling OneHR source file is emitted or modified by this package.
 
 UPSTREAM_CONTRACT_AUDIT: PASS  
 SCOPE_ISOLATION_RESULT: PASS_FOR_PACKAGE
+

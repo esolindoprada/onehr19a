@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 from odoo import _, api, fields, models
@@ -90,3 +91,4 @@ class OneHRUserRole(models.Model):
             if record.branch_id and not record.branch_id.is_effective_on(record.valid_from):
                 raise UserError(_("The branch must be effective on the role-assignment start date."))
         return super().action_activate()
+

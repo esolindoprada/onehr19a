@@ -1,3 +1,4 @@
+
 PASS: HARD_GATE_0 project/addon identity
 PASS: Odoo 19 manifest version
 PASS: hard dependencies exactly match frozen Assignment architecture

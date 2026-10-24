@@ -141,7 +141,7 @@
         <field name="inherit_id" ref="hr_recruitment.hr_job_search_view"/>
         <field name="arch" type="xml">
             <filter name="my_positions" position="after">
-                <filter name="onehr_open_requisitions" string="Open OneHR Requisitions" domain="[('onehr_open_requisition_count', '&gt;', 0)]" groups="onehr_recruitment.group_onehr_recruiter"/>
+                <filter name="onehr_open_requisitions" string="Open OneHR Requisitions" domain="[('onehr_requisition_ids.state', 'in', ('approved', 'recruiting'))]" groups="onehr_recruitment.group_onehr_recruiter"/>
             </filter>
         </field>
     </record>

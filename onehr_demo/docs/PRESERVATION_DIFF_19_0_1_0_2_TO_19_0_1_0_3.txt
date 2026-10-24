@@ -1,0 +1,24 @@
+
+OneHR Demo 19.0.1.0.2 -> 19.0.1.0.3 Preservation / Scope Diff
+
+INTENTIONAL BOUNDED CHANGES
+- __manifest__.py: version 19.0.1.0.2 -> 19.0.1.0.3.
+- services/contracts.py: explicit demo_generation_dependency=NONE for all frozen production sequence policies.
+- services/compatibility.py: production sequence presence/stable-field checks remain visible but are non-blocking for current demo generation; mutable sequence state is excluded from compatibility fingerprint.
+- tools/source_acceptance.py: sequence policy dependency and fingerprint separation are hard-gated; sequence configuration is no longer a source acceptance generation prerequisite.
+- docs: deterministic sequence policy, runtime contract, acceptance, completeness, identity preflight and release evidence updated.
+
+PRESERVED
+- six control-plane model ownerships and schemas;
+- 25-addon dependency topology;
+- MP05 foundation generator;
+- deterministic branch/department identity;
+- provenance/reference registry;
+- reset/rebuild semantics;
+- security groups, ACLs and record rules;
+- navigation closure from 19.0.1.0.2;
+- all production sibling addon sources.
+
+CLOSED ROOT CAUSE
+The demo runtime no longer depends, directly or indirectly, on the mutable state of production `ir.sequence` counters for generation identity, compatibility truth, readiness or rebuild identity.
+

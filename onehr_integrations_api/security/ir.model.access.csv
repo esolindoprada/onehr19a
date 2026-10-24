@@ -1,2 +1,11 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_onehr_integrations_api_onehr_integrations_api,onehr_integrations_api.onehr_integrations_api,model_onehr_integrations_api_onehr_integrations_api,base.group_user,1,1,1,1
+access_onehr_api_scope_user,OneHR API Scope User,model_onehr_api_scope,onehr_integrations_api.group_onehr_api_user,1,0,0,0
+access_onehr_api_scope_admin,OneHR API Scope Admin,model_onehr_api_scope,onehr_integrations_api.group_onehr_api_admin,1,1,1,1
+access_onehr_api_key_user,OneHR API Key User,model_onehr_api_key,onehr_integrations_api.group_onehr_api_user,1,0,0,0
+access_onehr_api_key_admin,OneHR API Key Admin,model_onehr_api_key,onehr_integrations_api.group_onehr_api_admin,1,1,1,1
+access_onehr_webhook_user,OneHR Webhook User,model_onehr_webhook,onehr_integrations_api.group_onehr_api_user,1,0,0,0
+access_onehr_webhook_admin,OneHR Webhook Admin,model_onehr_webhook,onehr_integrations_api.group_onehr_api_admin,1,1,1,1
+access_onehr_api_log_user,OneHR API Log User,model_onehr_api_log,onehr_integrations_api.group_onehr_api_user,1,0,0,0
+access_onehr_api_log_admin,OneHR API Log Admin,model_onehr_api_log,onehr_integrations_api.group_onehr_api_admin,1,0,0,0
+access_onehr_api_queue_user,OneHR API Queue User,model_onehr_api_queue,onehr_integrations_api.group_onehr_api_user,1,0,0,0
+access_onehr_api_queue_admin,OneHR API Queue Admin,model_onehr_api_queue,onehr_integrations_api.group_onehr_api_admin,1,1,0,0

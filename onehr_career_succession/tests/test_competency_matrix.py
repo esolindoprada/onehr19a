@@ -1,3 +1,4 @@
+
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import tagged
 
@@ -59,3 +60,4 @@ class TestCompetencyMatrix(OneHRCareerSuccessionCommon):
         self.make_requirement(competency=competency)
         with self.assertRaises(UserError):
             competency.with_user(self.talent_manager).unlink()
+

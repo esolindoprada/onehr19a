@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 from odoo import _, api, fields, models
@@ -288,3 +289,4 @@ class ResUsers(models.Model):
             domain=[("user_id", "=", self.id), ("branch_id", "!=", False)],
             context={"default_user_id": self.id, "default_company_id": self.company_id.id},
         )
+

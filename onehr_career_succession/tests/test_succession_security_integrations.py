@@ -1,3 +1,4 @@
+
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import tagged
 
@@ -72,3 +73,4 @@ class TestSuccessionSecurityIntegrations(OneHRCareerSuccessionCommon):
         plan = self.make_plan(talent=talent, target_coverage=2)
         self.assertLess(plan.coverage_percent, 100.0)
         self.assertGreater(plan.risk_index, 0.0)
+

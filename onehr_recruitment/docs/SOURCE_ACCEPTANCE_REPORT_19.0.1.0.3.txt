@@ -1,0 +1,55 @@
+PASS: HARD_GATE_0 project/addon identity
+PASS: Odoo 19 manifest version
+PASS: hard dependencies exactly match Architecture v2
+PASS: all manifest data files exist
+PASS: authoritative root Guardrail/checksum pair integrity
+PASS: all Python sources compile
+PASS: all XML parses and avoids deprecated attrs/states syntax
+PASS: Odoo 19 fields.Properties definitions use exactly one relation hop
+PASS: Interview scorecard uses template_id.scorecard_definition container contract
+PASS: Preboarding pending-task search uses searchable checklist task-state relation
+PASS: Preboarding domains do not filter non-searchable checklist_pending_task_count
+PASS: generic Odoo 19 Recruitment search-domain audit finds no target-local non-searchable domain leaves
+PASS: generic Recruitment search-domain audit scanned 22 domain attributes / 27 domain leaves
+PASS: Latest Offer state is stored/searchable while preserving its compute semantics
+PASS: Latest Offer stored compute invalidates when offer lifecycle state changes
+PASS: Latest Offer business semantics still select the most recently created offer
+PASS: Applicant Offer Accepted filter preserves latest-offer semantics
+PASS: Job Open Requisitions filter uses searchable requisition lifecycle relation
+PASS: Recruitment XML domains do not filter onehr_open_requisition_count
+PASS: exact seven OneHR-owned persistent Registry models
+PASS: exact four Odoo-native recruitment Registry extensions
+PASS: no prohibited parallel canonical recruitment model
+PASS: no sudo business-security bypass in recruitment models
+PASS: no executable eval/safe_eval recruitment business logic
+PASS: no business unlink override; uninstall-safe ondelete pattern used
+PASS: all seven governed custom models have uninstall-safe ondelete protection
+PASS: native applicant-to-employee conversion is explicitly Recruitment Manager-controlled
+PASS: exact 21 custom-model ACL rows
+PASS: no broad base.group_user custom-model ACL
+PASS: no ACL grants unlink on governed recruitment evidence
+PASS: record-rule coverage for every custom persistent model
+PASS: list/form/search view coverage for all seven custom persistent models
+PASS: enterprise UI marker: statusbar
+PASS: enterprise UI marker: smart buttons
+PASS: enterprise UI marker: One2many/List row buttons
+PASS: enterprise UI marker: calendar
+PASS: enterprise UI marker: pivot
+PASS: enterprise UI marker: graph
+PASS: enterprise UI marker: chatter
+PASS: business-meaningful One2many/list row button present
+PASS: exact 20 post-install test methods structurally present
+PASS: all four test modules carry post-install OneHR Recruitment tags
+PASS: all mandatory governance/completeness documents present
+PASS: Hard Gate 11 intentionally undefined; not invented
+PASS: bounded Codex role/retry contract present
+
+SOURCE_ACCEPTANCE_FAIL_COUNT: 0
+MASTER_MODEL_REGISTRY_TARGET_ROWS: 11
+CUSTOM_PERSISTENT_MODELS: 7
+ODOO_NATIVE_INHERIT_ROWS: 4
+ACL_ROWS: 21
+RUNTIME_TEST_METHODS: 20
+ONEHR_RECRUITMENT_DIRECT_FULL_SOURCE_ACCEPTANCE: PASS
+WINDOWS_RUNTIME_ACCEPTANCE: PENDING
+ONEHR_RECRUITMENT_MOVE_FORWARD_READY: NO

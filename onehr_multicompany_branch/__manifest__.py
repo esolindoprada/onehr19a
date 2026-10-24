@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 {
     "name": "OneHR Multicompany & Branch",
@@ -16,7 +17,7 @@ security authority.
 """,
     "author": "OneHR",
     "category": "Human Resources",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.2",
     "license": "LGPL-3",
     "depends": ["onehr_security"],
     "data": [
@@ -32,3 +33,4 @@ security authority.
     "installable": True,
     "application": False,
 }
+

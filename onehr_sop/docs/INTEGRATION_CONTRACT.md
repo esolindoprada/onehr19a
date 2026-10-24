@@ -1,3 +1,4 @@
+
 # OneHR SOP — Integration Contract
 
 ## OneHR Document — hard owner
@@ -26,3 +27,4 @@ HTTP endpoints, token/signature policy, throttling, retry and webhooks remain ow
 ## Multi-company/branch
 Company is the hard legal/security partition. Branch remains optional downstream and
 is not invented as a hard SOP field/dependency.
+

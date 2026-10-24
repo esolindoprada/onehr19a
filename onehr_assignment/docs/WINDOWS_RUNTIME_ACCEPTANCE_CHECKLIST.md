@@ -1,3 +1,4 @@
+
 # onehr_assignment — Windows/Odoo 19 Runtime Acceptance Checklist
 
 Run on the real OneHR Windows Odoo 19 environment and a disposable validation database before declaring move-forward readiness.

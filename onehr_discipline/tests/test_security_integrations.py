@@ -1,3 +1,4 @@
+
 from odoo import fields
 from odoo.exceptions import AccessError
 from odoo.tests import tagged
@@ -163,3 +164,4 @@ class TestDisciplineSecurityIntegrations(OneHRDisciplineCommon):
             )
         )
         self.assertEqual(before, after)
+

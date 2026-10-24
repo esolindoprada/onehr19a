@@ -1,3 +1,4 @@
+
 <odoo>
     <!-- Dependents -->
     <record id="view_onehr_dependent_list" model="ir.ui.view">

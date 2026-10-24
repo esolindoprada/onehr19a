@@ -1,3 +1,4 @@
+
 # OneHR Career & Succession — Windows Runtime Acceptance Checklist
 
 Source/static PASS is not runtime completion.
@@ -8,7 +9,7 @@ Source/static PASS is not runtime completion.
 4. Install `OneHR Career & Succession` once; capture the first full traceback if it fails.
 5. Verify only hard dependencies `onehr_base` and `onehr_corehr`.
 6. Verify exactly four persistent Career/Succession models register.
-7. Run all 24 post-install addon tests in a disposable database.
+7. Run all 26 post-install addon tests in a disposable database.
 8. Verify ordinary internal users have no custom-model access.
 9. Verify HRBP and Talent Manager roles under company isolation.
 10. Competency: create/edit/archive, level-scale validation and native CSV import.
@@ -31,3 +32,16 @@ Source/static PASS is not runtime completion.
 
 WINDOWS_RUNTIME_ACCEPTANCE: PENDING  
 ONEHR_CAREER_SUCCESSION_MOVE_FORWARD_READY: NO
+
+
+## 2026-09-10 bounded Users / Access Rights compatibility retest
+
+1. Deploy both corrected owners together: `onehr_career_succession` and `onehr_pnp`.
+2. Restart Odoo, Update Apps List, then upgrade both modules before testing the Users form.
+3. Verify `onehr_career_succession.module_category_onehr_career_succession` resolves to `OneHR Career and Succession`.
+4. Open **Settings → Users & Companies → Users**, then open at least two users.
+5. Confirm the Access Rights tab renders without Owl/`parseXML` lifecycle error.
+6. Change one non-sensitive OneHR group assignment, save, reopen the user, and confirm the same category hierarchy renders.
+7. Run the addon post-install tests; the dynamic-category regression must pass across installed OneHR privilege categories.
+8. Runtime PASS remains separate from source PASS.
+

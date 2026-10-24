@@ -1,32 +1,42 @@
-<!--
-OneHR — Analytics & KPI Dashboards
-File: static/description/index.html
-Odoo 18 CE | License: LGPL-3.0
-
-NOTE:
-- README.md di root untuk dokumentasi panjang; file ini untuk tampilan deskripsi di Apps UI.
-- Hindari <blockquote> demi konsistensi proyek.
--->
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h2>OneHR — Analytics &amp; KPI Dashboards</h2>
+      <h3>Enterprise KPI governance and immutable trend evidence for Odoo 19 Community Edition</h3>
+      <p>
+        Centralize workforce, recruitment, attendance/time-off, learning, payroll,
+        performance/succession and compliance KPI monitoring without moving ownership
+        away from the source OneHR addons.
+      </p>
+    </div>
+  </div>
+</section>
 
 <section class="oe_container oe_dark">
   <div class="oe_row oe_spaced">
-    <div class="oe_span3">
-      <img src="icon.png" alt="OneHR Analytics Icon" style="width:100%; border-radius:16px;">
+    <div class="oe_span6">
+      <h3>Enterprise capabilities</h3>
+      <ul>
+        <li>Governed KPI Tiles with target, value format and fixed provider modes.</li>
+        <li>Daily / weekly / monthly immutable snapshots with previous-period, MoM, HoH and YoY trend evidence.</li>
+        <li>Warning / critical thresholds with de-duplicated Odoo activities.</li>
+        <li>Drill-through under the current user's normal source-domain access.</li>
+        <li>Company isolation and soft branch fail-closed behavior.</li>
+        <li>Executive Kanban, enterprise List/Form/Search, Pivot and Graph analysis.</li>
+        <li>CSV snapshot export for external BI pipelines.</li>
+        <li>User KPI favorites without creating a separate dashboard/favorite business table.</li>
+      </ul>
     </div>
-    <div class="oe_span9">
-      <h1 class="oe_slogan">OneHR — Analytics & KPI Dashboards</h1>
-      <h2 class="oe_slogan">Headcount • Turnover • Time-to-Hire • Absenteeism • Payroll Cost • Learning KPIs</h2>
+    <div class="oe_span6">
+      <h3>Approved model footprint</h3>
+      <ul>
+        <li><b>onehr.analytics.tile</b> — KPI definition, lifecycle, targets, thresholds, schedule and latest cache.</li>
+        <li><b>onehr.kpi.snapshot</b> — immutable periodic KPI evidence.</li>
+        <li><b>onehr.mixin.analytics</b> — abstract helper for periods, thresholds, literal domains and trend calculations.</li>
+      </ul>
       <p>
-        Pusat <b>analitik SDM</b> untuk memantau <b>KPI</b>, menyimpan <b>snapshot</b> periodik, menampilkan
-        <b>dashboard</b> eksekutif, dan mengirim <b>alert</b> otomatis — terintegrasi dengan seluruh ekosistem
-        <b>OneHR</b> di <b>Odoo 18 Community Edition</b>.
-      </p>
-      <p>
-        <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
-        <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company/Branch</span>
-        <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Pivot/Graph/Spreadsheet</span>
-        <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Scheduler Snapshot</span>
-        <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">Alert & Threshold</span>
+        No employee, applicant, attendance, leave, payroll, learning, appraisal,
+        succession, discipline, API-authentication or branch master is duplicated.
       </p>
     </div>
   </div>
@@ -35,43 +45,18 @@ NOTE:
 <section class="oe_container">
   <div class="oe_row oe_spaced">
     <div class="oe_span12">
-      <h3>Overview</h3>
+      <h3>Soft-coupled OneHR providers</h3>
       <p>
-        Modul ini menyatukan pengukuran kinerja HR: <b>KPI tiles</b> yang dapat dikonfigurasi,
-        <b>snapshot</b> berkala untuk tren historis, <b>pivot/graph/cohort</b> untuk eksplorasi data,
-        serta <b>alert ambang</b> untuk eskalasi cepat. Integrasi mencakup Rekrutmen, Kehadiran, Cuti,
-        Payroll, Pembelajaran, Appraisal, dan Disiplin.
+        The approved model-aggregate provider supports a bounded allow-list of OneHR
+        domains. Explicit service contracts are consumed for Appraisal
+        (<i>onehr_appraisal_kpi_snapshot</i>), Learning
+        (<i>onehr_learning_kpi_snapshot</i>) and Career/Succession
+        (<i>onehr_career_kpi_snapshot</i>) when installed. Source ACLs and record rules
+        remain authoritative and no business sudo is used.
       </p>
-    </div>
-  </div>
-</section>
-
-<section class="oe_container">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span6">
-      <h3>Key Features</h3>
-      <ul>
-        <li><b>KPI Tiles</b> bisa dikonfigurasi (rumus, filter, warna, target, format).</li>
-        <li><b>Snapshots</b> via cron (harian/mingguan/bulanan) untuk tren dan YoY/HoH/MoM.</li>
-        <li><b>Alert & Threshold</b> (Email/Activities) saat KPI melewati batas.</li>
-        <li><b>Drill-through</b> dari tile ke daftar data sumber yang relevan.</li>
-        <li><b>Multi-company/branch</b> dengan filter konteks & record rules.</li>
-        <li><b>Pivot/Graph/Cohort</b> & ekspor <b>CSV/XLSX</b> untuk BI eksternal.</li>
-        <li><b>Bridges</b>: Attendance, Timeoff, Recruitment, Learning, Payroll, Appraisal, Discipline.</li>
-        <li><b>Dashboard eksekutif</b> siap pakai + favorit per user.</li>
-        <li><b>Spreadsheet</b> sync untuk laporan dinamis & bagikan ke tim.</li>
-      </ul>
-    </div>
-    <div class="oe_span6">
-      <h3>Core Models</h3>
-      <ul>
-        <li><b>onehr.analytics.tile</b> — definisi kartu KPI (rumus, target, visual).</li>
-        <li><b>onehr.kpi.snapshot</b> — penyimpanan nilai KPI periodik.</li>
-        <li><b>onehr.mixin.analytics</b> — util agregasi, threshold, dan alert.</li>
-      </ul>
-      <p style="margin-top:8px;">
-        Dataset dibangun dari model lintas modul OneHR dengan pendekatan <i>soft-coupled</i> agar
-        addon bisa diinstal independen namun tetap terintegrasi.
+      <p>
+        Public REST/API authentication remains owned by <b>onehr_integrations_api</b>.
+        This addon exposes only a narrow model-service KPI feed for downstream transport.
       </p>
     </div>
   </div>
@@ -79,150 +64,17 @@ NOTE:
 
 <section class="oe_container oe_dark">
   <div class="oe_row oe_spaced">
-    <div class="oe_span12">
-      <h3>Typical HR KPIs</h3>
-      <p>
-        <b>Workforce:</b> Headcount, New Hire, Attrition/Turnover, Tenure Distribution, Diversity Mix.<br>
-        <b>Recruitment:</b> Time-to-Hire, Time-to-Fill, Offer Acceptance Rate, Funnel Conversion.<br>
-        <b>Attendance:</b> Absenteeism Rate, Overtime Hours, Punctuality, Leave Utilization.<br>
-        <b>Learning:</b> Training Hours/FTE, Completion Rate, Certification Status.<br>
-        <b>Payroll & Comp:</b> Payroll Cost/FTE, Comp Ratio, Overtime Cost, Allowance Mix.<br>
-        <b>Performance & Succession:</b> Rating Distribution, 9-Box, Succession Coverage.<br>
-        <b>Compliance & Discipline:</b> Case Count, SLA Compliance, Repeated Offenses.
-      </p>
-    </div>
-  </div>
-</section>
-
-<section class="oe_container">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span6">
-      <h3>Dashboards Siap Pakai</h3>
-      <ul>
-        <li><b>Executive Overview</b> — ringkasan KPI strategis lintas domain.</li>
-        <li><b>Workforce Composition</b> — komposisi, tenure, diversity.</li>
-        <li><b>Recruitment Funnel</b> — stage metrics dan bottleneck.</li>
-        <li><b>Attendance & Timeoff</b> — absen, lembur, cuti, tren musiman.</li>
-        <li><b>Learning & Development</b> — jam pelatihan & kelulusan.</li>
-        <li><b>Payroll & Compensation</b> — biaya SDM & struktur kompensasi.</li>
-        <li><b>Performance & Succession</b> — distribusi rating & coverage suksesi.</li>
-        <li><b>Compliance & Discipline</b> — kasus dan SLA.</li>
-      </ul>
-    </div>
-    <div class="oe_span6">
-      <h3>Holistic Integrations (OneHR Suite)</h3>
-      <p>
-        Terhubung mulus dengan: <i>onehr_base, onehr_security, onehr_corehr, onehr_recruitment,
-        onehr_employment_contract, onehr_assignment, onehr_attendance, onehr_timeoff, onehr_payroll_bridge,
-        onehr_payroll_l10n_id, onehr_learning, onehr_appraisal, onehr_discipline, onehr_career_succession,
-        onehr_job_description, onehr_workflow_approval, onehr_document, onehr_pnp, onehr_sop,
-        onehr_portal_self_service, onehr_mobile_kiosk, onehr_multicompany_branch, onehr_integrations_api</i>.
-      </p>
-      <p style="font-size:12px;color:#666;">
-        Integrasi menggunakan relasi & event log; addon lain tetap dapat dipasang/ditingkatkan secara independen.
-      </p>
-    </div>
-  </div>
-</section>
-
-<section class="oe_container oe_dark">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span4">
-      <h3>Installation</h3>
-      <ol>
-        <li>Tambahkan addon ke <i>addons_path</i> Odoo.</li>
-        <li>Update Apps list, cari <b>OneHR — Analytics & KPI Dashboards</b>.</li>
-        <li>Install; dependensi akan terpasang otomatis.</li>
-      </ol>
-    </div>
-    <div class="oe_span4">
-      <h3>Configuration</h3>
-      <ul>
-        <li>Atur <b>KPI Tiles</b> (rumus, target, warna) & susun <b>Dashboard</b>.</li>
-        <li>Aktifkan <b>Scheduler Snapshot</b> & tentukan periodenya.</li>
-        <li>Tetapkan <b>Threshold</b> & penerima <b>alert</b>.</li>
-        <li>Opsional: aktifkan <b>Spreadsheet</b> sync untuk laporan dinamis.</li>
-      </ul>
-    </div>
     <div class="oe_span4">
       <h3>Security</h3>
-      <ul>
-        <li>Groups: HR Analyst (read), HR Manager (manage), HR Admin (full).</li>
-        <li>Record Rules: pembatasan data per company/branch.</li>
-        <li>PII awareness: akses ke data sensitif mengikuti modul keamanan.</li>
-      </ul>
+      <p>Analytics Analyst, Analytics Manager and Analytics Administrator are independent least-privilege roles with global company rules.</p>
     </div>
-  </div>
-</section>
-
-<!-- Screenshot grid (gunakan gambar Anda sendiri: s1.png..s6.png) -->
-<section class="oe_container">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span12">
-      <h3>Screenshots</h3>
+    <div class="oe_span4">
+      <h3>Evidence</h3>
+      <p>Snapshots cannot be edited or deleted through the application. Historical evidence is archived, not automatically removed.</p>
     </div>
-    <div class="oe_span4"><img src="s1.png" alt="Executive Overview Dashboard" style="width:100%;border-radius:10px;"></div>
-    <div class="oe_span4"><img src="s2.png" alt="KPI Tiles Config" style="width:100%;border-radius:10px;"></div>
-    <div class="oe_span4"><img src="s3.png" alt="Pivot & Graph View" style="width:100%;border-radius:10px;"></div>
-    <div class="oe_span4"><img src="s4.png" alt="Snapshot Trend" style="width:100%;border-radius:10px;margin-top:10px;"></div>
-    <div class="oe_span4"><img src="s5.png" alt="Recruitment Funnel" style="width:100%;border-radius:10px;margin-top:10px;"></div>
-    <div class="oe_span4"><img src="s6.png" alt="Attendance & Timeoff Analytics" style="width:100%;border-radius:10px;margin-top:10px;"></div>
-  </div>
-</section>
-
-<section class="oe_container oe_dark">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span6">
-      <h3>Demo &amp; Testing</h3>
-      <ul>
-        <li>Demo data: tiles KPI, snapshot bulanan, dashboard eksekutif.</li>
-        <li>Unit tests: akses & rules, perhitungan KPI, scheduler snapshot, alert.</li>
-        <li>UAT: rekrutmen → kontrak → kehadiran/cuti → payroll → dashboard KPI.</li>
-      </ul>
-    </div>
-    <div class="oe_span6">
-      <h3>Performance Notes</h3>
-      <ul>
-        <li>Index: company_id, date, employee_id, department_id, job_id.</li>
-        <li>Gunakan <i>read_group</i> untuk agregasi; hindari compute berat di list.</li>
-        <li>Arsipkan snapshot lama untuk volume besar (retention policy).</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section class="oe_container">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span6">
-      <h3>Assets</h3>
-      <ul>
-        <li>JS: <i>analytics_dashboard.js</i></li>
-        <li>QWeb: <i>analytics_templates.xml</i></li>
-        <li>SCSS: <i>analytics.scss</i></li>
-      </ul>
-    </div>
-    <div class="oe_span6">
-      <h3>API &amp; Portal (opsional)</h3>
-      <ul>
-        <li>Endpoint ringkas untuk portal eksekutif (JSON feed KPIs).</li>
-        <li>Integrasi dengan <i>onehr_integrations_api</i> untuk SSO/SSO token.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section class="oe_container oe_dark">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span6">
-      <h3>License</h3>
-      <p>Distribusi di bawah lisensi <b>LGPL-3.0</b>. Lihat berkas <i>LICENSE</i>.</p>
-    </div>
-    <div class="oe_span6">
-      <h3>Support &amp; Contribution</h3>
-      <p>
-        Laporkan isu & ajukan peningkatan melalui alur kontribusi OneHR:
-        sertakan test, ikuti style code, dan dokumentasikan dampak migrasi.
-      </p>
+    <div class="oe_span4">
+      <h3>Community Edition</h3>
+      <p>No Enterprise-only Spreadsheet, Cohort or Gantt renderer is fabricated. CSV and native Pivot/Graph are the supported analysis/export surfaces in this build.</p>
     </div>
   </div>
 </section>

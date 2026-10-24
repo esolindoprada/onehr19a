@@ -1,8 +1,8 @@
+
 <odoo>
     <menuitem
         id="menu_onehr_corehr_root"
         name="People &amp; Core HR"
-        parent="onehr_base.menu_onehr_root"
         sequence="15"
         groups="onehr_corehr.group_onehr_corehr_officer,onehr_corehr.group_onehr_identifier_steward,onehr_corehr.group_onehr_occupational_health_officer"
     />

@@ -1,7 +1,9 @@
+
 # OneHR Career & Succession — Enterprise Completeness Matrix
 
 | Area | Source status | Runtime status |
 |---|---|---|
+| Odoo 19 Users / Access Rights dynamic privilege-category XML safety | PASS source | PENDING User form smoke |
 | Project identity / 15 hard gates | PASS source | n/a |
 | Tutorial scaffold replacement | PASS source | PENDING install |
 | Exact 4 persistent models | PASS source | PENDING registry |
@@ -33,7 +35,7 @@
 | No broad base.group_user CRUD | PASS source | PENDING ACL registry |
 | No business sudo/public controller | PASS source | PENDING runtime |
 | Odoo 19 `.id` depends regression guard | PASS source | PENDING loader |
-| 24 post-install test methods | PASS source inventory | PENDING execution |
+| 26 post-install test methods | PASS source inventory | PENDING execution |
 | Fresh install | n/a | PENDING |
 | Upgrade / repeated upgrade | n/a | PENDING |
 | Post-upgrade smoke | n/a | PENDING |
@@ -42,3 +44,4 @@
 SOURCE_ENTERPRISE_COMPLETENESS: PASS_FOR_RUNTIME when source acceptance passes.  
 WINDOWS_RUNTIME_ACCEPTANCE: PENDING  
 ONEHR_CAREER_SUCCESSION_MOVE_FORWARD_READY: NO
+

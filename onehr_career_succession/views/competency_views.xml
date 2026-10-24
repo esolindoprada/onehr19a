@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="view_onehr_competency_list" model="ir.ui.view">
         <field name="name">onehr.competency.list</field>
@@ -142,3 +143,4 @@
         <field name="context">{'search_default_active': 1}</field>
     </record>
 </odoo>
+

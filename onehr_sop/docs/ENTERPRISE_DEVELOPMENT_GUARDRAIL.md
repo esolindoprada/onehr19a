@@ -1,3 +1,4 @@
+
 # OneHR SOP — Enterprise Development Guardrail
 
 GUARDRAIL_ID: ONEHR-EDG-V1-SOP-DIRECT-FULL
@@ -122,3 +123,4 @@ ADDON_SOURCE_FAILURE, TEST_DEFECT, DATA/MIGRATION_FAILURE, ARCHITECTURE_CONFLICT
 
 Default source write scope is `onehr_sop` only. Sibling OneHR source modifications
 require separate architecture authorization.
+

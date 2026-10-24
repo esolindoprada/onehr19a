@@ -1,0 +1,75 @@
+<odoo>
+    <record id="view_onehr_webhook_list" model="ir.ui.view">
+        <field name="name">onehr.webhook.list</field><field name="model">onehr.webhook</field>
+        <field name="arch" type="xml">
+            <list string="Webhooks" decoration-success="state == 'active'" decoration-warning="state == 'paused'" decoration-muted="state == 'disabled'">
+                <field name="name"/><field name="direction" widget="badge"/><field name="event_code"/>
+                <field name="company_id" groups="base.group_multi_company"/><field name="target_url" optional="show"/><field name="endpoint_key" optional="hide"/>
+                <field name="pending_count"/><field name="failed_count"/><field name="last_http_status" optional="show"/><field name="state" widget="badge"/>
+                <button name="action_open_queue" type="object" string="Queue" icon="fa-tasks"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_webhook_kanban" model="ir.ui.view">
+        <field name="name">onehr.webhook.kanban</field><field name="model">onehr.webhook</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/><field name="direction"/><field name="event_code"/><field name="state"/><field name="pending_count"/><field name="failed_count"/><field name="last_success_at"/>
+                <templates><t t-name="card"><div class="d-flex justify-content-between"><strong><field name="name"/></strong><field name="state" widget="badge"/></div><div class="text-muted"><field name="direction"/> · <field name="event_code"/></div><div class="mt-2">Pending: <field name="pending_count"/> · Dead: <field name="failed_count"/></div><div class="text-muted">Last success: <field name="last_success_at"/></div></t></templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_onehr_webhook_form" model="ir.ui.view">
+        <field name="name">onehr.webhook.form</field><field name="model">onehr.webhook</field>
+        <field name="arch" type="xml">
+            <form string="Webhook">
+                <header>
+                    <button name="action_rotate_secret" type="object" string="Rotate Secret" class="btn-secondary" invisible="state == 'disabled'" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state not in ('draft', 'paused')" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                    <button name="action_pause" type="object" string="Pause" class="btn-secondary" invisible="state != 'active'" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                    <button name="action_test_webhook" type="object" string="Queue Test Delivery" class="btn-secondary" invisible="direction != 'outbound' or state != 'active'" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                    <button name="action_disable" type="object" string="Disable" class="btn-secondary" invisible="state == 'disabled'" confirm="Disable this webhook permanently?" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,paused,disabled"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Disabled" bg_color="text-bg-danger" invisible="state != 'disabled'"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_queue" type="object" class="oe_stat_button" icon="fa-tasks"><field name="queue_count" widget="statinfo" string="Queue"/></button>
+                        <button name="action_open_queue" type="object" class="oe_stat_button" icon="fa-clock-o"><field name="pending_count" widget="statinfo" string="Pending"/></button>
+                        <button name="action_open_queue" type="object" class="oe_stat_button" icon="fa-exclamation-triangle"><field name="failed_count" widget="statinfo" string="Dead Letter"/></button>
+                        <button name="action_open_logs" type="object" class="oe_stat_button" icon="fa-list"><field name="log_count" widget="statinfo" string="Logs"/></button>
+                    </div>
+                    <div class="oe_title"><label for="name"/><h1><field name="name"/></h1><div class="text-muted"><field name="event_code"/></div></div>
+                    <group>
+                        <group string="Routing"><field name="company_id" options="{'no_create': True}"/><field name="direction"/><field name="event_code"/><field name="target_url" invisible="direction != 'outbound'"/><field name="endpoint_key" readonly="1" invisible="direction != 'inbound'"/></group>
+                        <group string="Security"><field name="service_user_id" invisible="direction != 'inbound'" options="{'no_create': True}"/><field name="hmac_required"/><field name="secret" password="True" readonly="1" groups="onehr_integrations_api.group_onehr_api_admin"/><field name="secret_hint" readonly="1"/><field name="branch_code"/></group>
+                    </group>
+                    <group string="Delivery Policy"><field name="rate_limit_per_minute"/><field name="max_attempts"/><field name="timeout_seconds"/></group>
+                    <group string="Last Delivery"><field name="last_success_at" readonly="1"/><field name="last_failure_at" readonly="1"/><field name="last_http_status" readonly="1"/><field name="last_message" readonly="1"/></group>
+                    <notebook>
+                        <page string="Delivery Queue" name="delivery_queue">
+                            <field name="queue_ids" readonly="1">
+                                <list decoration-success="state == 'sent'" decoration-danger="state == 'dead_letter'" decoration-warning="state == 'retry'">
+                                    <field name="name"/><field name="event_code"/><field name="attempts"/><field name="retry_at"/><field name="last_http_status"/><field name="state" widget="badge"/>
+                                    <button name="action_process_now" type="object" string="Process" icon="fa-play" invisible="state not in ('pending', 'retry')" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                                    <button name="action_retry" type="object" string="Retry" icon="fa-refresh" invisible="state not in ('retry', 'dead_letter')" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <button name="action_open_logs" type="object" string="Open Full Integration Audit" class="btn-secondary"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_webhook_search" model="ir.ui.view">
+        <field name="name">onehr.webhook.search</field><field name="model">onehr.webhook</field>
+        <field name="arch" type="xml"><search string="Webhooks"><field name="name"/><field name="event_code"/><field name="target_url"/><filter name="active" string="Active" domain="[('state','=','active')]"/><filter name="inbound" string="Inbound" domain="[('direction','=','inbound')]"/><filter name="outbound" string="Outbound" domain="[('direction','=','outbound')]"/><filter name="dead_letters" string="Has Dead Letters" domain="[('failed_count','&gt;',0)]"/><group><filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/><filter name="group_direction" string="Direction" context="{'group_by':'direction'}"/><filter name="group_state" string="Status" context="{'group_by':'state'}"/></group></search></field>
+    </record>
+
+    <record id="action_onehr_webhooks" model="ir.actions.act_window"><field name="name">Webhooks</field><field name="res_model">onehr.webhook</field><field name="view_mode">list,kanban,form</field><field name="search_view_id" ref="view_onehr_webhook_search"/><field name="group_ids" eval="[Command.link(ref('onehr_integrations_api.group_onehr_api_user'))]"/></record>
+</odoo>

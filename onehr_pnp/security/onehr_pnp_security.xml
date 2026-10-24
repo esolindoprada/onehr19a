@@ -1,6 +1,7 @@
+
 <odoo>
     <record id="module_category_onehr_pnp" model="ir.module.category">
-        <field name="name">OneHR Policies &amp; Procedures</field>
+        <field name="name">OneHR Policies and Procedures</field>
         <field name="description">Enterprise policy governance, publication, acknowledgement and compliance evidence.</field>
         <field name="sequence">54</field>
     </record>
@@ -57,3 +58,4 @@
         <field name="comment">Highest PnP source-domain authority. It does not automatically gain Workflow Manager, Security Admin or restricted Document Compliance authority.</field>
     </record>
 </odoo>
+

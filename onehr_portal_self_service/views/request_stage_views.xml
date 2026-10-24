@@ -1,0 +1,100 @@
+
+<odoo>
+    <record id="view_onehr_portal_request_stage_list" model="ir.ui.view">
+        <field name="name">onehr.portal.request.stage.list.enterprise</field>
+        <field name="model">onehr.portal.request.stage</field>
+        <field name="arch" type="xml">
+            <list string="Request Stages" decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="state_key" widget="badge"/>
+                <field name="portal_visible"/>
+                <field name="fold" optional="show"/>
+                <field name="request_count"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="active" column_invisible="True"/>
+                <button name="action_open_requests" type="object" string="Requests" icon="fa-list"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_portal_request_stage_form" model="ir.ui.view">
+        <field name="name">onehr.portal.request.stage.form.enterprise</field>
+        <field name="model">onehr.portal.request.stage</field>
+        <field name="arch" type="xml">
+            <form string="Portal Request Stage">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" invisible="active"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_requests" type="object" class="oe_stat_button" icon="fa-list">
+                            <field name="request_count" widget="statinfo" string="Requests"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                        <div class="text-muted"><field name="code"/></div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="state_key"/>
+                            <field name="sequence"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="portal_visible"/>
+                            <field name="fold"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Operational meaning of this stage..."/>
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_requests" type="object" string="Open Requests in This Stage" class="btn-secondary" icon="fa-external-link"/>
+                    </div>
+                    <notebook>
+                        <page string="Requests">
+                            <field name="request_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="employee_name"/>
+                                    <field name="type_id"/>
+                                    <field name="subject"/>
+                                    <field name="sla_status" widget="badge"/>
+                                    <button name="action_open_self" type="object" string="Open" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_portal_request_stage_search" model="ir.ui.view">
+        <field name="name">onehr.portal.request.stage.search.enterprise</field>
+        <field name="model">onehr.portal.request.stage</field>
+        <field name="arch" type="xml">
+            <search string="Request Stages">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="state_key"/>
+                <field name="company_id"/>
+                <filter name="portal_visible" string="Portal Visible" domain="[('portal_visible','=',True),('active','=',True)]"/>
+                <filter name="archived" string="Archived" domain="[('active','=',False)]"/>
+                <group>
+                    <filter name="group_state" string="Lifecycle State" context="{'group_by':'state_key'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_portal_request_stage" model="ir.actions.act_window">
+        <field name="name">Request Stages</field>
+        <field name="res_model">onehr.portal.request.stage</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_portal_request_stage_search"/>
+    </record>
+</odoo>
+

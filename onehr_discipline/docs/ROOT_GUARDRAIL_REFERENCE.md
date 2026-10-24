@@ -1,3 +1,4 @@
+
 # OneHR Root Guardrail Reference
 
 ROOT_GUARDRAIL_ID: ONEHR-EDG-V1  
@@ -19,3 +20,4 @@ Codex remains BOUNDED_IMPLEMENTATION_WORKER:
 
 The user-specified Discipline work additionally defines HARD GATE 11 explicitly
 as Database Identifier & ORM Naming Safety.
+

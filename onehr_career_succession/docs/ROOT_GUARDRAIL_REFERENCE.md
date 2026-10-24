@@ -1,3 +1,4 @@
+
 # OneHR Root Guardrail Reference
 
 ROOT_GUARDRAIL_ID: ONEHR-EDG-V1  
@@ -16,3 +17,4 @@ Codex remains:
 - dependency-change authority: none
 - maximum attempts per bounded repair task: 2
 - same root-cause repetition: 1
+

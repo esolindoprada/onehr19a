@@ -1,3 +1,4 @@
+
 # OneHR PnP — Integration Contract
 
 ## OneHR Workflow Approval — hard owner
@@ -45,3 +46,4 @@ token models, retry/webhook ownership or transport policy.
 `branch_scope_key` participates in Workflow routing and provides a stable
 extension key. `onehr_multicompany_branch` may extend audience resolution later
 without reverse dependency or PnP branch-master duplication.
+

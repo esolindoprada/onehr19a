@@ -1,3 +1,4 @@
+
 <odoo noupdate="1">
     <record id="seq_onehr_policy" model="ir.sequence">
         <field name="name">OneHR Policy</field>
@@ -7,3 +8,4 @@
         <field name="company_id" eval="False"/>
     </record>
 </odoo>
+

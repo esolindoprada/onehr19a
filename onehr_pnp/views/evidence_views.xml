@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="view_onehr_policy_evidence_list" model="ir.ui.view">
         <field name="name">onehr.policy.evidence.list.enterprise</field>
@@ -283,3 +284,4 @@
         <field name="search_view_id" ref="view_onehr_policy_evidence_search"/>
     </record>
 </odoo>
+

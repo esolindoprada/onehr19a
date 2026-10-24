@@ -1,3 +1,4 @@
+
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 
@@ -134,3 +135,4 @@ class OneHRSOPIntegrationServices(models.Model):
                 else 0.0
             ),
         }
+

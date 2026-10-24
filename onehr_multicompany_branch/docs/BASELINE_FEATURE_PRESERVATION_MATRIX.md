@@ -1,3 +1,4 @@
+
 # Baseline Feature Preservation Matrix
 
 | Historical / approved intent | Direct Full Build implementation | Status |
@@ -16,3 +17,4 @@
 | Odoo 18 scaffold metadata | Replaced with Odoo 19 CE manifest/views/security | REQUIRED TECHNICAL RECONSTRUCTION |
 | Generic scaffold model | Rejected because absent from Registry; `onehr.branch` is canonical | REJECTED WITH ARCHITECTURE REASON |
 | broad `base.group_user` CRUD | Removed | SECURITY HARDENING |
+

@@ -1,0 +1,43 @@
+
+OneHR bounded compatibility preservation diff — onehr_career_succession
+BASELINE_VERSION=19.0.1.0.0
+REPAIR_VERSION=19.0.1.0.1
+ROOT_CAUSE_CLASSIFICATION=ODOO_VERSION_COMPATIBILITY_FAILURE
+BASELINE_FINGERPRINTED_FILES=42
+UNCHANGED_BASELINE_FILES=34
+INTENTIONALLY_CHANGED_BASELINE_FILES=8
+MISSING_BASELINE_FILES=0
+NEW_REPAIR_FILES=4
+
+INTENTIONALLY_CHANGED_BASELINE_FILES:
+- __manifest__.py
+- docs/ENTERPRISE_COMPLETENESS_MATRIX.md
+- docs/IMPLEMENTATION_REPORT.md
+- docs/SOURCE_ACCEPTANCE_REPORT.txt
+- docs/WINDOWS_RUNTIME_ACCEPTANCE.md
+- security/onehr_career_succession_security.xml
+- tests/__init__.py
+- tools/source_acceptance.py
+
+NEW_REPAIR_FILES:
+- docs/CROSS_SUITE_PRIVILEGE_CATEGORY_AUDIT.md
+- docs/ODOO19_USER_ACCESS_RIGHTS_COMPATIBILITY_REPAIR.md
+- tests/test_user_access_rights_compatibility.py
+- docs/PRESERVATION_DIFF_19_0_1_0_0_TO_19_0_1_0_1.txt
+
+MISSING_BASELINE_FILES:
+- NONE
+
+PRESERVATION_ASSERTIONS:
+- All models/*.py unchanged from baseline: PASS
+- All views/*.xml unchanged from baseline: PASS
+- All report/*.xml unchanged from baseline: PASS
+- All data/*.xml unchanged from baseline: PASS
+- ACL CSV unchanged from baseline: PASS
+- Record-rule XML unchanged from baseline: PASS
+- Dependency topology unchanged: PASS (manifest dependency list not edited)
+- Model ownership/workflow/effective dating unchanged: PASS (no model source edits)
+- Compiled/junk Python artifacts packaged: NONE
+
+The only production semantic change is the owned ir.module.category display name in the addon security XML; the res.groups.privilege display name is preserved.
+

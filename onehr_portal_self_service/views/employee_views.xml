@@ -1,0 +1,20 @@
+
+<odoo>
+    <record id="view_employee_form_onehr_portal" model="ir.ui.view">
+        <field name="name">hr.employee.form.onehr.portal.self.service</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_onehr_portal_requests" type="object" class="oe_stat_button" icon="fa-comments-o"
+                        groups="onehr_portal_self_service.group_onehr_portal_hr">
+                    <field name="onehr_portal_request_count" widget="statinfo" string="Self-Service"/>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="onehr_portal_self_service_enabled" groups="onehr_portal_self_service.group_onehr_portal_hr"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

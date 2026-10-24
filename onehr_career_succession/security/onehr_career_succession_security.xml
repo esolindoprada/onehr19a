@@ -1,6 +1,7 @@
+
 <odoo>
     <record id="module_category_onehr_career_succession" model="ir.module.category">
-        <field name="name">OneHR Career &amp; Succession</field>
+        <field name="name">OneHR Career and Succession</field>
         <field name="description">Competency, talent pool and succession planning.</field>
         <field name="sequence">50</field>
     </record>
@@ -31,3 +32,4 @@
         <field name="comment">Approval, activation and governance authority for talent and succession.</field>
     </record>
 </odoo>
+

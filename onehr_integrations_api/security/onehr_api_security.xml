@@ -1,0 +1,30 @@
+<odoo>
+    <record id="module_category_onehr_integrations_api" model="ir.module.category">
+        <field name="name">OneHR Integration Hub</field>
+        <field name="description">External API, webhook and integration-transport operations.</field>
+        <field name="sequence">70</field>
+    </record>
+
+    <record id="privilege_onehr_integrations_api" model="res.groups.privilege">
+        <field name="name">OneHR Integration Hub</field>
+        <field name="description">Secure external integration operations and administration.</field>
+        <field name="category_id" ref="module_category_onehr_integrations_api"/>
+        <field name="sequence">70</field>
+    </record>
+
+    <record id="group_onehr_api_user" model="res.groups">
+        <field name="name">API Operator</field>
+        <field name="privilege_id" ref="privilege_onehr_integrations_api"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[Command.link(ref('onehr_security.group_onehr_security_user'))]"/>
+        <field name="comment">Read-only operational monitoring of API keys, scopes, webhooks, logs and queues.</field>
+    </record>
+
+    <record id="group_onehr_api_admin" model="res.groups">
+        <field name="name">API Administrator</field>
+        <field name="privilege_id" ref="privilege_onehr_integrations_api"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[Command.link(ref('onehr_integrations_api.group_onehr_api_user'))]"/>
+        <field name="comment">Credential, scope, webhook and retry administration. Does not imply HR business-domain authority.</field>
+    </record>
+</odoo>

@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="view_onehr_jd_list" model="ir.ui.view">
         <field name="name">onehr.jd.list.enterprise</field>
@@ -385,3 +386,4 @@
         <field name="domain">[('is_template', '=', False), ('active', '=', True)]</field>
     </record>
 </odoo>
+

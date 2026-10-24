@@ -1,3 +1,4 @@
+
 # OneHR Job Description
 
 Enterprise Job Description governance for OneHR NEW on Odoo 19 Community Edition.
@@ -17,3 +18,4 @@ Career/Succession, Portal and API/BI consumers.
 
 Source acceptance is not runtime acceptance. Windows/Odoo install, upgrade, security,
 reporting, scheduler and integration UAT remain mandatory before the addon is frozen.
+

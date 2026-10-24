@@ -1,3 +1,4 @@
+
 from datetime import timedelta
 
 from odoo import fields
@@ -169,3 +170,4 @@ class OneHRCareerSuccessionCommon(TransactionCase):
         return self.env["onehr.succession.plan"].with_user(
             self.hrbp_user
         ).create(values)
+

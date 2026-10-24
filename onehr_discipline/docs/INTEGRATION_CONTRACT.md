@@ -1,3 +1,4 @@
+
 # OneHR Discipline — Integration Contract
 
 ## OneHR CoreHR — hard owner
@@ -61,3 +62,4 @@ dashboard persistence remain downstream ownership.
 ## Branch — downstream extension
 `branch_scope_key` participates in sanction approval context and remains a stable
 extension key without reverse dependency on `onehr_multicompany_branch`.
+

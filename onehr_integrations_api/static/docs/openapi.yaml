@@ -1,0 +1,77 @@
+openapi: 3.0.3
+info:
+  title: OneHR Integrations API
+  version: 1.0.0
+  description: Enterprise integration boundary for OneHR NEW on Odoo 19 Community Edition.
+servers:
+  - url: /onehr/api/v1
+components:
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    RequestSignature:
+      type: apiKey
+      in: header
+      name: X-Signature
+  schemas:
+    Error:
+      type: object
+      properties:
+        ok: {type: boolean}
+        error:
+          type: object
+          properties:
+            code: {type: string}
+            message: {type: string}
+            details: {type: object}
+paths:
+  /health:
+    get:
+      summary: Health and installed-capability check
+      security: [{ApiKey: []}]
+  /employees:
+    get:
+      summary: Company-scoped employee directory
+      security: [{ApiKey: []}]
+  /attendance:
+    post:
+      summary: Ingest an attendance interval through the Attendance domain service
+      security: [{ApiKey: []}, {RequestSignature: []}]
+  /recruitment/applicants:
+    post:
+      summary: Create a recruitment applicant under the configured service user
+      security: [{ApiKey: []}, {RequestSignature: []}]
+  /timeoff/requests:
+    post:
+      summary: Create and optionally submit a governed time-off request
+      security: [{ApiKey: []}, {RequestSignature: []}]
+  /approvals/events:
+    post:
+      summary: Execute an approval decision through Workflow Approval authority
+      security: [{ApiKey: []}, {RequestSignature: []}]
+  /documents/esign/status:
+    post:
+      summary: Apply e-sign provider status through OneHR Document
+      security: [{ApiKey: []}, {RequestSignature: []}]
+  /learning/results:
+    post:
+      summary: Ingest an external learning result
+      security: [{ApiKey: []}, {RequestSignature: []}]
+  /learning/enrollments:
+    post:
+      summary: Create an external learning enrollment
+      security: [{ApiKey: []}, {RequestSignature: []}]
+  /appraisals/ratings:
+    post:
+      summary: Ingest external appraisal rating evidence
+      security: [{ApiKey: []}, {RequestSignature: []}]
+  /career/assessments:
+    post:
+      summary: Ingest a talent/career assessment
+      security: [{ApiKey: []}, {RequestSignature: []}]
+  /payroll/results:
+    post:
+      summary: Ingest payroll result evidence
+      security: [{ApiKey: []}, {RequestSignature: []}]

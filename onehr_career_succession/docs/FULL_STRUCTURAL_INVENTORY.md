@@ -1,3 +1,4 @@
+
 # OneHR Career & Succession — Full Structural Inventory
 
 ## Persistent business models — exactly four
@@ -52,3 +53,4 @@ Soft:
 - `onehr_learning`
 - `onehr_analytics`
 - downstream Portal / Integrations API / multicompany extension where installed.
+

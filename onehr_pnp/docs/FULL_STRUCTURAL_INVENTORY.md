@@ -1,3 +1,4 @@
+
 # OneHR PnP — Full Structural Inventory
 
 ## Persistent business models — exactly three
@@ -49,3 +50,4 @@ notification queue, branch, Portal, API token or Analytics snapshot.
 `onehr_sop` remains owner of operational SOP content/version/acknowledgement.
 PnP stores only optional related SOP codes and resolves them at runtime when
 OneHR SOP is installed and the caller has its own SOP access.
+

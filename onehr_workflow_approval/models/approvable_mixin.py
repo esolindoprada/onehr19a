@@ -1,3 +1,4 @@
+
 from odoo import _, fields, models
 
 from .action_helpers import open_records_action

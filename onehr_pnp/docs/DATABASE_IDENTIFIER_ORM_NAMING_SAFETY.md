@@ -1,3 +1,4 @@
+
 # HARD GATE 11 — Database Identifier & ORM Naming Safety
 
 Canonical ORM/table mapping:
@@ -32,3 +33,4 @@ Source acceptance checks:
 - legacy `_sql_constraints`.
 
 Any truncation/collision/naming ambiguity is a release-blocking source failure.
+

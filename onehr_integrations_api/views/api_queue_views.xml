@@ -1,0 +1,47 @@
+<odoo>
+    <record id="view_onehr_api_queue_list" model="ir.ui.view">
+        <field name="name">onehr.api.queue.list</field><field name="model">onehr.api.queue</field>
+        <field name="arch" type="xml">
+            <list string="Retry Queue" create="0" delete="0" decoration-success="state == 'sent'" decoration-danger="state == 'dead_letter'" decoration-warning="state == 'retry'" decoration-info="state == 'processing'">
+                <field name="name"/><field name="event_code"/><field name="webhook_id"/><field name="company_id" groups="base.group_multi_company"/><field name="attempts"/><field name="max_attempts" optional="hide"/><field name="retry_at"/><field name="last_http_status"/><field name="last_error_class" optional="show"/><field name="state" widget="badge"/>
+                <button name="action_process_now" type="object" string="Process" icon="fa-play" invisible="state not in ('pending','retry')" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                <button name="action_retry" type="object" string="Retry" icon="fa-refresh" invisible="state not in ('retry','dead_letter')" groups="onehr_integrations_api.group_onehr_api_admin"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_api_queue_kanban" model="ir.ui.view">
+        <field name="name">onehr.api.queue.kanban</field><field name="model">onehr.api.queue</field>
+        <field name="arch" type="xml"><kanban><field name="name"/><field name="event_code"/><field name="webhook_id"/><field name="attempts"/><field name="max_attempts"/><field name="retry_at"/><field name="state"/><templates><t t-name="card"><div class="d-flex justify-content-between"><strong><field name="name"/></strong><field name="state" widget="badge"/></div><div><field name="event_code"/></div><div class="text-muted"><field name="webhook_id"/></div><div class="mt-2">Attempt <field name="attempts"/> / <field name="max_attempts"/></div><div class="text-muted">Retry: <field name="retry_at"/></div></t></templates></kanban></field>
+    </record>
+
+    <record id="view_onehr_api_queue_form" model="ir.ui.view">
+        <field name="name">onehr.api.queue.form</field><field name="model">onehr.api.queue</field>
+        <field name="arch" type="xml">
+            <form string="Integration Delivery Queue" create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_process_now" type="object" string="Process Now" class="btn-primary" invisible="state not in ('pending','retry')" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                    <button name="action_retry" type="object" string="Retry" class="btn-secondary" invisible="state not in ('retry','dead_letter')" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                    <button name="action_mark_dead_letter" type="object" string="Dead Letter" class="btn-secondary" invisible="state in ('sent','dead_letter','cancelled')" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                    <button name="action_cancel" type="object" string="Cancel" class="btn-secondary" invisible="state in ('sent','cancelled')" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,processing,retry,sent,dead_letter,cancelled"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Dead Letter" bg_color="text-bg-danger" invisible="state != 'dead_letter'"/>
+                    <div class="oe_button_box" name="button_box"><button name="action_open_logs" type="object" class="oe_stat_button" icon="fa-list"><field name="log_count" widget="statinfo" string="Logs"/></button></div>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1><div class="text-muted"><field name="event_code"/></div></div>
+                    <group><group string="Routing"><field name="company_id"/><field name="webhook_id"/><field name="request_id"/><field name="dedupe_key"/></group><group string="Delivery"><field name="attempts"/><field name="max_attempts"/><field name="retry_at"/><field name="last_attempt_at"/><field name="sent_at"/><field name="last_http_status"/></group></group>
+                    <group string="Integrity"><field name="payload_hash"/><field name="response_hash"/></group>
+                    <notebook><page string="Payload" groups="onehr_integrations_api.group_onehr_api_admin"><field name="payload_json" nolabel="1"/></page><page string="Last Failure"><group><field name="last_error_class"/><field name="last_error_message" nolabel="1"/></group></page></notebook>
+                    <button name="action_open_logs" type="object" string="Review Delivery Audit" class="btn-secondary"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_api_queue_search" model="ir.ui.view"><field name="name">onehr.api.queue.search</field><field name="model">onehr.api.queue</field><field name="arch" type="xml"><search string="Retry Queue"><field name="name"/><field name="event_code"/><field name="webhook_id"/><field name="request_id"/><filter name="pending" string="Pending" domain="[('state','=','pending')]"/><filter name="retry" string="Retry" domain="[('state','=','retry')]"/><filter name="dead_letter" string="Dead Letter" domain="[('state','=','dead_letter')]"/><filter name="sent" string="Sent" domain="[('state','=','sent')]"/><group><filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/><filter name="group_webhook" string="Webhook" context="{'group_by':'webhook_id'}"/><filter name="group_event" string="Event" context="{'group_by':'event_code'}"/><filter name="group_state" string="Status" context="{'group_by':'state'}"/></group></search></field></record>
+    <record id="view_onehr_api_queue_pivot" model="ir.ui.view"><field name="name">onehr.api.queue.pivot</field><field name="model">onehr.api.queue</field><field name="arch" type="xml"><pivot string="Delivery Queue Analysis"><field name="event_code" type="row"/><field name="state" type="col"/><field name="attempts" type="measure"/></pivot></field></record>
+    <record id="view_onehr_api_queue_graph" model="ir.ui.view"><field name="name">onehr.api.queue.graph</field><field name="model">onehr.api.queue</field><field name="arch" type="xml"><graph string="Delivery Queue Analysis"><field name="state"/><field name="attempts" type="measure"/></graph></field></record>
+    <record id="action_onehr_api_queue" model="ir.actions.act_window"><field name="name">Retry Queue</field><field name="res_model">onehr.api.queue</field><field name="view_mode">list,kanban,pivot,graph,form</field><field name="search_view_id" ref="view_onehr_api_queue_search"/><field name="group_ids" eval="[Command.link(ref('onehr_integrations_api.group_onehr_api_user'))]"/></record>
+</odoo>

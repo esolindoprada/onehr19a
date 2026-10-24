@@ -1,8 +1,9 @@
+
 # Full Structural Inventory
 
 ## Manifest
 
-- version `19.0.1.0.0`
+- version `19.0.1.0.2`
 - hard dependency exactly `onehr_security`
 - no controllers, demo data or placeholder scaffold
 - application false; OneHR remains the application shell
@@ -34,7 +35,9 @@ Security-owned model extension: `branch_id`, effective/company/user integrity, b
 ## Security
 
 - four branch groups under an Odoo 19 privilege: Branch User, Branch Manager, Branch Admin, Central Office;
-- 7 ACL rows, none granted directly to `base.group_user`;
+- 14 ACL rows, none granted directly to `base.group_user`;
+- bounded read-only `onehr.branch` ACL closure for `base.group_system`, OneHR Security Manager and OneHR Security Admin, so relational branch values on Users / Role Assignment surfaces can be resolved without granting branch mutation authority;
+- bounded read-only Odoo Technical Admin closure on `onehr.user.role`, `onehr.role`, `onehr.sod.conflict.log`, and `onehr.audit.log`, because the native Users summary/search contract traverses those support models;
 - branch company global rule;
 - explicit branch-scope rule;
 - branch admin company administration rule;
@@ -51,4 +54,5 @@ Security-owned model extension: `branch_id`, effective/company/user integrity, b
 
 ## Runtime tests
 
-Exactly 18 post-install methods across three files covering registry, lifecycle, hierarchy, company/default integrity, ACL/server authorization, record-rule isolation, central visibility, role overlap, SoD branch semantics, managed-group reconciliation and audit evidence.
+Exactly 28 post-install methods across four files covering registry, lifecycle, hierarchy, company/default integrity, ACL/server authorization, record-rule isolation, central visibility, role overlap, SoD branch semantics, managed-group reconciliation, audit evidence, Users/Role Assignment cross-model comodel-read closure, record-rule preservation and mutation-denial regressions.
+

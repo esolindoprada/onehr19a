@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 from odoo.exceptions import AccessError, ValidationError
@@ -87,3 +88,4 @@ class TestUserBranchScope(OneHRBranchCommon):
             self.target_user.with_user(self.branch_admin).write(
                 {"onehr_allowed_branch_ids": [Command.set([self.branch_b.id])]}
             )
+

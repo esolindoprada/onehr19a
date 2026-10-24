@@ -1,3 +1,4 @@
+
 from datetime import timedelta
 
 from odoo import fields
@@ -142,3 +143,4 @@ class TestDisciplineSanctionWorkflow(OneHRDisciplineCommon):
             ),
             63,
         )
+

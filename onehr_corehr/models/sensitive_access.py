@@ -1,3 +1,4 @@
+
 """Small security-audit helpers; this is plain Python, not an Odoo model."""
 
 from odoo import _

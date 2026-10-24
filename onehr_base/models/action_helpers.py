@@ -1,3 +1,5 @@
+
+
 """Window-action helpers.
 
 Pure functions are intentional: Odoo 19 dynamically builds registry classes, so

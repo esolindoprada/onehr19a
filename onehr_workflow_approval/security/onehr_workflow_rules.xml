@@ -1,3 +1,4 @@
+
 <odoo>
     <!-- Global company boundaries intersect all role-specific visibility rules. -->
     <record id="rule_approval_rule_company" model="ir.rule">

@@ -1,3 +1,4 @@
+
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 
@@ -527,3 +528,4 @@ class OneHRSuccessionPlan(models.Model):
                         summary=_("Succession plan review due"),
                         note=_("Review succession plan %s.") % plan.display_name,
                     )
+

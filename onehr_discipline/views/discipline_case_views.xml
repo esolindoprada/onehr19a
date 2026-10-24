@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="view_onehr_discipline_case_list" model="ir.ui.view">
         <field name="name">onehr.discipline.case.list.enterprise</field>
@@ -651,3 +652,4 @@
         <field name="search_view_id" ref="view_onehr_discipline_case_search"/>
     </record>
 </odoo>
+

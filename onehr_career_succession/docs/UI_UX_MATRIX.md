@@ -1,3 +1,4 @@
+
 # OneHR Career & Succession — UI/UX Matrix
 
 | Model | List | Form | Search | Extra analysis | Enterprise interactions |
@@ -12,3 +13,4 @@ Odoo 19 compatibility:
 - direct `invisible` / `readonly`, no legacy `attrs` / `states`;
 - search `<group>` attributes are not used;
 - no Enterprise-only Gantt renderer is fabricated.
+

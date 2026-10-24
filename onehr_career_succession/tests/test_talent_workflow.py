@@ -1,3 +1,4 @@
+
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import tagged
 
@@ -54,3 +55,4 @@ class TestTalentWorkflow(OneHRCareerSuccessionCommon):
         talent = self.activate_talent(self.make_talent())
         with self.assertRaises(UserError):
             talent.with_user(self.talent_manager).unlink()
+

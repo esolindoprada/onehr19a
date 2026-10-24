@@ -1,0 +1,85 @@
+
+<odoo>
+    <record id="view_onehr_demo_generator_list" model="ir.ui.view">
+        <field name="name">onehr.demo.generator.list</field>
+        <field name="model">onehr.demo.generator</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0"
+                  decoration-muted="implementation_state == 'planned'"
+                  decoration-success="implementation_state == 'frozen'"
+                  decoration-danger="implementation_state == 'blocked'">
+                <field name="sequence"/>
+                <field name="phase"/>
+                <field name="key"/>
+                <field name="name"/>
+                <field name="implementation_state" widget="badge"/>
+                <field name="side_effect_classification"/>
+                <field name="reset_policy"/>
+                <field name="contract_digest" optional="hide"/>
+                <button name="action_open_generator" type="object" string="Open" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_onehr_demo_generator_form" model="ir.ui.view">
+        <field name="name">onehr.demo.generator.form</field>
+        <field name="model">onehr.demo.generator</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <header>
+                    <field name="implementation_state" widget="statusbar"
+                           statusbar_visible="planned,implemented,frozen,blocked"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="key"/></div>
+                    </div>
+                    <group>
+                        <group string="Frozen Registry">
+                            <field name="phase"/><field name="sequence"/><field name="implemented"/><field name="supported_profiles"/>
+                        </group>
+                        <group string="Safety Contract">
+                            <field name="side_effect_classification"/><field name="reset_policy"/><field name="contract_digest"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Dependencies">
+                            <group>
+                                <field name="prerequisite_keys"/><field name="required_addons"/>
+                                <field name="required_models"/><field name="required_groups"/>
+                            </group>
+                        </page>
+                        <page string="Code-Owned Contract"><field name="contract_json" nolabel="1"/></page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_onehr_demo_generator_search" model="ir.ui.view">
+        <field name="name">onehr.demo.generator.search</field>
+        <field name="model">onehr.demo.generator</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="key"/><field name="name"/>
+                <filter name="planned" string="Planned" domain="[('implementation_state','=','planned')]"/>
+                <filter name="implemented" string="Implemented" domain="[('implemented','=',True)]"/>
+                <filter name="blocked" string="Blocked" domain="[('implementation_state','=','blocked')]"/>
+                <group>
+                    <filter name="group_phase" string="Phase" context="{'group_by':'phase'}"/>
+                    <filter name="group_side_effect" string="Side Effect" context="{'group_by':'side_effect_classification'}"/>
+                    <filter name="group_reset" string="Reset Policy" context="{'group_by':'reset_policy'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_onehr_demo_generators" model="ir.actions.act_window">
+        <field name="name">Generator Registry</field>
+        <field name="res_model">onehr.demo.generator</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_demo_generator_search"/>
+        <field name="group_ids" eval="[Command.link(ref('onehr_demo.group_onehr_demo_viewer'))]"/>
+        <field name="context">{'create': False}</field>
+    </record>
+</odoo>
+

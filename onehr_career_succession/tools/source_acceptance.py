@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 from pathlib import Path
 import ast
@@ -18,8 +19,8 @@ EXPECTED_DEPS = {
     "onehr_base",
     "onehr_corehr",
 }
-EXPECTED_VERSION = "19.0.1.0.0"
-EXPECTED_TEST_METHODS = 24
+EXPECTED_VERSION = "19.0.1.0.1"
+EXPECTED_TEST_METHODS = 26
 
 passes = []
 warnings = []
@@ -444,6 +445,97 @@ else:
     fail("Integrated OneHR root navigation")
 
 
+
+# ---------------------------------------------------------------------------
+# Odoo 19 native Users / Access Rights dynamic-category XML safety
+# ---------------------------------------------------------------------------
+def _scan_onehr_privilege_categories(project_root):
+    """Inspect OneHR privilege-bearing categories exactly as Odoo stores their names.
+
+    ElementTree decodes XML entities (for example &amp; -> &). Odoo 19's native
+    res_user_group_ids widget later interpolates category.name into generated XML,
+    so decoded XML-sensitive characters in a category label are a browser-render
+    compatibility defect even when the source XML file itself is well formed.
+    """
+    categories = {}
+    privilege_refs = set()
+    parse_errors = []
+    for addon_dir in sorted(project_root.glob("onehr_*")):
+        if not addon_dir.is_dir():
+            continue
+        module = addon_dir.name
+        security_dir = addon_dir / "security"
+        if not security_dir.is_dir():
+            continue
+        for xml_path in sorted(security_dir.glob("*.xml")):
+            try:
+                root = ET.parse(xml_path).getroot()
+            except ET.ParseError as exc:
+                parse_errors.append((xml_path, str(exc)))
+                continue
+            for record in root.findall(".//record"):
+                model = record.attrib.get("model")
+                record_id = record.attrib.get("id")
+                if model == "ir.module.category" and record_id:
+                    name_node = next(
+                        (field for field in record.findall("field") if field.attrib.get("name") == "name"),
+                        None,
+                    )
+                    categories[(module, record_id)] = (
+                        (name_node.text or "") if name_node is not None else "",
+                        xml_path,
+                    )
+                elif model == "res.groups.privilege":
+                    category_node = next(
+                        (field for field in record.findall("field") if field.attrib.get("name") == "category_id"),
+                        None,
+                    )
+                    if category_node is None:
+                        continue
+                    ref = category_node.attrib.get("ref")
+                    if not ref:
+                        continue
+                    if "." in ref:
+                        ref_module, ref_id = ref.split(".", 1)
+                    else:
+                        ref_module, ref_id = module, ref
+                    privilege_refs.add((ref_module, ref_id))
+    referenced = {
+        key: categories[key]
+        for key in sorted(privilege_refs)
+        if key in categories
+    }
+    unsafe = []
+    for key, (name, xml_path) in referenced.items():
+        bad = sorted({char for char in name if char in '&<>"\''})
+        if bad:
+            unsafe.append((key, name, ''.join(bad), xml_path))
+    return referenced, unsafe, parse_errors
+
+_suite_categories, _suite_unsafe_categories, _suite_parse_errors = _scan_onehr_privilege_categories(ROOT.parent)
+if _suite_parse_errors:
+    fail(
+        "Odoo 19 User Access Rights privilege-category XML source scan",
+        str([(str(path), err) for path, err in _suite_parse_errors[:5]]),
+    )
+else:
+    ok("Odoo 19 User Access Rights privilege-category XML source scan")
+
+if _suite_unsafe_categories:
+    fail(
+        "Odoo 19 dynamic User Access Rights category-name safety",
+        str([
+            (f"{module}.{record_id}", name, chars, str(path))
+            for ((module, record_id), name, chars, path) in _suite_unsafe_categories
+        ]),
+    )
+else:
+    ok(
+        "Odoo 19 dynamic User Access Rights category-name safety "
+        f"({len(_suite_categories)} privilege-bearing OneHR categories scanned)"
+    )
+
+
 # Test inventory
 test_methods = []
 for path in sorted((ROOT / "tests").glob("test_*.py")):
@@ -485,6 +577,9 @@ mandatory_docs = {
     "WINDOWS_RUNTIME_ACCEPTANCE.md",
     "IMPLEMENTATION_REPORT.md",
     "ROOT_GUARDRAIL_REFERENCE.md",
+    "ODOO19_USER_ACCESS_RIGHTS_COMPATIBILITY_REPAIR.md",
+    "CROSS_SUITE_PRIVILEGE_CATEGORY_AUDIT.md",
+    "PRESERVATION_DIFF_19_0_1_0_0_TO_19_0_1_0_1.txt",
 }
 missing_docs = sorted(
     name for name in mandatory_docs
@@ -541,3 +636,4 @@ print("SOURCE_ENTERPRISE_COMPLETENESS=PASS_FOR_RUNTIME")
 print("REGISTRY_ED_CLASSIFICATION=PENDING_EXACT_REGISTRY_ROW_VERIFICATION")
 print("WINDOWS_RUNTIME_ACCEPTANCE=PENDING")
 print("ONEHR_CAREER_SUCCESSION_MOVE_FORWARD_READY=NO")
+

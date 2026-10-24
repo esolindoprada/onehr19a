@@ -1,3 +1,4 @@
+
 # OneHR Career & Succession
 
 Enterprise Career & Succession Management for OneHR NEW on Odoo 19 Community Edition.
@@ -26,3 +27,4 @@ Main capabilities:
 - audit trail, company isolation and evidence-preservation controls.
 
 Source acceptance is a prerequisite only. Windows/Odoo runtime acceptance remains mandatory.
+

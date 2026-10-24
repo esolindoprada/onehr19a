@@ -1,0 +1,41 @@
+
+<odoo>
+    <menuitem id="menu_onehr_self_service"
+              name="Self-Service"
+              parent="onehr_base.menu_onehr_root"
+              sequence="75"
+              groups="onehr_portal_self_service.group_onehr_portal_hr"/>
+
+    <menuitem id="menu_onehr_portal_requests"
+              name="HR Service Requests"
+              parent="menu_onehr_self_service"
+              action="action_onehr_portal_request"
+              sequence="10"
+              groups="onehr_portal_self_service.group_onehr_portal_hr"/>
+
+    <menuitem id="menu_onehr_portal_my_team"
+              name="My Team Approvals"
+              parent="menu_onehr_self_service"
+              action="action_onehr_portal_my_team_backend"
+              sequence="20"
+              groups="onehr_portal_self_service.group_onehr_portal_manager,onehr_portal_self_service.group_onehr_portal_hr"/>
+
+    <menuitem id="menu_onehr_portal_configuration"
+              name="Self-Service Configuration"
+              parent="menu_onehr_self_service"
+              sequence="80"
+              groups="onehr_portal_self_service.group_onehr_portal_admin"/>
+
+    <menuitem id="menu_onehr_portal_request_types"
+              name="Request Types"
+              parent="menu_onehr_portal_configuration"
+              action="action_onehr_portal_request_type"
+              sequence="10"/>
+
+    <menuitem id="menu_onehr_portal_request_stages"
+              name="Request Stages"
+              parent="menu_onehr_portal_configuration"
+              action="action_onehr_portal_request_stage"
+              sequence="20"/>
+</odoo>
+

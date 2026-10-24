@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="view_onehr_policy_ack_list" model="ir.ui.view">
         <field name="name">onehr.policy.ack.list.enterprise</field>
@@ -231,3 +232,4 @@
         <field name="search_view_id" ref="view_onehr_policy_ack_search"/>
     </record>
 </odoo>
+

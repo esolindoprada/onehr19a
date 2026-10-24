@@ -1,3 +1,4 @@
+
 import base64
 
 from odoo.exceptions import AccessError, UserError
@@ -150,3 +151,4 @@ class TestJDSecurityAndIntegrations(OneHRJobDescriptionCommon):
         self.assertIn("key_responsibilities", payload)
         self.assertNotIn("approval_comments", payload)
         self.assertNotIn("source_document_text", payload)
+

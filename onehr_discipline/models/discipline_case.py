@@ -1,3 +1,4 @@
+
 from datetime import timedelta
 
 from dateutil.relativedelta import relativedelta
@@ -1469,3 +1470,4 @@ class OneHRDisciplineCase(models.Model):
                         "Only an unstarted Reported case with no sanction/investigation history may be deleted."
                     )
                 )
+

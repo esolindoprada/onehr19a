@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
@@ -126,3 +127,4 @@ class TestBranchMaster(OneHRBranchCommon):
             [("model_name", "=", "onehr.branch"), ("res_id", "=", branch.id)]
         )
         self.assertGreaterEqual(len(events), 2)
+

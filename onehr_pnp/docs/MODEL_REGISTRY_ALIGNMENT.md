@@ -1,3 +1,4 @@
+
 # OneHR PnP — Model Registry Alignment
 
 The supplied PnP product contract explicitly identifies:
@@ -21,3 +22,4 @@ ED0–ED5 rows for the three PnP persistent models. No ED classification is inve
 
 REGISTRY_MODEL_NAME_ALIGNMENT_SOURCE: PASS_TO_SUPPLIED_PRODUCT_BASELINE  
 REGISTRY_ED_CLASSIFICATION: PENDING_EXACT_REGISTRY_ROW_VERIFICATION
+

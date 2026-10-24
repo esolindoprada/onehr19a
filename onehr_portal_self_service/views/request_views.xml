@@ -1,0 +1,318 @@
+
+<odoo>
+    <record id="view_onehr_portal_request_list" model="ir.ui.view">
+        <field name="name">onehr.portal.request.list.enterprise</field>
+        <field name="model">onehr.portal.request</field>
+        <field name="arch" type="xml">
+            <list string="HR Self-Service Requests"
+                  decoration-success="state == 'done'"
+                  decoration-info="state in ('manager_review', 'hr_review')"
+                  decoration-warning="state in ('approved', 'processing')"
+                  decoration-danger="is_sla_overdue or state == 'rejected'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="priority" widget="priority"/>
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="department_name" optional="show"/>
+                <field name="type_id"/>
+                <field name="subject"/>
+                <field name="stage_id" optional="show"/>
+                <field name="submitted_at" optional="show"/>
+                <field name="sla_deadline" optional="show"/>
+                <field name="sla_status" widget="badge" optional="show"/>
+                <field name="integration_status" widget="badge" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <button name="action_open_decision_wizard" type="object" string="Decide" icon="fa-gavel"
+                        invisible="state not in ('manager_review', 'hr_review', 'submitted')"
+                        groups="onehr_portal_self_service.group_onehr_portal_manager,onehr_portal_self_service.group_onehr_portal_hr"/>
+                <button name="action_open_self" type="object" string="Open" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_portal_request_kanban" model="ir.ui.view">
+        <field name="name">onehr.portal.request.kanban.enterprise</field>
+        <field name="model">onehr.portal.request</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="type_id"/>
+                <field name="subject"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="stage_id"/>
+                <field name="sla_deadline"/>
+                <field name="sla_status"/>
+                <field name="is_sla_overdue"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong><field name="name"/></strong>
+                            <field name="state" widget="badge"/>
+                        </div>
+                        <div class="mt-1"><field name="subject"/></div>
+                        <div class="text-muted"><field name="employee_name"/> · <field name="type_id"/></div>
+                        <div class="mt-2 d-flex justify-content-between">
+                            <span><field name="priority" widget="priority"/></span>
+                            <span><field name="sla_status" widget="badge"/></span>
+                        </div>
+                        <div class="text-muted mt-1" t-if="record.sla_deadline.raw_value">
+                            SLA: <field name="sla_deadline"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_onehr_portal_request_calendar" model="ir.ui.view">
+        <field name="name">onehr.portal.request.calendar.enterprise</field>
+        <field name="model">onehr.portal.request</field>
+        <field name="arch" type="xml">
+            <calendar string="Portal Request SLA Calendar" date_start="sla_deadline" color="type_id">
+                <field name="name"/>
+                <field name="employee_name"/>
+                <field name="subject"/>
+                <field name="state"/>
+                <field name="sla_status"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_onehr_portal_request_form" model="ir.ui.view">
+        <field name="name">onehr.portal.request.form.enterprise</field>
+        <field name="model">onehr.portal.request</field>
+        <field name="arch" type="xml">
+            <form string="HR Self-Service Request">
+                <header>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_manager_approve" type="object" string="Manager Approve" class="btn-primary"
+                            invisible="state != 'manager_review'"
+                            groups="onehr_portal_self_service.group_onehr_portal_manager,onehr_portal_self_service.group_onehr_portal_hr"/>
+                    <button name="action_open_decision_wizard" type="object" string="Decision with Note" class="btn-secondary"
+                            invisible="state not in ('manager_review', 'hr_review', 'submitted')"
+                            groups="onehr_portal_self_service.group_onehr_portal_manager,onehr_portal_self_service.group_onehr_portal_hr"/>
+                    <button name="action_hr_approve" type="object" string="HR Approve" class="btn-primary"
+                            invisible="state not in ('hr_review', 'submitted')"
+                            groups="onehr_portal_self_service.group_onehr_portal_hr"/>
+                    <button name="action_start_processing" type="object" string="Start Processing" class="btn-secondary"
+                            invisible="state != 'approved'"
+                            groups="onehr_portal_self_service.group_onehr_portal_hr"/>
+                    <button name="action_complete" type="object" string="Complete" class="btn-primary"
+                            invisible="state not in ('approved', 'processing')"
+                            groups="onehr_portal_self_service.group_onehr_portal_hr"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('done', 'rejected', 'cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,manager_review,hr_review,approved,processing,done"/>
+                </header>
+                <sheet>
+                    <field name="is_sla_overdue" invisible="1"/>
+                    <widget name="web_ribbon" title="SLA Overdue" bg_color="text-bg-danger" invisible="not is_sla_overdue"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-user"
+                                groups="onehr_portal_self_service.group_onehr_portal_hr">
+                            <div class="o_stat_info"><span class="o_stat_text">Employee</span><span class="o_stat_value"><field name="employee_name"/></span></div>
+                        </button>
+                        <button name="action_open_attachments" type="object" class="oe_stat_button" icon="fa-paperclip">
+                            <field name="attachment_count" widget="statinfo" string="Attachments"/>
+                        </button>
+                        <button name="action_open_integration_record" type="object" class="oe_stat_button" icon="fa-random"
+                                invisible="not integration_res_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Downstream</span><span class="o_stat_value"><field name="integration_reference"/></span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="subject"/>
+                        <h1><field name="subject" readonly="state != 'draft'" placeholder="What do you need from HR?"/></h1>
+                        <div class="text-muted"><field name="name" readonly="1"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Request">
+                            <field name="type_id" readonly="state != 'draft'"/>
+                            <field name="service_kind" readonly="1"/>
+                            <field name="priority" widget="priority" readonly="state in ('done','rejected','cancelled')"/>
+                            <field name="employee_name" readonly="1"/>
+                            <field name="department_name" readonly="1"/>
+                            <field name="job_name" readonly="1"/>
+                            <field name="manager_name" readonly="1"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Service Level">
+                            <field name="stage_id" readonly="1"/>
+                            <field name="submitted_at" readonly="1"/>
+                            <field name="sla_deadline" readonly="1"/>
+                            <field name="sla_status" widget="badge" readonly="1"/>
+                            <field name="sla_remaining_hours" readonly="1"/>
+                            <field name="integration_status" widget="badge" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 flex-wrap my-3">
+                        <button name="action_refresh_sla" type="object" string="Refresh SLA" class="btn-secondary" icon="fa-refresh"/>
+                        <button name="action_schedule_sla_activity" type="object" string="Schedule SLA Follow-up" class="btn-secondary" icon="fa-clock-o"
+                                groups="onehr_portal_self_service.group_onehr_portal_hr"/>
+                        <button name="action_execute_integration" type="object" string="Execute Downstream Service" class="btn-secondary" icon="fa-random"
+                                invisible="service_kind == 'generic' or state not in ('approved', 'processing') or integration_status == 'success'"
+                                groups="onehr_portal_self_service.group_onehr_portal_hr"/>
+                        <button name="action_retry_integration" type="object" string="Retry Downstream Service" class="btn-secondary" icon="fa-repeat"
+                                invisible="integration_status != 'error' or state not in ('approved', 'processing')"
+                                groups="onehr_portal_self_service.group_onehr_portal_hr"/>
+                        <button name="action_open_integration_record" type="object" string="Open Downstream Record" class="btn-secondary" icon="fa-external-link"
+                                invisible="not integration_res_id"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Request Details">
+                            <field name="description" readonly="state != 'draft'" placeholder="Provide enough detail for HR to process your request."/>
+                            <field name="employee_note" readonly="state != 'draft'" placeholder="Optional note for your manager or HR."/>
+                            <field name="attachment_ids" widget="many2many_binary" readonly="state != 'draft'"/>
+                        </page>
+
+                        <page string="Time Off" invisible="service_kind != 'timeoff'">
+                            <group>
+                                <field name="leave_type_code" readonly="state != 'draft'"/>
+                                <field name="requested_date_from" readonly="state != 'draft'"/>
+                                <field name="requested_date_to" readonly="state != 'draft'"/>
+                            </group>
+                        </page>
+
+                        <page string="Learning" invisible="service_kind != 'learning'">
+                            <group>
+                                <field name="learning_session_reference" readonly="state != 'draft'"/>
+                            </group>
+                        </page>
+
+                        <page string="Document" invisible="service_kind != 'document'">
+                            <group>
+                                <field name="document_category_code" readonly="state != 'draft'"/>
+                                <field name="document_title" readonly="state != 'draft'"/>
+                            </group>
+                        </page>
+
+                        <page string="Profile Change" invisible="service_kind != 'profile_change'">
+                            <field name="profile_change_json" readonly="state != 'draft'"/>
+                        </page>
+
+                        <page string="Decision Evidence">
+                            <group>
+                                <group string="Manager Decision">
+                                    <field name="manager_decision_by_id" readonly="1"/>
+                                    <field name="manager_decision_at" readonly="1"/>
+                                    <field name="manager_decision_note" readonly="1"/>
+                                </group>
+                                <group string="HR Decision" groups="onehr_portal_self_service.group_onehr_portal_hr">
+                                    <field name="hr_decision_by_id" readonly="1"/>
+                                    <field name="hr_decision_at" readonly="1"/>
+                                    <field name="hr_decision_note" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Processing &amp; Integration" groups="onehr_portal_self_service.group_onehr_portal_hr">
+                            <group>
+                                <group string="Processing">
+                                    <field name="processing_started_by_id" readonly="1"/>
+                                    <field name="processing_started_at" readonly="1"/>
+                                    <field name="completed_by_id" readonly="1"/>
+                                    <field name="completed_at" readonly="1"/>
+                                    <field name="cancelled_by_id" readonly="1"/>
+                                    <field name="cancelled_at" readonly="1"/>
+                                </group>
+                                <group string="Downstream Evidence">
+                                    <field name="integration_model" readonly="1"/>
+                                    <field name="integration_res_id" readonly="1"/>
+                                    <field name="integration_reference" readonly="1"/>
+                                    <field name="integration_status" widget="badge" readonly="1"/>
+                                    <field name="integration_last_attempt_by_id" readonly="1"/>
+                                    <field name="integration_last_attempt_at" readonly="1"/>
+                                </group>
+                            </group>
+                            <field name="integration_message" readonly="1"/>
+                            <field name="internal_note" placeholder="Internal HR processing note..."/>
+                        </page>
+                    </notebook>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_portal_request_search" model="ir.ui.view">
+        <field name="name">onehr.portal.request.search.enterprise</field>
+        <field name="model">onehr.portal.request</field>
+        <field name="arch" type="xml">
+            <search string="HR Self-Service Requests">
+                <field name="name"/>
+                <field name="subject"/>
+                <field name="employee_name"/>
+                <field name="type_id"/>
+                <field name="state"/>
+                <field name="stage_id"/>
+                <field name="company_id"/>
+                <filter name="my_requests" string="My Requests" domain="[('employee_user_id','=',uid)]"/>
+                <filter name="my_team" string="My Team" domain="[('manager_user_id','=',uid)]"/>
+                <filter name="waiting_manager" string="Waiting Manager" domain="[('state','=','manager_review')]"/>
+                <filter name="waiting_hr" string="Waiting HR" domain="[('state','=','hr_review')]"/>
+                <filter name="processing" string="Processing" domain="[('state','in',('approved','processing'))]"/>
+                <filter name="overdue" string="SLA Overdue" domain="[('is_sla_overdue','=',True)]"/>
+                <filter name="done" string="Done" domain="[('state','=','done')]"/>
+                <filter name="rejected" string="Rejected" domain="[('state','=','rejected')]"/>
+                <filter name="submitted_date" string="Submitted Date" date="submitted_at"/>
+                <filter name="sla_date" string="SLA Deadline" date="sla_deadline"/>
+                <group>
+                    <filter name="group_type" string="Request Type" context="{'group_by':'type_id'}"/>
+                    <filter name="group_stage" string="Stage" context="{'group_by':'stage_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+                    <filter name="group_department" string="Department" context="{'group_by':'department_name'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_portal_request_pivot" model="ir.ui.view">
+        <field name="name">onehr.portal.request.pivot.enterprise</field>
+        <field name="model">onehr.portal.request</field>
+        <field name="arch" type="xml">
+            <pivot string="Self-Service Request Analysis">
+                <field name="type_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="submitted_at" interval="month" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_portal_request_graph" model="ir.ui.view">
+        <field name="name">onehr.portal.request.graph.enterprise</field>
+        <field name="model">onehr.portal.request</field>
+        <field name="arch" type="xml">
+            <graph string="Self-Service Requests by Type" type="bar">
+                <field name="type_id"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_portal_request" model="ir.actions.act_window">
+        <field name="name">HR Self-Service Requests</field>
+        <field name="res_model">onehr.portal.request</field>
+        <field name="view_mode">list,kanban,form,calendar,pivot,graph</field>
+        <field name="search_view_id" ref="view_onehr_portal_request_search"/>
+    </record>
+
+    <record id="action_onehr_portal_my_team_backend" model="ir.actions.act_window">
+        <field name="name">My Team Approvals</field>
+        <field name="res_model">onehr.portal.request</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('manager_user_id','=',uid),('state','=','manager_review')]</field>
+        <field name="context">{'search_default_my_team': 1}</field>
+    </record>
+</odoo>
+

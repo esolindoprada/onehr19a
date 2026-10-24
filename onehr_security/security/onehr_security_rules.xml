@@ -1,3 +1,4 @@
+
 <odoo>
     <!-- Native users: OneHR security management may only manage users whose
          default legal company is in the caller's allowed-company set. -->

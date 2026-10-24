@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="view_onehr_succession_plan_list" model="ir.ui.view">
         <field name="name">onehr.succession.plan.list</field>
@@ -298,3 +299,4 @@
         <field name="search_view_id" ref="view_onehr_succession_plan_search"/>
     </record>
 </odoo>
+

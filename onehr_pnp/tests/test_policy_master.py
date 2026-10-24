@@ -1,3 +1,4 @@
+
 from odoo.exceptions import AccessError, ValidationError
 from odoo.fields import Command
 from odoo.tests import tagged
@@ -92,3 +93,4 @@ class TestPolicyMaster(OneHRPnPCommon):
             self.compliance
         ).action_preview_audience()
         self.assertEqual(action["tag"], "display_notification")
+

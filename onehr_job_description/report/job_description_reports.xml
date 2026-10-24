@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="action_report_jd_document" model="ir.actions.report">
         <field name="name">Job Description</field>
@@ -277,3 +278,4 @@
         </t>
     </template>
 </odoo>
+

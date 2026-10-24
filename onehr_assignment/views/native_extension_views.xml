@@ -16,7 +16,7 @@
                     <div class="o_stat_info"><span class="o_stat_text">Primary Assignment</span></div>
                 </button>
             </xpath>
-            <xpath expr="//page[@name='onehr_corehr_profile']//group[@string='Current Versioned Classification']" position="inside">
+            <xpath expr="//page[@name='onehr_corehr_profile']//field[@name='onehr_primary_position_id']" position="after">
                 <field name="onehr_current_primary_assignment_id" readonly="1"
                        groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager"/>
             </xpath>
@@ -38,7 +38,7 @@
                     <field name="onehr_position_budget_count" widget="statinfo" string="Budgets"/>
                 </button>
             </xpath>
-            <xpath expr="//page[@string='Authorized Capacity']" position="after">
+            <xpath expr="//page[.//field[@name='authorized_fte'] and .//field[@name='authorized_headcount']]" position="after">
                 <page string="Assignment Occupancy" name="onehr_assignment_occupancy"
                       groups="onehr_assignment.group_onehr_assignment_officer,onehr_assignment.group_onehr_assignment_manager">
                     <group>
@@ -79,3 +79,4 @@
         </field>
     </record>
 </odoo>
+

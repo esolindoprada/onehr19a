@@ -1,0 +1,31 @@
+
+<odoo noupdate="1">
+    <record id="stage_draft" model="onehr.portal.request.stage">
+        <field name="name">Draft</field><field name="code">DRAFT</field><field name="state_key">draft</field><field name="sequence">10</field>
+    </record>
+    <record id="stage_submitted" model="onehr.portal.request.stage">
+        <field name="name">Submitted</field><field name="code">SUBMITTED</field><field name="state_key">submitted</field><field name="sequence">20</field>
+    </record>
+    <record id="stage_manager_review" model="onehr.portal.request.stage">
+        <field name="name">Manager Review</field><field name="code">MANAGER_REVIEW</field><field name="state_key">manager_review</field><field name="sequence">30</field>
+    </record>
+    <record id="stage_hr_review" model="onehr.portal.request.stage">
+        <field name="name">HR Review</field><field name="code">HR_REVIEW</field><field name="state_key">hr_review</field><field name="sequence">40</field>
+    </record>
+    <record id="stage_approved" model="onehr.portal.request.stage">
+        <field name="name">Approved</field><field name="code">APPROVED</field><field name="state_key">approved</field><field name="sequence">50</field>
+    </record>
+    <record id="stage_processing" model="onehr.portal.request.stage">
+        <field name="name">Processing</field><field name="code">PROCESSING</field><field name="state_key">processing</field><field name="sequence">60</field>
+    </record>
+    <record id="stage_done" model="onehr.portal.request.stage">
+        <field name="name">Done</field><field name="code">DONE</field><field name="state_key">done</field><field name="sequence">70</field><field name="fold">True</field>
+    </record>
+    <record id="stage_rejected" model="onehr.portal.request.stage">
+        <field name="name">Rejected</field><field name="code">REJECTED</field><field name="state_key">rejected</field><field name="sequence">80</field><field name="fold">True</field>
+    </record>
+    <record id="stage_cancelled" model="onehr.portal.request.stage">
+        <field name="name">Cancelled</field><field name="code">CANCELLED</field><field name="state_key">cancelled</field><field name="sequence">90</field><field name="fold">True</field>
+    </record>
+</odoo>
+

@@ -1,0 +1,51 @@
+
+OneHR Demo 19.0.1.0.1 -> 19.0.1.0.2 Exact Preservation Audit
+
+CHANGED_OR_ADDED_FILES=17
+MODIFIED: README.md
+MODIFIED: __manifest__.py
+ADDED: docs/CONTROL_CENTER_NAVIGATION_CLOSURE.md
+MODIFIED: docs/ENTERPRISE_COMPLETENESS_MATRIX.md
+MODIFIED: docs/FROZEN_MP02_MP05_CONTRACT.json
+MODIFIED: docs/MP02_MP05_IMPLEMENTATION_EVIDENCE.md
+MODIFIED: docs/MP05_IMPLEMENTATION_EVIDENCE.md
+ADDED: docs/PRESERVATION_DIFF_19_0_1_0_1_TO_19_0_1_0_2.txt
+MODIFIED: docs/PROJECT_IDENTITY_PREFLIGHT.md
+MODIFIED: docs/SOURCE_ACCEPTANCE_REPORT.txt
+MODIFIED: docs/UI_UX_MATRIX.md
+MODIFIED: docs/WHOLE_PATH_RUNTIME_CONTRACT.md
+MODIFIED: docs/WINDOWS_RUNTIME_ACCEPTANCE.md
+MODIFIED: services/contracts.py
+MODIFIED: tests/test_control_plane.py
+MODIFIED: tools/source_acceptance.py
+MODIFIED: views/menus.xml
+
+PRESERVED_BYTE_IDENTICAL=True: models/demo_scenario.py
+PRESERVED_BYTE_IDENTICAL=True: models/demo_run.py
+PRESERVED_BYTE_IDENTICAL=True: models/demo_generator.py
+PRESERVED_BYTE_IDENTICAL=True: models/demo_checkpoint.py
+PRESERVED_BYTE_IDENTICAL=True: models/demo_reference.py
+PRESERVED_BYTE_IDENTICAL=True: models/demo_log.py
+PRESERVED_BYTE_IDENTICAL=True: generators/foundation_enterprise.py
+PRESERVED_BYTE_IDENTICAL=True: services/compatibility.py
+PRESERVED_BYTE_IDENTICAL=True: services/orchestrator.py
+PRESERVED_BYTE_IDENTICAL=True: services/reset.py
+PRESERVED_BYTE_IDENTICAL=True: services/deterministic.py
+PRESERVED_BYTE_IDENTICAL=True: services/authority.py
+PRESERVED_BYTE_IDENTICAL=True: services/sanitization.py
+PRESERVED_BYTE_IDENTICAL=True: data/generator_registry.xml
+PRESERVED_BYTE_IDENTICAL=True: security/ir.model.access.csv
+PRESERVED_BYTE_IDENTICAL=True: security/onehr_demo_groups.xml
+PRESERVED_BYTE_IDENTICAL=True: security/onehr_demo_rules.xml
+PRESERVED_BYTE_IDENTICAL=True: views/demo_scenario_views.xml
+PRESERVED_BYTE_IDENTICAL=True: views/demo_generator_views.xml
+PRESERVED_BYTE_IDENTICAL=True: views/demo_run_views.xml
+PRESERVED_BYTE_IDENTICAL=True: views/demo_checkpoint_views.xml
+PRESERVED_BYTE_IDENTICAL=True: views/demo_reference_views.xml
+PRESERVED_BYTE_IDENTICAL=True: views/demo_log_views.xml
+
+AUTHORIZED_SEMANTIC_CHANGE: views/menus.xml operator entry-point closure
+AUTHORIZED_METADATA_CHANGE: __manifest__.py version; services/contracts.py + FROZEN_MP02_MP05_CONTRACT.json latest-source evidence metadata
+AUTHORIZED_REGRESSION_CHANGE: tests/test_control_plane.py; tools/source_acceptance.py
+AUTHORIZED_DOC_CHANGE: README/docs evidence for 19.0.1.0.2
+

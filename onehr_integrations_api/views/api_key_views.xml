@@ -1,0 +1,123 @@
+<odoo>
+    <record id="view_onehr_api_key_list" model="ir.ui.view">
+        <field name="name">onehr.api.key.list</field>
+        <field name="model">onehr.api.key</field>
+        <field name="arch" type="xml">
+            <list string="API Keys" decoration-success="state == 'active'" decoration-warning="state == 'suspended'" decoration-muted="state == 'revoked'">
+                <field name="name"/>
+                <field name="client_reference" optional="show"/>
+                <field name="public_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="service_user_id"/>
+                <field name="scope_ids" widget="many2many_tags" optional="show"/>
+                <field name="branch_code" optional="hide"/>
+                <field name="rate_limit_per_minute" optional="hide"/>
+                <field name="hmac_required" optional="show"/>
+                <field name="last_used_at" optional="show"/>
+                <field name="expires_at" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <button name="action_open_logs" type="object" string="Logs" icon="fa-list"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_api_key_form" model="ir.ui.view">
+        <field name="name">onehr.api.key.form</field>
+        <field name="model">onehr.api.key</field>
+        <field name="arch" type="xml">
+            <form string="API Key">
+                <header>
+                    <button name="action_generate_secret" type="object" string="Generate Credential" class="btn-primary" invisible="secret_hash or state == 'revoked'" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                    <button name="action_rotate_secret" type="object" string="Rotate Secret" class="btn-secondary" invisible="not secret_hash or state == 'revoked'" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state not in ('draft', 'suspended')" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                    <button name="action_suspend" type="object" string="Suspend" class="btn-secondary" invisible="state != 'active'" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                    <button name="action_revoke" type="object" string="Revoke" class="btn-secondary" invisible="state == 'revoked'" confirm="Revocation is permanent. Continue?" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,suspended,revoked"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Revoked" bg_color="text-bg-danger" invisible="state != 'revoked'"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_logs" type="object" class="oe_stat_button" icon="fa-list">
+                            <field name="log_count" widget="statinfo" string="Requests"/>
+                        </button>
+                        <button name="action_open_logs" type="object" class="oe_stat_button" icon="fa-check-circle">
+                            <field name="success_count" widget="statinfo" string="Success"/>
+                        </button>
+                        <button name="action_open_logs" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="error_count" widget="statinfo" string="Errors"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Payroll Vendor Production"/></h1>
+                        <div class="text-muted"><field name="public_id" readonly="1"/></div>
+                    </div>
+                    <group>
+                        <group string="Client Identity">
+                            <field name="client_reference"/>
+                            <field name="company_id" options="{'no_create': True}"/>
+                            <field name="service_user_id" options="{'no_create': True}"/>
+                            <field name="branch_code"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Credential Policy">
+                            <field name="hmac_required"/>
+                            <field name="rate_limit_per_minute"/>
+                            <field name="expires_at"/>
+                            <field name="secret_hint" readonly="1"/>
+                            <field name="generated_at" readonly="1"/>
+                            <field name="rotated_at" readonly="1"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert" invisible="not secret_hash">
+                        Plaintext API credentials are never stored. Use <strong>Rotate Secret</strong> when the client credential must be replaced.
+                    </div>
+                    <notebook>
+                        <page string="Scopes" name="scopes">
+                            <field name="scope_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        </page>
+                        <page string="Usage" name="usage">
+                            <group>
+                                <field name="last_used_at" readonly="1"/>
+                                <field name="last_used_ip" readonly="1"/>
+                            </group>
+                            <button name="action_open_logs" type="object" string="Open Detailed API Logs" class="btn-secondary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_api_key_search" model="ir.ui.view">
+        <field name="name">onehr.api.key.search</field>
+        <field name="model">onehr.api.key</field>
+        <field name="arch" type="xml">
+            <search string="API Keys">
+                <field name="name"/>
+                <field name="client_reference"/>
+                <field name="public_id"/>
+                <field name="service_user_id"/>
+                <field name="scope_ids"/>
+                <filter name="active_keys" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="suspended_keys" string="Suspended" domain="[('state', '=', 'suspended')]"/>
+                <filter name="revoked_keys" string="Revoked" domain="[('state', '=', 'revoked')]"/>
+                <filter name="hmac_required" string="HMAC Required" domain="[('hmac_required', '=', True)]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_service_user" string="Service User" context="{'group_by': 'service_user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_api_keys" model="ir.actions.act_window">
+        <field name="name">API Keys</field>
+        <field name="res_model">onehr.api.key</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_api_key_search"/>
+        <field name="group_ids" eval="[Command.link(ref('onehr_integrations_api.group_onehr_api_user'))]"/>
+    </record>
+</odoo>

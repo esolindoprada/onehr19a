@@ -1,3 +1,4 @@
+
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.fields import Command
 from odoo.tests import tagged
@@ -73,3 +74,4 @@ class TestSOPMaster(OneHRSOPCommon):
         self.make_sop()
         with self.assertRaises(AccessError):
             self.env["onehr.sop"].with_user(self.plain_user).search([])
+

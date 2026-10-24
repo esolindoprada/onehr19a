@@ -1,3 +1,4 @@
+
 PASS: PROJECT/ADDON identity
 PASS: Odoo 19 manifest version
 PASS: hard dependencies exactly ['onehr_base', 'mail']

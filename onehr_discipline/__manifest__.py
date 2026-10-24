@@ -1,3 +1,4 @@
+
 {
     "name": "OneHR Discipline Management",
     "summary": "Enterprise employee discipline cases, investigations, hearings, sanctions, appeals and audit evidence",
@@ -16,6 +17,7 @@ Analytics and API integrations soft and security-preserving.
     "version": "19.0.1.0.1",
     "license": "LGPL-3",
     "depends": [
+        "onehr_base",
         "onehr_corehr",
         "onehr_security",
         "onehr_workflow_approval",
@@ -34,6 +36,7 @@ Analytics and API integrations soft and security-preserving.
         "views/menus.xml",
     ],
     "installable": True,
-    "application": True,
+    "application": False,
     "auto_install": False,
 }
+

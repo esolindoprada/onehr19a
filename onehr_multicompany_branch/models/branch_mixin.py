@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 from odoo import _, api, fields, models
@@ -101,3 +102,4 @@ class OneHRBranchMixin(models.AbstractModel):
         if not branch.active or not branch.is_effective_on(as_of_date):
             raise ValidationError(_("The selected branch is not active/effective for the requested date."))
         return True
+

@@ -1,3 +1,5 @@
+
+
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_job_family_officer,Job Family Officer,model_onehr_job_family,hr.group_hr_user,1,0,0,0
 access_job_family_manager,Job Family Manager,model_onehr_job_family,hr.group_hr_manager,1,1,1,1

@@ -1,3 +1,4 @@
+
 from odoo import _, api, models
 from odoo.exceptions import AccessError, ValidationError
 
@@ -213,3 +214,4 @@ class OneHRJobDescriptionIntegrationServices(models.Model):
             ),
             "overdue_review_count": len(overdue),
         }
+

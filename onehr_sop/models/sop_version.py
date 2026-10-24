@@ -1,3 +1,4 @@
+
 import base64
 import csv
 import hashlib
@@ -1315,3 +1316,4 @@ class OneHRSOPVersion(models.Model):
                 raise UserError(
                     _("Only an unsubmitted Draft SOP version without acknowledgement evidence may be deleted.")
                 )
+

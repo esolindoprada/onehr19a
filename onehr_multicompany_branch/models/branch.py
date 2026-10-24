@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 from odoo import _, api, fields, models
@@ -413,3 +414,4 @@ class OneHRBranch(models.Model):
             domain=[("branch_id", "=", self.id)],
             context={"default_branch_id": self.id, "default_company_id": self.company_id.id},
         )
+

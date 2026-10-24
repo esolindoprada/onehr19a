@@ -1,3 +1,4 @@
+
 {
     "name": "OneHR Security & Access Control",
     "summary": "Enterprise roles, effective access, SoD and immutable security audit for OneHR",
@@ -29,5 +30,5 @@ onehr_multicompany_branch.
     ],
     "uninstall_hook": "uninstall_hook",
     "installable": True,
-    "application": False,
+    "application": True,
 }

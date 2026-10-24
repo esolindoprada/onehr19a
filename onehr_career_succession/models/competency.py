@@ -1,3 +1,4 @@
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
@@ -141,3 +142,4 @@ class OneHRCompetency(models.Model):
                 raise UserError(
                     _("A competency used by a position requirement must be archived, not deleted.")
                 )
+

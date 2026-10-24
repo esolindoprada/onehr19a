@@ -1,3 +1,4 @@
+
 # OneHR Enterprise Development Guardrail — Multicompany & Branch Direct Full Build
 
 GUARDRAIL_ID: ONEHR-EDG-V5-MULTICOMPANY-BRANCH-DIRECT-FULL
@@ -94,3 +95,4 @@ STOP_ON_ARCHITECTURE_AMBIGUITY = YES
 STOP_ON_REPEAT_ROOT_CAUSE = YES
 
 No Codex run is authorized by this package automatically.
+

@@ -1,3 +1,4 @@
+
 # OneHR PnP — Security & Privacy Matrix
 
 | Role | Policy | Acknowledgement | Evidence | Upstream authority |
@@ -22,3 +23,4 @@ Controls:
 - no custom `base.group_user` CRUD;
 - no business `.sudo()`;
 - no public controller.
+

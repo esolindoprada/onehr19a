@@ -1,3 +1,4 @@
+
 from odoo import _
 from odoo.exceptions import AccessError
 
@@ -65,3 +66,4 @@ def open_record_action(*, name, res_model, res_id):
         "view_mode": "form",
         "target": "current",
     }
+

@@ -3,7 +3,7 @@
 ## Manifest
 
 - Name: OneHR Recruitment
-- Version: `19.0.1.0.0`
+- Version: `19.0.1.0.3`
 - Hard dependencies: `onehr_corehr`, `onehr_security`, `onehr_workflow_approval`, `hr_recruitment`
 - Application: yes
 

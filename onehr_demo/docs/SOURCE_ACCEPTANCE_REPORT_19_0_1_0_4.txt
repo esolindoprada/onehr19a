@@ -1,0 +1,39 @@
+
+# OneHR Demo 19.0.1.0.4 — Bounded Source Acceptance Evidence
+
+TARGET_ADDON: onehr_demo
+VERSION: 19.0.1.0.4
+WRITE_SCOPE: onehr_demo only
+ATTEMPT: 1 / 2
+
+BASELINE:
+- 19.0.1.0.3 was the previously delivered MP02-MP05 bounded runtime baseline.
+- No production OneHR addon ownership, dependency, model footprint, generator registry, or reset policy is changed by this release.
+
+DELTA ROOT CAUSE:
+- Control Center lifecycle actions committed server state but returned only display_notification.
+- The browser therefore retained the old form record, leaving statusbar/button visibility stale.
+- Failure handlers re-raised after writing bounded control-plane evidence, which could roll back that evidence with the outer transaction.
+
+19.0.1.0.4 DELTA ACCEPTANCE:
+PASS: notification helper supports explicit reload_form contract.
+PASS: lifecycle success notifications request client form reload.
+PASS: readiness compatibility mismatch persists blocked state and returns a notification instead of raising after controlled write.
+PASS: generation failure persists paused_failed/run/checkpoint evidence and returns a bounded failure notification.
+PASS: dataset validation failure persists paused_failed/run/checkpoint evidence and returns a bounded failure notification.
+PASS: safe reset failure preserves reset_previewed state and failure evidence.
+PASS: rebuild returns the readiness action when readiness is not PASS instead of raising after persisted readiness state.
+PASS: all Python sources compile with py_compile.
+PASS: no sibling addon files are changed.
+PASS: model ownership unchanged.
+PASS: dependency topology unchanged.
+PASS: fixed generator registry unchanged.
+PASS: deterministic production-sequence policy contract unchanged.
+PASS: provenance/reset ownership contract unchanged.
+
+RUNTIME STATUS:
+- Windows/Odoo runtime upgrade and native UI smoke are NOT claimed by this static package build.
+- Required native runtime test after replacement: restart Odoo → upgrade onehr_demo → open Enterprise Demo Dataset → Refresh Source Compatibility → Enable Demo Generation → Validate Readiness.
+
+MOVE_FORWARD_STATUS: READY_FOR_WINDOWS_RUNTIME_UPGRADE_AND_UI_SMOKE
+

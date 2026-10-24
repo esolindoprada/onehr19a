@@ -1,0 +1,67 @@
+<odoo>
+    <record id="view_onehr_api_scope_list" model="ir.ui.view">
+        <field name="name">onehr.api.scope.list</field>
+        <field name="model">onehr.api.scope</field>
+        <field name="arch" type="xml">
+            <list string="API Scopes" decoration-muted="not active" decoration-danger="risk_level == 'critical'" decoration-warning="risk_level == 'high'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="http_method" widget="badge"/>
+                <field name="route_pattern" optional="show"/>
+                <field name="risk_level" widget="badge"/>
+                <field name="company_scoped" optional="show"/>
+                <field name="api_key_count"/>
+                <field name="active" widget="boolean_toggle" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                <button name="action_open_api_keys" type="object" string="Keys" icon="fa-key"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_api_scope_form" model="ir.ui.view">
+        <field name="name">onehr.api.scope.form</field>
+        <field name="model">onehr.api.scope</field>
+        <field name="arch" type="xml">
+            <form string="API Scope">
+                <header>
+                    <button name="action_deactivate" type="object" string="Deactivate" class="btn-secondary" invisible="not active" groups="onehr_integrations_api.group_onehr_api_admin"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_api_keys" type="object" class="oe_stat_button" icon="fa-key">
+                            <field name="api_key_count" widget="statinfo" string="API Keys"/>
+                        </button>
+                    </div>
+                    <div class="oe_title"><label for="name"/><h1><field name="name"/></h1><div class="text-muted"><field name="code"/></div></div>
+                    <group>
+                        <group><field name="active"/><field name="risk_level"/><field name="company_scoped"/></group>
+                        <group><field name="http_method"/><field name="route_pattern"/></group>
+                    </group>
+                    <group string="Purpose"><field name="description" nolabel="1"/></group>
+                    <button name="action_open_api_keys" type="object" string="Review Assigned API Keys" class="btn-secondary"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_api_scope_search" model="ir.ui.view">
+        <field name="name">onehr.api.scope.search</field>
+        <field name="model">onehr.api.scope</field>
+        <field name="arch" type="xml">
+            <search string="API Scopes">
+                <field name="code"/><field name="name"/><field name="route_pattern"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="critical" string="Critical" domain="[('risk_level', '=', 'critical')]"/>
+                <group>
+                    <filter name="group_risk" string="Risk" context="{'group_by': 'risk_level'}"/>
+                    <filter name="group_method" string="HTTP Method" context="{'group_by': 'http_method'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_api_scopes" model="ir.actions.act_window">
+        <field name="name">API Scopes</field><field name="res_model">onehr.api.scope</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_onehr_api_scope_search"/>
+        <field name="group_ids" eval="[Command.link(ref('onehr_integrations_api.group_onehr_api_user'))]"/>
+    </record>
+</odoo>

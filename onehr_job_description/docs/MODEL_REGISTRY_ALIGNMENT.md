@@ -1,3 +1,4 @@
+
 # OneHR Job Description — Model Registry Alignment
 
 The approved OneHR Job Description product contract identifies exactly:
@@ -22,3 +23,4 @@ Registry ED0–ED5 rows for `onehr.jd` and `onehr.jd.version`. No ED classificat
 invented.
 
 `REGISTRY_ED_CLASSIFICATION: PENDING_EXACT_REGISTRY_ROW_VERIFICATION`
+

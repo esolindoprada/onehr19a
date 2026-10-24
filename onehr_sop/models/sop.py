@@ -1,3 +1,4 @@
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
@@ -529,3 +530,4 @@ class OneHRSOP(models.Model):
             if version.state == "published":
                 version._send_ack_reminders(from_cron=True)
         return True
+

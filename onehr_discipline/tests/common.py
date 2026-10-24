@@ -1,3 +1,4 @@
+
 from datetime import timedelta
 
 from odoo import fields
@@ -381,3 +382,4 @@ class OneHRDisciplineCommon(TransactionCase):
         case.invalidate_recordset()
         self.assertEqual(case.state, "closed")
         return case
+

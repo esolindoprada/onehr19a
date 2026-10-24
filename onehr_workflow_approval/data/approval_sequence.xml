@@ -1,3 +1,4 @@
+
 <odoo noupdate="1">
     <record id="sequence_onehr_approval_request" model="ir.sequence">
         <field name="name">OneHR Approval Request</field>

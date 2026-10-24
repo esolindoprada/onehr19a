@@ -1,0 +1,9 @@
+<odoo noupdate="1">
+    <record id="seq_onehr_api_queue" model="ir.sequence">
+        <field name="name">OneHR Integration Delivery Queue</field>
+        <field name="code">onehr.api.queue</field>
+        <field name="prefix">APIQ/%(year)s/</field>
+        <field name="padding">7</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

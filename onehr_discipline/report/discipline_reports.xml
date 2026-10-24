@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="action_report_discipline_hearing_summons" model="ir.actions.report">
         <field name="name">Discipline Hearing Summons</field>
@@ -390,3 +391,4 @@
         </t>
     </template>
 </odoo>
+

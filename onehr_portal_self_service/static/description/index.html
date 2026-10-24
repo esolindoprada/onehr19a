@@ -1,235 +1,37 @@
-<!--
-OneHR — Portal Self-Service
-File: static/description/index.html
-Odoo 18 CE | License: LGPL-3.0
-
-NOTE:
-- README.md di root untuk dokumentasi panjang; file ini untuk tampilan deskripsi di Apps UI.
-- Hindari <blockquote> demi konsistensi proyek OneHR.
--->
-
-<section class="oe_container oe_dark">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span3">
-      <img src="icon.png" alt="OneHR Portal Self-Service Icon" style="width:100%; border-radius:16px;">
-    </div>
-    <div class="oe_span9">
-      <h1 class="oe_slogan">OneHR — Portal Self-Service</h1>
-      <h2 class="oe_slogan">My HR • My Team • Requests • Approvals • SLA • Notifications</h2>
-      <p>
-        Portal karyawan & manajer untuk layanan HR mandiri: ajukan <b>permintaan</b> (cuti, training, surat, klaim,
-        perubahan data), <b>lacak status</b>, unggah <b>dokumen</b>, lihat <b>slip gaji</b> (via bridge), dan
-        jalankan <b>persetujuan</b> dengan SLA & notifikasi — terintegrasi dengan ekosistem OneHR pada
-        <b>Odoo 18 Community Edition</b>.
-      </p>
-      <p>
-        <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
-        <span style="display:inline-block;background:#1e88e5;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Portal & Website</span>
-        <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company/Branch</span>
-        <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail/Activities</span>
-        <span style="display:inline-block;background:#ef6c00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Approvals</span>
-        <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">SLA & Reminders</span>
-      </p>
-    </div>
-  </div>
-</section>
 
 <section class="oe_container">
   <div class="oe_row oe_spaced">
     <div class="oe_span12">
-      <h3>Overview</h3>
+      <h2 class="oe_slogan">OneHR Portal Self-Service</h2>
+      <h3 class="oe_slogan">My HR • My Team • HR Requests • Approvals • SLA</h3>
       <p>
-        Modul ini menghadirkan <b>My HR</b> (untuk karyawan) & <b>My Team</b> (untuk manajer) di Portal.
-        Karyawan dapat membuat & memantau request, memperbarui profil, serta mengelola lampiran.
-        Manajer memproses persetujuan beserta catatan dan SLA. Soft-coupled bridges mengaktifkan fitur
-        tambahan (Time Off, Learning, Appraisal, Document, Payroll Slip) sesuai modul yang terpasang.
+        Enterprise employee and manager self-service for OneHR on Odoo 19 Community Edition.
+        Employees submit and follow governed HR requests; managers act on direct-team approvals;
+        HR controls service catalogues, SLA, final decisions and secure downstream hand-offs.
       </p>
     </div>
   </div>
 </section>
-
-<section class="oe_container">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span6">
-      <h3>Key Features</h3>
-      <ul>
-        <li>Halaman <b>My HR</b>: daftar request, buat baru, detail, diskusi, lampiran, riwayat status.</li>
-        <li>Halaman <b>My Team</b>: antrian persetujuan manager, quick approve/reject, bulk approve wizard.</li>
-        <li><b>Request Types</b> yang dapat dikonfigurasi (aktif/nonaktif di portal, SLA, template notifikasi).</li>
-        <li>Alur <b>Submitted → Approved/Rejected → Done</b> dengan <b>chatter</b> & activities.</li>
-        <li><b>SLA</b> per tipe layanan: reminder otomatis & penanda overdue.</li>
-        <li><b>Bridges</b> opsional: Time Off, Learning, Appraisal, Document, Payroll Bridge.</li>
-        <li><b>Update Profil</b> via wizard → persetujuan HR sebelum sinkron ke master data.</li>
-        <li>Notifikasi email/portal: submitted, approved/rejected, completed.</li>
-        <li>i18n, multi-company/branch, security & record rules per employee/manager.</li>
-      </ul>
-    </div>
-    <div class="oe_span6">
-      <h3>Core Models</h3>
-      <ul>
-        <li><b>onehr.portal.request</b> — inti permintaan portal (state, SLA, chatter).</li>
-        <li><b>onehr.portal.request.type</b> — katalog tipe layanan, opsi portal & SLA.</li>
-        <li><b>onehr.portal.request.stage</b> — tahapan request (opsional untuk detail pipeline).</li>
-        <li><b>res.users</b> inherit — tautan user ↔ employee & helper domain tim manager.</li>
-        <li><b>hr.employee</b> inherit — flag visibilitas & kontrol pembaruan profil.</li>
-      </ul>
-      <p style="margin-top:8px;">
-        Bridges: <i>bridge_timeoff.py, bridge_learning.py, bridge_appraisal.py, bridge_document.py, bridge_payroll.py</i>.
-      </p>
-    </div>
-  </div>
-</section>
-
-<section class="oe_container oe_dark">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span12">
-      <h3>Portal Pages</h3>
-      <ul>
-        <li><b>/my/hr</b> — dashboard & daftar request (filter state/tipe/SLA).</li>
-        <li><b>/my/hr/<i>:id</i></b> — detail request, komentar, lampiran, riwayat.</li>
-        <li><b>/my/team</b> — antrian persetujuan manager, quick actions.</li>
-        <li><b>Menu</b> “My HR” & “My Team” otomatis muncul untuk role terkait.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section class="oe_container">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span6">
-      <h3>Integrations (Bridges)</h3>
-      <ul>
-        <li><b>onehr_timeoff</b> — ajukan cuti dari portal & sinkron ke time off.</li>
-        <li><b>onehr_learning</b> — request pelatihan, approval, & registrasi.</li>
-        <li><b>onehr_appraisal</b> — akses jadwal appraisal & konfirmasi.</li>
-        <li><b>onehr_document</b> — unggah/tautkan dokumen pendukung.</li>
-        <li><b>onehr_payroll_bridge</b> — tampilkan slip gaji (read-only) di portal.</li>
-      </ul>
-    </div>
-    <div class="oe_span6">
-      <h3>Dependencies</h3>
-      <ul>
-        <li><b>Hard</b>: onehr_corehr, onehr_security, portal, web, mail.</li>
-        <li><b>Soft</b>: onehr_timeoff, onehr_learning, onehr_appraisal, onehr_document, onehr_payroll_bridge, onehr_multicompany_branch.</li>
-      </ul>
-      <p style="font-size:12px;color:#666;">
-        Fitur bridge aktif otomatis bila modul terkait terpasang.
-      </p>
-    </div>
-  </div>
-</section>
-
-<section class="oe_container">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span4">
-      <h3>Installation</h3>
-      <ol>
-        <li>Tambahkan modul ke <i>addons_path</i> Odoo.</li>
-        <li>Update Apps list, cari <b>OneHR — Portal Self-Service</b>.</li>
-        <li>Install; dependensi akan terpasang otomatis.</li>
-      </ol>
-    </div>
-    <div class="oe_span4">
-      <h3>Configuration</h3>
-      <ul>
-        <li>Aktifkan <b>Request Types</b> yang boleh muncul di Portal.</li>
-        <li>Set <b>SLA</b> & template notifikasi per tipe layanan.</li>
-        <li>Atur peran & akses: Portal Employee, Portal Manager, HR Officer/Manager.</li>
-        <li>Opsional: parameter ICP untuk default SLA/Reminder/Portal menu.</li>
-      </ul>
-    </div>
-    <div class="oe_span4">
-      <h3>Security</h3>
-      <ul>
-        <li>Groups: Portal Employee, Portal Manager, HR Officer, HR Manager.</li>
-        <li>Record Rules: scope per employee & bawahan langsung manager.</li>
-        <li>Audit: chatter/log aktivitas; catatan keputusan persetujuan.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- Screenshot grid (gunakan gambar proyek Anda sendiri: s1.png..s6.png) -->
-<section class="oe_container oe_dark">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span12">
-      <h3>Screenshots</h3>
-    </div>
-    <div class="oe_span4"><img src="s1.png" alt="My HR Dashboard" style="width:100%;border-radius:10px;"></div>
-    <div class="oe_span4"><img src="s2.png" alt="Request List & Filters" style="width:100%;border-radius:10px;"></div>
-    <div class="oe_span4"><img src="s3.png" alt="Request Form & Chatter" style="width:100%;border-radius:10px;"></div>
-    <div class="oe_span4"><img src="s4.png" alt="My Team Approvals" style="width:100%;border-radius:10px;margin-top:10px;"></div>
-    <div class="oe_span4"><img src="s5.png" alt="SLA & Reminders" style="width:100%;border-radius:10px;margin-top:10px;"></div>
-    <div class="oe_span4"><img src="s6.png" alt="Payroll Slip via Bridge" style="width:100%;border-radius:10px;margin-top:10px;"></div>
-  </div>
-</section>
-
-<section class="oe_container">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span6">
-      <h3>Demo &amp; Testing</h3>
-      <ul>
-        <li>Demo data: beberapa <i>request types</i>, contoh request karyawan & manager.</li>
-        <li>Unit tests: alur Submitted→Approved/Rejected→Done, SLA overdue, notifikasi.</li>
-        <li>UAT: update profil → approval HR → sinkron ke master data.</li>
-      </ul>
-    </div>
-    <div class="oe_span6">
-      <h3>Performance Notes</h3>
-      <ul>
-        <li>Index: employee_id, type_id, manager_id, state, sla_deadline.</li>
-        <li>Gunakan <i>read_group</i> untuk agregasi; hindari compute berat di list.</li>
-        <li>Arsip request selesai untuk volume besar; batasi lampiran besar di portal.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
 <section class="oe_container oe_dark">
   <div class="oe_row oe_spaced">
     <div class="oe_span6">
-      <h3>Assets</h3>
+      <h3>Employee &amp; Manager Experience</h3>
       <ul>
-        <li>JS: <i>portal_self_service.js</i></li>
-        <li>QWeb: <i>portal_templates.xml</i></li>
-        <li>SCSS: <i>portal_self_service.scss</i></li>
+        <li>My HR dashboard and request history.</li>
+        <li>Save Draft, Submit, Cancel, comments and attachments.</li>
+        <li>My Team direct-manager approval queue.</li>
+        <li>Clear request state, SLA and downstream status.</li>
       </ul>
     </div>
     <div class="oe_span6">
-      <h3>Endpoints (opsional)</h3>
+      <h3>Enterprise Governance</h3>
       <ul>
-        <li><i>controllers/api.py</i> — endpoint ringan untuk AJAX portal.</li>
-        <li><i>controllers/manager.py</i> — aksi approve/reject cepat.</li>
-        <li><i>controllers/request.py</i> — create & tracking request.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section class="oe_container">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span12">
-      <h3>Upgrade &amp; Migration</h3>
-      <ul>
-        <li>Penamaan & struktur model mengikuti standar OneHR 18 CE.</li>
-        <li>Compat hooks tersedia untuk penambahan tipe layanan baru.</li>
+        <li>Manager/HR approval evidence and immutable submitted history.</li>
+        <li>Company isolation and least-privilege model authority.</li>
+        <li>Configurable SLA/reminder monitoring.</li>
+        <li>Security-preserving soft integration with wider OneHR domains.</li>
       </ul>
     </div>
   </div>
 </section>
 
-<section class="oe_container oe_dark">
-  <div class="oe_row oe_spaced">
-    <div class="oe_span6">
-      <h3>License</h3>
-      <p>Distribusi di bawah lisensi <b>LGPL-3.0</b>. Lihat berkas <i>LICENSE</i>.</p>
-    </div>
-    <div class="oe_span6">
-      <h3>Support &amp; Contribution</h3>
-      <p>
-        Laporkan isu & ajukan peningkatan melalui alur kontribusi OneHR:
-        sertakan test, ikuti style code, dan dokumentasikan dampak migrasi.
-      </p>
-    </div>
-  </div>
-</section>

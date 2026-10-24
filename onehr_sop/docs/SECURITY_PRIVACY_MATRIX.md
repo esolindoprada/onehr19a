@@ -1,3 +1,4 @@
+
 # OneHR SOP — Security & Privacy Matrix
 
 | Role | SOP | Version | Ack | Scope |
@@ -19,3 +20,4 @@ Controls:
 - no custom broad `base.group_user` ACL;
 - no business `.sudo()`;
 - no public controller.
+

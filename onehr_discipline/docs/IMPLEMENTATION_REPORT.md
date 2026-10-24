@@ -1,3 +1,4 @@
+
 # OneHR Discipline — Direct Full Implementation Report
 
 BUILD: Direct Full Addon Build  
@@ -45,3 +46,4 @@ ownership or dependency topology changed.
 
 `ROOT_CAUSE_CLASSIFICATION: ADDON_SOURCE_FAILURE`  
 `ATTEMPT: 1/2`
+

@@ -1,3 +1,4 @@
+
 # OneHR Discipline Management
 
 Enterprise employee-relations discipline management for OneHR NEW on Odoo 19 CE.
@@ -30,3 +31,4 @@ Draft → Approval → Approved → Executed, with Rejected/Cancelled exception 
 
 Source/static acceptance is not runtime completeness. See
 `docs/WINDOWS_RUNTIME_ACCEPTANCE.md`.
+

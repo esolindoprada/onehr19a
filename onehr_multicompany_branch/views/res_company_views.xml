@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="view_company_form_onehr_branch" model="ir.ui.view">
         <field name="name">res.company.form.onehr.branch.enterprise</field>
@@ -87,3 +88,4 @@
     </record>
 
 </odoo>
+

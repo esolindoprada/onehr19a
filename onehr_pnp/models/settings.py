@@ -1,3 +1,4 @@
+
 from odoo import fields, models
 
 
@@ -31,3 +32,4 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="onehr_pnp.default_document_category_id",
         domain="[('active', '=', True)]",
     )
+

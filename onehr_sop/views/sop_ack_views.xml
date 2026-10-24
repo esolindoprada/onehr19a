@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="view_onehr_sop_ack_list" model="ir.ui.view">
         <field name="name">onehr.sop.ack.list.enterprise</field>
@@ -194,3 +195,4 @@
         <field name="search_view_id" ref="view_onehr_sop_ack_search"/>
     </record>
 </odoo>
+

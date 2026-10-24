@@ -1,3 +1,4 @@
+
 # OneHR Career & Succession — Integration Contract
 
 ## Core ownership
@@ -39,3 +40,4 @@ Portal route/session ownership remains downstream.
 `onehr_competency_bi_payload()` are model services only. Authentication, HTTP routes,
 tokens, signatures, throttling, versioning and retry queues remain
 `onehr_integrations_api` ownership.
+

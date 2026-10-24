@@ -1,3 +1,4 @@
+
 <odoo>
     <!-- Work Incidents -->
     <record id="view_onehr_work_incident_list" model="ir.ui.view">

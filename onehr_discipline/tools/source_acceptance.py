@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 from pathlib import Path
 import ast
@@ -1010,3 +1011,4 @@ print(
 )
 print("WINDOWS_RUNTIME_ACCEPTANCE=PENDING")
 print("ONEHR_DISCIPLINE_MOVE_FORWARD_READY=NO")
+

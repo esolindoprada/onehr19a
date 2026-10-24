@@ -1,3 +1,4 @@
+
 # HARD GATE 11 — Database Identifier & ORM Naming Safety
 
 ## Approved ORM identities
@@ -39,3 +40,4 @@ Source acceptance parses field assignments and checks:
 - no public controller model alias.
 
 Any failure blocks `SOURCE_ENTERPRISE_COMPLETENESS`.
+

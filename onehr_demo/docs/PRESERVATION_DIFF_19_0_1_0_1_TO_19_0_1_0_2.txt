@@ -1,0 +1,27 @@
+
+OneHR Demo 19.0.1.0.1 -> 19.0.1.0.2 Preservation / Scope Diff
+
+INTENTIONAL_RUNTIME_SOURCE CHANGES
+- __manifest__.py: version only.
+- views/menus.xml: convert Enterprise Demo Dataset to pure container and add Demo Control Center leaf action.
+- tests/test_control_plane.py: add menu/action/create regression.
+- tools/source_acceptance.py: add navigation hard gates and new source/version identity.
+- services/contracts.py + FROZEN_MP02_MP05_CONTRACT.json: refresh supplied authoritative composite metadata only.
+- docs/README/evidence: document bounded navigation closure.
+
+PRESERVED
+- all six control-plane model ownerships and schemas
+- production addon dependency topology
+- generator registry keys/order/contracts
+- MP05 foundation generator business logic
+- deterministic stable-key and production sequence policy
+- compatibility/readiness semantics
+- security groups, ACLs and record rules
+- state machine / workflow actions
+- provenance/reference semantics
+- reset policies and handlers
+- effective dating / company / branch semantics
+- all production sibling addon sources
+
+No sibling production addon mutation is authorized or performed.
+

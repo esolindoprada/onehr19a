@@ -1,3 +1,4 @@
+
 # OneHR PnP — Windows Runtime Acceptance Checklist
 
 Source/static PASS is not runtime completion.
@@ -10,7 +11,7 @@ Source/static PASS is not runtime completion.
 6. Verify exactly `onehr.policy`, `onehr.policy.ack`, `onehr.policy.evidence` register.
 7. Verify Settings extension appears and no fourth PnP persistent model is created.
 8. Inspect physical table/index/relation/constraint names for HARD GATE 11.
-9. Run all 47 post-install tests in a disposable database.
+9. Run all 49 post-install tests in a disposable database.
 10. Confirm plain internal user has no PnP model access.
 11. Confirm Reader sees only assigned Published/Review/Archived policy history and own ack/evidence.
 12. Confirm Owner sees own Draft/approval/version set, not company-wide employee evidence.
@@ -48,3 +49,16 @@ Source/static PASS is not runtime completion.
 
 WINDOWS_RUNTIME_ACCEPTANCE: PENDING  
 ONEHR_PNP_MOVE_FORWARD_READY: NO
+
+
+## 2026-09-10 bounded Users / Access Rights compatibility retest
+
+1. Deploy both corrected owners together: `onehr_career_succession` and `onehr_pnp`.
+2. Restart Odoo, Update Apps List, then upgrade both modules before testing the Users form.
+3. Verify `onehr_pnp.module_category_onehr_pnp` resolves to `OneHR Policies and Procedures`.
+4. Open **Settings → Users & Companies → Users**, then open at least two users.
+5. Confirm the Access Rights tab renders without Owl/`parseXML` lifecycle error.
+6. Change one non-sensitive OneHR group assignment, save, reopen the user, and confirm the same category hierarchy renders.
+7. Run the addon post-install tests; the dynamic-category regression must pass across installed OneHR privilege categories.
+8. Runtime PASS remains separate from source PASS.
+

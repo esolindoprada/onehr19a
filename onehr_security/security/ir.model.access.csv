@@ -1,3 +1,4 @@
+
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_onehr_role_user,OneHR Role Security User,model_onehr_role,onehr_security.group_onehr_security_user,1,0,0,0
 access_onehr_role_manager,OneHR Role Security Manager,model_onehr_role,onehr_security.group_onehr_security_manager,1,1,1,0

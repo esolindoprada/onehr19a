@@ -1,3 +1,4 @@
+
 # OneHR Career & Succession — Project Identity Preflight
 
 PROJECT: OneHR NEW  
@@ -58,3 +59,4 @@ risk index, bench strength and average readiness.
 PREFLIGHT_RESULT: PASS_FOR_DIRECT_FULL_BUILD  
 REGISTRY_ED_CLASSIFICATION: PENDING_EXACT_REGISTRY_ROW_VERIFICATION  
 WINDOWS_RUNTIME_ACCEPTANCE: PENDING
+

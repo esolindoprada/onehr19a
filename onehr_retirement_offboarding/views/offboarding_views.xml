@@ -1,0 +1,318 @@
+<odoo>
+    <record id="view_onehr_offboarding_list" model="ir.ui.view">
+        <field name="name">onehr.offboarding.list.enterprise</field>
+        <field name="model">onehr.offboarding</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="overdue_task_count &gt; 0 and state not in ('closed', 'cancelled')" decoration-success="state == 'closed'" decoration-muted="state in ('rejected', 'cancelled')">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id" optional="show"/>
+                <field name="job_id" optional="hide"/>
+                <field name="offboarding_type" widget="badge"/>
+                <field name="proposed_exit_date"/>
+                <field name="approved_exit_date" optional="show"/>
+                <field name="responsible_user_id"/>
+                <field name="completion_percent" widget="progressbar"/>
+                <field name="mandatory_open_count" optional="show"/>
+                <field name="overdue_task_count" optional="show"/>
+                <field name="access_state" widget="badge" optional="show"/>
+                <field name="final_benefit_state" widget="badge" optional="hide" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager"/>
+                <field name="contract_termination_state" widget="badge" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <button name="action_check_readiness" type="object" string="Readiness" icon="fa-check-square-o" invisible="state not in ('in_progress', 'completed')"/>
+                <button name="action_open_checklist" type="object" string="Tasks" icon="fa-tasks"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_offboarding_kanban" model="ir.ui.view">
+        <field name="name">onehr.offboarding.kanban.executive</field>
+        <field name="model">onehr.offboarding</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="offboarding_type"/>
+                <field name="proposed_exit_date"/>
+                <field name="responsible_user_id"/>
+                <field name="completion_percent"/>
+                <field name="mandatory_open_count"/>
+                <field name="overdue_task_count"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div><strong><field name="employee_id"/></strong><div class="text-muted"><field name="name"/></div></div>
+                            <field name="offboarding_type" widget="badge"/>
+                        </div>
+                        <div class="mt-2">Exit: <field name="proposed_exit_date"/></div>
+                        <div>Owner: <field name="responsible_user_id"/></div>
+                        <div class="mt-2"><field name="completion_percent" widget="progressbar"/></div>
+                        <div class="d-flex justify-content-between mt-2">
+                            <span>Open mandatory: <field name="mandatory_open_count"/></span>
+                            <span>Overdue: <field name="overdue_task_count"/></span>
+                        </div>
+                        <div class="mt-2"><field name="state" widget="badge"/></div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_onehr_offboarding_form" model="ir.ui.view">
+        <field name="name">onehr.offboarding.form.enterprise</field>
+        <field name="model">onehr.offboarding</field>
+        <field name="arch" type="xml">
+            <form string="Retirement &amp; Offboarding Case">
+                <header>
+                    <button name="action_submit_offboarding_approval" type="object" string="Submit Approval" class="btn-primary" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager" invisible="state not in ('requested', 'rejected')"/>
+                    <button name="action_generate_checklist" type="object" string="Generate Checklist" class="btn-secondary" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager" invisible="state != 'in_progress'"/>
+                    <button name="action_create_exit_interview" type="object" string="Exit Interview" groups="onehr_retirement_offboarding.group_onehr_offboarding_officer" invisible="state not in ('in_progress', 'completed')"/>
+                    <button name="action_request_access_revoke" type="object" string="Request Revoke" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager" invisible="state != 'in_progress' or access_state != 'pending'"/>
+                    <button name="action_request_final_benefit" type="object" string="Request Final Benefit" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager" invisible="state != 'in_progress' or final_benefit_state != 'not_requested'"/>
+                    <button name="action_complete" type="object" string="Complete" class="btn-primary" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager" invisible="state != 'in_progress'"/>
+                    <button name="action_close" type="object" string="Close" class="btn-primary" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager" invisible="state != 'completed'"/>
+                    <button name="action_cancel" type="object" string="Cancel" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager" invisible="state in ('completed', 'closed', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="requested,approval,in_progress,completed,closed"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Closed" bg_color="text-bg-success" invisible="state != 'closed'"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-secondary" invisible="state != 'cancelled'"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-user" groups="onehr_retirement_offboarding.group_onehr_offboarding_officer">
+                            <div class="o_stat_info"><span class="o_stat_text">Employee</span></div>
+                        </button>
+                        <button name="action_open_approval_requests" type="object" class="oe_stat_button" icon="fa-check-square-o" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager">
+                            <field name="onehr_approval_request_count" widget="statinfo" string="Approvals"/>
+                        </button>
+                        <button name="action_open_checklist" type="object" class="oe_stat_button" icon="fa-tasks">
+                            <field name="checklist_count" widget="statinfo" string="Clearance Tasks"/>
+                        </button>
+                        <button name="action_open_exit_interview" type="object" class="oe_stat_button" icon="fa-comments" groups="onehr_retirement_offboarding.group_onehr_offboarding_officer">
+                            <field name="exit_interview_count" widget="statinfo" string="Exit Interview"/>
+                        </button>
+                        <button name="action_open_employment_contract" type="object" class="oe_stat_button" icon="fa-file-text-o" groups="onehr_retirement_offboarding.group_onehr_offboarding_officer" invisible="contract_res_id == 0">
+                            <div class="o_stat_info"><span class="o_stat_text">Employment Contract</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2><field name="employee_id" readonly="state not in ('requested', 'rejected')" options="{'no_create': True}"/></h2>
+                    </div>
+
+                    <group>
+                        <group string="Exit Request">
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                            <field name="offboarding_type" readonly="state not in ('requested', 'rejected')"/>
+                            <field name="request_date" readonly="state not in ('requested', 'rejected')"/>
+                            <field name="proposed_exit_date" readonly="state not in ('requested', 'rejected')"/>
+                            <field name="approved_exit_date" readonly="1"/>
+                            <field name="effective_exit_date" readonly="1"/>
+                            <field name="target_close_date" readonly="1"/>
+                        </group>
+                        <group string="Responsibility &amp; Organization">
+                            <field name="responsible_user_id" readonly="state == 'closed'"/>
+                            <field name="employee_number" readonly="1" groups="onehr_retirement_offboarding.group_onehr_offboarding_officer"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="job_id" readonly="1"/>
+                            <field name="manager_employee_id" readonly="1"/>
+                            <field name="branch_scope_key" readonly="state not in ('requested', 'rejected')"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info" role="alert" invisible="state not in ('in_progress', 'completed')">
+                        <strong>Closure readiness:</strong>
+                        Mandatory tasks <field name="mandatory_open_count"/> open ·
+                        overdue <field name="overdue_task_count"/> ·
+                        completion <field name="completion_percent" widget="progressbar"/> ·
+                        <field name="readiness_state" widget="badge"/>.
+                    </div>
+
+                    <div class="d-flex gap-2 flex-wrap mb-3" invisible="state not in ('in_progress', 'completed')">
+                        <button name="action_check_readiness" type="object" string="Check Readiness" icon="fa-check-square-o" class="btn btn-secondary"/>
+                        <button name="action_refresh_contract_status" type="object" string="Refresh Contract" icon="fa-refresh" class="btn btn-secondary" groups="onehr_retirement_offboarding.group_onehr_offboarding_officer"/>
+                        <button name="action_print_clearance_summary" type="object" string="Print Clearance Summary" icon="fa-print" class="btn btn-secondary" groups="onehr_retirement_offboarding.group_onehr_offboarding_officer"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Clearance Workspace">
+                            <field name="checklist_ids" context="{'default_offboarding_id': id}" create="0" delete="0">
+                                <list decoration-danger="is_overdue" decoration-success="state == 'done'" decoration-muted="state == 'waived'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="item_code"/>
+                                    <field name="title"/>
+                                    <field name="category" widget="badge"/>
+                                    <field name="assigned_user_id"/>
+                                    <field name="due_date"/>
+                                    <field name="mandatory"/>
+                                    <field name="return_status" widget="badge"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="is_overdue" column_invisible="True"/>
+                                    <button name="action_assign_to_me" type="object" string="Mine" icon="fa-user" invisible="state in ('done', 'waived')"/>
+                                    <button name="action_start" type="object" string="Start" icon="fa-play" invisible="state not in ('pending', 'blocked')"/>
+                                    <button name="action_complete" type="object" string="Complete" icon="fa-check" invisible="state in ('done', 'waived')"/>
+                                    <button name="action_reopen" type="object" string="Reopen" icon="fa-undo" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager" invisible="state not in ('done', 'waived')"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Exit Reason &amp; Interview">
+                            <group>
+                                <group>
+                                    <field name="exit_reason_code" readonly="state == 'closed'"/>
+                                    <field name="exit_reason_notes" readonly="state == 'closed'"/>
+                                </group>
+                                <group>
+                                    <field name="exit_interview_count" readonly="1"/>
+                                    <button name="action_create_exit_interview" type="object" string="Create / Open Exit Interview" class="oe_highlight" groups="onehr_retirement_offboarding.group_onehr_offboarding_officer" invisible="state not in ('in_progress', 'completed')"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Access &amp; Identity" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager">
+                            <group>
+                                <group>
+                                    <field name="access_state" readonly="1" widget="badge"/>
+                                    <field name="access_requested_at" readonly="1"/>
+                                    <field name="access_revoked_at" readonly="1"/>
+                                    <field name="access_revoked_by_id" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="access_external_reference" readonly="access_state == 'external_confirmed'"/>
+                                    <field name="access_note"/>
+                                </group>
+                            </group>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button name="action_revoke_odoo_access" type="object" string="Revoke Odoo Access" class="btn btn-danger" groups="onehr_retirement_offboarding.group_onehr_offboarding_admin" invisible="state != 'in_progress' or access_state in ('revoked', 'external_confirmed', 'not_required')"/>
+                                <button name="action_confirm_external_access_revoked" type="object" string="Confirm External / SSO Revoked" class="btn btn-secondary" invisible="state != 'in_progress' or access_state in ('revoked', 'external_confirmed', 'not_required')"/>
+                                <button name="action_mark_access_not_required" type="object" string="Mark Not Required" class="btn btn-secondary" invisible="state != 'in_progress' or access_state in ('revoked', 'external_confirmed', 'not_required')"/>
+                            </div>
+                        </page>
+                        <page string="Final Benefit" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager">
+                            <group>
+                                <field name="final_benefit_state" readonly="1" widget="badge"/>
+                                <field name="final_benefit_reference"/>
+                                <field name="final_benefit_amount"/>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="final_benefit_note"/>
+                            </group>
+                            <button name="action_mark_final_benefit_not_required" type="object" string="Mark Final Benefit Not Required" invisible="state != 'in_progress' or final_benefit_state in ('confirmed', 'not_required')"/>
+                        </page>
+                        <page string="Employment Contract" groups="onehr_retirement_offboarding.group_onehr_offboarding_officer">
+                            <group>
+                                <group>
+                                    <field name="contract_reference" readonly="1"/>
+                                    <field name="contract_termination_state" readonly="1" widget="badge"/>
+                                    <field name="contract_res_id" invisible="1"/>
+                                </group>
+                                <group>
+                                    <field name="contract_exception_note" readonly="state == 'closed'"/>
+                                </group>
+                            </group>
+                            <div class="d-flex gap-2 flex-wrap" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager">
+                                <button name="action_sync_contract_termination" type="object" string="Sync &amp; Request Contract Termination" class="btn btn-secondary" invisible="state != 'in_progress' or contract_termination_state in ('pending', 'approved', 'terminated', 'not_applicable')"/>
+                                <button name="action_execute_contract_termination" type="object" string="Execute Approved Contract Termination" class="btn btn-secondary" invisible="state != 'in_progress' or contract_termination_state != 'approved'"/>
+                                <button name="action_mark_contract_not_applicable" type="object" string="Mark Contract Not Applicable" class="btn btn-secondary" invisible="state != 'in_progress' or contract_termination_state == 'terminated'"/>
+                            </div>
+                        </page>
+                        <page string="Documents &amp; Evidence">
+                            <group>
+                                <field name="document_reference" readonly="state == 'closed'"/>
+                                <field name="last_approval_request_id" readonly="1" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager"/>
+                                <field name="approval_finalized_at" readonly="1" groups="onehr_retirement_offboarding.group_onehr_offboarding_manager"/>
+                            </group>
+                        </page>
+                        <page string="Completion Evidence">
+                            <group>
+                                <group>
+                                    <field name="completed_at" readonly="1"/>
+                                    <field name="completed_by_id" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="closed_at" readonly="1"/>
+                                    <field name="closed_by_id" readonly="1"/>
+                                </group>
+                            </group>
+                            <button name="action_archive_employee_master" type="object" string="Archive Employee Master" class="btn-secondary" groups="onehr_retirement_offboarding.group_onehr_offboarding_admin" invisible="state != 'closed'"/>
+                        </page>
+                    </notebook>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_offboarding_search" model="ir.ui.view">
+        <field name="name">onehr.offboarding.search.enterprise</field>
+        <field name="model">onehr.offboarding</field>
+        <field name="arch" type="xml">
+            <search string="Retirement &amp; Offboarding">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="job_id"/>
+                <field name="responsible_user_id"/>
+                <field name="offboarding_type"/>
+                <field name="exit_reason_code"/>
+                <field name="proposed_exit_date"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter name="active_cases" string="Open Cases" domain="[('state', 'not in', ('closed', 'cancelled', 'rejected'))]"/>
+                <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]"/>
+                <filter name="closed" string="Closed" domain="[('state', '=', 'closed')]"/>
+                <filter name="retirement" string="Retirements" domain="[('offboarding_type', '=', 'retirement')]"/>
+                <filter name="resignation" string="Resignations" domain="[('offboarding_type', '=', 'resignation')]"/>
+                <group>
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Exit Type" name="group_type" context="{'group_by': 'offboarding_type'}"/>
+                    <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Owner" name="group_owner" context="{'group_by': 'responsible_user_id'}"/>
+                    <filter string="Exit Reason" name="group_reason" context="{'group_by': 'exit_reason_code'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_onehr_offboarding_pivot" model="ir.ui.view">
+        <field name="name">onehr.offboarding.pivot.analytics</field>
+        <field name="model">onehr.offboarding</field>
+        <field name="arch" type="xml">
+            <pivot string="Offboarding Analytics">
+                <field name="offboarding_type" type="row"/>
+                <field name="state" type="col"/>
+                <field name="cycle_days" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_onehr_offboarding_graph" model="ir.ui.view">
+        <field name="name">onehr.offboarding.graph.analytics</field>
+        <field name="model">onehr.offboarding</field>
+        <field name="arch" type="xml">
+            <graph string="Offboarding Case Distribution" type="bar">
+                <field name="offboarding_type"/>
+                <field name="id" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_onehr_offboarding" model="ir.actions.act_window">
+        <field name="name">Offboarding Cases</field>
+        <field name="res_model">onehr.offboarding</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_onehr_offboarding_search"/>
+        <field name="group_ids" eval="[Command.link(ref('onehr_retirement_offboarding.group_onehr_offboarding_task_owner'))]"/>
+    </record>
+
+    <record id="action_onehr_offboarding_analytics" model="ir.actions.act_window">
+        <field name="name">Offboarding Analytics</field>
+        <field name="res_model">onehr.offboarding</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_onehr_offboarding_search"/>
+        <field name="group_ids" eval="[Command.link(ref('onehr_retirement_offboarding.group_onehr_offboarding_manager'))]"/>
+    </record>
+</odoo>

@@ -1,3 +1,4 @@
+
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_assignment_proposer,Assignment Proposer Read,model_onehr_assignment,onehr_assignment.group_onehr_assignment_proposer,1,0,0,0
 access_assignment_officer,Assignment Officer,model_onehr_assignment,onehr_assignment.group_onehr_assignment_officer,1,1,1,0

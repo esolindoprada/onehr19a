@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 from odoo import _
@@ -41,3 +42,4 @@ def open_record_action(*, name, res_model, res_id):
         "res_id": res_id,
         "target": "current",
     }
+

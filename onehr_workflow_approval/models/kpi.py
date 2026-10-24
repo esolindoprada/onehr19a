@@ -1,3 +1,4 @@
+
 from collections import defaultdict
 
 from odoo import _, api, fields, models

@@ -15,6 +15,7 @@ training attendance, assessment, certificates, vendors, budgets and costs.
         "onehr_base",
         "onehr_corehr",
         "onehr_security",
+        "onehr_appraisal",
         "onehr_workflow_approval",
     ],
     "data": [
@@ -35,5 +36,5 @@ training attendance, assessment, certificates, vendors, budgets and costs.
         "views/menus.xml",
     ],
     "installable": True,
-    "application": True,
+    "application": False,
 }

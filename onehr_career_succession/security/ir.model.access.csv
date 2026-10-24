@@ -1,3 +1,4 @@
+
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_competency_hrbp,Competency HRBP,model_onehr_competency,onehr_career_succession.group_onehr_career_hrbp,1,1,1,0
 access_competency_manager,Competency Talent Manager,model_onehr_competency,onehr_career_succession.group_onehr_talent_manager,1,1,1,1
@@ -7,3 +8,4 @@ access_talent_pool_hrbp,Talent Pool HRBP,model_onehr_talent_pool,onehr_career_su
 access_talent_pool_manager,Talent Pool Talent Manager,model_onehr_talent_pool,onehr_career_succession.group_onehr_talent_manager,1,1,1,1
 access_succession_plan_hrbp,Succession Plan HRBP,model_onehr_succession_plan,onehr_career_succession.group_onehr_career_hrbp,1,1,1,0
 access_succession_plan_manager,Succession Plan Talent Manager,model_onehr_succession_plan,onehr_career_succession.group_onehr_talent_manager,1,1,1,1
+

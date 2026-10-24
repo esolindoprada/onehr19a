@@ -1,0 +1,30 @@
+<odoo>
+    <record id="res_config_settings_view_form_onehr_integrations_api" model="ir.ui.view">
+        <field name="name">res.config.settings.form.onehr.integrations.api</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="OneHR Integrations API" name="onehr_integrations_api" groups="base.group_system">
+                    <block title="External API Security" name="onehr_api_security_settings">
+                        <setting string="Enable External API"><field name="onehr_api_enabled"/></setting>
+                        <setting string="Default Rate Limit"><field name="onehr_api_default_rate_limit"/></setting>
+                        <setting string="Maximum Payload"><field name="onehr_api_max_payload_kb"/></setting>
+                        <setting string="HMAC Replay Window"><field name="onehr_api_hmac_tolerance_seconds"/></setting>
+                        <setting string="Allowed CORS Origins"><field name="onehr_api_cors_origins" placeholder="https://portal.example.com"/></setting>
+                    </block>
+                    <block title="Audit &amp; Retention" name="onehr_api_audit_settings">
+                        <setting string="Store Sanitized Payloads" help="Credentials and known secret fields are redacted before any payload body is stored."><field name="onehr_api_log_payloads"/></setting>
+                        <setting string="Archive Log Horizon"><field name="onehr_api_log_retention_days"/></setting>
+                    </block>
+                    <block title="Outbound Webhook Safety" name="onehr_webhook_settings">
+                        <setting string="Default Retry Attempts"><field name="onehr_webhook_default_max_attempts"/></setting>
+                        <setting string="Default Timeout"><field name="onehr_webhook_timeout_seconds"/></setting>
+                        <setting string="Allow Plain HTTP" help="Disabled by default. HTTPS is required unless explicitly accepted by deployment policy."><field name="onehr_webhook_allow_http"/></setting>
+                        <setting string="Allow Private Network Targets" help="Disabled by default to mitigate SSRF. Enable only for an approved private integration architecture."><field name="onehr_webhook_allow_private_targets"/></setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

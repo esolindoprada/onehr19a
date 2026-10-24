@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="module_category_onehr_branch" model="ir.module.category">
         <field name="name">OneHR Branch</field>
@@ -44,3 +45,4 @@
         <field name="comment">Read consolidated branch-role coverage across explicitly assigned branches; no branch/security mutation authority.</field>
     </record>
 </odoo>
+

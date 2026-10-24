@@ -1,3 +1,4 @@
+
 {
     "name": "OneHR Policies & Procedures",
     "summary": "Enterprise policy governance, approval, publication, acknowledgement and compliance evidence",
@@ -10,9 +11,10 @@ reporting and governed downstream Portal/Analytics/API integration contracts.
     "author": "PT Dua Empat Tujuh Open Source",
     "website": "https://odoocamp.net",
     "category": "Human Resources/Governance",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "license": "LGPL-3",
     "depends": [
+        "onehr_base",
         "onehr_security",
         "onehr_document",
         "onehr_workflow_approval",
@@ -32,6 +34,7 @@ reporting and governed downstream Portal/Analytics/API integration contracts.
         "views/menus.xml",
     ],
     "installable": True,
-    "application": True,
+    "application": False,
     "auto_install": False,
 }
+

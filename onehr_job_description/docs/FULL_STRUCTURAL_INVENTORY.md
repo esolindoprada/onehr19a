@@ -1,3 +1,4 @@
+
 # OneHR Job Description — Full Structural Inventory
 
 ## Persistent business models — exactly two
@@ -52,3 +53,4 @@ Soft:
 - Career/Succession
 - Portal Self Service
 - Integrations API / Analytics downstream consumers
+

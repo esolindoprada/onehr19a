@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="module_category_onehr_job_description" model="ir.module.category">
         <field name="name">OneHR Job Description</field>
@@ -54,3 +55,4 @@
         <field name="comment">Administrative JD authority including controlled archival and deletion of unapproved drafts.</field>
     </record>
 </odoo>
+

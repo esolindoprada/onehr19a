@@ -1,3 +1,4 @@
+
 from odoo.exceptions import AccessError, UserError
 from odoo.fields import Command
 from odoo.tests import tagged
@@ -88,3 +89,4 @@ class TestJDVersionWorkflow(OneHRJobDescriptionCommon):
         self.assertEqual(jd.coverage_state, "covered")
         self.assertEqual(jd.coverage_score, 100.0)
         self.assertEqual(jd.current_version_id, version)
+

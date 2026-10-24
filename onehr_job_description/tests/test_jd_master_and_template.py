@@ -1,3 +1,4 @@
+
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import tagged
 
@@ -59,3 +60,4 @@ class TestJDMasterAndTemplate(OneHRJobDescriptionCommon):
         self.make_version(jd)
         with self.assertRaises(UserError):
             self.make_version(jd)
+

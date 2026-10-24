@@ -1,3 +1,4 @@
+
 from odoo.exceptions import AccessError
 from odoo.tests import tagged
 
@@ -196,3 +197,4 @@ class TestPnPSecurityIntegrations(OneHRPnPCommon):
             "onehr_policy_evidence",
         ):
             self.assertLessEqual(len(table.encode("utf-8")), 63)
+

@@ -1,3 +1,4 @@
+
 # OneHR SOP — Windows Runtime Acceptance Checklist
 
 1. Back up database and old `onehr_sop`.
@@ -38,3 +39,4 @@
 
 WINDOWS_RUNTIME_ACCEPTANCE: PENDING  
 ONEHR_SOP_MOVE_FORWARD_READY: NO
+

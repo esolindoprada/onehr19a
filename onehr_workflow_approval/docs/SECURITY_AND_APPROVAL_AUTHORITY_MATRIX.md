@@ -1,3 +1,4 @@
+
 # OneHR Workflow Approval — Security & Approval Authority Matrix
 
 | Group | Request visibility | Decision authority | Delegation | Rule/step config | Evidence/KPI |

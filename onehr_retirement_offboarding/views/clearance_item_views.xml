@@ -1,0 +1,101 @@
+<odoo>
+    <record id="view_onehr_clearance_item_list" model="ir.ui.view">
+        <field name="name">onehr.clearance.item.list.enterprise</field>
+        <field name="model">onehr.clearance.item</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="category" widget="badge"/>
+                <field name="owner_role" widget="badge"/>
+                <field name="mandatory"/>
+                <field name="sla_days"/>
+                <field name="offboarding_type" optional="show"/>
+                <field name="job_id" optional="hide"/>
+                <field name="grade_id" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="active" optional="hide"/>
+                <button name="action_open_generated_tasks" type="object" string="Tasks" icon="fa-tasks"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_clearance_item_form" model="ir.ui.view">
+        <field name="name">onehr.clearance.item.form.enterprise</field>
+        <field name="model">onehr.clearance.item</field>
+        <field name="arch" type="xml">
+            <form string="Clearance Item">
+                <header>
+                    <button name="action_archive" type="object" string="Archive" groups="onehr_retirement_offboarding.group_onehr_offboarding_admin" invisible="not active"/>
+                    <button name="action_restore" type="object" string="Restore" class="btn-primary" groups="onehr_retirement_offboarding.group_onehr_offboarding_admin" invisible="active"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-secondary" invisible="active"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_generated_tasks" type="object" class="oe_stat_button" icon="fa-tasks">
+                            <field name="generated_task_count" widget="statinfo" string="Generated Tasks"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div class="text-muted"><field name="code"/></div>
+                    </div>
+                    <group>
+                        <group string="Clearance Definition">
+                            <field name="category"/>
+                            <field name="owner_role"/>
+                            <field name="mandatory"/>
+                            <field name="sla_days"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group string="Applicability">
+                            <field name="offboarding_type"/>
+                            <field name="job_id"/>
+                            <field name="grade_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Operator Instructions">
+                        <field name="instructions" placeholder="Explain the evidence or handover expected from this clearance task..."/>
+                    </group>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_clearance_item_search" model="ir.ui.view">
+        <field name="name">onehr.clearance.item.search.enterprise</field>
+        <field name="model">onehr.clearance.item</field>
+        <field name="arch" type="xml">
+            <search string="Clearance Items">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="category"/>
+                <field name="owner_role"/>
+                <field name="job_id"/>
+                <field name="grade_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter name="mandatory" string="Mandatory" domain="[('mandatory', '=', True)]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter string="Category" name="group_category" context="{'group_by': 'category'}"/>
+                    <filter string="Owner Role" name="group_owner" context="{'group_by': 'owner_role'}"/>
+                    <filter string="Exit Type" name="group_type" context="{'group_by': 'offboarding_type'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_clearance_item" model="ir.actions.act_window">
+        <field name="name">Clearance Catalogue</field>
+        <field name="res_model">onehr.clearance.item</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_clearance_item_search"/>
+        <field name="group_ids" eval="[Command.link(ref('onehr_retirement_offboarding.group_onehr_offboarding_task_owner'))]"/>
+    </record>
+</odoo>

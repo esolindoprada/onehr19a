@@ -1,3 +1,4 @@
+
 from odoo import _
 from odoo.exceptions import AccessError
 
@@ -59,3 +60,4 @@ def open_record(*, name, res_model, res_id):
         "res_id": res_id,
         "view_mode": "form",
     }
+

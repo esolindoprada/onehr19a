@@ -1,3 +1,4 @@
+
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 
@@ -296,3 +297,4 @@ class OneHRSOPAcknowledgement(models.Model):
         raise AccessError(
             _("SOP acknowledgement evidence is retained and cannot be deleted.")
         )
+

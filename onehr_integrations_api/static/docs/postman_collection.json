@@ -1,0 +1,38 @@
+{
+  "info": {
+    "name": "OneHR Integrations API v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:8070"},
+    {"key": "apiKey", "value": "onehr_PUBLIC_ID.ONE_TIME_SECRET"},
+    {"key": "requestId", "value": "replace-with-unique-request-id"},
+    {"key": "timestamp", "value": "replace-with-unix-epoch"},
+    {"key": "signature", "value": "sha256=replace-with-hmac"}
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "X-API-Key", "value": "{{apiKey}}"}],
+        "url": {"raw": "{{baseUrl}}/onehr/api/v1/health", "host": ["{{baseUrl}}"], "path": ["onehr", "api", "v1", "health"]}
+      }
+    },
+    {
+      "name": "Attendance Ingest",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "X-API-Key", "value": "{{apiKey}}"},
+          {"key": "X-Request-ID", "value": "{{requestId}}"},
+          {"key": "X-Timestamp", "value": "{{timestamp}}"},
+          {"key": "X-Signature", "value": "{{signature}}"}
+        ],
+        "body": {"mode": "raw", "raw": "{\n  \"employee_id\": 1,\n  \"check_in\": \"2026-08-29 08:00:00\",\n  \"check_out\": \"2026-08-29 17:00:00\",\n  \"source_system\": \"DEVICE_VENDOR\",\n  \"external_reference\": \"DEVICE-0001\"\n}"},
+        "url": {"raw": "{{baseUrl}}/onehr/api/v1/attendance", "host": ["{{baseUrl}}"], "path": ["onehr", "api", "v1", "attendance"]}
+      }
+    }
+  ]
+}

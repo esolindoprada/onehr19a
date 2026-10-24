@@ -1,3 +1,4 @@
+
 # OneHR PnP — Enterprise Development Guardrail
 
 GUARDRAIL_ID: ONEHR-EDG-V1-PNP-DIRECT-FULL
@@ -124,3 +125,4 @@ ADDON_SOURCE_FAILURE, TEST_DEFECT, DATA/MIGRATION_FAILURE, ARCHITECTURE_CONFLICT
 
 Default write scope is `onehr_pnp` only. Sibling OneHR source changes require a
 separate approved architecture/change contract.
+

@@ -1,3 +1,4 @@
+
 from odoo import fields
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import tagged

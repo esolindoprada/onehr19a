@@ -1,3 +1,4 @@
+
 # OneHR Career & Succession — Model Registry Alignment
 
 The approved 25-addon Career/Succession product contract identifies exactly:
@@ -18,3 +19,4 @@ invented.
 `REGISTRY_ED_CLASSIFICATION: PENDING_EXACT_REGISTRY_ROW_VERIFICATION`
 
 Canonical employee/position ownership remains `hr.employee` / `onehr.position`.
+

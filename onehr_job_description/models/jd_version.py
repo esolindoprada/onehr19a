@@ -1,3 +1,4 @@
+
 import base64
 import hashlib
 import html
@@ -909,3 +910,4 @@ class OneHRJobDescriptionVersion(models.Model):
                 raise UserError(
                     _("Approved/published JD history must be retained, not deleted.")
                 )
+

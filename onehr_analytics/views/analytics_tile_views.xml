@@ -1,0 +1,283 @@
+<odoo>
+    <record id="view_onehr_analytics_tile_list" model="ir.ui.view">
+        <field name="name">onehr.analytics.tile.list.enterprise</field>
+        <field name="model">onehr.analytics.tile</field>
+        <field name="arch" type="xml">
+            <list string="KPI Tiles" decoration-danger="last_status == 'critical'" decoration-warning="last_status == 'warning'" decoration-muted="state in ('paused', 'retired')">
+                <field name="sequence" widget="handle" groups="onehr_analytics.group_onehr_analytics_manager"/>
+                <field name="name"/>
+                <field name="code" optional="show"/>
+                <field name="category" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="branch_code" optional="hide"/>
+                <field name="provider_mode" optional="hide" groups="onehr_analytics.group_onehr_analytics_manager"/>
+                <field name="snapshot_frequency" optional="show"/>
+                <field name="last_value" optional="show"/>
+                <field name="target_value" optional="show"/>
+                <field name="last_status" widget="badge" optional="show"/>
+                <field name="last_snapshot_at" optional="show"/>
+                <field name="state" widget="badge"/>
+                <button name="action_snapshot_now" type="object" string="Snapshot" icon="fa-camera" groups="onehr_analytics.group_onehr_analytics_manager" invisible="state != 'active'"/>
+                <button name="action_toggle_favorite" type="object" string="Favorite" icon="fa-star" groups="onehr_analytics.group_onehr_analytics_analyst"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_analytics_tile_kanban" model="ir.ui.view">
+        <field name="name">onehr.analytics.tile.kanban.executive</field>
+        <field name="model">onehr.analytics.tile</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="category"/>
+                <field name="last_value"/>
+                <field name="target_value"/>
+                <field name="last_status"/>
+                <field name="state"/>
+                <field name="snapshot_frequency"/>
+                <field name="last_snapshot_at"/>
+                <field name="is_favorite"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong><field name="name"/></strong>
+                                <div class="text-muted"><field name="code"/></div>
+                            </div>
+                            <field name="last_status" widget="badge"/>
+                        </div>
+                        <div class="mt-3 fs-2 fw-bold">
+                            <field name="last_value"/>
+                        </div>
+                        <div class="text-muted">
+                            Target <field name="target_value"/> · <field name="snapshot_frequency"/>
+                        </div>
+                        <div class="mt-2 d-flex justify-content-between align-items-center">
+                            <field name="category" widget="badge"/>
+                            <field name="state" widget="badge"/>
+                        </div>
+                        <div class="mt-2 text-muted">
+                            Last snapshot: <field name="last_snapshot_at"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_onehr_analytics_tile_form" model="ir.ui.view">
+        <field name="name">onehr.analytics.tile.form.enterprise</field>
+        <field name="model">onehr.analytics.tile</field>
+        <field name="arch" type="xml">
+            <form string="Analytics KPI Tile">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            groups="onehr_analytics.group_onehr_analytics_manager"
+                            invisible="state not in ('draft', 'paused')"/>
+                    <button name="action_pause" type="object" string="Pause"
+                            groups="onehr_analytics.group_onehr_analytics_manager"
+                            invisible="state != 'active'"/>
+                    <button name="action_resume" type="object" string="Resume" class="btn-primary"
+                            groups="onehr_analytics.group_onehr_analytics_manager"
+                            invisible="state != 'paused'"/>
+                    <button name="action_snapshot_now" type="object" string="Generate Snapshot" class="btn-secondary"
+                            groups="onehr_analytics.group_onehr_analytics_manager"
+                            invisible="state != 'active'"/>
+                    <button name="action_retire" type="object" string="Retire"
+                            groups="onehr_analytics.group_onehr_analytics_manager"
+                            invisible="state == 'retired'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,paused,retired"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Retired" bg_color="text-bg-secondary" invisible="state != 'retired'"/>
+                    <widget name="web_ribbon" title="Critical" bg_color="text-bg-danger" invisible="last_status != 'critical' or state == 'retired'"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_snapshots" type="object" class="oe_stat_button" icon="fa-history">
+                            <field name="snapshot_count" widget="statinfo" string="Snapshots"/>
+                        </button>
+                        <button name="action_open_breaches" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="breached_snapshot_count" widget="statinfo" string="Breaches"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                        <div class="text-muted"><field name="code" readonly="1"/></div>
+                    </div>
+
+                    <div class="row g-2 my-3">
+                        <div class="col-lg-3">
+                            <div class="alert alert-info mb-0">
+                                <strong>Current KPI</strong><br/><span class="fs-3"><field name="last_value"/></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="alert alert-light mb-0">
+                                <strong>Target</strong><br/><span class="fs-3"><field name="target_value" readonly="1"/></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="alert alert-light mb-0">
+                                <strong>Status</strong><br/><field name="last_status" widget="badge"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="alert alert-light mb-0">
+                                <strong>Last Snapshot</strong><br/><field name="last_snapshot_at"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <button name="action_toggle_favorite" type="object" string="Toggle My Favorite" class="btn-secondary" icon="fa-star"
+                                groups="onehr_analytics.group_onehr_analytics_analyst"/>
+                        <button name="action_test_provider" type="object" string="Test Provider" class="btn-secondary" icon="fa-check-circle"
+                                groups="onehr_analytics.group_onehr_analytics_manager"/>
+                        <button name="action_open_source_records" type="object" string="Open Current Source" class="btn-secondary" icon="fa-external-link"
+                                groups="onehr_analytics.group_onehr_analytics_manager"/>
+                        <button name="action_export_snapshot_csv" type="object" string="Export Snapshot CSV" class="btn-secondary" icon="fa-download"
+                                groups="onehr_analytics.group_onehr_analytics_manager"/>
+                    </div>
+
+                    <group>
+                        <group string="Executive Context">
+                            <field name="category" readonly="1"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                            <field name="branch_code" readonly="1"/>
+                            <field name="snapshot_frequency" readonly="1"/>
+                            <field name="next_snapshot_date" readonly="1"/>
+                        </group>
+                        <group string="Ownership &amp; Monitoring">
+                            <field name="owner_user_id" readonly="1"/>
+                            <field name="is_favorite" readonly="1"/>
+                            <field name="last_error_message" readonly="1" invisible="not last_error_message"/>
+                            <field name="export_filename" readonly="1" invisible="not export_filename"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="KPI Configuration" groups="onehr_analytics.group_onehr_analytics_manager">
+                            <group>
+                                <group string="Identity">
+                                    <field name="name" readonly="state == 'active' or state == 'retired'"/>
+                                    <field name="code" readonly="state == 'active' or state == 'retired'"/>
+                                    <field name="sequence"/>
+                                    <field name="category"/>
+                                    <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                                    <field name="branch_code" readonly="state == 'active' or state == 'retired'"/>
+                                    <field name="description"/>
+                                </group>
+                                <group string="Provider">
+                                    <field name="provider_mode" readonly="state == 'active' or state == 'retired'"/>
+                                    <field name="manual_value" invisible="provider_mode != 'manual'"/>
+                                    <field name="source_model_name" invisible="provider_mode != 'model_aggregate'" readonly="state == 'active' or state == 'retired'"/>
+                                    <field name="aggregate_function" invisible="provider_mode != 'model_aggregate'" readonly="state == 'active' or state == 'retired'"/>
+                                    <field name="measure_field_name" invisible="provider_mode != 'model_aggregate' or aggregate_function == 'count'" readonly="state == 'active' or state == 'retired'"/>
+                                    <field name="date_field_name" invisible="provider_mode != 'model_aggregate'" readonly="state == 'active' or state == 'retired'"/>
+                                    <field name="domain_expression" invisible="provider_mode != 'model_aggregate'" readonly="state == 'active' or state == 'retired'"/>
+                                    <field name="service_metric_key" invisible="provider_mode != 'service'" readonly="state == 'active' or state == 'retired'"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Targets &amp; Thresholds" groups="onehr_analytics.group_onehr_analytics_manager">
+                            <group>
+                                <group string="Display &amp; Target">
+                                    <field name="value_format"/>
+                                    <field name="currency_id" readonly="1" invisible="value_format != 'currency'"/>
+                                    <field name="target_value"/>
+                                </group>
+                                <group string="Threshold Guardrail">
+                                    <field name="threshold_direction"/>
+                                    <field name="warning_threshold" invisible="threshold_direction == 'none'"/>
+                                    <field name="critical_threshold" invisible="threshold_direction == 'none'"/>
+                                    <field name="alert_user_ids" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Scheduling &amp; Retention" groups="onehr_analytics.group_onehr_analytics_manager">
+                            <group>
+                                <group string="Snapshot Scheduler">
+                                    <field name="snapshot_frequency"/>
+                                    <field name="next_snapshot_date" readonly="1"/>
+                                </group>
+                                <group string="Evidence Retention">
+                                    <field name="retention_months"/>
+                                    <div class="text-muted">Historical evidence is archived, never automatically deleted.</div>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Snapshot Evidence">
+                            <field name="snapshot_ids" readonly="1">
+                                <list create="0" edit="0" delete="0" decoration-danger="status == 'critical'" decoration-warning="status == 'warning'" decoration-muted="archived">
+                                    <field name="period_start"/>
+                                    <field name="period_end"/>
+                                    <field name="value"/>
+                                    <field name="target_value"/>
+                                    <field name="variance_value"/>
+                                    <field name="status" widget="badge"/>
+                                    <field name="mom_change_percent" optional="show"/>
+                                    <field name="yoy_change_percent" optional="show"/>
+                                    <field name="source_name" optional="show"/>
+                                    <field name="archived" optional="hide"/>
+                                    <button name="action_open_snapshot" type="object" string="Open" icon="fa-eye"/>
+                                    <button name="action_open_source" type="object" string="Source" icon="fa-external-link" invisible="not drilldown_model_name"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_analytics_tile_search" model="ir.ui.view">
+        <field name="name">onehr.analytics.tile.search.enterprise</field>
+        <field name="model">onehr.analytics.tile</field>
+        <field name="arch" type="xml">
+            <search string="KPI Tiles">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="category"/>
+                <field name="owner_user_id"/>
+                <field name="branch_code"/>
+                <filter name="my_favorites" string="My Favorites" domain="[('favorite_user_ids','in',[uid])]"/>
+                <filter name="active_kpi" string="Active" domain="[('state','=','active')]"/>
+                <filter name="paused_kpi" string="Paused" domain="[('state','=','paused')]"/>
+                <filter name="warning_kpi" string="Warning" domain="[('last_status','=','warning')]"/>
+                <filter name="critical_kpi" string="Critical" domain="[('last_status','=','critical')]"/>
+                <filter name="unavailable_kpi" string="Unavailable" domain="[('last_status','=','unavailable')]"/>
+                <group>
+                    <filter name="group_category" string="Category" context="{'group_by':'category'}"/>
+                    <filter name="group_status" string="KPI Status" context="{'group_by':'last_status'}"/>
+                    <filter name="group_state" string="Lifecycle" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                    <filter name="group_frequency" string="Frequency" context="{'group_by':'snapshot_frequency'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_analytics_dashboard" model="ir.actions.act_window">
+        <field name="name">HR Executive KPI Dashboard</field>
+        <field name="res_model">onehr.analytics.tile</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_onehr_analytics_tile_search"/>
+        <field name="context">{'search_default_active_kpi': 1}</field>
+        <field name="group_ids" eval="[Command.link(ref('onehr_analytics.group_onehr_analytics_analyst'))]"/>
+    </record>
+
+    <record id="action_onehr_analytics_tiles" model="ir.actions.act_window">
+        <field name="name">KPI Configuration</field>
+        <field name="res_model">onehr.analytics.tile</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="search_view_id" ref="view_onehr_analytics_tile_search"/>
+        <field name="group_ids" eval="[Command.link(ref('onehr_analytics.group_onehr_analytics_manager'))]"/>
+    </record>
+</odoo>

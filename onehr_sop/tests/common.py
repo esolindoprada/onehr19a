@@ -1,3 +1,4 @@
+
 from odoo import fields
 from odoo.fields import Command
 from odoo.tests.common import TransactionCase
@@ -224,3 +225,4 @@ class OneHRSOPCommon(TransactionCase):
         self.approve_version(version)
         version.with_user(self.approver).action_publish()
         return version
+

@@ -1,0 +1,62 @@
+<odoo>
+    <template id="report_offboarding_clearance">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Offboarding Clearance Summary</h2>
+                        <table class="table table-sm table-borderless">
+                            <tr><th>Reference</th><td><span t-field="o.name"/></td><th>Employee</th><td><span t-field="o.employee_id"/></td></tr>
+                            <tr><th>Exit Type</th><td><span t-field="o.offboarding_type"/></td><th>Proposed Exit</th><td><span t-field="o.proposed_exit_date"/></td></tr>
+                            <tr><th>Case State</th><td><span t-field="o.state"/></td><th>Completion</th><td><span t-esc="o.completion_percent"/>%</td></tr>
+                            <tr><th>Access</th><td><span t-field="o.access_state"/></td><th>Contract</th><td><span t-field="o.contract_termination_state"/></td></tr>
+                        </table>
+                        <h3>Clearance Tasks</h3>
+                        <table class="table table-sm table-bordered">
+                            <thead><tr><th>Code</th><th>Task</th><th>Owner</th><th>Due</th><th>Asset</th><th>Status</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="o.checklist_ids" t-as="task">
+                                    <td><span t-field="task.item_code"/></td>
+                                    <td><span t-field="task.title"/></td>
+                                    <td><span t-field="task.assigned_user_id"/></td>
+                                    <td><span t-field="task.due_date"/></td>
+                                    <td><span t-field="task.return_status"/></td>
+                                    <td><span t-field="task.state"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="mt-3"><strong>Final Benefit:</strong> <span t-field="o.final_benefit_state"/> <span t-if="o.final_benefit_reference">(<span t-field="o.final_benefit_reference"/>)</span></div>
+                        <div><strong>Document Reference:</strong> <span t-field="o.document_reference"/></div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_exit_interview">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Exit Interview Summary</h2>
+                        <table class="table table-sm table-borderless">
+                            <tr><th>Employee</th><td><span t-field="o.employee_id"/></td><th>Case</th><td><span t-field="o.offboarding_id"/></td></tr>
+                            <tr><th>State</th><td><span t-field="o.state"/></td><th>Reason</th><td><span t-field="o.primary_exit_reason"/></td></tr>
+                            <tr><th>Overall Score</th><td><span t-field="o.overall_score"/></td><th>Recommendation</th><td><span t-field="o.recommendation_score"/> / 10</td></tr>
+                        </table>
+                        <h3>Experience Scores</h3>
+                        <table class="table table-sm table-bordered">
+                            <tr><th>Manager</th><td><span t-field="o.manager_relationship_score"/></td><th>Role Clarity</th><td><span t-field="o.role_clarity_score"/></td></tr>
+                            <tr><th>Rewards</th><td><span t-field="o.rewards_score"/></td><th>Culture</th><td><span t-field="o.culture_score"/></td></tr>
+                            <tr><th>Growth</th><td><span t-field="o.growth_score"/></td><th>Work-Life</th><td><span t-field="o.work_life_score"/></td></tr>
+                        </table>
+                        <h3>Feedback</h3>
+                        <p><strong>Reason Detail:</strong> <span t-field="o.reason_detail"/></p>
+                        <p><strong>Employee Feedback:</strong> <span t-field="o.employee_feedback"/></p>
+                        <p><strong>Improvement Suggestions:</strong> <span t-field="o.improvement_suggestions"/></p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

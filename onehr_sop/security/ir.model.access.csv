@@ -1,3 +1,4 @@
+
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_sop_reader,SOP Reader,model_onehr_sop,onehr_sop.group_onehr_sop_reader,1,0,0,0
 access_sop_editor,SOP Editor,model_onehr_sop,onehr_sop.group_onehr_sop_editor,1,1,1,0
@@ -11,3 +12,4 @@ access_sop_ack_reader,SOP Acknowledgement Reader,model_onehr_sop_ack,onehr_sop.g
 access_sop_ack_editor,SOP Acknowledgement Editor,model_onehr_sop_ack,onehr_sop.group_onehr_sop_editor,1,1,0,0
 access_sop_ack_approver,SOP Acknowledgement Approver,model_onehr_sop_ack,onehr_sop.group_onehr_sop_approver,1,1,1,0
 access_sop_ack_admin,SOP Acknowledgement Admin,model_onehr_sop_ack,onehr_sop.group_onehr_sop_admin,1,1,1,1
+

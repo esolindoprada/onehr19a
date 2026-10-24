@@ -1,3 +1,4 @@
+
 # OneHR Discipline — Security & Privacy Matrix
 
 | Role | Case visibility | Case mutation | Sanction |
@@ -26,3 +27,4 @@ Privacy/security controls:
 
 Discipline Legal does not automatically gain Workflow Manager, Security Admin,
 Payroll authority, PnP authority, Appraisal HR or Document authority.
+

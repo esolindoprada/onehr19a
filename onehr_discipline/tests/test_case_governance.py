@@ -1,3 +1,4 @@
+
 from datetime import timedelta
 
 from odoo import fields
@@ -246,4 +247,5 @@ class TestDisciplineCaseGovernance(OneHRDisciplineCommon):
         )
         self.assertIn(first, found)
         self.assertNotIn(second, found)
+
 

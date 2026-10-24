@@ -1,0 +1,57 @@
+<odoo>
+    <!-- Cross-functional task owners may need OneHR root navigation without broad HR Officer authority. -->
+    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[Command.link(ref('onehr_retirement_offboarding.group_onehr_offboarding_task_owner'))]"/>
+    </record>
+
+    <menuitem id="menu_onehr_offboarding_root"
+              name="Offboarding"
+              parent="onehr_base.menu_onehr_root"
+              sequence="58"
+              groups="onehr_retirement_offboarding.group_onehr_offboarding_task_owner"/>
+
+    <menuitem id="menu_onehr_offboarding_cases"
+              name="Offboarding Cases"
+              parent="menu_onehr_offboarding_root"
+              action="action_onehr_offboarding"
+              sequence="10"/>
+
+    <menuitem id="menu_onehr_my_clearance_tasks"
+              name="My Clearance Tasks"
+              parent="menu_onehr_offboarding_root"
+              action="action_onehr_my_offboarding_checklist"
+              sequence="20"/>
+
+    <menuitem id="menu_onehr_all_clearance_tasks"
+              name="All Clearance Tasks"
+              parent="menu_onehr_offboarding_root"
+              action="action_onehr_offboarding_checklist"
+              sequence="30"
+              groups="onehr_retirement_offboarding.group_onehr_offboarding_officer"/>
+
+    <menuitem id="menu_onehr_exit_interviews"
+              name="Exit Interviews"
+              parent="menu_onehr_offboarding_root"
+              action="action_onehr_exit_interview"
+              sequence="40"
+              groups="onehr_retirement_offboarding.group_onehr_offboarding_officer"/>
+
+    <menuitem id="menu_onehr_offboarding_analytics"
+              name="Offboarding Analytics"
+              parent="menu_onehr_offboarding_root"
+              action="action_onehr_offboarding_analytics"
+              sequence="50"
+              groups="onehr_retirement_offboarding.group_onehr_offboarding_manager"/>
+
+    <menuitem id="menu_onehr_offboarding_configuration"
+              name="Configuration"
+              parent="menu_onehr_offboarding_root"
+              sequence="90"
+              groups="onehr_retirement_offboarding.group_onehr_offboarding_admin"/>
+
+    <menuitem id="menu_onehr_clearance_catalogue"
+              name="Clearance Catalogue"
+              parent="menu_onehr_offboarding_configuration"
+              action="action_onehr_clearance_item"
+              sequence="10"/>
+</odoo>

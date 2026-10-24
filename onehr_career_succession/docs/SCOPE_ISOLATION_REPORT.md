@@ -1,3 +1,4 @@
+
 # OneHR Career & Succession — Scope Isolation Report
 
 TASK: Direct Full Addon Build  
@@ -21,3 +22,4 @@ This generated package contains only the `onehr_career_succession/` tree.
 No sibling OneHR addon source is emitted or modified.
 
 `SCOPE_ISOLATION_RESULT: PASS_FOR_PACKAGE`
+

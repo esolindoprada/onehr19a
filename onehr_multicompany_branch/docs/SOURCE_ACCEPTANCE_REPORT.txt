@@ -1,14 +1,15 @@
-ONEHR_MULTICOMPANY_BRANCH_SOURCE_ACCEPTANCE_V1
-TARGET: /mnt/data/OneHR_Multicompany_Branch_Direct_Full_Build_v1/onehr_multicompany_branch
-SOURCE_FINGERPRINT_SHA256: CDB1F5832588F3E3367E88F67E4280A1AE07E9037EA66C353705974D4E66B6BC
-PASS_COUNT: 69
+
+ONEHR_MULTICOMPANY_BRANCH_SOURCE_ACCEPTANCE_V3
+TARGET: /mnt/data/onehr_multicompany_branch_19.0.1.0.2
+SOURCE_FINGERPRINT_SHA256: 7B2C993495982F2FD1F735BB530D5F841BC74092A6A349DF4EC5E1C7EC754727
+PASS_COUNT: 82
 FAIL_COUNT: 0
 
 PASS: Odoo 19 manifest version
 PASS: exact approved hard dependency: onehr_security
 PASS: installable foundation-addon contract
 PASS: generic controller/demo scaffold removed
-PASS: Python syntax/AST validation (15 files)
+PASS: Python syntax/AST validation (16 files)
 PASS: HARD GATE 4 exact target Master Model Registry named models
 PASS: Odoo 19 model classes use exactly one Odoo Python base
 PASS: onehr.branch NEW ED1
@@ -29,8 +30,17 @@ PASS: no legacy _sql_constraints usage
 PASS: no safe_eval/eval/exec business primitive
 PASS: no sudo() bypass path
 PASS: exact seven reviewed narrow SUPERUSER integrity/derivation/persistence paths
-PASS: exact 7 reviewed ACL rows
+PASS: exact 14 reviewed ACL rows, including full Users runtime dependency read closure
 PASS: no direct base.group_user ACL
+PASS: generic cross-model comodel-read closure for Users / Role Assignment branch surfaces
+PASS: bounded read-only runtime closure ACL: access_onehr_branch_odoo_technical_admin
+PASS: bounded read-only runtime closure ACL: access_onehr_branch_security_manager
+PASS: bounded read-only runtime closure ACL: access_onehr_branch_security_admin
+PASS: bounded read-only runtime closure ACL: access_onehr_user_role_odoo_technical_admin
+PASS: bounded read-only runtime closure ACL: access_onehr_role_odoo_technical_admin
+PASS: bounded read-only runtime closure ACL: access_onehr_sod_conflict_odoo_technical_admin
+PASS: bounded read-only runtime closure ACL: access_onehr_audit_odoo_technical_admin
+PASS: native Users runtime dependency closure for Odoo Technical Admin across all current support models
 PASS: no branch-addon ACL grants unlink
 PASS: Odoo 19 privilege classification
 PASS: Branch User group
@@ -69,8 +79,12 @@ PASS: security role form integration
 PASS: security role search integration
 PASS: central-office pivot coverage
 PASS: central-office graph coverage
+PASS: Users allowed-branch relational surface
+PASS: Users default-branch relational surface
+PASS: Users effective-branch relational surface
+PASS: Role Assignment branch relational surface
 PASS: views avoid function-style authorization expressions
-PASS: exact 18 enterprise runtime test methods
+PASS: exact 28 enterprise runtime test methods, including full Users runtime dependency regressions
 PASS: all required governance/preservation/UI/security/completeness documents present
 PASS: no active Odoo 18 metadata/description remains
 

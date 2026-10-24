@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="view_onehr_sop_list" model="ir.ui.view">
         <field name="name">onehr.sop.list.enterprise</field>
@@ -342,3 +343,4 @@
         <field name="domain">[('active', '=', True)]</field>
     </record>
 </odoo>
+

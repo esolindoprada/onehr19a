@@ -1,3 +1,4 @@
+
 <odoo>
     <!-- Legal company is always the outer partition for branch masters. -->
     <record id="rule_onehr_branch_company_global" model="ir.rule">
@@ -50,3 +51,4 @@
         ]</field>
     </record>
 </odoo>
+

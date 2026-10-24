@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="module_category_onehr_discipline" model="ir.module.category">
         <field name="name">OneHR Employee Relations — Discipline</field>
@@ -68,3 +69,4 @@
         </field>
     </record>
 </odoo>
+

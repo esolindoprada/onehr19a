@@ -1,3 +1,4 @@
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
@@ -168,3 +169,4 @@ class OneHRPositionCompetency(models.Model):
                     _("Position competency requirements used by active talent evidence "
                       "must be archived, not deleted.")
                 )
+

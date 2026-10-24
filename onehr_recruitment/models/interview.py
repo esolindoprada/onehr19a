@@ -396,7 +396,7 @@ class OneHRInterviewScore(models.Model):
     )
     scorecard_values = fields.Properties(
         string="Scorecard",
-        definition="session_id.template_id.scorecard_definition",
+        definition="template_id.scorecard_definition",
     )
     overall_score = fields.Float(required=True, default=0.0, tracking=True)
     recommendation = fields.Selection(

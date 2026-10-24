@@ -1,3 +1,4 @@
+
 # OneHR Policies & Procedures (PnP)
 
 Enterprise policy governance for OneHR NEW on Odoo 19 Community Edition.
@@ -32,3 +33,4 @@ SOP versions and SOP acknowledgement remain owned by `onehr_sop`.
 
 Source/static acceptance does not mean Windows runtime acceptance. Follow
 `docs/WINDOWS_RUNTIME_ACCEPTANCE.md` before declaring the addon frozen.
+

@@ -18,6 +18,7 @@ soft/downstream integrations so model ownership and dependency direction stay cl
     "depends": [
         "onehr_corehr",
         "onehr_security",
+        "onehr_attendance",
         "onehr_workflow_approval",
     ],
     "data": [
@@ -34,5 +35,5 @@ soft/downstream integrations so model ownership and dependency direction stay cl
         "views/menus.xml",
     ],
     "installable": True,
-    "application": True,
+    "application": False,
 }

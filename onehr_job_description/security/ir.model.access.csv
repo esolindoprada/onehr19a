@@ -1,3 +1,4 @@
+
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_onehr_jd_reader,JD Reader,model_onehr_jd,onehr_job_description.group_onehr_jd_reader,1,0,0,0
 access_onehr_jd_editor,JD Editor,model_onehr_jd,onehr_job_description.group_onehr_jd_editor,1,1,1,0
@@ -7,3 +8,4 @@ access_onehr_jd_version_reader,JD Version Reader,model_onehr_jd_version,onehr_jo
 access_onehr_jd_version_editor,JD Version Editor,model_onehr_jd_version,onehr_job_description.group_onehr_jd_editor,1,1,1,0
 access_onehr_jd_version_approver,JD Version Approver,model_onehr_jd_version,onehr_job_description.group_onehr_jd_approver,1,1,1,0
 access_onehr_jd_version_admin,JD Version Admin,model_onehr_jd_version,onehr_job_description.group_onehr_jd_admin,1,1,1,1
+

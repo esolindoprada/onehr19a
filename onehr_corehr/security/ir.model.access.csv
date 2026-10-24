@@ -1,3 +1,4 @@
+
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_onehr_dependent_officer,OneHR Dependent Core HR Officer,model_onehr_employee_dependent,onehr_corehr.group_onehr_corehr_officer,1,1,1,0
 access_onehr_emergency_officer,OneHR Emergency Core HR Officer,model_onehr_employee_emergency_contact,onehr_corehr.group_onehr_corehr_officer,1,1,1,0

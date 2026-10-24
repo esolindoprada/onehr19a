@@ -1,3 +1,4 @@
+
 from odoo.exceptions import AccessError
 from odoo.tests import tagged
 
@@ -133,3 +134,4 @@ class TestSOPSecurityAndIntegrations(OneHRSOPCommon):
             "onehr_sop_ack",
         ):
             self.assertLessEqual(len(table.encode()), 63)
+

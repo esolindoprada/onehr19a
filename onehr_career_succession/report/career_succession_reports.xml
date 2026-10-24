@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="action_report_talent_gap" model="ir.actions.report">
         <field name="name">Talent Competency Gap</field>
@@ -172,3 +173,4 @@
         </t>
     </template>
 </odoo>
+

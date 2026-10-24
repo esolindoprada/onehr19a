@@ -45,10 +45,17 @@ class HrApplicant(models.Model):
             ("expired", "Expired"),
         ],
         compute="_compute_onehr_recruitment_counts",
+        store=True,
+        index=True,
         string="Latest Offer",
     )
 
-    @api.depends("onehr_interview_session_ids", "onehr_offer_ids", "onehr_preboarding_ids")
+    @api.depends(
+        "onehr_interview_session_ids",
+        "onehr_offer_ids",
+        "onehr_offer_ids.state",
+        "onehr_preboarding_ids",
+    )
     def _compute_onehr_recruitment_counts(self):
         for applicant in self:
             applicant.onehr_interview_count = len(applicant.onehr_interview_session_ids)

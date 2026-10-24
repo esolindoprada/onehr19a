@@ -1,3 +1,5 @@
+
+
 PASS: PROJECT/ADDON identity
 PASS: manifest Odoo 19 version
 PASS: hard dependencies exactly ['hr', 'mail']

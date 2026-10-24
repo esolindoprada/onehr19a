@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="module_category_onehr_approval" model="ir.module.category">
         <field name="name">OneHR Approvals</field>

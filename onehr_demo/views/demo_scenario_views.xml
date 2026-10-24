@@ -1,0 +1,217 @@
+
+<odoo>
+    <record id="view_onehr_demo_scenario_list" model="ir.ui.view">
+        <field name="name">onehr.demo.scenario.list</field>
+        <field name="model">onehr.demo.scenario</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'ready'"
+                  decoration-danger="state in ('incompatible', 'paused_failed')"
+                  decoration-warning="state in ('compatibility_required', 'readiness_failed', 'reset_previewed')">
+                <field name="name"/><field name="code"/><field name="company_id"/><field name="profile"/>
+                <field name="reference_date"/><field name="state" widget="badge"/>
+                <field name="compatibility_status" widget="badge"/><field name="readiness_status" widget="badge"/>
+                <field name="validation_status" widget="badge"/><field name="generation_enabled"/>
+                <field name="run_count"/><field name="failed_checkpoint_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_onehr_demo_scenario_form" model="ir.ui.view">
+        <field name="name">onehr.demo.scenario.form</field>
+        <field name="model">onehr.demo.scenario</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_refresh_compatibility" type="object"
+                            string="Refresh Source Compatibility" class="oe_highlight"
+                            invisible="state in ('generating', 'validating', 'resetting')"/>
+                    <button name="action_validate_readiness" type="object"
+                            string="Validate Readiness" invisible="compatibility_status != 'compatible'"/>
+                    <button name="action_enable_demo_generation" type="object"
+                            string="Enable Demo Generation"
+                            invisible="generation_enabled or not safety_acknowledged"/>
+                    <button name="action_disable_demo_generation" type="object"
+                            string="Disable Demo Generation" invisible="not generation_enabled"/>
+                    <button name="action_execute_next_model" type="object" string="Execute Next Model"
+                            class="oe_highlight"
+                            invisible="not generation_available or readiness_status != 'ready' or not next_generator_key or not next_generator_implemented"/>
+                    <button name="action_execute_next_10" type="object" string="Execute Next 10"
+                            class="btn-primary"
+                            invisible="not generation_available or readiness_status != 'ready' or not next_generator_key or not next_generator_implemented"
+                            confirm="Execute up to the next 10 deterministic model contracts. The batch stops immediately on failure or an unimplemented contract."/>
+                    <button name="action_validate_dataset" type="object" string="Validate Dataset"
+                            invisible="not generation_available or state != 'generated'"/>
+                    <button name="action_reset_preview" type="object" string="Reset Preview"
+                            invisible="not generation_enabled or state in ('generating', 'validating', 'resetting')"/>
+                    <button name="action_reset_demo_dataset" type="object" string="Execute Safe Reset"
+                            confirm="Reset operates only on explicit demo provenance and bounded reset handlers. Continue?"
+                            invisible="state != 'reset_previewed' or not generation_enabled"/>
+                    <button name="action_rebuild_dataset" type="object" string="Rebuild Dataset"
+                            invisible="not generation_available or state != 'reset'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="compatibility_required,incompatible,compatible,readiness_failed,ready,generating,paused_failed,generated,validating,validated,reset_previewed,resetting,reset"/>
+                </header>
+                <sheet>
+                    <field name="latest_run_id" invisible="1"/>
+                    <field name="current_failed_checkpoint_id" invisible="1"/>
+                    <widget name="web_ribbon" title="NON-PRODUCTION / DEMO DATASET" bg_color="text-bg-warning"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_runs" type="object" class="oe_stat_button" icon="fa-play">
+                            <field name="run_count" widget="statinfo" string="Runs"/>
+                        </button>
+                        <button name="action_open_checkpoints" type="object" class="oe_stat_button" icon="fa-list">
+                            <field name="checkpoint_count" widget="statinfo" string="Checkpoints"/>
+                        </button>
+                        <button name="action_open_references" type="object" class="oe_stat_button" icon="fa-link">
+                            <field name="reference_count" widget="statinfo" string="References"/>
+                        </button>
+                        <button name="action_open_logs" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="log_count" widget="statinfo" string="Logs"/>
+                        </button>
+                        <button name="action_open_generators" type="object" class="oe_stat_button" icon="fa-cogs">
+                            <field name="planned_generator_count" widget="statinfo" string="Generators"/>
+                        </button>
+                        <button name="action_open_failed_checkpoint" type="object" class="oe_stat_button"
+                                icon="fa-exclamation-triangle" invisible="failed_checkpoint_count == 0">
+                            <field name="failed_checkpoint_count" widget="statinfo" string="Failed"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Enterprise Demo Scenario"/></h1>
+                        <div><field name="code" placeholder="onehr_demo.enterprise"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Scenario Identity">
+                            <field name="company_id"/><field name="profile"/><field name="profile_version"/><field name="scenario_version"/>
+                        </group>
+                        <group string="Deterministic Clock">
+                            <field name="reference_date"/><field name="reference_datetime"/><field name="timezone"/>
+                            <field name="locale"/><field name="country_code"/><field name="deterministic_seed"/>
+                        </group>
+                    </group>
+
+                    <group string="NON-PRODUCTION Safety Gate">
+                        <group><field name="safety_acknowledged"/><field name="generation_enabled"/></group>
+                        <group>
+                            <field name="generation_available"/><field name="implemented_generator_count"/>
+                            <field name="deterministic_sequence_policy_count"/>
+                        </group>
+                    </group>
+
+                    <group string="Runtime Readiness">
+                        <group>
+                            <field name="compatibility_status" widget="badge"/><field name="compatibility_checked_at"/>
+                            <field name="compatibility_checked_by_id"/><field name="compatibility_failure_count"/>
+                        </group>
+                        <group>
+                            <field name="readiness_status" widget="badge"/><field name="readiness_checked_at"/>
+                            <field name="readiness_checked_by_id"/><field name="validation_status" widget="badge"/>
+                        </group>
+                    </group>
+
+                    <group string="Execution Progress">
+                        <field name="generation_progress" widget="progressbar"/>
+                    </group>
+
+                    <button name="action_open_latest_run" type="object" string="Open Latest Run"
+                            class="btn btn-secondary" invisible="not latest_run_id"/>
+
+                    <group string="MODEL-BY-MODEL EXECUTION">
+                        <group>
+                            <field name="completed_generator_count" readonly="1"/>
+                            <field name="pending_generator_count" readonly="1"/>
+                            <field name="failed_generator_count" readonly="1"/>
+                            <field name="model_by_model_progress" widget="progressbar" readonly="1"/>
+                        </group>
+                        <group string="Next Deterministic Contract">
+                            <field name="next_generator_phase" readonly="1"/>
+                            <field name="next_generator_key" readonly="1"/>
+                            <field name="next_generator_name" readonly="1"/>
+                            <field name="next_generator_implemented" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Readiness &amp; First Root Cause">
+                            <group><field name="readiness_message"/><field name="compatibility_first_root_cause"/></group>
+                        </page>
+                        <page string="Compatibility Lock">
+                            <group>
+                                <field name="authoritative_source_label"/><field name="authoritative_source_sha256"/>
+                                <field name="governing_master_prompt_sha256"/><field name="root_guardrail_sha256"/>
+                                <field name="compatibility_fingerprint"/>
+                            </group>
+                        </page>
+                        <page string="Compatibility Evidence" groups="onehr_demo.group_onehr_demo_admin">
+                            <field name="compatibility_evidence_json" nolabel="1"/>
+                        </page>
+                        <page string="Runs">
+                            <field name="run_ids" nolabel="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="name"/><field name="run_type"/><field name="profile"/>
+                                    <field name="state" widget="badge"/><field name="operator_id"/>
+                                    <field name="started_at"/><field name="finished_at"/><field name="checkpoint_count"/>
+                                    <button name="action_open_checkpoints" type="object" string="Checkpoints" icon="fa-list"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="References">
+                            <field name="reference_ids" nolabel="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="stable_key"/><field name="generator_key"/><field name="target_model"/>
+                                    <field name="target_display_name"/><field name="reset_policy"/><field name="state" widget="badge"/>
+                                    <button name="action_open_target" type="object" string="Target" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Operational Logs">
+                            <field name="log_ids" nolabel="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="event_at"/><field name="category"/><field name="severity" widget="badge"/>
+                                    <field name="root_cause_classification"/><field name="message"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_onehr_demo_scenario_search" model="ir.ui.view">
+        <field name="name">onehr.demo.scenario.search</field>
+        <field name="model">onehr.demo.scenario</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/><field name="code"/><field name="company_id"/>
+                <filter name="compatible" string="Compatible" domain="[('compatibility_status','=','compatible')]"/>
+                <filter name="ready" string="Ready" domain="[('readiness_status','=','ready')]"/>
+                <filter name="incompatible" string="Incompatible" domain="[('compatibility_status','=','incompatible')]"/>
+                <filter name="generation_enabled" string="Generation Enabled" domain="[('generation_enabled','=',True)]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_profile" string="Profile" context="{'group_by':'profile'}"/>
+                    <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+                    <filter name="group_compatibility" string="Compatibility" context="{'group_by':'compatibility_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_onehr_demo_scenarios" model="ir.actions.act_window">
+        <field name="name">Enterprise Demo Dataset</field>
+        <field name="res_model">onehr.demo.scenario</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_onehr_demo_scenario_search"/>
+        <field name="group_ids" eval="[Command.link(ref('onehr_demo.group_onehr_demo_admin'))]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a controlled NON-PRODUCTION OneHR Demo Scenario.</p>
+            <p>Refresh whole-path source compatibility before enabling generation.</p>
+        </field>
+    </record>
+</odoo>
+

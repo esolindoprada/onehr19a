@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="action_report_onehr_employee_profile" model="ir.actions.report">
         <field name="name">OneHR Employee Profile Summary</field>

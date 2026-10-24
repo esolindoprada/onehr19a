@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Attendance officers are deliberately not made HR officers merely to see OneHR. -->
-    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
-        <field name="group_ids" eval="[Command.link(ref('onehr_attendance.group_onehr_attendance_officer'))]"/>
-    </record>
-
     <!-- ============================== ACTIONS ============================== -->
     <record id="action_onehr_attendance" model="ir.actions.act_window">
         <field name="name">Attendance</field>
@@ -41,7 +37,7 @@
     <record id="action_onehr_overtime_ruleset" model="ir.actions.act_window"><field name="name">Overtime Rulesets</field><field name="res_model">hr.attendance.overtime.ruleset</field><field name="view_mode">list,form</field><field name="view_id" ref="view_hr_attendance_overtime_ruleset_onehr_list"/><field name="search_view_id" ref="view_hr_attendance_overtime_ruleset_onehr_search"/></record>
 
     <!-- ============================== MENUS =============================== -->
-    <menuitem id="menu_onehr_time_labor" name="Time &amp; Labor" parent="onehr_base.menu_onehr_root" sequence="20" groups="onehr_attendance.group_onehr_attendance_officer"/>
+    <menuitem id="menu_onehr_time_labor" name="OneHR — Time &amp; Labor" sequence="20" groups="base.group_user"/>
 
     <menuitem id="menu_onehr_attendance_operations" name="Attendance Operations" parent="menu_onehr_time_labor" sequence="10"/>
     <menuitem id="menu_onehr_attendance" name="Attendance" parent="menu_onehr_attendance_operations" action="action_onehr_attendance" sequence="10"/>

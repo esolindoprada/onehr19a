@@ -1,3 +1,4 @@
+
 <odoo noupdate="1">
     <record id="seq_onehr_employee" model="ir.sequence">
         <field name="name">OneHR Employee Number</field>

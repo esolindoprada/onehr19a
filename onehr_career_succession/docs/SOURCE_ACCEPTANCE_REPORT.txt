@@ -1,9 +1,10 @@
+
 PASS: HARD GATE 0 manifest parse
 PASS: HARD GATE 0 project/addon identity
-PASS: Manifest version 19.0.1.0.0
+PASS: Manifest version 19.0.1.0.1
 PASS: Hard dependencies exactly OneHR Base + CoreHR
 PASS: All manifest data files exist
-PASS: Python syntax (15 files)
+PASS: Python syntax (16 files)
 PASS: HARD GATE 4 exact four Career/Succession persistent model names
 PASS: Persistent model implemented: onehr.competency
 PASS: Persistent model implemented: onehr.position.competency
@@ -75,7 +76,9 @@ PASS: HARD GATE 3/15 functional contract — Integration ingestion service
 PASS: Competency gap QWeb PDF
 PASS: Succession plan QWeb PDF
 PASS: Integrated OneHR root navigation without sibling source edit
-PASS: Runtime test inventory exactly 24 methods
+PASS: Odoo 19 User Access Rights privilege-category XML source scan
+PASS: Odoo 19 dynamic User Access Rights category-name safety (2 privilege-bearing OneHR categories scanned)
+PASS: Runtime test inventory exactly 26 methods
 PASS: Runtime test suites are post-install tagged
 PASS: Mandatory Enterprise documentation set
 PASS: Guardrail contains HARD GATE 0
@@ -98,12 +101,12 @@ PASS: Codex retry limit = 2
 WARN: Exact Master Model Registry ED rows remain pending; classifications were not invented
 WARN: Native Gantt intentionally not fabricated on Odoo 19 CE
 
-SOURCE_FILES_PYTHON=15
+SOURCE_FILES_PYTHON=16
 SOURCE_FILES_XML=10
 CUSTOM_PERSISTENT_MODELS=4
 ACL_ROWS=8
-RUNTIME_TEST_METHODS=24
-SOURCE_ACCEPTANCE_PASS_COUNT=97
+RUNTIME_TEST_METHODS=26
+SOURCE_ACCEPTANCE_PASS_COUNT=99
 SOURCE_ACCEPTANCE_WARN_COUNT=2
 SOURCE_ACCEPTANCE_FAIL_COUNT=0
 ONEHR_CAREER_SUCCESSION_DIRECT_FULL_SOURCE_ACCEPTANCE=PASS
@@ -111,3 +114,4 @@ SOURCE_ENTERPRISE_COMPLETENESS=PASS_FOR_RUNTIME
 REGISTRY_ED_CLASSIFICATION=PENDING_EXACT_REGISTRY_ROW_VERIFICATION
 WINDOWS_RUNTIME_ACCEPTANCE=PENDING
 ONEHR_CAREER_SUCCESSION_MOVE_FORWARD_READY=NO
+

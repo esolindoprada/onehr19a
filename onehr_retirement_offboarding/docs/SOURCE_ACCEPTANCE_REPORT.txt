@@ -1,0 +1,247 @@
+PASS: Manifest product identity
+PASS: Manifest version 19.0.1.0.0
+PASS: Hard dependencies exactly CoreHR, Security, Workflow Approval
+PASS: Manifest LGPL-3
+PASS: Manifest installable
+PASS: Addon does not duplicate OneHR root application
+PASS: Manifest data exists — security/onehr_offboarding_groups.xml
+PASS: Manifest data exists — security/ir.model.access.csv
+PASS: Manifest data exists — security/onehr_offboarding_rules.xml
+PASS: Manifest data exists — data/offboarding_sequence.xml
+PASS: Manifest data exists — data/offboarding_cron.xml
+PASS: Manifest data exists — views/clearance_item_views.xml
+PASS: Manifest data exists — views/offboarding_checklist_views.xml
+PASS: Manifest data exists — views/exit_interview_views.xml
+PASS: Manifest data exists — views/offboarding_views.xml
+PASS: Manifest data exists — views/hr_employee_views.xml
+PASS: Manifest data exists — report/offboarding_reports.xml
+PASS: Manifest data exists — report/offboarding_report_templates.xml
+PASS: Manifest data exists — views/menus.xml
+PASS: README target Odoo 19 CE
+PASS: README owns model — onehr.offboarding
+PASS: README owns model — onehr.offboarding.checklist
+PASS: README owns model — onehr.clearance.item
+PASS: README owns model — onehr.exit.interview
+PASS: Python syntax — __init__.py
+PASS: Python syntax — __manifest__.py
+PASS: Python syntax — models/__init__.py
+PASS: Python syntax — models/action_helpers.py
+PASS: Python syntax — models/clearance_item.py
+PASS: Python syntax — models/exit_interview.py
+PASS: Python syntax — models/hr_employee.py
+PASS: Python syntax — models/offboarding.py
+PASS: Python syntax — models/offboarding_checklist.py
+PASS: Python syntax — models/res_users.py
+PASS: Python syntax — models/security_helpers.py
+PASS: Python syntax — tests/__init__.py
+PASS: Python syntax — tests/common.py
+PASS: Python syntax — tests/test_checklist_and_interview.py
+PASS: Python syntax — tests/test_integration_contracts.py
+PASS: Python syntax — tests/test_offboarding_lifecycle.py
+PASS: Python syntax — tests/test_security_and_evidence.py
+PASS: Python syntax — tools/source_acceptance.py
+PASS: Exactly four custom persistent model names
+PASS: Native hr.employee extension
+PASS: Native res.users extension
+PASS: No static hr.contract ownership/inheritance
+PASS: Offboarding inherits audit + Workflow Approval contract
+PASS: Human-friendly model module — action_helpers.py
+PASS: Human-friendly model module — security_helpers.py
+PASS: Human-friendly model module — clearance_item.py
+PASS: Human-friendly model module — offboarding_checklist.py
+PASS: Human-friendly model module — exit_interview.py
+PASS: Human-friendly model module — offboarding.py
+PASS: Human-friendly model module — hr_employee.py
+PASS: Human-friendly model module — res_users.py
+PASS: Tutorial model removed
+PASS: No controller import
+PASS: Generic controller scaffold removed
+PASS: Generic demo scaffold removed
+PASS: PostgreSQL identifier <63 bytes — onehr_offboarding
+PASS: PostgreSQL identifier <63 bytes — onehr_offboarding_checklist
+PASS: PostgreSQL identifier <63 bytes — onehr_clearance_item
+PASS: PostgreSQL identifier <63 bytes — onehr_exit_interview
+PASS: PostgreSQL identifier <63 bytes — onehr_offboarding_checklist_attachment_rel
+PASS: Checklist attachment relation explicitly named
+PASS: No legacy _sql_constraints
+PASS: Odoo 19 models.Constraint used extensively
+PASS: Checklist case/item uniqueness constraint
+PASS: Exit interview one-per-case constraint
+PASS: Clearance SLA check constraint
+PASS: XML syntax — data/offboarding_cron.xml
+PASS: XML syntax — data/offboarding_sequence.xml
+PASS: XML syntax — report/offboarding_report_templates.xml
+PASS: XML syntax — report/offboarding_reports.xml
+PASS: XML syntax — security/onehr_offboarding_groups.xml
+PASS: XML syntax — security/onehr_offboarding_rules.xml
+PASS: XML syntax — views/clearance_item_views.xml
+PASS: XML syntax — views/exit_interview_views.xml
+PASS: XML syntax — views/hr_employee_views.xml
+PASS: XML syntax — views/menus.xml
+PASS: XML syntax — views/offboarding_checklist_views.xml
+PASS: XML syntax — views/offboarding_views.xml
+PASS: No duplicate XML IDs
+PASS: No legacy tree view tag
+PASS: No legacy attrs modifier
+PASS: No legacy states modifier
+PASS: No invalid groups_id on window-action/view definitions
+PASS: Odoo 19 action/menu group_ids used
+PASS: Search group elements attribute-free — exit_interview_views.xml
+PASS: Standalone labels target fields — exit_interview_views.xml
+PASS: Search group elements attribute-free — hr_employee_views.xml
+PASS: Standalone labels target fields — hr_employee_views.xml
+PASS: Search group elements attribute-free — offboarding_views.xml
+PASS: Standalone labels target fields — offboarding_views.xml
+PASS: Search group elements attribute-free — offboarding_checklist_views.xml
+PASS: Standalone labels target fields — offboarding_checklist_views.xml
+PASS: Search group elements attribute-free — clearance_item_views.xml
+PASS: Standalone labels target fields — clearance_item_views.xml
+PASS: Search group elements attribute-free — menus.xml
+PASS: Standalone labels target fields — menus.xml
+PASS: Offboarding List view
+PASS: Offboarding Form view
+PASS: Offboarding Search view
+PASS: Checklist List view
+PASS: Checklist Form view
+PASS: Checklist Search view
+PASS: Clearance Item List view
+PASS: Clearance Item Form view
+PASS: Clearance Item Search view
+PASS: Exit Interview List view
+PASS: Exit Interview Form view
+PASS: Exit Interview Search view
+PASS: Offboarding executive Kanban
+PASS: Offboarding Pivot + Graph
+PASS: Checklist Kanban + SLA Calendar
+PASS: Exit Interview Pivot + Graph
+PASS: Professional Offboarding UI — statusbar widgets
+PASS: Professional Offboarding UI — smart buttons
+PASS: Professional Offboarding UI — readiness body action
+PASS: Professional Offboarding UI — contract refresh body action
+PASS: Professional Offboarding UI — print body action
+PASS: Professional Offboarding UI — approval action button
+PASS: Professional Offboarding UI — checklist generation action
+PASS: Professional Offboarding UI — completion action
+PASS: Professional Offboarding UI — closure action
+PASS: Professional Offboarding UI — controlled access-revoke action
+PASS: Offboarding One2many row buttons
+PASS: Generated checklist One2many blocks manual add/delete
+PASS: Enterprise ribbons used
+PASS: Chatter/activity surfaces on four persistent forms
+PASS: Exactly eleven custom-model ACL rows
+PASS: No base.group_user custom-model ACL
+PASS: Security role present — group_onehr_offboarding_task_owner
+PASS: Security role present — group_onehr_offboarding_officer
+PASS: Security role present — group_onehr_offboarding_manager
+PASS: Security role present — group_onehr_offboarding_admin
+PASS: Odoo 19 res.groups.privilege security pattern
+PASS: Task Owner implies OneHR security user
+PASS: Offboarding groups do not imply System/HR Manager
+PASS: Four global company boundary rules
+PASS: Company rule covers — model_onehr_offboarding
+PASS: Company rule covers — model_onehr_offboarding_checklist
+PASS: Company rule covers — model_onehr_clearance_item
+PASS: Company rule covers — model_onehr_exit_interview
+PASS: Task-owner participation rules present
+PASS: Odoo user revocation requires dual authority
+PASS: Self-revocation blocked
+PASS: res.users revocation evidence guarded
+PASS: No business sudo bypass in addon models
+PASS: Workflow Approval contract — approval payload hook
+PASS: Workflow Approval contract — approval rule-context hook
+PASS: Workflow Approval contract — branch scope hook
+PASS: Workflow Approval contract — approval cancellation hook
+PASS: Workflow Approval contract — approval-finalized hook
+PASS: Workflow Approval contract — approval execution evidence
+PASS: Direct case-state mutation blocked
+PASS: High-risk case evidence direct mutation blocked
+PASS: Direct task-state mutation blocked
+PASS: Task actor/timestamp evidence guarded
+PASS: Direct interview-state mutation blocked
+PASS: Interview actor/timestamp evidence guarded
+PASS: Integration boundary — Payroll bridge payload
+PASS: Integration boundary — No payroll calculation ownership
+PASS: Integration boundary — Portal service payload
+PASS: Integration boundary — API service payload
+PASS: Integration boundary — Document service payload
+PASS: Integration boundary — Analytics KPI service
+PASS: Integration boundary — SSO/access revoke payload
+PASS: Integration boundary — Employment Contract soft runtime resolution
+PASS: Integration boundary — Contract-owned termination review delegation
+PASS: Integration boundary — Contract-owned termination execution delegation
+PASS: Employment Contract remains soft dependency
+PASS: Soft sibling not promoted to hard dependency — onehr_document
+PASS: Soft sibling not promoted to hard dependency — onehr_portal_self_service
+PASS: Soft sibling not promoted to hard dependency — onehr_payroll_bridge
+PASS: Soft sibling not promoted to hard dependency — onehr_analytics
+PASS: Soft sibling not promoted to hard dependency — onehr_integrations_api
+PASS: Soft sibling not promoted to hard dependency — onehr_multicompany_branch
+PASS: Odoo 19 ir.actions.report rejects legacy groups_id
+PASS: Odoo 19 ir.actions.report uses group_ids
+PASS: Clearance Summary QWeb report
+PASS: Exit Interview QWeb report
+PASS: Offboarding sequence data
+PASS: Daily SLA reminder cron
+PASS: Post-install tag — test_checklist_and_interview.py
+PASS: Ten runtime tests — test_checklist_and_interview.py
+PASS: Post-install tag — test_integration_contracts.py
+PASS: Ten runtime tests — test_integration_contracts.py
+PASS: Post-install tag — test_offboarding_lifecycle.py
+PASS: Ten runtime tests — test_offboarding_lifecycle.py
+PASS: Post-install tag — test_security_and_evidence.py
+PASS: Ten runtime tests — test_security_and_evidence.py
+PASS: Exactly forty post-install runtime test methods
+PASS: Governance document exists — ENTERPRISE_DEVELOPMENT_GUARDRAIL.md
+PASS: Governance document exists — PROJECT_IDENTITY_PREFLIGHT.md
+PASS: Governance document exists — FULL_STRUCTURAL_INVENTORY.md
+PASS: Governance document exists — UI_UX_MATRIX.md
+PASS: Governance document exists — SECURITY_PRIVACY_MATRIX.md
+PASS: Governance document exists — INTEGRATION_CONTRACT.md
+PASS: Governance document exists — CONTRACT_TERMINATION_BOUNDARY.md
+PASS: Governance document exists — MODEL_REGISTRY_ALIGNMENT.md
+PASS: Governance document exists — DATABASE_IDENTIFIER_ORM_SAFETY.md
+PASS: Governance document exists — ENTERPRISE_COMPLETENESS_MATRIX.md
+PASS: Governance document exists — WINDOWS_RUNTIME_ACCEPTANCE.md
+PASS: Governance document exists — IMPLEMENTATION_REPORT.md
+PASS: Governance document exists — ROOT_GUARDRAIL_REFERENCE.md
+PASS: Governance document exists — SCOPE_ISOLATION_REPORT.md
+PASS: Governance document exists — CODEX_BOUNDED_IMPLEMENTATION_CONTRACT.md
+PASS: Governance document exists — BOUNDED_IMPLEMENTATION_EVIDENCE.md
+PASS: Governance document exists — LATEST_WORKSPACE_ALIGNMENT.md
+PASS: Enterprise Development Guardrail contains HARD GATE 0
+PASS: Enterprise Development Guardrail contains HARD GATE 1
+PASS: Enterprise Development Guardrail contains HARD GATE 2
+PASS: Enterprise Development Guardrail contains HARD GATE 3
+PASS: Enterprise Development Guardrail contains HARD GATE 4
+PASS: Enterprise Development Guardrail contains HARD GATE 5
+PASS: Enterprise Development Guardrail contains HARD GATE 6
+PASS: Enterprise Development Guardrail contains HARD GATE 7
+PASS: Enterprise Development Guardrail contains HARD GATE 8
+PASS: Enterprise Development Guardrail contains HARD GATE 9
+PASS: Enterprise Development Guardrail contains HARD GATE 10
+PASS: Enterprise Development Guardrail contains HARD GATE 11
+PASS: Enterprise Development Guardrail contains HARD GATE 12
+PASS: Enterprise Development Guardrail contains HARD GATE 13
+PASS: Enterprise Development Guardrail contains HARD GATE 14
+PASS: Enterprise Development Guardrail contains HARD GATE 15
+PASS: Hard Gate 11 exact database/ORM title
+PASS: Codex attempt limit = 2
+PASS: Bounded retry stop reason documented
+PASS: Move-forward remains NO before runtime
+WARN: Exact Master Model Registry ED0–ED5 rows are not available in the searchable baseline; classification remains pending rather than invented.
+WARN: Windows Odoo 19 fresh-install/runtime/security/upgrade acceptance is pending and is not inferred from source checks.
+
+SOURCE_FILES_PYTHON=18
+SOURCE_FILES_XML=12
+CUSTOM_PERSISTENT_MODELS=4
+NATIVE_MODEL_EXTENSIONS=2
+ACL_ROWS=11
+RUNTIME_TEST_METHODS=40
+SOURCE_ACCEPTANCE_PASS_COUNT=230
+SOURCE_ACCEPTANCE_WARN_COUNT=2
+SOURCE_ACCEPTANCE_FAIL_COUNT=0
+ONEHR_RETIREMENT_OFFBOARDING_DIRECT_FULL_SOURCE_ACCEPTANCE=PASS
+SOURCE_ENTERPRISE_COMPLETENESS=PASS_FOR_RUNTIME
+REGISTRY_ED_CLASSIFICATION=PENDING_EXACT_REGISTRY_ROW_VERIFICATION
+WINDOWS_RUNTIME_ACCEPTANCE=PENDING
+ONEHR_RETIREMENT_OFFBOARDING_MOVE_FORWARD_READY=NO

@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="view_onehr_approval_kpi_list" model="ir.ui.view"><field name="name">onehr.approval.kpi.daily.list.enterprise</field><field name="model">onehr.approval.kpi.daily</field><field name="arch" type="xml"><list>
         <field name="snapshot_date"/><field name="company_id" groups="base.group_multi_company"/><field name="rule_id"/><field name="submitted_count"/><field name="pending_count"/><field name="approved_count"/><field name="rejected_count"/><field name="executed_count"/><field name="overdue_count"/><field name="average_cycle_hours"/><field name="average_pending_age_hours"/>

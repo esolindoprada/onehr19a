@@ -1,16 +1,9 @@
 <odoo>
-    <!-- The Reader role may be intentionally granted without an HR officer role.
-         Link it to the existing OneHR root without modifying onehr_base source. -->
-    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
-        <field name="group_ids" eval="[
-            Command.link(ref('onehr_job_description.group_onehr_jd_reader'))
-        ]"/>
-    </record>
-
+    <!-- Job Governance is a child of the canonical Employee Relations & Governance Home root. -->
     <menuitem id="menu_onehr_governance_root"
-              name="Governance"
-              parent="onehr_base.menu_onehr_root"
-              sequence="65"
+              name="Job Governance"
+              parent="onehr_base.menu_onehr_domain_relations"
+              sequence="20"
               groups="onehr_job_description.group_onehr_jd_reader"/>
 
     <menuitem id="menu_onehr_job_descriptions"
@@ -40,6 +33,7 @@
               sequence="40"
               groups="onehr_job_description.group_onehr_jd_approver"/>
 
+    <!-- Existing configuration functionality is preserved; only its navigation location changes. -->
     <menuitem id="menu_onehr_jd_configuration"
               name="Configuration"
               parent="menu_onehr_governance_root"

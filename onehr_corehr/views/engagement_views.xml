@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="view_onehr_engagement_type_list" model="ir.ui.view">
         <field name="name">onehr.engagement.type.list.enterprise</field>

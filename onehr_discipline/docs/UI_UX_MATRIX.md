@@ -1,3 +1,4 @@
+
 # OneHR Discipline — UI/UX Matrix
 
 | Model | List | Form | Search | Extra views | Enterprise interactions |
@@ -16,3 +17,4 @@ Odoo 19 compatibility:
 - no `attrs=` / `states=`;
 - Search `<group>` has no attributes;
 - no Enterprise-only Gantt renderer is fabricated.
+

@@ -1,3 +1,4 @@
+
 {
     "name": "OneHR Core HR",
     "summary": "Native-first employee master, family, identifiers, history and restricted occupational health",
@@ -28,5 +29,5 @@ occupational-health records. Personal document storage belongs to onehr_document
         "views/menus.xml",
     ],
     "installable": True,
-    "application": False,
+    "application": True,
 }

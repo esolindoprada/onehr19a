@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
@@ -45,6 +46,8 @@ class OneHRBranchCommon(TransactionCase):
         cls.group_branch_admin = cls.env.ref("onehr_multicompany_branch.group_onehr_branch_admin")
         cls.group_central = cls.env.ref("onehr_multicompany_branch.group_onehr_central_office")
         cls.group_security_manager = cls.env.ref("onehr_security.group_onehr_security_manager")
+        cls.group_security_admin = cls.env.ref("onehr_security.group_onehr_security_admin")
+        cls.group_odoo_system = cls.env.ref("base.group_system")
 
         cls.functional_group_a = cls.env["res.groups"].create({"name": "OneHR Branch Functional A"})
         cls.functional_group_b = cls.env["res.groups"].create({"name": "OneHR Branch Functional B"})
@@ -99,6 +102,18 @@ class OneHRBranchCommon(TransactionCase):
             cls.group_security_manager,
             cls.branch_a | cls.branch_b,
         )
+        cls.security_admin_all = make_user(
+            "OneHR Security Admin All",
+            "onehr_security_admin_all_test",
+            cls.group_security_admin,
+            cls.branch_a | cls.branch_b,
+        )
+        cls.odoo_technical_admin = make_user(
+            "Odoo Technical Admin",
+            "onehr_odoo_technical_admin_test",
+            cls.group_odoo_system,
+            cls.branch_a | cls.branch_b,
+        )
         cls.target_user = make_user(
             "OneHR Branch Target",
             "onehr_branch_target_test",
@@ -133,3 +148,4 @@ class OneHRBranchCommon(TransactionCase):
         }
         vals.update(extra)
         return self.env["onehr.user.role"].create(vals)
+

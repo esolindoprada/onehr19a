@@ -1,3 +1,4 @@
+
 # onehr_corehr — Odoo 19 Report Action Compatibility Correction v1.1
 
 ROOT_CAUSE_CLASSIFICATION: ODOO_VERSION_COMPATIBILITY_FAILURE

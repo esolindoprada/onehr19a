@@ -1,3 +1,4 @@
+
 # OneHR SOP
 
 Enterprise Standard Operating Procedure governance for OneHR NEW on Odoo 19 CE.
@@ -24,3 +25,4 @@ generic `onehr_sop.onehr_sop` model, or public route.
 Source/static acceptance is not runtime acceptance. Fresh install, test execution,
 security UAT, scheduler, QWeb, Document archive integration and upgrade/idempotency
 must pass on the user's Odoo 19 runtime before the addon can be frozen.
+

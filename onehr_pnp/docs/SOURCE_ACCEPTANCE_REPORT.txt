@@ -1,10 +1,11 @@
+
 PASS: HARD GATE 0 manifest parse
 PASS: HARD GATE 0 project/addon identity
-PASS: Manifest version 19.0.1.0.0
+PASS: Manifest version 19.0.1.0.1
 PASS: Hard dependencies exactly Security + Document + Workflow Approval
 PASS: Soft/downstream modules were not promoted to hard dependencies
 PASS: All manifest data files exist
-PASS: Python syntax (15 files)
+PASS: Python syntax (16 files)
 PASS: HARD GATE 4 exact three persistent PnP model names
 PASS: Approved res.config.settings transient extension present
 PASS: Persistent model implemented: onehr.policy
@@ -95,7 +96,9 @@ PASS: Policy Compliance Summary QWeb PDF
 PASS: Review/Expiry Register QWeb PDF
 PASS: Evidence Coverage Register QWeb PDF
 PASS: Integrated OneHR root navigation without sibling source edit
-PASS: Runtime test inventory exactly 47 methods
+PASS: Odoo 19 User Access Rights privilege-category XML source scan
+PASS: Odoo 19 dynamic User Access Rights category-name safety (2 privilege-bearing OneHR categories scanned)
+PASS: Runtime test inventory exactly 49 methods
 PASS: Runtime test suites are post-install tagged
 PASS: Mandatory Enterprise documentation set
 PASS: Guardrail contains HARD GATE 0
@@ -120,7 +123,7 @@ PASS: HARD GATE 11 dedicated identifier-safety evidence
 WARN: Exact Master Model Registry ED rows remain pending; classifications were not invented
 WARN: Native Gantt intentionally not fabricated on Odoo 19 CE
 
-SOURCE_FILES_PYTHON=15
+SOURCE_FILES_PYTHON=16
 SOURCE_FILES_XML=11
 CUSTOM_PERSISTENT_MODELS=3
 ORM_FIELD_COUNT=122
@@ -128,8 +131,8 @@ SETTINGS_EXTENSION_FIELDS=5
 M2M_RELATION_COUNT=6
 LOCAL_XML_ID_COUNT=63
 ACL_ROWS=12
-RUNTIME_TEST_METHODS=47
-SOURCE_ACCEPTANCE_PASS_COUNT=119
+RUNTIME_TEST_METHODS=49
+SOURCE_ACCEPTANCE_PASS_COUNT=121
 SOURCE_ACCEPTANCE_WARN_COUNT=2
 SOURCE_ACCEPTANCE_FAIL_COUNT=0
 ONEHR_PNP_DIRECT_FULL_SOURCE_ACCEPTANCE=PASS
@@ -137,3 +140,4 @@ SOURCE_ENTERPRISE_COMPLETENESS=PASS_FOR_RUNTIME
 REGISTRY_ED_CLASSIFICATION=PENDING_EXACT_REGISTRY_ROW_VERIFICATION
 WINDOWS_RUNTIME_ACCEPTANCE=PENDING
 ONEHR_PNP_MOVE_FORWARD_READY=NO
+

@@ -1,3 +1,4 @@
+
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 
@@ -930,3 +931,4 @@ class OneHRDisciplineSanction(models.Model):
                         "Approved/executed approval evidence is retained."
                     )
                 )
+

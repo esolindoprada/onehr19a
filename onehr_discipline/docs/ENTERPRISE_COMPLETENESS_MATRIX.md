@@ -1,3 +1,4 @@
+
 # OneHR Discipline — Enterprise Completeness Matrix
 
 | Area | Source status | Runtime status |
@@ -63,3 +64,4 @@ Search View used it in a filter domain.
 Bounded repair `19.0.1.0.1` preserves the filter and dynamic business semantics
 by adding `_search_repeat_offense`. Runtime acceptance remains pending until the
 exact repaired package is activated again.
+

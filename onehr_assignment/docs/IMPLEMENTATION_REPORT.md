@@ -1,3 +1,4 @@
+
 # OneHR Assignment — Direct Full Implementation Report
 
 The uploaded Assignment addon was a generic tutorial scaffold. This build replaces that scaffold with the Registry-approved enterprise Assignment domain rather than polishing a placeholder model.

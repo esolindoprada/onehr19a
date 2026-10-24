@@ -1,3 +1,4 @@
+
 from odoo.exceptions import AccessError, UserError
 from odoo.fields import Command
 from odoo.tests import tagged
@@ -182,3 +183,4 @@ class TestPolicyWorkflow(OneHRPnPCommon):
             revision.archive_document_version_id.document_id,
             archive,
         )
+

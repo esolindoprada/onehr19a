@@ -1,3 +1,4 @@
+
 # OneHR Discipline — Full Structural Inventory
 
 ## Persistent business models — exactly two
@@ -73,3 +74,4 @@ This is registry alignment, not feature deletion.
 - Employment contract lifecycle: Employment Contract.
 - Branch master: Multi-company Branch.
 - Dashboard/API transport: Analytics / Integrations API.
+

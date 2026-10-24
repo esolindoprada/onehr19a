@@ -1,0 +1,244 @@
+
+<odoo>
+    <record id="generator_foundation_enterprise" model="onehr.demo.generator">
+        <field name="key">foundation.enterprise</field>
+        <field name="name">Enterprise Company, Branch &amp; Organization Foundation</field>
+        <field name="phase">5</field>
+        <field name="sequence">50</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="True" />
+        <field name="implementation_state">implemented</field>
+        <field name="side_effect_classification">SAFE_INTERNAL</field>
+        <field name="reset_policy">REUSE_ON_REBUILD</field>
+        <field name="contract_digest">ec3536a494a92f6b5a74e8749b854f48808550b51c75d5e99db3bffb991487dd</field>
+    </record>
+    <record id="generator_organization_jobs_positions" model="onehr.demo.generator">
+        <field name="key">organization.jobs_positions</field>
+        <field name="name">Jobs, Positions, Grades &amp; Work Locations</field>
+        <field name="phase">6</field>
+        <field name="sequence">60</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="True" />
+        <field name="implementation_state">implemented</field>
+        <field name="side_effect_classification">SAFE_INTERNAL</field>
+        <field name="reset_policy">REUSE_ON_REBUILD</field>
+        <field name="contract_digest">dc926d5e133ad2d5e907e08fbc594fb1881af2d770df39fbb2263484117d45af</field>
+    </record>
+    <record id="generator_workforce_personas" model="onehr.demo.generator">
+        <field name="key">workforce.personas</field>
+        <field name="name">Workforce Master &amp; Golden Personas</field>
+        <field name="phase">7</field>
+        <field name="sequence">70</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_INTERNAL</field>
+        <field name="reset_policy">REUSE_ON_REBUILD</field>
+        <field name="contract_digest">63b1108c6cb4e556041505674b6d7d6ea6663617d30a854514b99eb46f9ae439</field>
+    </record>
+    <record id="generator_recruitment_pipeline" model="onehr.demo.generator">
+        <field name="key">recruitment.pipeline</field>
+        <field name="name">Recruitment Requisition, Candidate, Interview &amp; Offer Pipeline</field>
+        <field name="phase">8</field>
+        <field name="sequence">80</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_WITH_DEMO_CONTEXT</field>
+        <field name="reset_policy">REVERSE_BY_BUSINESS_ACTION</field>
+        <field name="contract_digest">b098796706b067edbe6c8e4e3168ca8f14323302ca9a42f298e108aa7eb918aa</field>
+    </record>
+    <record id="generator_hiring_onboarding" model="onehr.demo.generator">
+        <field name="key">hiring.onboarding</field>
+        <field name="name">Hiring, Employment Contract, Preboarding &amp; Initial Assignment</field>
+        <field name="phase">9</field>
+        <field name="sequence">90</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_WITH_DEMO_CONTEXT</field>
+        <field name="reset_policy">ARCHIVE_ONLY</field>
+        <field name="contract_digest">454df974be125ef329125071f79da88d44c5b0825a6c38d3c4df3bc542217d30</field>
+    </record>
+    <record id="generator_time_attendance" model="onehr.demo.generator">
+        <field name="key">time.attendance</field>
+        <field name="name">Attendance, Shift, Kiosk &amp; Overtime</field>
+        <field name="phase">10</field>
+        <field name="sequence">100</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_WITH_DEMO_CONTEXT</field>
+        <field name="reset_policy">ARCHIVE_ONLY</field>
+        <field name="contract_digest">b1945d9fcdf1aecc2b1e988d3622c71463ec975e76a6369a0d550ba52fb34c57</field>
+    </record>
+    <record id="generator_time_leave" model="onehr.demo.generator">
+        <field name="key">time.leave</field>
+        <field name="name">Leave &amp; Absence</field>
+        <field name="phase">11</field>
+        <field name="sequence">110</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_WITH_DEMO_CONTEXT</field>
+        <field name="reset_policy">REVERSE_BY_BUSINESS_ACTION</field>
+        <field name="contract_digest">07f9eb8c2b126aaa531eb2809b99ddc7015464b9f3af30d1951774ab7415b6be</field>
+    </record>
+    <record id="generator_payroll_bridge" model="onehr.demo.generator">
+        <field name="key">payroll.bridge</field>
+        <field name="name">Payroll Bridge, Compensation Evidence &amp; Indonesia Localization</field>
+        <field name="phase">12</field>
+        <field name="sequence">120</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">DISABLED_FOR_DEMO</field>
+        <field name="reset_policy">IMMUTABLE_PROTECTED</field>
+        <field name="contract_digest">fb00951a925b67f7276e340556e100aded0c1c65e687037e6e014a49a42f5ac4</field>
+    </record>
+    <record id="generator_learning_history" model="onehr.demo.generator">
+        <field name="key">learning.history</field>
+        <field name="name">Learning, Training &amp; Certification</field>
+        <field name="phase">13</field>
+        <field name="sequence">130</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_WITH_DEMO_CONTEXT</field>
+        <field name="reset_policy">ARCHIVE_ONLY</field>
+        <field name="contract_digest">727b907a36b581502f82f16ce1cf12ef7985aaa879b942c45a8c2e83383919a2</field>
+    </record>
+    <record id="generator_performance_appraisal" model="onehr.demo.generator">
+        <field name="key">performance.appraisal</field>
+        <field name="name">Performance &amp; Appraisal</field>
+        <field name="phase">14</field>
+        <field name="sequence">140</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_WITH_DEMO_CONTEXT</field>
+        <field name="reset_policy">IMMUTABLE_PROTECTED</field>
+        <field name="contract_digest">585596df07fd033f7ff3b30ed68ee8c3bfa5dbb75cbe22872d66244cd506d70d</field>
+    </record>
+    <record id="generator_talent_succession" model="onehr.demo.generator">
+        <field name="key">talent.succession</field>
+        <field name="name">Career, Talent &amp; Succession</field>
+        <field name="phase">15</field>
+        <field name="sequence">150</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_INTERNAL</field>
+        <field name="reset_policy">ARCHIVE_ONLY</field>
+        <field name="contract_digest">eafb6c8a3c032ec84f3083ed1d5cbc45ddc96eb1e58b0674228cbb4362adf880</field>
+    </record>
+    <record id="generator_governance_content" model="onehr.demo.generator">
+        <field name="key">governance.content</field>
+        <field name="name">Documents, JD, SOP, P&amp;P &amp; Governance Content</field>
+        <field name="phase">16</field>
+        <field name="sequence">160</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_WITH_DEMO_CONTEXT</field>
+        <field name="reset_policy">ARCHIVE_ONLY</field>
+        <field name="contract_digest">4b9d60402bf973cba6533d4dbc94ba052e6e9c22255bfebb4962cb270034d1ce</field>
+    </record>
+    <record id="generator_employee_relations_discipline" model="onehr.demo.generator">
+        <field name="key">employee_relations.discipline</field>
+        <field name="name">Discipline &amp; Employee Relations</field>
+        <field name="phase">17</field>
+        <field name="sequence">170</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_WITH_DEMO_CONTEXT</field>
+        <field name="reset_policy">IMMUTABLE_PROTECTED</field>
+        <field name="contract_digest">b8ca1d2a9746ebc189197cf0d6017a7c074edef383145b855602abb1583bb32c</field>
+    </record>
+    <record id="generator_self_service_portal" model="onehr.demo.generator">
+        <field name="key">self_service.portal</field>
+        <field name="name">Employee / Manager Self Service &amp; Portal Actors</field>
+        <field name="phase">18</field>
+        <field name="sequence">180</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_WITH_DEMO_CONTEXT</field>
+        <field name="reset_policy">ARCHIVE_ONLY</field>
+        <field name="contract_digest">0d47efa027332c00bca99dad0aa885712aeec19be8753b2b9221ed6c7bf2d12c</field>
+    </record>
+    <record id="generator_mobility_assignment" model="onehr.demo.generator">
+        <field name="key">mobility.assignment</field>
+        <field name="name">Assignment History, Promotion, Transfer &amp; Workforce Planning</field>
+        <field name="phase">19</field>
+        <field name="sequence">190</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_INTERNAL</field>
+        <field name="reset_policy">ARCHIVE_ONLY</field>
+        <field name="contract_digest">4236178285ae7bd4c26db2713271587160206127c50023d33981ec810b5fef62</field>
+    </record>
+    <record id="generator_separation_offboarding" model="onehr.demo.generator">
+        <field name="key">separation.offboarding</field>
+        <field name="name">Separation, Offboarding &amp; Retirement</field>
+        <field name="phase">20</field>
+        <field name="sequence">200</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_WITH_DEMO_CONTEXT</field>
+        <field name="reset_policy">IMMUTABLE_PROTECTED</field>
+        <field name="contract_digest">d52d73e85e876664f9817b7b9089ce26812f47a36e04831477f0a2eef8a5e594</field>
+    </record>
+    <record id="generator_integration_safe_demo" model="onehr.demo.generator">
+        <field name="key">integration.safe_demo</field>
+        <field name="name">Integrations API &amp; External-System Safe Demo</field>
+        <field name="phase">21</field>
+        <field name="sequence">210</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">REQUIRES_STUB/LOCAL_ENDPOINT</field>
+        <field name="reset_policy">ARCHIVE_ONLY</field>
+        <field name="contract_digest">f4df0795db7f7f7834736054f8f2c398c30dea7b196a266905d8aff37061d590</field>
+    </record>
+    <record id="generator_history_reconciliation" model="onehr.demo.generator">
+        <field name="key">history.reconciliation</field>
+        <field name="name">Longitudinal Historical Backbone &amp; Golden Hero Reconciliation</field>
+        <field name="phase">22</field>
+        <field name="sequence">220</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_INTERNAL</field>
+        <field name="reset_policy">IMMUTABLE_PROTECTED</field>
+        <field name="contract_digest">42e1c9b1db3c6706946f1ebd11724c671a5618de25bbc300fae4c11567ae267e</field>
+    </record>
+    <record id="generator_analytics_kpi" model="onehr.demo.generator">
+        <field name="key">analytics.kpi</field>
+        <field name="name">Reports, KPI Traceability &amp; Analytics Snapshot Validation</field>
+        <field name="phase">23</field>
+        <field name="sequence">230</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_WITH_DEMO_CONTEXT</field>
+        <field name="reset_policy">IMMUTABLE_PROTECTED</field>
+        <field name="contract_digest">80a8c2000d419f548846489b274638a83b1a5cb7a43b8b5b30ab6cfdf74b4b6a</field>
+    </record>
+    <record id="generator_presentation_validation" model="onehr.demo.generator">
+        <field name="key">presentation.validation</field>
+        <field name="name">Stakeholder &amp; Executive Presentation Validation</field>
+        <field name="phase">24</field>
+        <field name="sequence">240</field>
+        <field name="active" eval="True" />
+        <field name="implemented" eval="False" />
+        <field name="implementation_state">planned</field>
+        <field name="side_effect_classification">SAFE_INTERNAL</field>
+        <field name="reset_policy">IMMUTABLE_PROTECTED</field>
+        <field name="contract_digest">4cd7d495b2e128f05a4e72d49519a67175996c5cf1c8b64caf94a0abca4913ad</field>
+    </record>
+</odoo>
+

@@ -1,0 +1,38 @@
+<odoo>
+    <record id="module_category_onehr_analytics" model="ir.module.category">
+        <field name="name">OneHR Analytics</field>
+        <field name="description">Enterprise HR KPI monitoring, evidence and dashboard administration.</field>
+        <field name="sequence">75</field>
+    </record>
+
+    <record id="privilege_onehr_analytics" model="res.groups.privilege">
+        <field name="name">OneHR Analytics</field>
+        <field name="description">Company-scoped HR analytics and KPI privileges.</field>
+        <field name="category_id" ref="module_category_onehr_analytics"/>
+        <field name="sequence">75</field>
+    </record>
+
+    <record id="group_onehr_analytics_analyst" model="res.groups">
+        <field name="name">Analytics Analyst</field>
+        <field name="privilege_id" ref="privilege_onehr_analytics"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[Command.link(ref('onehr_security.group_onehr_security_user'))]"/>
+        <field name="comment">Read company KPI tiles/snapshots and maintain only the user's own dashboard favorites.</field>
+    </record>
+
+    <record id="group_onehr_analytics_manager" model="res.groups">
+        <field name="name">Analytics Manager</field>
+        <field name="privilege_id" ref="privilege_onehr_analytics"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[Command.link(ref('onehr_analytics.group_onehr_analytics_analyst'))]"/>
+        <field name="comment">Configure KPI tiles, activate/pause providers, generate snapshots, thresholds, alerts and archive evidence. Source-domain access is still required.</field>
+    </record>
+
+    <record id="group_onehr_analytics_admin" model="res.groups">
+        <field name="name">Analytics Administrator</field>
+        <field name="privilege_id" ref="privilege_onehr_analytics"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[Command.link(ref('onehr_analytics.group_onehr_analytics_manager'))]"/>
+        <field name="comment">Highest Analytics configuration authority. Does not imply HR, Payroll, Discipline or System Administrator authority.</field>
+    </record>
+</odoo>

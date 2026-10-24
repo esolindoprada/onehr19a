@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="view_onehr_approval_delegate_list" model="ir.ui.view">
         <field name="name">onehr.approval.delegate.list.enterprise</field><field name="model">onehr.approval.delegate</field>

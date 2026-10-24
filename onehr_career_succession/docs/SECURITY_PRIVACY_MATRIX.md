@@ -1,3 +1,4 @@
+
 # OneHR Career & Succession — Security & Privacy Matrix
 
 | Role | Competency | Position Competency | Talent Pool | Succession Plan | Scope |
@@ -15,3 +16,4 @@ Controls:
 - approved/active historical talent/succession evidence cannot be casually deleted;
 - soft Appraisal/Learning integration operates under the caller's source-addon authority;
 - UI visibility is never treated as the security boundary.
+

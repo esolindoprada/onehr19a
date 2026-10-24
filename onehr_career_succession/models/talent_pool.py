@@ -1,3 +1,4 @@
+
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 
@@ -559,3 +560,4 @@ class OneHRTalentPool(models.Model):
                 raise UserError(
                     _("Talent evidence referenced by succession plans cannot be deleted.")
                 )
+

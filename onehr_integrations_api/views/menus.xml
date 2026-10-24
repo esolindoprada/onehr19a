@@ -1,0 +1,12 @@
+<odoo>
+    <menuitem id="menu_onehr_integration_root" name="OneHR Integration Hub" sequence="70" groups="onehr_integrations_api.group_onehr_api_user"/>
+    <menuitem id="menu_onehr_integration_security" name="Security &amp; Clients" parent="menu_onehr_integration_root" sequence="10" groups="onehr_integrations_api.group_onehr_api_user"/>
+    <menuitem id="menu_onehr_integration_delivery" name="Webhooks &amp; Delivery" parent="menu_onehr_integration_root" sequence="20" groups="onehr_integrations_api.group_onehr_api_user"/>
+    <menuitem id="menu_onehr_integration_monitoring" name="Monitoring" parent="menu_onehr_integration_root" sequence="30" groups="onehr_integrations_api.group_onehr_api_user"/>
+
+    <menuitem id="menu_onehr_api_keys" name="API Keys" parent="menu_onehr_integration_security" action="action_onehr_api_keys" sequence="10" groups="onehr_integrations_api.group_onehr_api_user"/>
+    <menuitem id="menu_onehr_api_scopes" name="API Scopes" parent="menu_onehr_integration_security" action="action_onehr_api_scopes" sequence="20" groups="onehr_integrations_api.group_onehr_api_user"/>
+    <menuitem id="menu_onehr_webhooks" name="Webhooks" parent="menu_onehr_integration_delivery" action="action_onehr_webhooks" sequence="10" groups="onehr_integrations_api.group_onehr_api_user"/>
+    <menuitem id="menu_onehr_api_queue" name="Retry Queue" parent="menu_onehr_integration_delivery" action="action_onehr_api_queue" sequence="20" groups="onehr_integrations_api.group_onehr_api_user"/>
+    <menuitem id="menu_onehr_api_logs" name="API Audit Logs" parent="menu_onehr_integration_monitoring" action="action_onehr_api_logs" sequence="10" groups="onehr_integrations_api.group_onehr_api_user"/>
+</odoo>

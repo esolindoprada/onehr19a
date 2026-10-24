@@ -1,3 +1,4 @@
+
 <odoo noupdate="1">
     <record id="mail_template_policy_publication" model="mail.template">
         <field name="name">OneHR PnP — Policy Publication Notice</field>
@@ -40,3 +41,4 @@
         <field name="auto_delete" eval="False"/>
     </record>
 </odoo>
+

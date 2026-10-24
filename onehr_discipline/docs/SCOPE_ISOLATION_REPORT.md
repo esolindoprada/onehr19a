@@ -1,3 +1,4 @@
+
 # OneHR Discipline — Scope Isolation Report
 
 TASK: Runtime activation repair  
@@ -41,3 +42,4 @@ is emitted or modified.
 TARGET_SOURCE_MUTATION: `onehr_discipline` only  
 SIBLING_SOURCE_MUTATION: NONE  
 SCOPE_ISOLATION_RESULT: PASS
+

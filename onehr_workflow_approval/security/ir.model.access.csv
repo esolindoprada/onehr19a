@@ -1,3 +1,4 @@
+
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_approval_rule_user,Approval Rule User,model_onehr_approval_rule,onehr_workflow_approval.group_onehr_approval_user,1,0,0,0
 access_approval_rule_manager,Approval Rule Manager,model_onehr_approval_rule,onehr_workflow_approval.group_onehr_workflow_manager,1,1,1,0

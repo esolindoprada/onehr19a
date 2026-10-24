@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="view_onehr_talent_pool_list" model="ir.ui.view">
         <field name="name">onehr.talent.pool.list</field>
@@ -299,3 +300,4 @@
         <field name="search_view_id" ref="view_onehr_talent_pool_search"/>
     </record>
 </odoo>
+

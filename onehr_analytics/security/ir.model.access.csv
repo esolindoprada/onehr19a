@@ -1,2 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_onehr_analytics_onehr_analytics,onehr_analytics.onehr_analytics,model_onehr_analytics_onehr_analytics,base.group_user,1,1,1,1
+access_analytics_tile_analyst,Analytics Tile Analyst,model_onehr_analytics_tile,onehr_analytics.group_onehr_analytics_analyst,1,1,0,0
+access_analytics_tile_manager,Analytics Tile Manager,model_onehr_analytics_tile,onehr_analytics.group_onehr_analytics_manager,1,1,1,0
+access_analytics_tile_admin,Analytics Tile Administrator,model_onehr_analytics_tile,onehr_analytics.group_onehr_analytics_admin,1,1,1,1
+access_kpi_snapshot_analyst,KPI Snapshot Analyst,model_onehr_kpi_snapshot,onehr_analytics.group_onehr_analytics_analyst,1,0,0,0
+access_kpi_snapshot_manager,KPI Snapshot Manager,model_onehr_kpi_snapshot,onehr_analytics.group_onehr_analytics_manager,1,1,1,0
+access_kpi_snapshot_admin,KPI Snapshot Administrator,model_onehr_kpi_snapshot,onehr_analytics.group_onehr_analytics_admin,1,1,1,0

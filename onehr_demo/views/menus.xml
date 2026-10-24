@@ -1,0 +1,45 @@
+
+<odoo>
+    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[Command.link(ref('onehr_demo.group_onehr_demo_admin'))]"/>
+    </record>
+    <record id="onehr_base.menu_onehr_configuration" model="ir.ui.menu">
+        <field name="group_ids" eval="[Command.link(ref('onehr_demo.group_onehr_demo_admin'))]"/>
+    </record>
+
+    <menuitem id="menu_onehr_enterprise_demo_dataset"
+              name="Enterprise Demo Dataset"
+              parent="onehr_base.menu_onehr_configuration"
+              sequence="95"
+              groups="onehr_demo.group_onehr_demo_admin"/>
+
+    <!--
+      Odoo treats a menu with children as a navigation container. Keep the parent
+      action-free and expose the Scenario action through a real leaf so the operator
+      can always reach the creatable Demo Control Center.
+    -->
+    <menuitem id="menu_onehr_demo_control_center"
+              name="Demo Control Center"
+              parent="menu_onehr_enterprise_demo_dataset"
+              action="action_onehr_demo_scenarios"
+              sequence="10"
+              groups="onehr_demo.group_onehr_demo_admin"/>
+
+    <menuitem id="menu_onehr_demo_evidence"
+              name="Demo Evidence"
+              parent="menu_onehr_enterprise_demo_dataset"
+              sequence="90"
+              groups="onehr_demo.group_onehr_demo_admin"/>
+
+    <menuitem id="menu_onehr_demo_generators" name="Generator Registry"
+              parent="menu_onehr_demo_evidence" action="action_onehr_demo_generators" sequence="10"/>
+    <menuitem id="menu_onehr_demo_runs" name="Runs"
+              parent="menu_onehr_demo_evidence" action="action_onehr_demo_runs" sequence="20"/>
+    <menuitem id="menu_onehr_demo_checkpoints" name="Checkpoints"
+              parent="menu_onehr_demo_evidence" action="action_onehr_demo_checkpoints" sequence="30"/>
+    <menuitem id="menu_onehr_demo_references" name="References"
+              parent="menu_onehr_demo_evidence" action="action_onehr_demo_references" sequence="40"/>
+    <menuitem id="menu_onehr_demo_logs" name="Logs"
+              parent="menu_onehr_demo_evidence" action="action_onehr_demo_logs" sequence="50"/>
+</odoo>
+

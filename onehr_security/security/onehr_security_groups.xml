@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="module_category_onehr_security" model="ir.module.category">
         <field name="name">OneHR Security</field>

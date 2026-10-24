@@ -1,3 +1,4 @@
+
 """Small readable action/security helpers for OneHR Security."""
 
 from odoo import _

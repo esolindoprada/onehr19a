@@ -1,0 +1,2023 @@
+{
+  "authoritative_source_label": "onehr19a(20260910-065304).md",
+  "authoritative_source_sha256": "db960a2dfb849420144d82a00bbd35a030f0618da5d6d67dfb4135fea62e0e8e",
+  "expected_odoo_major": 19,
+  "generator_contracts": [
+    {
+      "addons": [
+        "onehr_base",
+        "onehr_security",
+        "onehr_multicompany_branch"
+      ],
+      "contract_digest": "ec3536a494a92f6b5a74e8749b854f48808550b51c75d5e99db3bffb991487dd",
+      "groups": [
+        "onehr_multicompany_branch.group_onehr_branch_admin"
+      ],
+      "implemented": true,
+      "key": "foundation.enterprise",
+      "methods": {
+        "hr.department": [
+          "onehr_is_effective_on"
+        ],
+        "onehr.branch": [
+          "action_activate"
+        ]
+      },
+      "models": {
+        "hr.department": {
+          "onehr_code": "char",
+          "onehr_unit_type": "selection",
+          "onehr_valid_from": "date",
+          "onehr_valid_to": "date"
+        },
+        "onehr.branch": {
+          "active": "boolean",
+          "branch_type": "selection",
+          "code": "char",
+          "company_id": "many2one",
+          "lifecycle_status": "selection",
+          "name": "char",
+          "parent_id": "many2one",
+          "valid_from": "date",
+          "valid_to": "date"
+        },
+        "res.company": {
+          "onehr_branch_enabled": "boolean"
+        }
+      },
+      "name": "Enterprise Company, Branch & Organization Foundation",
+      "operator_requirements": {
+        "branch_authority_any_of_groups": [
+          "base.group_system",
+          "onehr_multicompany_branch.group_onehr_branch_admin"
+        ],
+        "company_must_enable_branch_scope": true,
+        "model_access": {
+          "hr.department": [
+            "read",
+            "create"
+          ],
+          "onehr.branch": [
+            "read",
+            "create"
+          ],
+          "res.company": [
+            "read"
+          ]
+        }
+      },
+      "phase": 5,
+      "prerequisites": [],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "REUSE_ON_REBUILD",
+      "runtime_fields": {
+        "hr.department": {
+          "active": "boolean",
+          "company_id": "many2one",
+          "name": "char",
+          "parent_id": "many2one"
+        },
+        "res.company": {
+          "name": "char"
+        }
+      },
+      "selections": {
+        "hr.department.onehr_unit_type": [
+          "division",
+          "department",
+          "section",
+          "team",
+          "other"
+        ],
+        "onehr.branch.branch_type": [
+          "head_office",
+          "operational",
+          "shared_service",
+          "virtual"
+        ],
+        "onehr.branch.lifecycle_status": [
+          "scheduled",
+          "effective",
+          "expired",
+          "inactive"
+        ]
+      },
+      "sequence": 50,
+      "side_effect": "SAFE_INTERNAL",
+      "xmlids": [
+        "onehr_base.menu_onehr_root",
+        "onehr_base.menu_onehr_configuration"
+      ]
+    },
+    {
+      "addons": [
+        "onehr_base",
+        "onehr_assignment"
+      ],
+      "contract_digest": "dc926d5e133ad2d5e907e08fbc594fb1881af2d770df39fbb2263484117d45af",
+      "groups": [
+        "onehr_assignment.group_onehr_assignment_manager"
+      ],
+      "implemented": true,
+      "key": "organization.jobs_positions",
+      "methods": {
+        "onehr.position": [
+          "action_open_onehr_position_assignments"
+        ]
+      },
+      "models": {
+        "hr.job": {
+          "onehr_code": "char",
+          "onehr_valid_from": "date",
+          "onehr_valid_to": "date"
+        },
+        "hr.work.location": {
+          "onehr_site_code": "char",
+          "onehr_timezone": "selection",
+          "onehr_valid_from": "date",
+          "onehr_valid_to": "date"
+        },
+        "onehr.grade": {
+          "code": "char",
+          "company_id": "many2one"
+        },
+        "onehr.position": {
+          "authorized_fte": "float",
+          "authorized_headcount": "integer",
+          "code": "char",
+          "company_id": "many2one",
+          "department_id": "many2one",
+          "grade_id": "many2one",
+          "job_id": "many2one",
+          "status": "selection",
+          "work_location_id": "many2one"
+        }
+      },
+      "name": "Jobs, Positions, Grades & Work Locations",
+      "phase": 6,
+      "prerequisites": [
+        "foundation.enterprise"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "REUSE_ON_REBUILD",
+      "selections": {
+        "onehr.position.status": [
+          "planned",
+          "open",
+          "filled",
+          "frozen",
+          "closed"
+        ]
+      },
+      "sequence": 60,
+      "side_effect": "SAFE_INTERNAL",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_corehr",
+        "onehr_assignment"
+      ],
+      "contract_digest": "63b1108c6cb4e556041505674b6d7d6ea6663617d30a854514b99eb46f9ae439",
+      "groups": [
+        "onehr_corehr.group_onehr_corehr_manager",
+        "onehr_assignment.group_onehr_assignment_manager"
+      ],
+      "implemented": false,
+      "key": "workforce.personas",
+      "methods": {
+        "onehr.assignment": [
+          "action_submit_for_approval",
+          "action_activate"
+        ]
+      },
+      "models": {
+        "hr.employee": {
+          "onehr_employee_number": "char",
+          "onehr_engagement_type_id": "many2one",
+          "onehr_grade_id": "many2one",
+          "onehr_primary_position_id": "many2one"
+        },
+        "hr.version": {
+          "onehr_engagement_type_id": "many2one",
+          "onehr_grade_id": "many2one",
+          "onehr_primary_position_id": "many2one"
+        },
+        "onehr.assignment": {
+          "assignment_type": "selection",
+          "company_id": "many2one",
+          "effective_from": "date",
+          "effective_to": "date",
+          "employee_id": "many2one",
+          "name": "char",
+          "position_id": "many2one",
+          "state": "selection"
+        }
+      },
+      "name": "Workforce Master & Golden Personas",
+      "phase": 7,
+      "prerequisites": [
+        "organization.jobs_positions"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "REUSE_ON_REBUILD",
+      "selections": {
+        "onehr.assignment.assignment_type": [
+          "primary",
+          "secondary"
+        ],
+        "onehr.assignment.state": [
+          "draft",
+          "proposed",
+          "approved",
+          "active",
+          "ended",
+          "rejected",
+          "cancelled"
+        ]
+      },
+      "sequence": 70,
+      "side_effect": "SAFE_INTERNAL",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_recruitment"
+      ],
+      "contract_digest": "b098796706b067edbe6c8e4e3168ca8f14323302ca9a42f298e108aa7eb918aa",
+      "groups": [
+        "onehr_recruitment.group_onehr_recruiter",
+        "onehr_recruitment.group_onehr_recruitment_manager"
+      ],
+      "implemented": false,
+      "key": "recruitment.pipeline",
+      "methods": {
+        "onehr.interview.session": [
+          "action_confirm",
+          "action_complete"
+        ],
+        "onehr.offer": [
+          "action_submit_for_approval",
+          "action_mark_sent",
+          "action_accept"
+        ],
+        "onehr.recruitment.requisition": [
+          "action_submit_for_approval",
+          "action_start_recruiting"
+        ]
+      },
+      "models": {
+        "hr.applicant": {
+          "onehr_latest_offer_state": "selection",
+          "onehr_requisition_id": "many2one"
+        },
+        "onehr.interview.session": {
+          "applicant_id": "many2one",
+          "requisition_id": "many2one",
+          "scheduled_start": "datetime",
+          "state": "selection"
+        },
+        "onehr.offer": {
+          "applicant_id": "many2one",
+          "expiry_date": "date",
+          "name": "char",
+          "offer_date": "date",
+          "proposed_start_date": "date",
+          "requisition_id": "many2one",
+          "state": "selection"
+        },
+        "onehr.recruitment.requisition": {
+          "company_id": "many2one",
+          "job_id": "many2one",
+          "name": "char",
+          "position_id": "many2one",
+          "requested_headcount": "integer",
+          "state": "selection",
+          "target_start_date": "date"
+        }
+      },
+      "name": "Recruitment Requisition, Candidate, Interview & Offer Pipeline",
+      "phase": 8,
+      "prerequisites": [
+        "organization.jobs_positions"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "REVERSE_BY_BUSINESS_ACTION",
+      "selections": {
+        "onehr.interview.session.state": [
+          "planned",
+          "confirmed",
+          "completed",
+          "cancelled",
+          "no_show"
+        ],
+        "onehr.offer.state": [
+          "draft",
+          "pending_approval",
+          "approved",
+          "rejected",
+          "sent",
+          "accepted",
+          "declined",
+          "withdrawn",
+          "expired"
+        ],
+        "onehr.recruitment.requisition.state": [
+          "draft",
+          "pending_approval",
+          "approved",
+          "rejected",
+          "recruiting",
+          "filled",
+          "cancelled"
+        ]
+      },
+      "sequence": 80,
+      "side_effect": "SAFE_WITH_DEMO_CONTEXT",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_recruitment",
+        "onehr_employment_contract",
+        "onehr_base",
+        "onehr_assignment"
+      ],
+      "contract_digest": "454df974be125ef329125071f79da88d44c5b0825a6c38d3c4df3bc542217d30",
+      "groups": [
+        "onehr_employment_contract.group_onehr_contract_manager",
+        "onehr_recruitment.group_onehr_recruitment_manager"
+      ],
+      "implemented": false,
+      "key": "hiring.onboarding",
+      "methods": {
+        "onehr.checklist.instance": [
+          "action_complete"
+        ],
+        "onehr.contract": [
+          "action_submit_for_review",
+          "action_activate"
+        ],
+        "onehr.preboarding": [
+          "action_prepare",
+          "action_ready",
+          "action_complete"
+        ]
+      },
+      "models": {
+        "onehr.checklist.instance": {
+          "employee_id": "many2one",
+          "event_date": "date",
+          "state": "selection",
+          "template_id": "many2one"
+        },
+        "onehr.checklist.task": {
+          "due_date": "date",
+          "employee_id": "many2one",
+          "instance_id": "many2one",
+          "state": "selection"
+        },
+        "onehr.contract": {
+          "contract_kind": "selection",
+          "employee_id": "many2one",
+          "hr_version_id": "many2one",
+          "name": "char",
+          "state": "selection"
+        },
+        "onehr.preboarding": {
+          "applicant_id": "many2one",
+          "employee_id": "many2one",
+          "offer_id": "many2one",
+          "planned_start_date": "date",
+          "state": "selection"
+        }
+      },
+      "name": "Hiring, Employment Contract, Preboarding & Initial Assignment",
+      "phase": 9,
+      "prerequisites": [
+        "recruitment.pipeline",
+        "workforce.personas"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "ARCHIVE_ONLY",
+      "selections": {
+        "onehr.checklist.instance.state": [
+          "draft",
+          "in_progress",
+          "completed",
+          "cancelled"
+        ],
+        "onehr.contract.state": [
+          "draft",
+          "in_review",
+          "approved",
+          "rejected",
+          "active",
+          "expired",
+          "terminated"
+        ],
+        "onehr.preboarding.state": [
+          "draft",
+          "ready",
+          "in_progress",
+          "completed",
+          "cancelled"
+        ]
+      },
+      "sequence": 90,
+      "side_effect": "SAFE_WITH_DEMO_CONTEXT",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_attendance",
+        "onehr_mobile_kiosk"
+      ],
+      "contract_digest": "b1945d9fcdf1aecc2b1e988d3622c71463ec975e76a6369a0d550ba52fb34c57",
+      "groups": [
+        "onehr_attendance.group_onehr_attendance_manager",
+        "onehr_mobile_kiosk.group_onehr_kiosk_admin"
+      ],
+      "implemented": false,
+      "key": "time.attendance",
+      "methods": {
+        "onehr.kiosk.log": [
+          "action_retry_sync"
+        ],
+        "onehr.shift": [
+          "action_activate"
+        ],
+        "onehr.shift.assignment": [
+          "action_activate"
+        ]
+      },
+      "models": {
+        "onehr.attendance.exception": {
+          "attendance_date": "date",
+          "employee_id": "many2one",
+          "exception_type": "selection",
+          "state": "selection"
+        },
+        "onehr.kiosk.device": {
+          "code": "char",
+          "company_id": "many2one",
+          "state": "selection"
+        },
+        "onehr.kiosk.log": {
+          "client_event_id": "char",
+          "company_id": "many2one",
+          "device_id": "many2one",
+          "event_at": "datetime",
+          "event_type": "selection",
+          "sync_state": "selection"
+        },
+        "onehr.shift": {
+          "code": "char",
+          "company_id": "many2one",
+          "end_hour": "float",
+          "start_hour": "float",
+          "state": "selection"
+        },
+        "onehr.shift.assignment": {
+          "company_id": "many2one",
+          "employee_id": "many2one",
+          "state": "selection"
+        }
+      },
+      "name": "Attendance, Shift, Kiosk & Overtime",
+      "phase": 10,
+      "prerequisites": [
+        "workforce.personas"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "ARCHIVE_ONLY",
+      "selections": {
+        "onehr.shift.assignment.state": [
+          "planned",
+          "active",
+          "ended",
+          "cancelled"
+        ],
+        "onehr.shift.state": [
+          "draft",
+          "active",
+          "retired"
+        ]
+      },
+      "sequence": 100,
+      "side_effect": "SAFE_WITH_DEMO_CONTEXT",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_timeoff"
+      ],
+      "contract_digest": "07f9eb8c2b126aaa531eb2809b99ddc7015464b9f3af30d1951774ab7415b6be",
+      "groups": [
+        "onehr_timeoff.group_onehr_timeoff_hr"
+      ],
+      "implemented": false,
+      "key": "time.leave",
+      "methods": {
+        "onehr.leave.allocation": [
+          "action_confirm"
+        ],
+        "onehr.leave.request": [
+          "action_submit_for_approval",
+          "action_mark_done"
+        ]
+      },
+      "models": {
+        "onehr.leave.allocation": {
+          "allocated_days": "float",
+          "employee_id": "many2one",
+          "leave_type_id": "many2one",
+          "name": "char",
+          "period_end": "date",
+          "period_start": "date",
+          "state": "selection"
+        },
+        "onehr.leave.request": {
+          "date_from": "date",
+          "date_to": "date",
+          "employee_id": "many2one",
+          "leave_type_id": "many2one",
+          "name": "char",
+          "requested_days": "float",
+          "state": "selection"
+        },
+        "onehr.leave.type": {
+          "allocation_required": "boolean",
+          "code": "char",
+          "company_id": "many2one",
+          "state": "selection"
+        }
+      },
+      "name": "Leave & Absence",
+      "phase": 11,
+      "prerequisites": [
+        "workforce.personas"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "REVERSE_BY_BUSINESS_ACTION",
+      "selections": {
+        "onehr.leave.allocation.state": [
+          "draft",
+          "confirmed",
+          "cancelled"
+        ],
+        "onehr.leave.request.state": [
+          "draft",
+          "pending",
+          "approved",
+          "rejected",
+          "done",
+          "cancelled"
+        ],
+        "onehr.leave.type.state": [
+          "draft",
+          "active",
+          "retired"
+        ]
+      },
+      "sequence": 110,
+      "side_effect": "SAFE_WITH_DEMO_CONTEXT",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_payroll_bridge",
+        "onehr_payroll_l10n_id"
+      ],
+      "contract_digest": "fb00951a925b67f7276e340556e100aded0c1c65e687037e6e014a49a42f5ac4",
+      "groups": [
+        "onehr_payroll_bridge.group_onehr_payroll_manager"
+      ],
+      "implemented": false,
+      "key": "payroll.bridge",
+      "methods": {
+        "onehr.payroll.bridge.config": [
+          "action_validate_configuration"
+        ],
+        "onehr.payroll.export": [
+          "action_generate_export",
+          "action_reconcile"
+        ],
+        "onehr.payroll.l10n.param": [
+          "action_validate_parameters"
+        ]
+      },
+      "models": {
+        "onehr.payroll.bridge.config": {
+          "active": "boolean",
+          "code": "char",
+          "company_id": "many2one",
+          "provider_mode": "selection"
+        },
+        "onehr.payroll.export": {
+          "company_id": "many2one",
+          "name": "char",
+          "period_end": "date",
+          "period_start": "date",
+          "state": "selection"
+        },
+        "onehr.payroll.l10n.param": {
+          "code": "char",
+          "company_id": "many2one",
+          "revision": "integer",
+          "valid_from": "date",
+          "valid_to": "date"
+        }
+      },
+      "name": "Payroll Bridge, Compensation Evidence & Indonesia Localization",
+      "phase": 12,
+      "prerequisites": [
+        "time.attendance",
+        "time.leave"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "IMMUTABLE_PROTECTED",
+      "selections": {
+        "onehr.payroll.bridge.config.provider_mode": [
+          "csv_manual",
+          "api_adapter",
+          "oca_adapter"
+        ],
+        "onehr.payroll.export.state": [
+          "draft",
+          "posted",
+          "reconciled",
+          "cancelled"
+        ]
+      },
+      "sequence": 120,
+      "side_effect": "DISABLED_FOR_DEMO",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_learning"
+      ],
+      "contract_digest": "727b907a36b581502f82f16ce1cf12ef7985aaa879b942c45a8c2e83383919a2",
+      "groups": [
+        "onehr_learning.group_onehr_learning_officer",
+        "onehr_learning.group_onehr_learning_manager_approver"
+      ],
+      "implemented": false,
+      "key": "learning.history",
+      "methods": {
+        "onehr.learning.certificate": [
+          "action_issue"
+        ],
+        "onehr.learning.enrollment": [
+          "action_request_approval",
+          "action_enroll",
+          "action_evaluate_result"
+        ],
+        "onehr.learning.session": [
+          "action_start",
+          "action_complete"
+        ]
+      },
+      "models": {
+        "onehr.learning.certificate": {
+          "course_id": "many2one",
+          "employee_id": "many2one",
+          "issue_date": "date",
+          "name": "char",
+          "state": "selection"
+        },
+        "onehr.learning.course": {
+          "code": "char",
+          "company_id": "many2one",
+          "duration_hours": "float",
+          "published": "boolean"
+        },
+        "onehr.learning.enrollment": {
+          "company_id": "many2one",
+          "employee_id": "many2one",
+          "name": "char",
+          "session_id": "many2one",
+          "state": "selection"
+        },
+        "onehr.learning.session": {
+          "company_id": "many2one",
+          "course_id": "many2one",
+          "end_datetime": "datetime",
+          "name": "char",
+          "start_datetime": "datetime",
+          "state": "selection"
+        }
+      },
+      "name": "Learning, Training & Certification",
+      "phase": 13,
+      "prerequisites": [
+        "workforce.personas"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "ARCHIVE_ONLY",
+      "selections": {
+        "onehr.learning.certificate.state": [
+          "draft",
+          "valid",
+          "expired",
+          "revoked"
+        ],
+        "onehr.learning.enrollment.state": [
+          "draft",
+          "requested",
+          "approved",
+          "enrolled",
+          "waitlisted",
+          "attended",
+          "passed",
+          "failed",
+          "certified",
+          "rejected",
+          "cancelled",
+          "no_show"
+        ],
+        "onehr.learning.session.state": [
+          "draft",
+          "open",
+          "in_progress",
+          "completed",
+          "cancelled"
+        ]
+      },
+      "sequence": 130,
+      "side_effect": "SAFE_WITH_DEMO_CONTEXT",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_appraisal"
+      ],
+      "contract_digest": "585596df07fd033f7ff3b30ed68ee8c3bfa5dbb75cbe22872d66244cd506d70d",
+      "groups": [
+        "onehr_appraisal.group_onehr_appraisal_admin"
+      ],
+      "implemented": false,
+      "key": "performance.appraisal",
+      "methods": {
+        "onehr.appraisal.cycle": [
+          "action_generate_appraisal_forms",
+          "action_start_consolidation",
+          "action_close_cycle"
+        ],
+        "onehr.appraisal.form": [
+          "action_start_review",
+          "action_submit_self_review",
+          "action_submit_manager_review",
+          "action_close"
+        ]
+      },
+      "models": {
+        "onehr.appraisal.cycle": {
+          "code": "char",
+          "company_id": "many2one",
+          "date_end": "date",
+          "date_start": "date",
+          "state": "selection"
+        },
+        "onehr.appraisal.form": {
+          "company_id": "many2one",
+          "cycle_id": "many2one",
+          "employee_id": "many2one",
+          "final_score": "float",
+          "name": "char",
+          "state": "selection"
+        }
+      },
+      "name": "Performance & Appraisal",
+      "phase": 14,
+      "prerequisites": [
+        "workforce.personas"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "IMMUTABLE_PROTECTED",
+      "selections": {
+        "onehr.appraisal.cycle.state": [
+          "draft",
+          "in_review",
+          "consolidation",
+          "closed",
+          "cancelled"
+        ],
+        "onehr.appraisal.form.state": [
+          "draft",
+          "in_review",
+          "consolidation",
+          "closed",
+          "cancelled"
+        ]
+      },
+      "sequence": 140,
+      "side_effect": "SAFE_WITH_DEMO_CONTEXT",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_career_succession"
+      ],
+      "contract_digest": "eafb6c8a3c032ec84f3083ed1d5cbc45ddc96eb1e58b0674228cbb4362adf880",
+      "groups": [
+        "onehr_career_succession.group_onehr_talent_manager"
+      ],
+      "implemented": false,
+      "key": "talent.succession",
+      "methods": {
+        "onehr.succession.plan": [
+          "action_propose",
+          "action_approve",
+          "action_activate"
+        ],
+        "onehr.talent.pool": [
+          "action_propose",
+          "action_approve",
+          "action_activate"
+        ]
+      },
+      "models": {
+        "onehr.succession.plan": {
+          "company_id": "many2one",
+          "criticality": "selection",
+          "position_id": "many2one",
+          "state": "selection"
+        },
+        "onehr.talent.pool": {
+          "company_id": "many2one",
+          "employee_id": "many2one",
+          "pool_code": "char",
+          "readiness_level": "selection",
+          "state": "selection"
+        }
+      },
+      "name": "Career, Talent & Succession",
+      "phase": 15,
+      "prerequisites": [
+        "performance.appraisal"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "ARCHIVE_ONLY",
+      "selections": {
+        "onehr.succession.plan.state": [
+          "draft",
+          "proposed",
+          "approved",
+          "active",
+          "closed",
+          "cancelled"
+        ],
+        "onehr.talent.pool.state": [
+          "draft",
+          "proposed",
+          "approved",
+          "active",
+          "inactive",
+          "rejected"
+        ]
+      },
+      "sequence": 150,
+      "side_effect": "SAFE_INTERNAL",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_document",
+        "onehr_job_description",
+        "onehr_sop",
+        "onehr_pnp"
+      ],
+      "contract_digest": "4b9d60402bf973cba6533d4dbc94ba052e6e9c22255bfebb4962cb270034d1ce",
+      "groups": [
+        "onehr_document.group_onehr_document_manager",
+        "onehr_job_description.group_onehr_jd_admin",
+        "onehr_sop.group_onehr_sop_admin",
+        "onehr_pnp.group_onehr_pnp_admin"
+      ],
+      "implemented": false,
+      "key": "governance.content",
+      "methods": {
+        "onehr.document": [
+          "action_activate"
+        ],
+        "onehr.jd": [
+          "action_create_new_version"
+        ],
+        "onehr.policy": [
+          "action_submit_policy_approval",
+          "action_publish"
+        ],
+        "onehr.sop": [
+          "action_create_new_version"
+        ]
+      },
+      "models": {
+        "onehr.document": {
+          "category_id": "many2one",
+          "company_id": "many2one",
+          "document_number": "char",
+          "state": "selection"
+        },
+        "onehr.jd": {
+          "code": "char",
+          "company_id": "many2one",
+          "lifecycle_state": "selection"
+        },
+        "onehr.policy": {
+          "company_id": "many2one",
+          "effective_from": "date",
+          "policy_code": "char",
+          "state": "selection"
+        },
+        "onehr.sop": {
+          "code": "char",
+          "company_id": "many2one",
+          "lifecycle_state": "selection"
+        }
+      },
+      "name": "Documents, JD, SOP, P&P & Governance Content",
+      "phase": 16,
+      "prerequisites": [
+        "organization.jobs_positions"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "ARCHIVE_ONLY",
+      "selections": {
+        "onehr.policy.state": [
+          "draft",
+          "approval",
+          "approved",
+          "published",
+          "review",
+          "archived",
+          "rejected"
+        ]
+      },
+      "sequence": 160,
+      "side_effect": "SAFE_WITH_DEMO_CONTEXT",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_discipline"
+      ],
+      "contract_digest": "b8ca1d2a9746ebc189197cf0d6017a7c074edef383145b855602abb1583bb32c",
+      "groups": [
+        "onehr_discipline.group_onehr_discipline_manager"
+      ],
+      "implemented": false,
+      "key": "employee_relations.discipline",
+      "methods": {
+        "onehr.discipline.case": [
+          "action_start_investigation",
+          "action_move_to_hearing",
+          "action_move_to_decision"
+        ],
+        "onehr.discipline.sanction": [
+          "action_submit_for_sanction_approval",
+          "action_execute"
+        ]
+      },
+      "models": {
+        "onehr.discipline.case": {
+          "company_id": "many2one",
+          "employee_id": "many2one",
+          "incident_date": "datetime",
+          "reference": "char",
+          "severity": "selection",
+          "state": "selection"
+        },
+        "onehr.discipline.sanction": {
+          "case_id": "many2one",
+          "company_id": "many2one",
+          "employee_id": "many2one",
+          "reference": "char",
+          "sanction_type": "selection",
+          "state": "selection"
+        }
+      },
+      "name": "Discipline & Employee Relations",
+      "phase": 17,
+      "prerequisites": [
+        "workforce.personas",
+        "governance.content"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "IMMUTABLE_PROTECTED",
+      "selections": {
+        "onehr.discipline.case.state": [
+          "reported",
+          "investigation",
+          "hearing",
+          "decision",
+          "closed",
+          "cancelled"
+        ],
+        "onehr.discipline.sanction.state": [
+          "draft",
+          "approval",
+          "approved",
+          "executed",
+          "rejected",
+          "cancelled"
+        ]
+      },
+      "sequence": 170,
+      "side_effect": "SAFE_WITH_DEMO_CONTEXT",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_portal_self_service"
+      ],
+      "contract_digest": "0d47efa027332c00bca99dad0aa885712aeec19be8753b2b9221ed6c7bf2d12c",
+      "groups": [
+        "onehr_portal_self_service.group_onehr_portal_admin"
+      ],
+      "implemented": false,
+      "key": "self_service.portal",
+      "methods": {
+        "onehr.portal.request": [
+          "action_submit",
+          "action_manager_approve",
+          "action_hr_approve",
+          "action_complete"
+        ]
+      },
+      "models": {
+        "onehr.portal.request": {
+          "company_id": "many2one",
+          "employee_id": "many2one",
+          "name": "char",
+          "service_kind": "selection",
+          "state": "selection"
+        },
+        "res.users": {
+          "onehr_portal_employee_id": "many2one",
+          "onehr_portal_self_service_enabled": "boolean"
+        }
+      },
+      "name": "Employee / Manager Self Service & Portal Actors",
+      "phase": 18,
+      "prerequisites": [
+        "workforce.personas"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "ARCHIVE_ONLY",
+      "selections": {},
+      "sequence": 180,
+      "side_effect": "SAFE_WITH_DEMO_CONTEXT",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_assignment"
+      ],
+      "contract_digest": "4236178285ae7bd4c26db2713271587160206127c50023d33981ec810b5fef62",
+      "groups": [
+        "onehr_assignment.group_onehr_assignment_manager"
+      ],
+      "implemented": false,
+      "key": "mobility.assignment",
+      "methods": {
+        "onehr.assignment.change.request": [
+          "action_submit_for_approval",
+          "action_execute"
+        ],
+        "onehr.workforce.plan": [
+          "action_submit_for_approval",
+          "action_activate"
+        ]
+      },
+      "models": {
+        "onehr.assignment": {
+          "effective_from": "date",
+          "employee_id": "many2one",
+          "position_id": "many2one",
+          "state": "selection"
+        },
+        "onehr.assignment.change.request": {
+          "company_id": "many2one",
+          "effective_date": "date",
+          "movement_type": "selection",
+          "name": "char",
+          "state": "selection"
+        },
+        "onehr.workforce.plan": {
+          "company_id": "many2one",
+          "period_end": "date",
+          "period_start": "date",
+          "plan_code": "char",
+          "state": "selection"
+        }
+      },
+      "name": "Assignment History, Promotion, Transfer & Workforce Planning",
+      "phase": 19,
+      "prerequisites": [
+        "workforce.personas"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "ARCHIVE_ONLY",
+      "selections": {
+        "onehr.assignment.change.request.state": [
+          "draft",
+          "proposed",
+          "approved",
+          "executed",
+          "rejected",
+          "cancelled"
+        ],
+        "onehr.workforce.plan.state": [
+          "draft",
+          "proposed",
+          "approved",
+          "active",
+          "closed",
+          "rejected"
+        ]
+      },
+      "sequence": 190,
+      "side_effect": "SAFE_INTERNAL",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_retirement_offboarding"
+      ],
+      "contract_digest": "d52d73e85e876664f9817b7b9089ce26812f47a36e04831477f0a2eef8a5e594",
+      "groups": [
+        "onehr_retirement_offboarding.group_onehr_offboarding_admin"
+      ],
+      "implemented": false,
+      "key": "separation.offboarding",
+      "methods": {
+        "onehr.exit.interview": [
+          "action_schedule",
+          "action_start",
+          "action_submit"
+        ],
+        "onehr.offboarding": [
+          "action_generate_checklist",
+          "action_check_readiness",
+          "action_complete"
+        ]
+      },
+      "models": {
+        "onehr.exit.interview": {
+          "company_id": "many2one",
+          "employee_id": "many2one",
+          "offboarding_id": "many2one",
+          "state": "selection"
+        },
+        "onehr.offboarding": {
+          "company_id": "many2one",
+          "effective_exit_date": "date",
+          "employee_id": "many2one",
+          "name": "char",
+          "offboarding_type": "selection",
+          "proposed_exit_date": "date",
+          "state": "selection"
+        }
+      },
+      "name": "Separation, Offboarding & Retirement",
+      "phase": 20,
+      "prerequisites": [
+        "workforce.personas",
+        "mobility.assignment"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "IMMUTABLE_PROTECTED",
+      "selections": {
+        "onehr.exit.interview.state": [
+          "draft",
+          "scheduled",
+          "in_progress",
+          "submitted",
+          "waived"
+        ],
+        "onehr.offboarding.state": [
+          "requested",
+          "approval",
+          "in_progress",
+          "completed",
+          "closed",
+          "rejected",
+          "cancelled"
+        ]
+      },
+      "sequence": 200,
+      "side_effect": "SAFE_WITH_DEMO_CONTEXT",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_integrations_api"
+      ],
+      "contract_digest": "f4df0795db7f7f7834736054f8f2c398c30dea7b196a266905d8aff37061d590",
+      "groups": [
+        "onehr_integrations_api.group_onehr_api_admin"
+      ],
+      "implemented": false,
+      "key": "integration.safe_demo",
+      "methods": {
+        "onehr.api.key": [
+          "action_generate_secret",
+          "action_activate",
+          "action_revoke"
+        ],
+        "onehr.webhook": [
+          "action_activate",
+          "action_disable"
+        ]
+      },
+      "models": {
+        "onehr.api.key": {
+          "active": "boolean",
+          "company_id": "many2one",
+          "public_id": "char",
+          "state": "selection"
+        },
+        "onehr.api.queue": {
+          "company_id": "many2one",
+          "dedupe_key": "char",
+          "state": "selection"
+        },
+        "onehr.webhook": {
+          "company_id": "many2one",
+          "direction": "selection",
+          "endpoint_key": "char",
+          "state": "selection",
+          "target_url": "char"
+        }
+      },
+      "name": "Integrations API & External-System Safe Demo",
+      "phase": 21,
+      "prerequisites": [
+        "foundation.enterprise"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "ARCHIVE_ONLY",
+      "selections": {
+        "onehr.api.key.state": [
+          "draft",
+          "active",
+          "suspended",
+          "revoked"
+        ],
+        "onehr.api.queue.state": [
+          "pending",
+          "processing",
+          "retry",
+          "sent",
+          "dead_letter",
+          "cancelled"
+        ],
+        "onehr.webhook.state": [
+          "draft",
+          "active",
+          "paused",
+          "disabled"
+        ]
+      },
+      "sequence": 210,
+      "side_effect": "REQUIRES_STUB/LOCAL_ENDPOINT",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_corehr",
+        "onehr_assignment"
+      ],
+      "contract_digest": "42e1c9b1db3c6706946f1ebd11724c671a5618de25bbc300fae4c11567ae267e",
+      "groups": [
+        "onehr_corehr.group_onehr_corehr_manager"
+      ],
+      "implemented": false,
+      "key": "history.reconciliation",
+      "methods": {},
+      "models": {
+        "hr.employee": {
+          "onehr_employee_number": "char"
+        },
+        "onehr.assignment": {
+          "effective_from": "date",
+          "effective_to": "date",
+          "state": "selection"
+        }
+      },
+      "name": "Longitudinal Historical Backbone & Golden Hero Reconciliation",
+      "phase": 22,
+      "prerequisites": [
+        "recruitment.pipeline",
+        "hiring.onboarding",
+        "time.attendance",
+        "time.leave",
+        "payroll.bridge",
+        "learning.history",
+        "performance.appraisal",
+        "talent.succession",
+        "governance.content",
+        "employee_relations.discipline",
+        "self_service.portal",
+        "mobility.assignment",
+        "separation.offboarding",
+        "integration.safe_demo"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "IMMUTABLE_PROTECTED",
+      "selections": {},
+      "sequence": 220,
+      "side_effect": "SAFE_INTERNAL",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_analytics"
+      ],
+      "contract_digest": "80a8c2000d419f548846489b274638a83b1a5cb7a43b8b5b30ab6cfdf74b4b6a",
+      "groups": [
+        "onehr_analytics.group_onehr_analytics_admin"
+      ],
+      "implemented": false,
+      "key": "analytics.kpi",
+      "methods": {
+        "onehr.analytics.tile": [
+          "action_activate",
+          "action_snapshot_now",
+          "onehr_analytics_kpi_feed"
+        ]
+      },
+      "models": {
+        "onehr.analytics.tile": {
+          "code": "char",
+          "company_id": "many2one",
+          "provider_mode": "selection",
+          "state": "selection"
+        },
+        "onehr.kpi.snapshot": {
+          "company_id": "many2one",
+          "period_end": "date",
+          "period_start": "date",
+          "status": "selection",
+          "tile_id": "many2one",
+          "value": "float"
+        }
+      },
+      "name": "Reports, KPI Traceability & Analytics Snapshot Validation",
+      "phase": 23,
+      "prerequisites": [
+        "history.reconciliation"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "IMMUTABLE_PROTECTED",
+      "selections": {
+        "onehr.analytics.tile.provider_mode": [
+          "manual",
+          "model_aggregate",
+          "service"
+        ],
+        "onehr.analytics.tile.state": [
+          "draft",
+          "active",
+          "paused",
+          "retired"
+        ],
+        "onehr.kpi.snapshot.status": [
+          "normal",
+          "warning",
+          "critical",
+          "unavailable"
+        ]
+      },
+      "sequence": 230,
+      "side_effect": "SAFE_WITH_DEMO_CONTEXT",
+      "xmlids": []
+    },
+    {
+      "addons": [
+        "onehr_analytics",
+        "onehr_portal_self_service"
+      ],
+      "contract_digest": "4cd7d495b2e128f05a4e72d49519a67175996c5cf1c8b64caf94a0abca4913ad",
+      "groups": [
+        "onehr_analytics.group_onehr_analytics_admin",
+        "onehr_portal_self_service.group_onehr_portal_admin"
+      ],
+      "implemented": false,
+      "key": "presentation.validation",
+      "methods": {
+        "onehr.analytics.tile": [
+          "action_open_source_records"
+        ],
+        "onehr.portal.request": [
+          "action_open_self"
+        ]
+      },
+      "models": {
+        "onehr.analytics.tile": {
+          "code": "char",
+          "state": "selection"
+        },
+        "onehr.portal.request": {
+          "employee_id": "many2one",
+          "state": "selection"
+        }
+      },
+      "name": "Stakeholder & Executive Presentation Validation",
+      "phase": 24,
+      "prerequisites": [
+        "analytics.kpi"
+      ],
+      "profiles": [
+        "quick",
+        "standard",
+        "full"
+      ],
+      "reset_policy": "IMMUTABLE_PROTECTED",
+      "selections": {},
+      "sequence": 240,
+      "side_effect": "SAFE_INTERNAL",
+      "xmlids": []
+    }
+  ],
+  "governing_master_prompt_sha256": "21da5974ff755c03ffb2cc12d0e073832370c3e4dcefc3af21376e5b3dc52457",
+  "implemented_generator_keys": [
+    "foundation.enterprise",
+    "organization.jobs_positions"
+  ],
+  "mp05_profile_shape": {
+    "full": {
+      "branches": 6,
+      "company": 1,
+      "departments": 16
+    },
+    "quick": {
+      "branches": 2,
+      "company": 1,
+      "departments": 7
+    },
+    "standard": {
+      "branches": 4,
+      "company": 1,
+      "departments": 12
+    }
+  },
+  "oracle_hrms_reference_sha256": "a02355585ce8a5a33427e3ac5a7ef424618986a778b906b165606a178a5ceb98",
+  "production_addon_versions": {
+    "onehr_analytics": "19.0.1.0.0",
+    "onehr_appraisal": "19.0.1.0.1",
+    "onehr_assignment": "19.0.1.0.1",
+    "onehr_attendance": "19.0.1.0.2",
+    "onehr_base": "19.0.1.0.0",
+    "onehr_career_succession": "19.0.1.0.1",
+    "onehr_corehr": "19.0.1.0.0",
+    "onehr_discipline": "19.0.1.0.1",
+    "onehr_document": "19.0.1.0.0",
+    "onehr_employment_contract": "19.0.1.0.0",
+    "onehr_integrations_api": "19.0.1.0.1",
+    "onehr_job_description": "19.0.1.0.0",
+    "onehr_learning": "19.0.1.0.0",
+    "onehr_mobile_kiosk": "19.0.1.0.1",
+    "onehr_multicompany_branch": "19.0.1.0.2",
+    "onehr_payroll_bridge": "19.0.1.0.0",
+    "onehr_payroll_l10n_id": "19.0.1.0.0",
+    "onehr_pnp": "19.0.1.0.1",
+    "onehr_portal_self_service": "19.0.1.0.2",
+    "onehr_recruitment": "19.0.1.0.3",
+    "onehr_retirement_offboarding": "19.0.1.0.0",
+    "onehr_security": "19.0.1.0.0",
+    "onehr_sop": "19.0.1.0.0",
+    "onehr_timeoff": "19.0.1.0.0",
+    "onehr_workflow_approval": "19.0.1.0.0"
+  },
+  "production_manifest_normalized_sha256": {
+    "onehr_analytics": "dbde6771488a8c639a6b3d268178bfe57cbf49351248cb4cddcc049f2f8724e8",
+    "onehr_appraisal": "8e933dfbc8bee3359e8f0b95045c03fc6bec4911f37d1a298c2916248e0b4ed8",
+    "onehr_assignment": "9886414b04a7f390ef5bd87e4d0ac28e0606662e1ed7ca7dc01d06e789b0c570",
+    "onehr_attendance": "0f429d92e7c487f5f802cadbfc7a8a9806908a3fbbb1a05fabf993231a50d4bc",
+    "onehr_base": "fcb5dd1783f4c845a7f296b088c664b9b6b523ce729fbedeff26a6161bfd7eb5",
+    "onehr_career_succession": "5709d2b4e0ece548eae7be12b274f7540693c84a0b7b28e6cf19ce94022c047a",
+    "onehr_corehr": "0fe318552e15486f07cbfd32090ac883e1eac09fc4fd99db35ec9d6dfffaae76",
+    "onehr_discipline": "c3798fb48feb995d3fac573eb761fed6031489b2b8861a7e17d37c4e87e7efb5",
+    "onehr_document": "354d0c0e90577ee69e636c2860119118a307444d8481f3298515623d6768380a",
+    "onehr_employment_contract": "8d9617adb073eb647a333609b9378ec14b642fba7c1d0da2e3b8c03981616dad",
+    "onehr_integrations_api": "0442e24664008dd29e65c0f18076acdd19f03eb93d13dae94631b249feb1c6dc",
+    "onehr_job_description": "b2201a02772db3de9331bd7c25bb463215773ff978426d26a67fd8a6d2d15a2b",
+    "onehr_learning": "a719cda7041fc04834597d8603676c32a66687bb4498359b31b61d6c35d5b0a2",
+    "onehr_mobile_kiosk": "045a06ae846aaf5e7243ced3accf7462f3f5e67080f5941118c720852d0d712e",
+    "onehr_multicompany_branch": "03cb88c86292ea70e4ae41954eff306cb678db2d6525396f7b553b6ed6318ba2",
+    "onehr_payroll_bridge": "ad21722e6f29e5bd798ea3c4b07349fb73c004971dddb4ec71a681b52061526f",
+    "onehr_payroll_l10n_id": "9c2acdf842461212d2bb3890b77cdca9ff124c716cfb8ea70f25c26d8afe7a8c",
+    "onehr_pnp": "f8acbf3056059a354009d2d6a2b77c6cdce7eaadb57d12d80106037ca2c9e0c8",
+    "onehr_portal_self_service": "1739b2a5f4979886b22457d094d9b507ee6f35d94b47a03a27a7a4f971aa7bd7",
+    "onehr_recruitment": "88a74c4aa00fd365757f3631f53773719de0d0223bf15d9edd5ca786fd61308e",
+    "onehr_retirement_offboarding": "4ffb332631a9badaedfcded3f63dd0ce0a347dcdf47436ddf3f4afd0b57af464",
+    "onehr_security": "668422b35eb5482c902e42ad23c785a24bac7af1a996b5adb8515a8e82c64901",
+    "onehr_sop": "55333b6b2b7c52bb0cb20132497d730f19381b92c5cdecbd0e2ecd62f617a785",
+    "onehr_timeoff": "e16657b87f84e053076e281302f12805bc6c83a98b0f8981407db30e5c913ed7",
+    "onehr_workflow_approval": "e7a0e27e6b6b28790f56d3c1528b85697392f9755bae01f8f0354e70df2ef67a"
+  },
+  "published_fingerprint_normalized_sha256": {
+    "onehr_analytics": "daf87ceeb4ac6489c1bfd4c9cdbbcd560e4a15010a7b1fd91648979b835364aa",
+    "onehr_appraisal": "8b10e2e1c477bc9543a4de7bebcc4fb33376e19ff0a770dab6ced38cee7d8512",
+    "onehr_career_succession": "dab0cd8438598e99cd693ecbd896fc16ef30532c30823bac21a3ebdb3fc26251",
+    "onehr_discipline": "ef1f58cd6c73772ca32381b34098c7ed1c1db7b55463fe933c32085636faa8ca",
+    "onehr_integrations_api": "25f0e0a1ce4c02bdd9cea0f5f1fc2e47644e37a73d4cbbf331b8994528b32d11",
+    "onehr_job_description": "044e762132f8302b5e67765a1404e613b6ee6f095e21eee3fc9540bb711b4016",
+    "onehr_pnp": "ac98b928229f9225d93c4f5fa2668966b36c03aa3728fb924d8a0c449eb05cda",
+    "onehr_portal_self_service": "7982396a895767892a088af72cff769f91c4e20bbdc971c91b88bcc07786239e",
+    "onehr_recruitment": "64b5d7073bbb36aa965837fc885fd7e50542cbb1f456ecf5552284100efba279",
+    "onehr_retirement_offboarding": "7c86940249431c0fbe614cf6ef03ad609bd5593d687eb80e2ce9243570d678d9",
+    "onehr_sop": "58add60ff33db6cde105d7c905d43186977d0b2d7b9b263a5faa65cabc0a5c03"
+  },
+  "root_guardrail_sha256": "9E7614A6BC5459D8672ECC5F655738FCE0FC0053252EDDF6D8D003655B945A55",
+  "sequence_policies": [
+    {
+      "addon": "onehr_integrations_api",
+      "code": "onehr.api.queue",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.api.queue",
+      "stable_fields": [
+        "dedupe_key"
+      ],
+      "strategy": "PROHIBITED_DIRECT_GENERATOR",
+      "xmlid": "onehr_integrations_api.seq_onehr_api_queue"
+    },
+    {
+      "addon": "onehr_appraisal",
+      "code": "onehr.appraisal.form",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.appraisal.form",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_appraisal.seq_onehr_appraisal_form"
+    },
+    {
+      "addon": "onehr_workflow_approval",
+      "code": "onehr.approval.request",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.approval.request",
+      "stable_fields": [
+        "source_model",
+        "source_res_id"
+      ],
+      "strategy": "PRODUCTION_MANAGED_PRESENTATION_ONLY",
+      "xmlid": "onehr_workflow_approval.sequence_onehr_approval_request"
+    },
+    {
+      "addon": "onehr_assignment",
+      "code": "onehr.assignment",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.assignment",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_assignment.seq_onehr_assignment"
+    },
+    {
+      "addon": "onehr_assignment",
+      "code": "onehr.assignment.change.request",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.assignment.change.request",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_assignment.seq_onehr_assignment_change_request"
+    },
+    {
+      "addon": "onehr_attendance",
+      "code": "onehr.attendance.import.batch",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.attendance.import.batch",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_attendance.seq_onehr_attendance_import_batch"
+    },
+    {
+      "addon": "onehr_attendance",
+      "code": "onehr.attendance.reconciliation",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.attendance.reconciliation",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_attendance.seq_onehr_attendance_reconciliation"
+    },
+    {
+      "addon": "onehr_corehr",
+      "code": "onehr.disability.record",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.disability.record",
+      "stable_fields": [
+        "reference"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_corehr.seq_onehr_disability_record"
+    },
+    {
+      "addon": "onehr_discipline",
+      "code": "onehr.discipline.case",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.discipline.case",
+      "stable_fields": [
+        "reference"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_discipline.seq_onehr_discipline_case"
+    },
+    {
+      "addon": "onehr_discipline",
+      "code": "onehr.discipline.sanction",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.discipline.sanction",
+      "stable_fields": [
+        "reference"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_discipline.seq_onehr_discipline_sanction"
+    },
+    {
+      "addon": "onehr_document",
+      "code": "onehr.document",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.document",
+      "stable_fields": [
+        "document_number"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_document.seq_onehr_document"
+    },
+    {
+      "addon": "onehr_corehr",
+      "code": "onehr.employee",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "hr.employee",
+      "stable_fields": [
+        "onehr_employee_number"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_corehr.seq_onehr_employee"
+    },
+    {
+      "addon": "onehr_corehr",
+      "code": "onehr.employee.identifier",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.employee.identifier",
+      "stable_fields": [
+        "reference"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_corehr.seq_onehr_employee_identifier"
+    },
+    {
+      "addon": "onehr_employment_contract",
+      "code": "onehr.employment.contract",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.contract",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_employment_contract.sequence_onehr_employment_contract"
+    },
+    {
+      "addon": "onehr_job_description",
+      "code": "onehr.jd",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.jd",
+      "stable_fields": [
+        "code"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_job_description.seq_onehr_jd"
+    },
+    {
+      "addon": "onehr_mobile_kiosk",
+      "code": "onehr.kiosk.device",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.kiosk.device",
+      "stable_fields": [
+        "code"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_mobile_kiosk.seq_onehr_kiosk_device"
+    },
+    {
+      "addon": "onehr_mobile_kiosk",
+      "code": "onehr.kiosk.log",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.kiosk.log",
+      "stable_fields": [
+        "client_event_id"
+      ],
+      "strategy": "PRODUCTION_MANAGED_PRESENTATION_ONLY",
+      "xmlid": "onehr_mobile_kiosk.seq_onehr_kiosk_log"
+    },
+    {
+      "addon": "onehr_learning",
+      "code": "onehr.learning.certificate",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.learning.certificate",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_learning.seq_onehr_learning_certificate"
+    },
+    {
+      "addon": "onehr_learning",
+      "code": "onehr.learning.enrollment",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.learning.enrollment",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_learning.seq_onehr_learning_enrollment"
+    },
+    {
+      "addon": "onehr_learning",
+      "code": "onehr.learning.session",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.learning.session",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_learning.seq_onehr_learning_session"
+    },
+    {
+      "addon": "onehr_timeoff",
+      "code": "onehr.leave.allocation",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.leave.allocation",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_timeoff.seq_onehr_leave_allocation"
+    },
+    {
+      "addon": "onehr_timeoff",
+      "code": "onehr.leave.request",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.leave.request",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_timeoff.seq_onehr_leave_request"
+    },
+    {
+      "addon": "onehr_corehr",
+      "code": "onehr.medical.assessment",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.medical.assessment",
+      "stable_fields": [
+        "reference"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_corehr.seq_onehr_medical_assessment"
+    },
+    {
+      "addon": "onehr_retirement_offboarding",
+      "code": "onehr.offboarding",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.offboarding",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_retirement_offboarding.seq_onehr_offboarding"
+    },
+    {
+      "addon": "onehr_payroll_bridge",
+      "code": "onehr.payroll.export",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.payroll.export",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_payroll_bridge.seq_onehr_payroll_export"
+    },
+    {
+      "addon": "onehr_payroll_bridge",
+      "code": "onehr.payroll.import",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.payroll.import",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_payroll_bridge.seq_onehr_payroll_import"
+    },
+    {
+      "addon": "onehr_pnp",
+      "code": "onehr.policy",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.policy",
+      "stable_fields": [
+        "policy_code"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_pnp.seq_onehr_policy"
+    },
+    {
+      "addon": "onehr_portal_self_service",
+      "code": "onehr.portal.request",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.portal.request",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_portal_self_service.seq_onehr_portal_request"
+    },
+    {
+      "addon": "onehr_recruitment",
+      "code": "onehr.recruitment.offer",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.offer",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_recruitment.seq_onehr_recruitment_offer"
+    },
+    {
+      "addon": "onehr_recruitment",
+      "code": "onehr.recruitment.requisition",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.recruitment.requisition",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_recruitment.seq_onehr_recruitment_requisition"
+    },
+    {
+      "addon": "onehr_sop",
+      "code": "onehr.sop",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.sop",
+      "stable_fields": [
+        "code"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_sop.seq_onehr_sop"
+    },
+    {
+      "addon": "onehr_career_succession",
+      "code": "onehr.succession.plan",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.succession.plan",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_career_succession.seq_onehr_succession_plan"
+    },
+    {
+      "addon": "onehr_career_succession",
+      "code": "onehr.talent.pool",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.talent.pool",
+      "stable_fields": [
+        "name"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_career_succession.seq_onehr_talent_pool"
+    },
+    {
+      "addon": "onehr_corehr",
+      "code": "onehr.work.incident",
+      "demo_generation_dependency": "NONE",
+      "direct_demo_next_by_code": "FORBIDDEN",
+      "model": "onehr.work.incident",
+      "stable_fields": [
+        "reference"
+      ],
+      "strategy": "EXPLICIT_DETERMINISTIC_IDENTIFIER",
+      "xmlid": "onehr_corehr.seq_onehr_work_incident"
+    }
+  ]
+}

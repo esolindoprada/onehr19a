@@ -1,3 +1,4 @@
+
 <odoo noupdate="1">
     <record id="ir_cron_onehr_succession_review_reminders" model="ir.cron">
         <field name="name">OneHR Talent — Succession Review Reminders</field>
@@ -9,3 +10,4 @@
         <field name="active">True</field>
     </record>
 </odoo>
+

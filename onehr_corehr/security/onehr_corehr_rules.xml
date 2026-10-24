@@ -1,3 +1,4 @@
+
 <odoo>
     <record id="rule_onehr_dependent_company" model="ir.rule">
         <field name="name">OneHR Dependents — allowed companies</field>

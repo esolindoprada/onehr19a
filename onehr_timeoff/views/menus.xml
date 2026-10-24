@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Time Off User intentionally does not receive broad hr.group_hr_user. Surface only the OneHR menu. -->
-    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
-        <field name="group_ids" eval="[Command.link(ref('onehr_timeoff.group_onehr_timeoff_user'))]"/>
-    </record>
-
-    <menuitem id="menu_onehr_time_labor_timeoff_root" name="Time &amp; Labor" parent="onehr_base.menu_onehr_root"
+    <menuitem id="menu_onehr_time_labor_timeoff_root" name="Time Off" parent="onehr_attendance.menu_onehr_time_labor"
               sequence="21" groups="onehr_timeoff.group_onehr_timeoff_user"/>
 
     <menuitem id="menu_onehr_timeoff_my_requests" name="My Leave Requests" parent="menu_onehr_time_labor_timeoff_root"

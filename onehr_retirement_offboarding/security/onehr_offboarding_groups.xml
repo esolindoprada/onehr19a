@@ -1,0 +1,46 @@
+<odoo>
+    <record id="module_category_onehr_offboarding" model="ir.module.category">
+        <field name="name">OneHR Offboarding</field>
+        <field name="description">Enterprise retirement, resignation, clearance and exit-orchestration security.</field>
+        <field name="sequence">78</field>
+    </record>
+
+    <record id="privilege_onehr_offboarding" model="res.groups.privilege">
+        <field name="name">OneHR Offboarding</field>
+        <field name="description">Company-scoped offboarding and cross-functional clearance privileges.</field>
+        <field name="category_id" ref="module_category_onehr_offboarding"/>
+        <field name="sequence">78</field>
+    </record>
+
+    <record id="group_onehr_offboarding_task_owner" model="res.groups">
+        <field name="name">Offboarding Task Owner</field>
+        <field name="privilege_id" ref="privilege_onehr_offboarding"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[Command.link(ref('onehr_security.group_onehr_security_user'))]"/>
+        <field name="comment">Work only on clearance tasks explicitly assigned to the user, with controlled case visibility.</field>
+    </record>
+
+    <record id="group_onehr_offboarding_officer" model="res.groups">
+        <field name="name">Offboarding Officer</field>
+        <field name="privilege_id" ref="privilege_onehr_offboarding"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[Command.link(ref('onehr_retirement_offboarding.group_onehr_offboarding_task_owner'))]"/>
+        <field name="comment">Create and coordinate company offboarding cases, clearance work and exit interviews.</field>
+    </record>
+
+    <record id="group_onehr_offboarding_manager" model="res.groups">
+        <field name="name">Offboarding Manager</field>
+        <field name="privilege_id" ref="privilege_onehr_offboarding"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[Command.link(ref('onehr_retirement_offboarding.group_onehr_offboarding_officer'))]"/>
+        <field name="comment">Submit approvals, waive/reopen evidence, govern settlement and complete/close cases. Does not imply Contract/Payroll/System authority.</field>
+    </record>
+
+    <record id="group_onehr_offboarding_admin" model="res.groups">
+        <field name="name">Offboarding Administrator</field>
+        <field name="privilege_id" ref="privilege_onehr_offboarding"/>
+        <field name="sequence">40</field>
+        <field name="implied_ids" eval="[Command.link(ref('onehr_retirement_offboarding.group_onehr_offboarding_manager'))]"/>
+        <field name="comment">Configure clearance catalogue and administer offboarding evidence. Odoo user revocation still additionally requires System Administrator authority.</field>
+    </record>
+</odoo>

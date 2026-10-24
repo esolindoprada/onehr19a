@@ -1,13 +1,8 @@
 <odoo>
-    <record id="onehr_base.menu_onehr_root" model="ir.ui.menu">
-        <field name="group_ids" eval="[Command.link(ref('onehr_appraisal.group_onehr_appraisal_participant'))]"/>
-    </record>
-
     <menuitem id="menu_onehr_performance"
-              name="Performance"
-              parent="onehr_base.menu_onehr_root"
+              name="OneHR — Talent &amp; Performance"
               sequence="70"
-              groups="onehr_appraisal.group_onehr_appraisal_participant"/>
+              groups="base.group_user"/>
 
     <menuitem id="menu_onehr_appraisal_my"
               name="My Appraisals"

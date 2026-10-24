@@ -1,3 +1,4 @@
+
 # OneHR SOP — Upstream Contract & Scope Isolation Audit
 
 LATEST_WORKSPACE: `onehr19a(20260821-063315).md`  
@@ -50,3 +51,4 @@ Integration decisions:
 
 SCOPE_ISOLATION_RESULT: PASS_FOR_PACKAGE  
 UPSTREAM_CONTRACT_AUDIT: PASS
+
